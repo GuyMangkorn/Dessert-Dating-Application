@@ -158,10 +158,6 @@ class ListcardViewHolders(itemView: View, private val context: Context) : Recycl
         })
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun UpdateDate() {
-
-    }
 
     init {
         mLinear.setOnLongClickListener(OnLongClickListener {
