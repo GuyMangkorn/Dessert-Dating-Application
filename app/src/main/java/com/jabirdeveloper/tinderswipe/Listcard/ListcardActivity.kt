@@ -66,6 +66,7 @@ class ListcardActivity : Fragment() {
     private lateinit var handler: Handler
     private lateinit var supportFragmentManager:Fragment
     private  var functions = Firebase.functions
+    private lateinit var resultLimit:ArrayList<*>
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_listcard, container, false)
         super.onCreate(savedInstanceState)
@@ -93,36 +94,46 @@ class ListcardActivity : Fragment() {
         mRecyclerView.addOnScrollListener(object  : RecyclerView.OnScrollListener(){
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if(newState ==AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                    isScroll = true;
+                    isScroll = true
+
                 }
+
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentItem = mMatchesLayoutManager.childCount
                 totalItem = mMatchesLayoutManager.itemCount
-                scrollOutItem = (mMatchesLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition();
+                scrollOutItem = (mMatchesLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                Log.d("scrcc","$currentItem $totalItem $scrollOutItem")
                 if(isScroll &&  currentItem+scrollOutItem == totalItem){
-                    isScroll = false;
-                    Log.d("valueofStartNOde",startNode.toString()+" , "+br_check+" , "+resultMatches2.size )
-                    startNode += 20
-                    if(startNode > resultMatches2.size){
-                        startNode = resultMatches2.size-1
-                        count2 = 1;
-                        Log.d("valueofStartNOde",startNode.toString())
+                    isScroll = false
+
+                    if(startNode < 80)
+                    {
+                        getUser(resultLimit,startNode)
+                        startNode += 20
                     }
-                    Log.d("valueofStartNOde_final",startNode.toString())
-                    if(count2 != 1) {
-                        for (i in startNode - 20 until startNode) {
-                            val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
-                                    resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
-                                    resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
-                            resultMatches.add(obj)
-                        }
-                        mMatchesAdapter.notifyDataSetChanged()
-                    }
+                    /*   Log.d("valueofStartNOde",startNode.toString()+" , "+br_check+" , "+resultMatches2.size )
+                       startNode += 20
+                       if(startNode > resultMatches2.size){
+                           startNode = resultMatches2.size-1
+                           count2 = 1;
+                           Log.d("valueofStartNOde",startNode.toString())
+                       }
+                       Log.d("valueofStartNOde_final",startNode.toString())
+                       if(count2 != 1) {
+                           for (i in startNode - 20 until startNode) {
+                               val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
+                                       resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
+                                       resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
+                               resultMatches.add(obj)
+                           }
+                           mMatchesAdapter.notifyDataSetChanged()
+                       }*/
 
                     //FecthMatchformation()
+
                 }
 
             }
@@ -159,13 +170,13 @@ class ListcardActivity : Fragment() {
         }
     }
     private fun  getStartAt(){
-        val userdb = FirebaseDatabase.getInstance().reference.child("Users");
+        val userdb = FirebaseDatabase.getInstance().reference.child("Users")
         userdb.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 br_check = snapshot.childrenCount.toInt()
                 Log.d("dddddd",br_check.toString())
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default)  {
-                        getUsergender()
+                    getUsergender()
                 }
 
             }
@@ -192,6 +203,12 @@ class ListcardActivity : Fragment() {
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
+        callFunction(100)
+
+
+    }
+    private fun callFunction(limit:Int)
+    {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             val data = hashMapOf(
                     "sex" to oppositUserSex,
@@ -199,7 +216,9 @@ class ListcardActivity : Fragment() {
                     "max" to OppositeUserAgeMax,
                     "x_user" to x_user,
                     "y_user" to y_user,
-                    "distance" to distanceUser
+                    "distance" to distanceUser,
+                    "limit" to limit,
+                    "prelimit" to 0
             )
             //FecthMatchformation()
             functions.getHttpsCallable("getUserList")
@@ -212,62 +231,59 @@ class ListcardActivity : Fragment() {
                         val result1 = task.data as Map<*, *>
 
                         Log.d("ghu",result1.toString())
-                        val result2 = result1["parse_obj"] as ArrayList<*>
-                        if(result2.isNotEmpty())
-                        //val result8 = result2[0] as Map<*, *>
-                        for(x in 0 until result2.size)
-                        {
-                            val user = result2[x] as Map<*, *>
-                            Log.d("ghu", user["name"].toString() + " , "+user["distance_other"].toString())
-                            var myself = ""
-                            var off_status = false
-                            var vip = false
-                            var dis = ""
-                            var time_opposite = "null"
-                            var date_opposite = "null"
-                            if ((user["Status"]as Map<*, *>)["time"] != null) {
-                                time_opposite = (user["Status"]as Map<*, *>)["time"].toString()
-                            }
-                            if ((user["Status"]as Map<*, *>)["date"] != null) {
-                                date_opposite = (user["Status"]as Map<*, *>)["date"].toString()
-                            }
-                            time_change(time_opposite, date_opposite)
-                            if (user["myself"] != null) {
-                                myself = user["myself"].toString()
-                            }
-                            if (user["off_status"] != null) {
-                                off_status = true
-                            }
-                            (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
-                            val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
-
-                            var status = "offline"
-                            (user["Status"] as Map<*, *>)["status"]
-                            if ((user["Status"] as Map<*, *>)["status"] != null) {
-                                status = (user["Status"] as Map<*, *>)["status"].toString()
-                            }
-                            if (user["Vip"] != null) {
-                                vip = true
-                            }
-                            val df2 = DecimalFormat("#.#")
-                            dis = df2.format(user["distance_other"])
-
-                            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, sum_string, user["Age"].toString(), user["sex"].toString(), myself, off_status)
-
-                            resultMatches.add(obj)
-                            if (resultMatches.size > 0) {
-                                pro.visibility = View.GONE
-                                // search.visibility = View.GONE
-                                // handler.removeCallbacks(runnable)
-                            }
-                        }
-                        mMatchesAdapter.notifyDataSetChanged()
-
-
+                        resultLimit = result1["o"] as ArrayList<*>
+                        if(resultLimit.isNotEmpty())
+                            getUser(resultLimit,0)
 
                     }
         }
+    }
+    private fun getUser(result2:ArrayList<*>,start:Int)
+    {
+        for(x in start until start+20)
+        {
+            val user = result2[x] as Map<*, *>
+            Log.d("ghu", user["name"].toString() + " , "+user["distance_other"].toString())
+            var myself = ""
+            var off_status = false
 
+            var time_opposite = "null"
+            var date_opposite = "null"
+            if ((user["Status"]as Map<*, *>)["time"] != null) {
+                time_opposite = (user["Status"]as Map<*, *>)["time"].toString()
+            }
+            if ((user["Status"]as Map<*, *>)["date"] != null) {
+                date_opposite = (user["Status"]as Map<*, *>)["date"].toString()
+            }
+            time_change(time_opposite, date_opposite)
+            if (user["myself"] != null) {
+                myself = user["myself"].toString()
+            }
+            if (user["off_status"] != null) {
+                off_status = true
+            }
+            (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
+            val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
+
+            var status = "offline"
+            (user["Status"] as Map<*, *>)["status"]
+            if ((user["Status"] as Map<*, *>)["status"] != null) {
+                status = (user["Status"] as Map<*, *>)["status"].toString()
+            }
+
+            val df2 = DecimalFormat("#.#")
+            val dis = df2.format(user["distance_other"])
+
+            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, sum_string, user["Age"].toString(), user["sex"].toString(), myself, off_status)
+
+            resultMatches.add(obj)
+            if (resultMatches.size > 0) {
+                pro.visibility = View.GONE
+                // search.visibility = View.GONE
+                // handler.removeCallbacks(runnable)
+            }
+        }
+        mMatchesAdapter.notifyDataSetChanged()
     }
     private val UidMatch: MutableList<String?>? = java.util.ArrayList()
     private var chk_num1 = 0
@@ -300,8 +316,8 @@ class ListcardActivity : Fragment() {
                 Log.d("ddf", resultMatches.size.toString())
                 if (resultMatches.size > 0) {
                     pro.visibility = View.GONE
-                   // search.visibility = View.GONE
-                   // handler.removeCallbacks(runnable)
+                    // search.visibility = View.GONE
+                    // handler.removeCallbacks(runnable)
                 }
             }
 
@@ -317,7 +333,7 @@ class ListcardActivity : Fragment() {
         UidMatch!!.add(dataSnapshot.key)
         var time_opposite = "null"
         var date_opposite = "null"
-        val userId = dataSnapshot.key
+
         if (dataSnapshot.child("Status").hasChild("time")) {
             time_opposite = dataSnapshot.child("Status").child("time").value.toString()
         }
@@ -350,9 +366,9 @@ class ListcardActivity : Fragment() {
         if (dataSnapshot.hasChild("off_status")) {
             off_status = true
         }
-       // val obj = ListcardObject(userId, name, profileImageUrl, distance_1, status, sum_string, Age, gender, myself, off_status)
+        // val obj = ListcardObject(userId, name, profileImageUrl, distance_1, status, sum_string, Age, gender, myself, off_status)
 
-            //resultMatches2.add(obj)
+        //resultMatches2.add(obj)
 
         /*
         resultMatches2.sortWith(Comparator { o1, o2 ->
@@ -446,9 +462,9 @@ class ListcardActivity : Fragment() {
                 val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
                         resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
                         resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
-                    resultMatches.add(obj)
+                resultMatches.add(obj)
 
-                
+
             }
 
 
