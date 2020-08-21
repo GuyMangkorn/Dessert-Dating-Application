@@ -99,7 +99,6 @@ class First_Activity : AppCompatActivity() {
     private fun pushToken(){
 
         val token = FirebaseInstanceId.getInstance().token
-        //Toast.makeText(this@First_Activity,token,Toast.LENGTH_SHORT).show()
         FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
     }
     /*private fun check_dd() {
