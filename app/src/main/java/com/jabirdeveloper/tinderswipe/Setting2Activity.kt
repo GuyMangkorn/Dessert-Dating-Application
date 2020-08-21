@@ -76,8 +76,8 @@ class Setting2Activity : AppCompatActivity() {
         on_off_card = findViewById(R.id.on_off_card)
         on_off_list = findViewById(R.id.on_off_list)
         setSupportActionBar(toolbar)
-        supportActionBar?.setTitle(R.string.Setting)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setTitle(R.string.Setting)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         currentUid = mAuth.uid.toString()
         text_seekAge = findViewById(R.id.seek_age_text)
         getdisAge()
@@ -110,8 +110,8 @@ class Setting2Activity : AppCompatActivity() {
             override fun onValueChanged(minProgress: Int, maxProgress: Int, fromUser: Boolean) {
                 minV = minProgress + 18
                 maxV = maxProgress + 18
-                text_seekAge.setText("$minV - $maxV")
-                if (maxV == 70) text_seekAge.setText("$minV - $maxV+") else text_seekAge.setText("$minV - $maxV")
+                text_seekAge.text = "$minV - $maxV"
+                if (maxV == 70) text_seekAge.text = "$minV - $maxV+" else text_seekAge.text = "$minV - $maxV"
             }
         })
         radioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { group, checkedId ->
@@ -253,6 +253,7 @@ class Setting2Activity : AppCompatActivity() {
         }
     }
 
+
     private fun getdisAge() {
         Getdistance = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
         Getdistance.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -307,10 +308,6 @@ class Setting2Activity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-    override fun onStop() {
-        super.onStop()
-
-    }
 
     private fun setLocal(lang: String?) {
         val locale = Locale(lang)
@@ -344,7 +341,7 @@ class Setting2Activity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.home -> {
+            android.R.id.home -> {
                 onBackPressed()
                 true
             }

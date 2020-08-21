@@ -67,6 +67,7 @@ class ListcardActivity : Fragment() {
     private lateinit var supportFragmentManager:Fragment
     private  var functions = Firebase.functions
     private lateinit var resultLimit:ArrayList<*>
+    private var countLimit = 100
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_listcard, container, false)
         super.onCreate(savedInstanceState)
@@ -106,13 +107,20 @@ class ListcardActivity : Fragment() {
                 totalItem = mMatchesLayoutManager.itemCount
                 scrollOutItem = (mMatchesLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                 Log.d("scrcc","$currentItem $totalItem $scrollOutItem")
+                Log.d("scrcc",resultLimit.size.toString()+"$countLimit")
+
                 if(isScroll &&  currentItem+scrollOutItem == totalItem){
                     isScroll = false
 
-                    if(startNode < 80)
+                    if(startNode < countLimit)
                     {
-                        getUser(resultLimit,startNode)
+                        getUser(resultLimit,startNode,false,resultMatches.size-1)
                         startNode += 20
+                    }
+                    if((currentItem+scrollOutItem)%countLimit == 0)
+                    {
+                        callFunction(countLimit,false,resultMatches.size)
+                        startNode = 20
                     }
                     /*   Log.d("valueofStartNOde",startNode.toString()+" , "+br_check+" , "+resultMatches2.size )
                        startNode += 20
@@ -203,12 +211,14 @@ class ListcardActivity : Fragment() {
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-        callFunction(100)
+        callFunction(100,true,0)
+
 
 
     }
-    private fun callFunction(limit:Int)
+    private fun callFunction(limit:Int,type: Boolean,count:Int)
     {
+        var pre = count
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             val data = hashMapOf(
                     "sex" to oppositUserSex,
@@ -217,8 +227,8 @@ class ListcardActivity : Fragment() {
                     "x_user" to x_user,
                     "y_user" to y_user,
                     "distance" to distanceUser,
-                    "limit" to limit,
-                    "prelimit" to 0
+                    "limit" to count+limit,
+                    "prelimit" to count
             )
             //FecthMatchformation()
             functions.getHttpsCallable("getUserList")
@@ -233,14 +243,23 @@ class ListcardActivity : Fragment() {
                         Log.d("ghu",result1.toString())
                         resultLimit = result1["o"] as ArrayList<*>
                         if(resultLimit.isNotEmpty())
-                            getUser(resultLimit,0)
+                            if(type)
+                            getUser(resultLimit,0,type,0)
+                        else
+                                getUser(resultLimit,0,type,resultMatches.size-1)
+
 
                     }
         }
     }
-    private fun getUser(result2:ArrayList<*>,start:Int)
+    private fun getUser(result2:ArrayList<*>,start:Int,type:Boolean,startNoti:Int)
     {
-        for(x in start until start+20)
+        var max = start+20
+        Log.d("max",(start+20).toString() + " " + result2.size)
+        if(result2.size < start+20) {
+            max = result2.size
+        }
+        for(x in start until max)
         {
             val user = result2[x] as Map<*, *>
             Log.d("ghu", user["name"].toString() + " , "+user["distance_other"].toString())
@@ -283,7 +302,10 @@ class ListcardActivity : Fragment() {
                 // handler.removeCallbacks(runnable)
             }
         }
+        Log.d("sss","$startNoti " + resultMatches.size)
+        if(type)
         mMatchesAdapter.notifyDataSetChanged()
+        else mMatchesAdapter.notifyItemRangeChanged(startNoti,resultMatches.size)
     }
     private val UidMatch: MutableList<String?>? = java.util.ArrayList()
     private var chk_num1 = 0

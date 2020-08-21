@@ -282,7 +282,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                     count.text = preferences.getInt("c", 0).toString()
                     see.text = preferences.getInt("s", 0).toString()
                     name.text = preferences.getString("name", "")
-                    age.text = preferences.getInt("Age", 18).toString()+", "
+                    age.text = ", "+preferences.getInt("Age", 18).toString()
                     val lat_double = preferences.getString("X", "").toString().toDouble()
                     val lon_double = preferences.getString("Y", "").toString().toDouble()
                     val preferences2 = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
