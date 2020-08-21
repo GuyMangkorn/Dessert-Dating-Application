@@ -194,31 +194,6 @@ class First_Activity : AppCompatActivity() {
         })*/
     }
 
-    /*private fun GetBitmap(uid: String?) {
-        val imageDb = FirebaseDatabase.getInstance().reference.child("Users").child(uid.toString())
-        imageDb.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.child("ProfileImage").child("profileImageUrl0").value != null) {
-                    Glide.with(mContext!!).asBitmap().load(dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()).apply(RequestOptions().circleCrop()).into(object : CustomTarget<Bitmap?>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
-                            UidMatch_Image!!.add(resource)
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
-                } else if (dataSnapshot.child("sex").value.toString() == "Female") {
-                    UidMatch_Image!!.add(BitmapFactory.decodeResource(this@First_Activity.resources, R.drawable.ic_woman))
-                } else {
-                    UidMatch_Image!!.add(BitmapFactory.decodeResource(this@First_Activity.resources, R.drawable.ic_man))
-                }
-                NameMatch!!.add(dataSnapshot.child("name").value.toString())
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-
-
     private fun check_HaveMatch() {
         val prefs = getSharedPreferences(mAuth!!.currentUser!!.uid + "Match_first", Context.MODE_PRIVATE)
         val allPrefs = prefs.all
