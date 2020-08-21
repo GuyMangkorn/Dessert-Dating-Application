@@ -144,14 +144,10 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
                 if (dataSnapshot.child(userID.toString()).child("PutReportId").hasChild(MatchId)) {
                     date_before = false
                 } else {
-                    val MatchId = mMatchId!!.text.toString()
-                    val date_user: String
-                    val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                    val calendar = Calendar.getInstance()
-                    date_user = currentDate.format(calendar.time)
-                    val ff = hashMapOf(
-                            "date" to date_user)
-                    mDataReport?.child(userID.toString())?.child("PutReportId")!!.child(MatchId).updateChildren(ff as Map<String, Any>)
+                    mDataReport.child(userID.toString())
+                            .child("PutReportId")
+                            .child(mMatchId!!.text.toString())
+                            .setValue("true")
                 }
                 if (date_before) {
                     if (return_d == 0) {
@@ -213,11 +209,6 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-
-    private fun UpdateDate() {
-
-    }
-
     init {
         i_1 = Intent(context, MatchesActivity::class.java)
         mDataReport = FirebaseDatabase.getInstance().reference.child("Users")

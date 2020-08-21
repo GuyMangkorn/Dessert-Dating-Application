@@ -92,12 +92,10 @@ class ListcardViewHolders(itemView: View, private val context: Context) : Recycl
                 if (dataSnapshot.child(userID).child("PutReportId").hasChild(MatchId)) {
                     date_before = false
                 } else {
-                    val ff: MutableMap<String?, Any?> = HashMap()
-                    ff["date"] = SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().time)
                     mDataReport.child(userID)
                             .child("PutReportId")
                             .child(mMatchId.text.toString())
-                            .updateChildren(ff)
+                            .setValue("true")
                 }
                 if (date_before) {
                     if (return_d == 0) {

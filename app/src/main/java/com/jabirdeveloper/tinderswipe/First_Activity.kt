@@ -97,7 +97,6 @@ class First_Activity : AppCompatActivity() {
         hTextView!!.animateText("Welcome to my world")
     }
     private fun pushToken(){
-
         val token = FirebaseInstanceId.getInstance().token
         FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
     }
