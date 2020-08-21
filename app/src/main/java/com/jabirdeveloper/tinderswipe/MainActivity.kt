@@ -594,7 +594,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         }
         Log.d("iop","")
         var a = countLimit+limit
-        if(result2.size < countDataSet)
+        if(result2.size < countLimit+limit)
             a = result2.size
         for(x in countLimit until a)
         {
