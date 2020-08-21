@@ -109,7 +109,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private var countLimit2 = 0
     private var countLimit3 = 1
     private var countDataSet = 100
-    private var countDataSefdfffft = 100
+    private var countDataSefdfft = 100
     private lateinit var resultlimit : ArrayList<*>
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("ghj","สร้างละ")
