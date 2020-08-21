@@ -1,0 +1,570 @@
+package com.jabirdeveloper.tinderswipe.Listcard
+
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.os.Bundle
+import android.os.Handler
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AbsListView
+import android.widget.ImageView
+import android.widget.ProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.functions.ktx.functions
+import com.google.firebase.ktx.Firebase
+import com.jabirdeveloper.tinderswipe.Cards.cards
+import com.jabirdeveloper.tinderswipe.MainActivity
+import com.jabirdeveloper.tinderswipe.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.IOException
+import java.text.DecimalFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+
+
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+class ListcardActivity : Fragment() {
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mMatchesAdapter: RecyclerView.Adapter<*>
+    private lateinit var mMatchesLayoutManager: RecyclerView.LayoutManager
+    var x_user = 0.0
+    var y_user = 0.0
+    var x_opposite = 0.0
+    var y_opposite = 0.0
+    private var isScroll = false
+    private lateinit var currentUserId: String
+    private var oppositUserSex: String? = null
+    private var age = 0
+    private var startNode = 20
+    private var OppositeUserAgeMin = 0
+    private var OppositeUserAgeMax = 0
+    private var distanceUser = 0.0
+    private var count = 0
+    private var count2:Int = 0
+    private var currentItem = 0
+    private var  totalItem = 0
+    private var scrollOutItem = 0
+    private var sum_string: String? = null
+    private lateinit var pro: ProgressBar
+    private lateinit var search: ConstraintLayout
+    private lateinit var anime1: ImageView
+    private lateinit var anime2: ImageView
+    private lateinit var handler: Handler
+    private lateinit var supportFragmentManager:Fragment
+    private  var functions = Firebase.functions
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.activity_listcard, container, false)
+        super.onCreate(savedInstanceState)
+
+        pro = view.findViewById(R.id.view_pro)
+        search = view.findViewById(R.id.layout_in)
+        currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
+        mRecyclerView = view.findViewById(R.id.recyclerView)
+        mRecyclerView.isNestedScrollingEnabled = false
+        mRecyclerView.setHasFixedSize(true)
+        mMatchesLayoutManager = LinearLayoutManager(context)
+        mRecyclerView.layoutManager = mMatchesLayoutManager
+        mMatchesAdapter = ListcardAdapter(getDataSetMatches(), requireContext())
+        mRecyclerView.adapter = mMatchesAdapter
+        anime1 = view.findViewById(R.id.anime1)
+        anime2 = view.findViewById(R.id.anime2)
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+
+
+            getStartAt()
+
+        }
+
+        mRecyclerView.addOnScrollListener(object  : RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if(newState ==AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    isScroll = true;
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentItem = mMatchesLayoutManager.childCount
+                totalItem = mMatchesLayoutManager.itemCount
+                scrollOutItem = (mMatchesLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition();
+                if(isScroll &&  currentItem+scrollOutItem == totalItem){
+                    isScroll = false;
+                    Log.d("valueofStartNOde",startNode.toString()+" , "+br_check+" , "+resultMatches2.size )
+                    startNode += 20
+                    if(startNode > resultMatches2.size){
+                        startNode = resultMatches2.size-1
+                        count2 = 1;
+                        Log.d("valueofStartNOde",startNode.toString())
+                    }
+                    Log.d("valueofStartNOde_final",startNode.toString())
+                    if(count2 != 1) {
+                        for (i in startNode - 20 until startNode) {
+                            val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
+                                    resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
+                                    resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
+                            resultMatches.add(obj)
+                        }
+                        mMatchesAdapter.notifyDataSetChanged()
+                    }
+
+                    //FecthMatchformation()
+                }
+
+            }
+        })
+        mRecyclerView.addOnChildAttachStateChangeListener(object : OnChildAttachStateChangeListener {
+            override fun onChildViewAttachedToWindow(view: View) {
+                pro.visibility = View.GONE
+            }
+
+            override fun onChildViewDetachedFromWindow(view: View) {}
+        })
+
+        return view
+
+
+
+    }
+
+
+
+    private val runnable: Runnable? = object : Runnable {
+        override fun run() {
+            anime1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(800).withEndAction {
+                anime1.scaleX = 1f
+                anime1.scaleY = 1f
+                anime1.alpha = 1f
+            }
+            anime2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1200).withEndAction {
+                anime2.scaleX = 1f
+                anime2.scaleY = 1f
+                anime2.alpha = 1f
+            }
+            handler.postDelayed(this, 1500)
+        }
+    }
+    private fun  getStartAt(){
+        val userdb = FirebaseDatabase.getInstance().reference.child("Users");
+        userdb.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                br_check = snapshot.childrenCount.toInt()
+                Log.d("dddddd",br_check.toString())
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default)  {
+                        getUsergender()
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+    private fun getUsergender() {
+        val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+        oppositUserSex = preferences.getString("OppositeUserSex", "All").toString()
+        OppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
+        OppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
+        x_user = preferences.getString("X", "").toString().toDouble()
+        y_user = preferences.getString("Y", "").toString().toDouble()
+        distanceUser = when (preferences.getString("Distance", "Untitled")) {
+            "true" -> {
+                1000.0
+            }
+            "Untitled" -> {
+                1000.0
+            }
+            else -> {
+                preferences.getString("Distance", "Untitled").toString().toDouble()
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+            val data = hashMapOf(
+                    "sex" to oppositUserSex,
+                    "min" to OppositeUserAgeMin,
+                    "max" to OppositeUserAgeMax,
+                    "x_user" to x_user,
+                    "y_user" to y_user,
+                    "distance" to distanceUser
+            )
+            //FecthMatchformation()
+            functions.getHttpsCallable("getUserList")
+                    .call(data)
+                    .addOnFailureListener { Log.d("ghu","failed") }
+                    .addOnSuccessListener {  task ->
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then result will throw an Exception which will be
+                        // propagated down.
+                        val result1 = task.data as Map<*, *>
+
+                        Log.d("ghu",result1.toString())
+                        val result2 = result1["parse_obj"] as ArrayList<*>
+                        if(result2.isNotEmpty())
+                        //val result8 = result2[0] as Map<*, *>
+                        for(x in 0 until result2.size)
+                        {
+                            val user = result2[x] as Map<*, *>
+                            Log.d("ghu", user["name"].toString() + " , "+user["distance_other"].toString())
+                            var myself = ""
+                            var off_status = false
+                            var vip = false
+                            var dis = ""
+                            var time_opposite = "null"
+                            var date_opposite = "null"
+                            if ((user["Status"]as Map<*, *>)["time"] != null) {
+                                time_opposite = (user["Status"]as Map<*, *>)["time"].toString()
+                            }
+                            if ((user["Status"]as Map<*, *>)["date"] != null) {
+                                date_opposite = (user["Status"]as Map<*, *>)["date"].toString()
+                            }
+                            time_change(time_opposite, date_opposite)
+                            if (user["myself"] != null) {
+                                myself = user["myself"].toString()
+                            }
+                            if (user["off_status"] != null) {
+                                off_status = true
+                            }
+                            (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
+                            val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
+
+                            var status = "offline"
+                            (user["Status"] as Map<*, *>)["status"]
+                            if ((user["Status"] as Map<*, *>)["status"] != null) {
+                                status = (user["Status"] as Map<*, *>)["status"].toString()
+                            }
+                            if (user["Vip"] != null) {
+                                vip = true
+                            }
+                            val df2 = DecimalFormat("#.#")
+                            dis = df2.format(user["distance_other"])
+
+                            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, sum_string, user["Age"].toString(), user["sex"].toString(), myself, off_status)
+
+                            resultMatches.add(obj)
+                            if (resultMatches.size > 0) {
+                                pro.visibility = View.GONE
+                                // search.visibility = View.GONE
+                                // handler.removeCallbacks(runnable)
+                            }
+                        }
+                        mMatchesAdapter.notifyDataSetChanged()
+
+
+
+                    }
+        }
+
+    }
+    private val UidMatch: MutableList<String?>? = java.util.ArrayList()
+    private var chk_num1 = 0
+    private var chk_num2 = 0
+    private fun FecthMatchformation() {
+        val userDb = FirebaseDatabase.getInstance().reference.child("Users")
+        userDb.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                Log.d("checksnap",dataSnapshot.key)
+                ++br_check2
+                age = dataSnapshot.child("Age").value.toString().toInt()
+                if (age in OppositeUserAgeMin..OppositeUserAgeMax && !dataSnapshot.child("connection").child("matches").hasChild(currentUserId)
+                        && dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")
+                        && currentUserId != dataSnapshot.key
+                        && !dataSnapshot.hasChild("off_list")) {
+                    x_opposite = dataSnapshot.child("Location").child("X").value.toString().toDouble()
+                    y_opposite = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
+                    val dss = MainActivity()
+                    val distance = dss.Calllat(x_user, y_user, x_opposite, y_opposite)
+                    if (distance < distanceUser) {
+                        if (oppositUserSex == "All") {
+                            if(!UidMatch!!.contains(dataSnapshot.key))
+                                fet(dataSnapshot, distance)
+                        } else if (dataSnapshot.child("sex").value.toString() == oppositUserSex) {
+                            if(!UidMatch!!.contains(dataSnapshot.key))
+                                fet(dataSnapshot, distance)
+                        }
+                    }
+                }
+                Log.d("ddf", resultMatches.size.toString())
+                if (resultMatches.size > 0) {
+                    pro.visibility = View.GONE
+                   // search.visibility = View.GONE
+                   // handler.removeCallbacks(runnable)
+                }
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+    private var br_check = 0
+    private var br_check2 = 0
+    private fun fet(dataSnapshot: DataSnapshot, distance_1: Double) {
+        UidMatch!!.add(dataSnapshot.key)
+        var time_opposite = "null"
+        var date_opposite = "null"
+        val userId = dataSnapshot.key
+        if (dataSnapshot.child("Status").hasChild("time")) {
+            time_opposite = dataSnapshot.child("Status").child("time").value.toString()
+        }
+        if (dataSnapshot.child("Status").hasChild("date")) {
+            date_opposite = dataSnapshot.child("Status").child("date").value.toString()
+        }
+        time_change(time_opposite, date_opposite)
+        var name = ""
+        var profileImageUrl = ""
+        val x = ""
+        val y = ""
+        var myself = ""
+        var off_status = false
+        val Age: String = dataSnapshot.child("Age").value.toString()
+        val gender: String = dataSnapshot.child("sex").value.toString()
+        if (dataSnapshot.hasChild("myself")) {
+            myself = dataSnapshot.child("myself").value.toString()
+        }
+        if (dataSnapshot.child("name").value != null) {
+            name = dataSnapshot.child("name").value.toString()
+        }
+        profileImageUrl = "default"
+        if (dataSnapshot.hasChild("ProfileImage")) {
+            profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
+        }
+        var status = "offline"
+        if (dataSnapshot.child("Status").hasChild("status")) {
+            status = dataSnapshot.child("Status").child("status").value.toString()
+        }
+        if (dataSnapshot.hasChild("off_status")) {
+            off_status = true
+        }
+       // val obj = ListcardObject(userId, name, profileImageUrl, distance_1, status, sum_string, Age, gender, myself, off_status)
+
+            //resultMatches2.add(obj)
+
+        /*
+        resultMatches2.sortWith(Comparator { o1, o2 ->
+            val chk = o1!!.time!!.substring(0, 1)
+            val chk2 = o2!!.time!!.substring(0, 1)
+            if (chk == "d") {
+                var sum = 0
+                sum = o1.time!!.substring(1).toInt()
+                chk_num1 = sum * 60 * 24
+            } else {
+                chk_num1 = o1.time!!.toInt()
+            }
+            if (chk2 == "d") {
+                var sum2 = 0
+                sum2 = o2.time!!.substring(1).toInt()
+                chk_num2 = sum2 * 60 * 24
+            } else {
+                chk_num2 = o2.time!!.toInt()
+            }
+            Log.d("125", o1.getName())
+            chk_num1.compareTo(chk_num2)
+        })
+        resultMatches2.sortWith(Comparator { o1, o2 -> ((o1!!.getDistance() * 10).toInt()).compareTo((o2!!.getDistance() * 10).toInt()) })
+        resultMatches2.sortWith(Comparator { o1, o2 ->
+            var b1 = false
+            var b2 = false
+            var chk_b1 = 0
+            var chk_b2 = 0
+            if (o1!!.getStatus_opposite() == "online") {
+                b1 = true
+            }
+            if (o2!!.getStatus_opposite() == "online") {
+                b2 = true
+            }
+            if (b1) {
+                chk_b1 = 1
+            }
+            if (b2) {
+                chk_b2 = 1
+            }
+            chk_b2 - chk_b1
+        })*/
+        Log.d("checkBrbrbrbr",(br_check-1).toString()+" : "+startNode)
+        if(br_check2 == br_check) {
+            /*resultMatches2.sortWith(Comparator { o1, o2 ->
+                val chk = o1!!.time!!.substring(0, 1)
+                val chk2 = o2!!.time!!.substring(0, 1)
+                if (chk == "d") {
+                    var sum = 0
+                    sum = o1.time!!.substring(1).toInt()
+                    chk_num1 = sum * 60 * 24
+                } else {
+                    chk_num1 = o1.time!!.toInt()
+                }
+                if (chk2 == "d") {
+                    var sum2 = 0
+                    sum2 = o2.time!!.substring(1).toInt()
+                    chk_num2 = sum2 * 60 * 24
+                } else {
+                    chk_num2 = o2.time!!.toInt()
+                }
+                Log.d("125", o1.name)
+                chk_num1.compareTo(chk_num2)
+            })
+            resultMatches2.sortWith(Comparator { o1, o2 -> ((o1!!.distance * 10).toInt()).compareTo((o2!!.distance * 10).toInt()) })
+            resultMatches2.sortWith(Comparator { o1, o2 ->
+                var b1 = false
+                var b2 = false
+                var chk_b1 = 0
+                var chk_b2 = 0
+                if (o1!!.status_opposite == "online") {
+                    b1 = true
+                }
+                if (o2!!.status_opposite == "online") {
+                    b2 = true
+                }
+                if (b1) {
+                    chk_b1 = 1
+                }
+                if (b2) {
+                    chk_b2 = 1
+                }
+                chk_b2 - chk_b1
+            })*/
+
+            if(resultMatches2.size-1 < startNode){
+                startNode = resultMatches2.size-1
+            }
+            for (i in 0 until startNode) {
+
+                val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
+                        resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
+                        resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
+                    resultMatches.add(obj)
+
+                
+            }
+
+
+            mMatchesAdapter.notifyDataSetChanged()
+        }
+        // mMatchesAdapter.notifyDataSetChanged()
+
+    }
+
+    private val resultMatches: ArrayList<ListcardObject?> = ArrayList()
+    private val resultMatches2: ArrayList<ListcardObject?> = ArrayList()
+    private fun getDataSetMatches(): ArrayList<ListcardObject?> {
+        return resultMatches
+    }
+
+    private fun status(Status_User: String, current: String) {
+        val jjj = MainActivity()
+        jjj.status(Status_User, current)
+    }
+
+
+    private fun time_change(time_opposite: String, date_opposite: String) {
+        val date_user: String
+        val time_user: String
+        var diff_dated = 0
+        val calendar = Calendar.getInstance()
+        val currentDate = SimpleDateFormat("dd/MM/yyyy")
+        date_user = currentDate.format(calendar.time)
+        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
+        time_user = currentTime.format(calendar.time)
+        if (date_opposite !== "null") {
+            var opposite_date: Date? = null
+            try {
+                opposite_date = currentDate.parse(date_opposite)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            var user_date: Date? = null
+            try {
+                user_date = currentDate.parse(date_user)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            val diff_date = user_date!!.time - opposite_date!!.time
+            diff_dated = TimeUnit.DAYS.convert(diff_date, TimeUnit.MILLISECONDS).toInt()
+        }
+        if (time_opposite !== "null") {
+            val time_opposite_date = date_opposite.substring(0, 2).toInt()
+            val time_user_date = date_user.substring(0, 2).toInt()
+            val time_opposite_hr = time_opposite.substring(0, 2).toInt()
+            val time_opposite_mm = time_opposite.substring(3, 5).toInt()
+            val time_user_mm = time_user.substring(3, 5).toInt()
+            val time_user_hr = time_user.substring(0, 2).toInt()
+            var sum = 0
+            if (diff_dated < 2) {
+                if (time_user_hr >= time_opposite_hr && diff_dated >= 1) {
+                    sum_string = "d1"
+                } else {
+                    if (time_user_mm > time_opposite_mm) {
+                        val time_mm = time_user_mm - time_opposite_mm
+                        sum += time_mm
+                        if (time_opposite_date != time_user_date) {
+                            sum += (24 - time_opposite_hr + time_user_hr) * 60
+                        } else if (time_opposite_hr != time_user_hr) {
+                            sum += (time_user_hr - time_opposite_hr) * 60
+                        }
+                        sum_string = sum.toString()
+                    } else if (time_user_mm < time_opposite_mm) {
+                        sum = 60 - time_opposite_mm + time_user_mm
+                        sum = if (time_opposite_date != time_user_date) {
+                            (24 - time_opposite_hr - 1 + time_user_hr) * 60 + sum
+                        } else {
+                            (time_user_hr - time_opposite_hr - 1) * 60 + sum
+                        }
+                        sum_string = sum.toString()
+                    } else if (time_user_mm == time_opposite_mm && time_user_hr != time_opposite_hr) {
+                        sum = if (time_opposite_date != time_user_date) {
+                            (24 - time_opposite_hr + time_user_hr) * 60
+                        } else {
+                            val time_mm = time_user_hr - time_opposite_hr
+                            time_mm * 60
+                        }
+                        sum_string = sum.toString()
+                    } else if (time_user_mm == time_opposite_mm && time_opposite_hr == time_user_hr) {
+                        sum_string = "1"
+                    }
+                }
+            } else if (diff_dated >= 2) {
+                sum_string = "d"
+                val jj = diff_dated.toString()
+                sum_string += jj
+            }
+        } else {
+            sum_string = "null"
+        }
+    }
+    suspend fun fetchAndShowFeedData() {
+        getStartAt()
+    }
+    override fun onResume() {
+        super.onResume()
+        status("online", currentUserId)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        status("offline", currentUserId)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+}
+
+
+
+

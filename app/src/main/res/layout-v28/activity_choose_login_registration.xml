@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_list"
+    android:id="@+id/gra"
+    tools:context=".ChooseLoginRegistrationActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout18"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:background="@drawable/myrect"
+            android:text="เข้าสู่ระบบ"
+            android:textColor="@color/text_black_gray" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="45dp"
+            android:background="@drawable/myrect"
+            android:text="สมัครสมาชิก"
+            android:textColor="@color/text_black_gray" />
+
+
+        <LinearLayout
+            android:id="@+id/face"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="45dp"
+            android:background="@drawable/myrect"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:clickable="false"
+                android:src="@drawable/ic_facebook" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/float_transparent"
+                android:clickable="false"
+                android:text="@string/signin_facebook"
+                android:textColor="@color/text_black_gray" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/google"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="45dp"
+            android:background="@drawable/myrect"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:clickable="false"
+                android:src="@drawable/ic_search">
+
+            </ImageView>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:background="@color/float_transparent"
+                android:text="@string/singin_google"
+                android:textColor="@color/text_black_gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="45dp"
+            android:background="@drawable/myrect"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:clickable="false"
+                android:src="@drawable/ic_phone" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/float_transparent"
+                android:clickable="false"
+                android:text="@string/signin_phone"
+                android:textColor="@color/text_black_gray" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Language"
+            android:textSize="18dp"
+            android:textColor="@color/text_black_gray"
+            android:layout_marginRight="10dp"/>
+        <TextView
+            android:id="@+id/thai_lang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ไทย"
+            android:textSize="16dp"
+            android:textColor="@color/cpb_white"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textSize="16dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/cpb_white"
+            />
+        <TextView
+            android:id="@+id/eng_lang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="English"
+            android:textSize="16dp"
+            android:textColor="@color/cpb_white"
+            />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
