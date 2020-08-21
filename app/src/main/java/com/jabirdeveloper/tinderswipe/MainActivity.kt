@@ -239,14 +239,14 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
                 if(countLimit2 == 5 && countLimit< countDataSet)
                 {
-                    getUser(resultlimit,false,rowItem.size,5)
+                    getUser(resultlimit,false,rowItem.size-1,5)
                     countLimit2=0
                 }
                 if(countLimit3%countDataSet == 0 && countLimit3>0)
                 {
                     val handler = Handler()
                     handler.postDelayed({
-                        callFunctions(countDataSet,false,rowItem.size)
+                        callFunctions(countDataSet,false,rowItem.size-1)
                         countLimit=0
                         countLimit2=0
                     }, 300)

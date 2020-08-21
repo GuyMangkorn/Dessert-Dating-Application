@@ -109,9 +109,9 @@ class ListcardActivity : Fragment() {
                 if(isScroll &&  currentItem+scrollOutItem == totalItem){
                     isScroll = false
 
-                    if(startNode < 80)
+                    if(startNode < 100)
                     {
-                        getUser(resultLimit,startNode)
+                        getUser(resultLimit,startNode,false,resultMatches.size-1)
                         startNode += 20
                     }
                     /*   Log.d("valueofStartNOde",startNode.toString()+" , "+br_check+" , "+resultMatches2.size )
@@ -233,12 +233,12 @@ class ListcardActivity : Fragment() {
                         Log.d("ghu",result1.toString())
                         resultLimit = result1["o"] as ArrayList<*>
                         if(resultLimit.isNotEmpty())
-                            getUser(resultLimit,0)
+                            getUser(resultLimit,0,true,0)
 
                     }
         }
     }
-    private fun getUser(result2:ArrayList<*>,start:Int)
+    private fun getUser(result2:ArrayList<*>,start:Int,type:Boolean,startNoti:Int)
     {
         for(x in start until start+20)
         {
@@ -283,7 +283,10 @@ class ListcardActivity : Fragment() {
                 // handler.removeCallbacks(runnable)
             }
         }
+        Log.d("sss","$startNoti " + resultMatches.size)
+        if(type)
         mMatchesAdapter.notifyDataSetChanged()
+        else mMatchesAdapter.notifyItemRangeChanged(startNoti,resultMatches.size)
     }
     private val UidMatch: MutableList<String?>? = java.util.ArrayList()
     private var chk_num1 = 0
