@@ -41,7 +41,6 @@ class First_Activity : AppCompatActivity() {
     private var firebaseAuthStateListener: AuthStateListener? = null
     private var mAuth: FirebaseAuth? = null
     private var usersDb: DatabaseReference? = null
-    private var notificationManager: NotificationManagerCompat? = null
     private var first = true
     private val plus: Switch_pageActivity? = Switch_pageActivity()
     private var hTextView: LineTextView? = null
@@ -63,7 +62,6 @@ class First_Activity : AppCompatActivity() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.child(mAuth!!.currentUser!!.uid).child("sex").exists()) {
                             check_HaveMatch()
-                            //getchatna()
                             pushToken()
                         } else {
                             mAuth!!.signOut()
@@ -220,19 +218,7 @@ class First_Activity : AppCompatActivity() {
         })
     }*/
 
-    /*private fun getchatna() {
-        val chatNaDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("connection").child("chatna")
-        chatNaDb.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (dd in snapshot.children) {
-                    //Toast.makeText(this@First_Activity, dd.key, Toast.LENGTH_SHORT).show()
-                    //GetBitmap(dd.key)
-                }
-            }
 
-            override fun onCancelled(error: DatabaseError) {}
-        })
-    }*/
     private fun check_HaveMatch() {
         val prefs = getSharedPreferences(mAuth!!.currentUser!!.uid + "Match_first", Context.MODE_PRIVATE)
         val allPrefs = prefs.all
