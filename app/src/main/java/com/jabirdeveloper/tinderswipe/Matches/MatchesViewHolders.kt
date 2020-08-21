@@ -140,19 +140,9 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         mDataReport!!.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val MatchId = mMatchId!!.text.toString()
-                //val date_user: String
-                //val date_user_before: String
                 var date_before:Boolean = true
-                //var date_after = 0
-                /*val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                val calendar = Calendar.getInstance()
-                date_user = currentDate.format(calendar.time)
-                val after = date_user.substring(0, 2)
-                date_after = Integer.valueOf(after)*/
                 if (dataSnapshot.child(userID.toString()).child("PutReportId").hasChild(MatchId)) {
-                    //date_user_before = dataSnapshot.child(userID.toString()).child("PutReportId").child(MatchId).child("date").value.toString()
                     date_before = false
-                    //date_before = Integer.valueOf(before)
                 } else {
                     val MatchId = mMatchId!!.text.toString()
                     val date_user: String
