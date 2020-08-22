@@ -101,7 +101,7 @@ class LikeYouActivity : AppCompatActivity() {
             val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
             userdb.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.hasChild("Vip")) {
+                    if (dataSnapshot.child("Vip").value == 1) {
                         blurView.visibility = View.GONE
                         button.visibility = View.GONE
                     }
@@ -146,22 +146,6 @@ class LikeYouActivity : AppCompatActivity() {
 
         }
 
-        /* userDb.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    for(DataSnapshot dd : dataSnapshot.getChildren()){
-                        time(dd.getKey());
-                    }
-                }
-                else {{emptyvisibility = View.VISIBLE; button.visibility = View.GONE;}}
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
     fun openDialog() {

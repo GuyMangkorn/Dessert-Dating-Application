@@ -189,7 +189,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         if (!statusDialog) {
             b1.setOnClickListener {
                 bp.subscribe(requireActivity(), "YOUR SUBSCRIPTION ID FROM GOOGLE PLAY CONSOLE HERE")
-                mUserDatabase.child("Vip").setValue(true)
+                mUserDatabase.child("Vip").setValue(1)
                 val MyUser = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
                 MyUser.putBoolean("Vip", true)
                 MyUser.apply()
@@ -286,7 +286,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                     val lat_double = preferences.getString("X", "").toString().toDouble()
                     val lon_double = preferences.getString("Y", "").toString().toDouble()
                     val preferences2 = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                    val langure = preferences.getString("My_Lang", "")
+                    val langure = preferences2.getString("My_Lang", "")
                     val ff: Geocoder
                     ff = if (langure == "th") {
                         Geocoder(context)

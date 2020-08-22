@@ -750,15 +750,9 @@ class ChatActivity : AppCompatActivity() {
         })
     }
 
-    fun status(Status_User: String?, current: String?) {
-        val jjj = MainActivity()
-        jjj.status(Status_User!!, current!!)
-    }
 
-    override fun onResume() {
-        super.onResume()
-        status("online", currentUserId)
-    }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -921,7 +915,7 @@ class ChatActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         active = false
-        status("offline", currentUserId)
+
     }
 
     private fun deletechild() {

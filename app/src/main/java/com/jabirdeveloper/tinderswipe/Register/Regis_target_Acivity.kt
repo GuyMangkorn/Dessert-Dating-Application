@@ -119,7 +119,6 @@ class Regis_target_Acivity : AppCompatActivity() {
         "sex" to sex,
         "Age" to Age,
         "Distance" to "Untitled",
-        "Status" to "true",
         "OppositeUserSex" to "All",
         "OppositeUserAgeMin" to 18,
         "OppositeUserAgeMax" to 70,

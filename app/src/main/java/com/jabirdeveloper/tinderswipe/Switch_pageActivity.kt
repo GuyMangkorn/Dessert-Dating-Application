@@ -8,45 +8,30 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.location.Address
-import android.location.Geocoder
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
-import com.jabirdeveloper.tinderswipe.Switch_pageActivity
-import com.yuyakaido.android.cardstackview.Direction
-import com.yuyakaido.android.cardstackview.Duration
-import com.yuyakaido.android.cardstackview.SwipeAnimationSetting
-import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class Switch_pageActivity : AppCompatActivity() {
@@ -215,63 +200,93 @@ class Switch_pageActivity : AppCompatActivity() {
     }
     private fun getMyUser()
     {
-        Log.d("tagh","1")
+        var current = FirebaseAuth.getInstance().uid.toString()
+        val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
+        val date_user: String
+        val time_user: String
+        val calendar = Calendar.getInstance()
+        val currentDate = SimpleDateFormat("dd/MM/yyyy")
+        date_user = currentDate.format(calendar.time)
+        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
+        time_user = currentTime.format(calendar.time)
+        val connectedRef: DatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected")
+        connectedRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange( snapshot: DataSnapshot) {
+                val connected = snapshot.getValue(Boolean::class.java)!!
+                if (connected) {
+                    val status_up = HashMap<String?, Any?>()
+                    status_up["status"] = 1
+                    userDb.updateChildren(status_up)
+                } else {
+                    Log.d("TAG112", "not connected")
+                }
+            }
+
+            override fun onCancelled( error: DatabaseError) {
+                Log.w("TAG112", "Listener was cancelled")
+            }
+        })
+        userDb.onDisconnect().let {
+            val status_up2 = HashMap<String?, Any?>()
+            status_up2["date"] = date_user
+            status_up2["status"] = 0
+            status_up2["time"] = time_user
+            it.updateChildren(status_up2)
+        }
         val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-        val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-             /*   val gender  = if (dataSnapshot.child("sex").value == "Male") {
+                /*   val gender  = if (dataSnapshot.child("sex").value == "Male") {
                     MyUser.putInt("gender",R.drawable.ic_man)
                 } else MyUser.putInt("gender",R.drawable.ic_woman)*/
 
-                if (dataSnapshot.hasChild("Vip")) {
+                if (dataSnapshot.child("Vip").value == 1) {
                     MyUser.putBoolean("Vip", true)
-                }
-                else MyUser.putBoolean("Vip", false)
+                } else MyUser.putBoolean("Vip", false)
                 if (dataSnapshot.child("connection").hasChild("yep")) {
-                    MyUser.putInt("c",dataSnapshot.child("connection").child("yep").childrenCount.toInt())
+                    MyUser.putInt("c", dataSnapshot.child("connection").child("yep").childrenCount.toInt())
                 }
                 if (dataSnapshot.hasChild("see_profile")) {
-                    MyUser.putInt("s",dataSnapshot.child("see_profile").childrenCount.toInt())
+                    MyUser.putInt("s", dataSnapshot.child("see_profile").childrenCount.toInt())
                 }
-                    MyUser.putString("name",dataSnapshot.child("name").value.toString())
-                    MyUser.putInt("Age",dataSnapshot.child("Age").value.toString().toInt())
-                    MyUser.putInt("MaxLike",dataSnapshot.child("MaxLike").value.toString().toInt())
-                    MyUser.putInt("MaxChat",dataSnapshot.child("MaxChat").value.toString().toInt())
-                    MyUser.putInt("MaxAdmob",dataSnapshot.child("MaxAdmob").value.toString().toInt())
-                    MyUser.putInt("MaxStar",dataSnapshot.child("MaxStar").value.toString().toInt())
-                    MyUser.putInt("OppositeUserAgeMin",dataSnapshot.child("OppositeUserAgeMin").value.toString().toInt())
-                    MyUser.putInt("OppositeUserAgeMax",dataSnapshot.child("OppositeUserAgeMax").value.toString().toInt())
-                    MyUser.putString("OppositeUserSex",dataSnapshot.child("OppositeUserSex").value.toString())
-                    MyUser.putString("Distance",dataSnapshot.child("Distance").value.toString())
+                MyUser.putString("name", dataSnapshot.child("name").value.toString())
+                MyUser.putInt("Age", dataSnapshot.child("Age").value.toString().toInt())
+                MyUser.putInt("MaxLike", dataSnapshot.child("MaxLike").value.toString().toInt())
+                MyUser.putInt("MaxChat", dataSnapshot.child("MaxChat").value.toString().toInt())
+                MyUser.putInt("MaxAdmob", dataSnapshot.child("MaxAdmob").value.toString().toInt())
+                MyUser.putInt("MaxStar", dataSnapshot.child("MaxStar").value.toString().toInt())
+                MyUser.putInt("OppositeUserAgeMin", dataSnapshot.child("OppositeUserAgeMin").value.toString().toInt())
+                MyUser.putInt("OppositeUserAgeMax", dataSnapshot.child("OppositeUserAgeMax").value.toString().toInt())
+                MyUser.putString("OppositeUserSex", dataSnapshot.child("OppositeUserSex").value.toString())
+                MyUser.putString("Distance", dataSnapshot.child("Distance").value.toString())
 
                 if (dataSnapshot.hasChild("Location")) {
-                    MyUser.putString("X",dataSnapshot.child("Location").child("X").value.toString())
-                    MyUser.putString("Y",dataSnapshot.child("Location").child("Y").value.toString())
+                    MyUser.putString("X", dataSnapshot.child("Location").child("X").value.toString())
+                    MyUser.putString("Y", dataSnapshot.child("Location").child("Y").value.toString())
 
                 }
                 if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
-                    MyUser.putString("image",dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString())
+                    MyUser.putString("image", dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString())
 
-                }
-                else
-                {
-                    MyUser.putString("image","")
+                } else {
+                    MyUser.putString("image", "")
                 }
                 MyUser.apply()
-                supportFragmentManager.beginTransaction().apply { add(R.id.fragment_container2,page1).hide(page1)
-                    add(R.id.fragment_container2,page2).hide(page2)
-                    add(R.id.fragment_container2,page3).hide(page3)
-                    add(R.id.fragment_container2,page4).hide(page4)}.commit()
-                    bar!!.setItemSelected(id, true)
+                supportFragmentManager.beginTransaction().apply {
+                    add(R.id.fragment_container2, page1).hide(page1)
+                    add(R.id.fragment_container2, page2).hide(page2)
+                    add(R.id.fragment_container2, page3).hide(page3)
+                    add(R.id.fragment_container2, page4).hide(page4)
+                }.commit()
+                bar!!.setItemSelected(id, true)
 
 
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("tagh","3")
+                Log.d("tagh", "3")
             }
 
         })

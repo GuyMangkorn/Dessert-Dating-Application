@@ -502,10 +502,7 @@ class ListcardActivity : Fragment() {
         return resultMatches
     }
 
-    private fun status(Status_User: String, current: String) {
-        val jjj = MainActivity()
-        jjj.status(Status_User, current)
-    }
+
 
 
     private fun time_change(time_opposite: String, date_opposite: String) {
@@ -586,15 +583,7 @@ class ListcardActivity : Fragment() {
     suspend fun fetchAndShowFeedData() {
         getStartAt()
     }
-    override fun onResume() {
-        super.onResume()
-        status("online", currentUserId)
-    }
 
-    override fun onPause() {
-        super.onPause()
-        status("offline", currentUserId)
-    }
 
     override fun onStart() {
         super.onStart()

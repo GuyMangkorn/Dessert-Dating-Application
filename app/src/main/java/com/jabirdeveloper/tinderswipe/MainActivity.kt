@@ -159,29 +159,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         }
         cardStackView = view.findViewById(R.id.frame)
         manager = CardStackLayoutManager(context, object : CardStackListener {
-            override fun onCardDragging(direction: Direction?, ratio: Float) {
-                val data = hashMapOf(
-                        "sex" to oppositUserSex,
-                        "min" to OppositeUserAgeMin,
-                        "max" to OppositeUserAgeMax,
-                        "x_user" to x_user,
-                        "y_user" to y_user,
-                        "vip" to status_vip,
-                        "distance" to distance
-
-                )
-               /* functions.getHttpsCallable("get2223")
-                        .call()
-                        .addOnFailureListener { Log.d("ghj","failed") }
-                        .addOnSuccessListener {  task ->
-                            // This continuation runs on either success or failure, but if the task
-                            // has failed then result will throw an Exception which will be
-                            // propagated down.
-                            val result5 = task.data as Map<*,*>
-                            val result6 = result5["parse_obj"] as Map<*,*>
-                            Log.d("ghj",result6.toString())
-                        }*/
-            }
+            override fun onCardDragging(direction: Direction?, ratio: Float) {}
             override fun onCardSwiped(direction: Direction?) {
                 po = rowItem.get(manager.topPosition - 1)
                 val UserId = po.userId!!
@@ -402,7 +380,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         }
         b1.setOnClickListener {
             bp.subscribe(requireActivity(), "YOUR SUBSCRIPTION ID FROM GOOGLE PLAY CONSOLE HERE");
-            usersDb.child(currentUid).child("Vip").setValue(true)
+            usersDb.child(currentUid).child("Vip").setValue(1)
             dialog.dismiss()
             requireActivity().finish()
             requireActivity().overridePendingTransition(0, 0)
@@ -547,22 +525,22 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         val preferences2 = requireActivity().getSharedPreferences("notification_match", Context.MODE_PRIVATE)
         noti_match = preferences2.getString("noti", "1")
         var pre = 0
+        var vvip=0
         if(!type) pre = 0
+        if(status_vip) vvip=1
         val data = hashMapOf(
                 "sex" to oppositUserSex,
                 "min" to OppositeUserAgeMin,
                 "max" to OppositeUserAgeMax,
                 "x_user" to x_user,
                 "y_user" to y_user,
-                "vip" to status_vip,
+                "vip" to vvip,
                 "distance" to distance,
                 "limit" to pre+limit,
                 "prelimit" to pre
         )
         Log.d("tagkl",data.toString())
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
-            status("offline", currentUid)
-        }
+
         functions.getHttpsCallable("get2222")
                 .call(data)
                 .addOnFailureListener { Log.d("ghj","failed") }
@@ -629,7 +607,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             if ((user["Status"] as Map<*, *>)["status"] != null) {
                 status = (user["Status"] as Map<*, *>)["status"].toString()
             }
-            if (user["Vip"] != null) {
+            if (user["Vip"] == 1) {
                 vip = true
             }
 
@@ -1002,10 +980,10 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     }
 
     private val idd = 0
-    fun status(Status_User: String, current: String) {
+   /* fun status(Status_User: String, current: String) {
         val date_user: String
         val time_user: String
-        get_status = FirebaseDatabase.getInstance().reference.child("Users").child(current).child("Status")
+        get_status = FirebaseDatabase.getInstance().reference.child("Users").child(current)
         val calendar = Calendar.getInstance()
         val currentDate = SimpleDateFormat("dd/MM/yyyy")
         date_user = currentDate.format(calendar.time)
@@ -1023,7 +1001,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             status_up["status"] = Status_User
             get_status.updateChildren(status_up)
         }
-    }
+    }*/
 
     override fun onStart() {
         super.onStart()
@@ -1033,14 +1011,12 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     }
     override fun onResume() {
         super.onResume()
-        status("online", currentUid)
+
     }
 
     override fun onPause() {
         super.onPause()
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
-            status("offline", currentUid)
-        }
+
         mLocationManager.removeUpdates(this)
     }
     private fun Like() {
