@@ -125,7 +125,8 @@ class Regis_target_Acivity : AppCompatActivity() {
         "MaxChat" to 20,
         "MaxLike" to 40,
         "MaxAdmob" to 10,
-        "MaxStar" to 3
+        "MaxStar" to 3,
+        "Vip" to 0
         )
         currentUserDb.updateChildren(userInfo as Map<String, Any>)
         val location = hashMapOf(

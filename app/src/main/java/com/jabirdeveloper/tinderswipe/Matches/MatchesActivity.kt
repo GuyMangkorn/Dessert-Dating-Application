@@ -847,7 +847,7 @@ class MatchesActivity : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
+        
         val MyUnread = mContext!!.getSharedPreferences("NotificationActive", Context.MODE_PRIVATE)
         val S1 = MyUnread.getString("ID", "null")
         if (S1 != "null") {
@@ -889,6 +889,6 @@ class MatchesActivity : Fragment() {
     override fun onPause() {
         super.onPause()
         count_read = 0
-        
+
     }
 }
