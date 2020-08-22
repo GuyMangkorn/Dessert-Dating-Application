@@ -603,9 +603,8 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
 
             var status = "offline"
-            (user["Status"] as Map<*, *>)["status"]
-            if ((user["Status"] as Map<*, *>)["status"] != null) {
-                status = (user["Status"] as Map<*, *>)["status"].toString()
+            if (user["status"] == 1) {
+                status = "online"
             }
             if (user["Vip"] == 1) {
                 vip = true

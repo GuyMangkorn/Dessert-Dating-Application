@@ -268,11 +268,11 @@ class ListcardActivity : Fragment() {
 
             var time_opposite = "null"
             var date_opposite = "null"
-            if ((user["Status"]as Map<*, *>)["time"] != null) {
-                time_opposite = (user["Status"]as Map<*, *>)["time"].toString()
+            if (user["time"] != null) {
+                time_opposite = user["time"].toString()
             }
-            if ((user["Status"]as Map<*, *>)["date"] != null) {
-                date_opposite = (user["Status"]as Map<*, *>)["date"].toString()
+            if (user["date"] != null) {
+                date_opposite = user["date"].toString()
             }
             time_change(time_opposite, date_opposite)
             if (user["myself"] != null) {
@@ -285,14 +285,11 @@ class ListcardActivity : Fragment() {
             val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
 
             var status = "offline"
-            (user["Status"] as Map<*, *>)["status"]
-            if ((user["Status"] as Map<*, *>)["status"] != null) {
+            if (user["status"] == 1) {
                 status = (user["Status"] as Map<*, *>)["status"].toString()
             }
-
             val df2 = DecimalFormat("#.#")
             val dis = df2.format(user["distance_other"])
-
             val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, sum_string, user["Age"].toString(), user["sex"].toString(), myself, off_status)
 
             resultMatches.add(obj)
