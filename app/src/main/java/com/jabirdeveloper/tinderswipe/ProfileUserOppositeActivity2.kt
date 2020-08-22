@@ -342,7 +342,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     }
                 }
                 b1.setOnClickListener {
-                    usersDb.child(currentUid).child("Vip").setValue(true)
+                    usersDb.child(currentUid).child("Vip").setValue(1)
                     bp.subscribe(this, "YOUR SUBSCRIPTION ID FROM GOOGLE PLAY CONSOLE HERE");
                     dialog.dismiss()
                 }
@@ -791,7 +791,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         usersDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 maxChat = dataSnapshot.child(currentUid).child("MaxChat").value.toString().toInt();
-                if(dataSnapshot.child(currentUid).hasChild("Vip")){statusVip = true}
+                if(dataSnapshot.child(currentUid).child("Vip").value == 1){statusVip = true}
                 if (maxChat <= 0)
                 {
                     click = false
