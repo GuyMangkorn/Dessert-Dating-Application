@@ -527,14 +527,13 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         var pre = 0
         var vvip=0
         if(!type) pre = 0
-        if(status_vip) vvip=1
+
         val data = hashMapOf(
                 "sex" to oppositUserSex,
                 "min" to OppositeUserAgeMin,
                 "max" to OppositeUserAgeMax,
                 "x_user" to x_user,
                 "y_user" to y_user,
-                "vip" to vvip,
                 "distance" to distance,
                 "limit" to pre+limit,
                 "prelimit" to pre
@@ -691,7 +690,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     if (dataSnapshot.child("Status").hasChild("status")) {
                         status = dataSnapshot.child("Status").child("status").value.toString()
                     }
-                    if (dataSnapshot.hasChild("Vip")) {
+                    if (dataSnapshot.child("Vip").value == 1) {
                         vip = true
                     }
                     if (dataSnapshot.child("star_s").hasChild(currentUid)) {

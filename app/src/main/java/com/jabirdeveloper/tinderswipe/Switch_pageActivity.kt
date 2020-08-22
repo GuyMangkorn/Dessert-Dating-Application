@@ -243,7 +243,8 @@ class Switch_pageActivity : AppCompatActivity() {
                     MyUser.putInt("gender",R.drawable.ic_man)
                 } else MyUser.putInt("gender",R.drawable.ic_woman)*/
 
-                if (dataSnapshot.child("Vip").value == 1) {
+                if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {
+                    Log.d("vvv","1")
                     MyUser.putBoolean("Vip", true)
                 } else MyUser.putBoolean("Vip", false)
                 if (dataSnapshot.child("connection").hasChild("yep")) {
