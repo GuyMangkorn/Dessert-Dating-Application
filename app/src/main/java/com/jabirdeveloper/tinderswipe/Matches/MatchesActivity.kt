@@ -69,12 +69,13 @@ class MatchesActivity : Fragment() {
         CheckNode()
         return view
     }
-
+    private var check_first_connection = true
+    private var check_first_matches = true
     private var check_first_remove: String? = "null"
     private var UserMatch_count = 0
     private fun CheckNode() {
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
-        matchDbCheck.orderByKey().equalTo("connection").addChildEventListener(object : ChildEventListener{
+        matchDbCheck.orderByKey().addChildEventListener(object : ChildEventListener{
             override fun onCancelled(error: DatabaseError) {}
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
@@ -82,15 +83,20 @@ class MatchesActivity : Fragment() {
                 if (snapshot.key.toString() == ("connection")) {
                     //Checkconnection()
                     CheckNodeMatch()
-                    Log.d("test_check_matches","matches_accept")
-                }else{
-                    Log.d("test_check_matches", "matches_reject")
+                    Log.d("test_check_matches","connection_accept")
+                }else if(check_first_connection){
+                    check_first_connection = false
+                    Log.d("test_check_matches", "connection_reject ")
                     p1!!.hide()
                     chat_empty.visibility = View.VISIBLE
                     mRecyclerView.visibility = View.GONE
                 }
             }
-            override fun onChildRemoved(snapshot: DataSnapshot) { Log.d("test_check_matches", snapshot.key) }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                if (snapshot.key.toString() == "connection"){
+                    check_first_connection = true
+                }
+                Log.d("test_check_matches", snapshot.key) }
 
         })
     }
@@ -122,7 +128,8 @@ class MatchesActivity : Fragment() {
                         getUserMarchId()
                     Log.d("test_check_matches","matches_accept")
                     //CheckNodeMatch2()
-                    }else{
+                    }else if(check_first_matches){
+                        check_first_matches = false
                         Log.d("test_check_matches", "matches_reject")
                          p1!!.hide()
                          chat_empty.visibility = View.VISIBLE
@@ -130,7 +137,11 @@ class MatchesActivity : Fragment() {
                     }
 
             }
-            override fun onChildRemoved(snapshot: DataSnapshot) {Log.d("test_check_matches", snapshot.key)}
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                if (snapshot.key.toString() == "matches"){
+                    check_first_matches = true
+                }
+                Log.d("test_check_matches", snapshot.key)}
         })
     }
 
