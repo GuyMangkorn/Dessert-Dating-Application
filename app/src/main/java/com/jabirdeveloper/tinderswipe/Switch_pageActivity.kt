@@ -226,6 +226,7 @@ class Switch_pageActivity : AppCompatActivity() {
                 Log.w("TAG112", "Listener was cancelled")
             }
         })
+
         userDb.onDisconnect().let {
             val status_up2 = HashMap<String?, Any?>()
             status_up2["date"] = date_user

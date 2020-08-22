@@ -19,12 +19,15 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.yuyakaido.android.cardstackview.Direction
 import com.yuyakaido.android.cardstackview.Duration
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting
 import hearsilent.discreteslider.DiscreteSlider
 import hearsilent.discreteslider.DiscreteSlider.OnValueChangedListener
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -133,6 +136,19 @@ class Setting2Activity : AppCompatActivity() {
             override fun onValueChanged(minProgress: Int, maxProgress: Int, fromUser: Boolean) {}
         })
         logout.setOnClickListener(View.OnClickListener {
+            val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
+            val date_user: String
+            val time_user: String
+            val calendar = Calendar.getInstance()
+            val currentDate = SimpleDateFormat("dd/MM/yyyy")
+            date_user = currentDate.format(calendar.time)
+            val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
+            time_user = currentTime.format(calendar.time)
+            val status_up2 = HashMap<String?, Any?>()
+            status_up2["date"] = date_user
+            status_up2["status"] = 0
+            status_up2["time"] = time_user
+            userDb.updateChildren(status_up2)
             mAuth.signOut()
             val intent = Intent(applicationContext, ChooseLoginRegistrationActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
