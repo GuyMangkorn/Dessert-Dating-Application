@@ -286,7 +286,7 @@ class ListcardActivity : Fragment() {
 
             var status = "offline"
             if (user["status"] == 1) {
-                status = (user["Status"] as Map<*, *>)["status"].toString()
+                status = user["status"].toString()
             }
             val df2 = DecimalFormat("#.#")
             val dis = df2.format(user["distance_other"])
