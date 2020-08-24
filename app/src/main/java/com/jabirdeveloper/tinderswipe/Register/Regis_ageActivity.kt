@@ -14,6 +14,10 @@ import androidx.appcompat.widget.Toolbar
 import com.jabirdeveloper.tinderswipe.R
 import com.jabirdeveloper.tinderswipe.Register.Regis_ageActivity
 import com.tapadoo.alerter.Alerter
+import java.security.Timestamp
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.*
 
 class Regis_ageActivity : AppCompatActivity() {
@@ -22,9 +26,13 @@ class Regis_ageActivity : AppCompatActivity() {
     private var y = 0
     private var m = 0
     private var d = 0
+    private var dateLong = 0
     private lateinit var button:Button
     private lateinit var toolbar:Toolbar
     private lateinit var calendar:Calendar
+    private lateinit var datePicker:DatePicker
+    private lateinit var date:LocalDate
+    private lateinit var intent1:Intent
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadLocal()
@@ -34,32 +42,43 @@ class Regis_ageActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        val datePicker = findViewById<DatePicker>(R.id.datePicker)
+        datePicker = findViewById<DatePicker>(R.id.datePicker)
+        intent1 = Intent(this@Regis_ageActivity, Regis_target_Acivity::class.java)
         calendar = Calendar.getInstance()
+
         datePicker.maxDate = calendar.timeInMillis
         calendar.timeInMillis = System.currentTimeMillis()
         y = calendar.get(Calendar.YEAR)
         m = calendar.get(Calendar.MONTH)
         d = calendar.get(Calendar.DAY_OF_MONTH)
+
         datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)) { _, year, month, dayOfMonth ->
             y = year
             m = month
             d = dayOfMonth
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                date = LocalDate.of(year,month,dayOfMonth)
+                date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+                intent1.putExtra("Birth",date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
+            } else {
+                    val date = Date(year,month,dayOfMonth)
+                    intent1.putExtra("Birth",date.time)
+            }
         }
         button.setOnClickListener(View.OnClickListener {
             age = getAge(y, m, d)
             if (age >= 18) {
                 Alerter.hide()
-                val intent = Intent(this@Regis_ageActivity, Regis_target_Acivity::class.java)
-                intent.putExtra("Sex", getIntent().getStringExtra("Sex"))
-                intent.putExtra("Type", getIntent().getStringExtra("Type"))
-                intent.putExtra("X", getIntent().getStringExtra("X").toDouble())
-                intent.putExtra("Y", getIntent().getStringExtra("Y").toDouble())
-                intent.putExtra("Name", getIntent().getStringExtra("Name"))
-                intent.putExtra("Age", age)
-                intent.putExtra("email", getIntent().getStringExtra("email"))
-                intent.putExtra("password", getIntent().getStringExtra("password"))
-                startActivity(intent)
+                intent1.putExtra("Sex", intent.getStringExtra("Sex"))
+                intent1.putExtra("Type", getIntent().getStringExtra("Type"))
+                intent1.putExtra("X", getIntent().getStringExtra("X").toDouble())
+                intent1.putExtra("Y", getIntent().getStringExtra("Y").toDouble())
+                intent1.putExtra("Name", getIntent().getStringExtra("Name"))
+                intent1.putExtra("Age", age)
+                intent1.putExtra("email", getIntent().getStringExtra("email"))
+                intent1.putExtra("password", getIntent().getStringExtra("password"))
+                startActivity(intent1)
                 return@OnClickListener
             } else {
                 Alerter.create(this@Regis_ageActivity)

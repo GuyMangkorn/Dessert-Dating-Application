@@ -31,6 +31,8 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
+import java.security.Timestamp
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -202,6 +204,7 @@ class Switch_pageActivity : AppCompatActivity() {
     {
         var current = FirebaseAuth.getInstance().uid.toString()
         val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
+
         val date_user: String
         val time_user: String
         val calendar = Calendar.getInstance()
@@ -211,7 +214,7 @@ class Switch_pageActivity : AppCompatActivity() {
         time_user = currentTime.format(calendar.time)
         val connectedRef: DatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected")
         connectedRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange( snapshot: DataSnapshot) {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 val connected = snapshot.getValue(Boolean::class.java)!!
                 if (connected) {
                     val status_up = HashMap<String?, Any?>()
@@ -222,18 +225,19 @@ class Switch_pageActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onCancelled( error: DatabaseError) {
+            override fun onCancelled(error: DatabaseError) {
                 Log.w("TAG112", "Listener was cancelled")
             }
         })
 
-        userDb.onDisconnect().let {
+        userDb.child("lastOnline").onDisconnect().setValue(ServerValue.TIMESTAMP)
+                /*.let {
             val status_up2 = HashMap<String?, Any?>()
             status_up2["date"] = date_user
             status_up2["status"] = 0
             status_up2["time"] = time_user
             it.updateChildren(status_up2)
-        }
+        }*/
         val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
@@ -242,9 +246,26 @@ class Switch_pageActivity : AppCompatActivity() {
                 /*   val gender  = if (dataSnapshot.child("sex").value == "Male") {
                     MyUser.putInt("gender",R.drawable.ic_man)
                 } else MyUser.putInt("gender",R.drawable.ic_woman)*/
+             /*   if(dataSnapshot.hasChild("lastOnline")){
+                    val date = Date(dataSnapshot.child("lastOnline").value as Long)
+                    val sfd = SimpleDateFormat("dd-MM-yyyy HH:mm",
+                            Locale.getDefault())
+                    val text = sfd.format(date)
+                    var ty = date.time
+                    Log.d("time", text)
+                    Log.d("time", ty.toString())
+                }*/
+                if(dataSnapshot.hasChild("birth"))
+                {
+                    val date = Date(dataSnapshot.child("birth").value as Long)
+                    val sfd = SimpleDateFormat("dd-MM-yyyy HH:mm",
+                            Locale.getDefault())
+                    val text = sfd.format(date)
+                    Log.d("time111", text)
+                }
 
                 if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {
-                    Log.d("vvv","1")
+                    Log.d("vvv", "1")
                     MyUser.putBoolean("Vip", true)
                 } else MyUser.putBoolean("Vip", false)
                 if (dataSnapshot.child("connection").hasChild("yep")) {

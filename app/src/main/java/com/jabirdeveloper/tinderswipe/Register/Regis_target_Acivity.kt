@@ -126,7 +126,8 @@ class Regis_target_Acivity : AppCompatActivity() {
         "MaxLike" to 40,
         "MaxAdmob" to 10,
         "MaxStar" to 3,
-        "Vip" to 0
+        "Vip" to 0,
+        "birth" to intent.getLongExtra("Birth",0)
         )
         currentUserDb.updateChildren(userInfo as Map<String, Any>)
         val location = hashMapOf(
