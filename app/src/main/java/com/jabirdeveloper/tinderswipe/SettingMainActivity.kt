@@ -88,6 +88,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                 Toast.makeText(requireContext(), errorCode.toString(), Toast.LENGTH_SHORT).show()
             }
         }
+        val ff = 0
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
         dialog = Dialog(requireContext())
         val view2 = inflater.inflate(R.layout.progress_dialog, null)
