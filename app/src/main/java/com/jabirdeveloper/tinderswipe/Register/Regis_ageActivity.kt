@@ -17,6 +17,7 @@ import com.tapadoo.alerter.Alerter
 import java.security.Timestamp
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.Period
 import java.time.ZoneOffset
 import java.util.*
 
@@ -54,30 +55,31 @@ class Regis_ageActivity : AppCompatActivity() {
 
         datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)) { _, year, month, dayOfMonth ->
             y = year
-            m = month
+            m = month+1
             d = dayOfMonth
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                date = LocalDate.of(year,month,dayOfMonth)
-                date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
-                intent1.putExtra("Birth",date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
-            } else {
-                    val date = Date(year,month,dayOfMonth)
-                    intent1.putExtra("Birth",date.time)
-            }
+
         }
         button.setOnClickListener(View.OnClickListener {
             age = getAge(y, m, d)
             if (age >= 18) {
                 Alerter.hide()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    date = LocalDate.of(y,m,d)
+                    date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+                    intent1.putExtra("Birth",date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
+                } else {
+                    val date = Date(y,m,d)
+                    intent1.putExtra("Birth",date.time)
+                }
                 intent1.putExtra("Sex", intent.getStringExtra("Sex"))
-                intent1.putExtra("Type", getIntent().getStringExtra("Type"))
-                intent1.putExtra("X", getIntent().getStringExtra("X").toDouble())
-                intent1.putExtra("Y", getIntent().getStringExtra("Y").toDouble())
-                intent1.putExtra("Name", getIntent().getStringExtra("Name"))
+                intent1.putExtra("Type", intent.getStringExtra("Type"))
+                intent1.putExtra("X", intent.getDoubleExtra("X",0.0))
+                intent1.putExtra("Y", intent.getDoubleExtra("Y",0.0))
+                intent1.putExtra("Name", intent.getStringExtra("Name"))
                 intent1.putExtra("Age", age)
-                intent1.putExtra("email", getIntent().getStringExtra("email"))
-                intent1.putExtra("password", getIntent().getStringExtra("password"))
+                intent1.putExtra("email", intent.getStringExtra("email"))
+                intent1.putExtra("password", intent.getStringExtra("password"))
                 startActivity(intent1)
                 return@OnClickListener
             } else {
@@ -110,18 +112,18 @@ class Regis_ageActivity : AppCompatActivity() {
     }
 
     private fun getAge(year: Int, month: Int, dayOfMonth: Int): Int {
-        /*return Period.between(
+        return Period.between(
                 LocalDate.of(year, month, dayOfMonth),
                 LocalDate.now()
-        ).getYears();*/
-        val dob = Calendar.getInstance()
+        ).years;
+       /* val dob = Calendar.getInstance()
         val today = Calendar.getInstance()
         dob[year, month] = dayOfMonth
         var age = today[Calendar.YEAR] - dob[Calendar.YEAR]
         if (today[Calendar.DAY_OF_YEAR] < dob[Calendar.DAY_OF_YEAR]) {
             age--
         }
-        return age
+        return age*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

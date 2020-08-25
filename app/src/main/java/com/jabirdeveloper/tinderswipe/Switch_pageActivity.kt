@@ -31,9 +31,11 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
-import java.security.Timestamp
-import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.Period
+import java.time.ZoneId
 import java.util.*
 
 class Switch_pageActivity : AppCompatActivity() {
@@ -246,7 +248,7 @@ class Switch_pageActivity : AppCompatActivity() {
                 /*   val gender  = if (dataSnapshot.child("sex").value == "Male") {
                     MyUser.putInt("gender",R.drawable.ic_man)
                 } else MyUser.putInt("gender",R.drawable.ic_woman)*/
-             /*   if(dataSnapshot.hasChild("lastOnline")){
+                /*   if(dataSnapshot.hasChild("lastOnline")){
                     val date = Date(dataSnapshot.child("lastOnline").value as Long)
                     val sfd = SimpleDateFormat("dd-MM-yyyy HH:mm",
                             Locale.getDefault())
@@ -255,13 +257,23 @@ class Switch_pageActivity : AppCompatActivity() {
                     Log.d("time", text)
                     Log.d("time", ty.toString())
                 }*/
-                if(dataSnapshot.hasChild("birth"))
-                {
+                val df: LocalDate
+                val sfd = SimpleDateFormat("dd-MM-yyyy",
+                        Locale.getDefault())
+                if (dataSnapshot.hasChild("birth")) {
                     val date = Date(dataSnapshot.child("birth").value as Long)
-                    val sfd = SimpleDateFormat("dd-MM-yyyy HH:mm",
-                            Locale.getDefault())
                     val text = sfd.format(date)
-                    Log.d("time111", text)
+                    Log.d("time111", sfd.format(dataSnapshot.child("birth").value as Long))
+
+                    sfd.format(Calendar.getInstance().time)
+                    Log.d("time111", sfd.format(Calendar.getInstance().time).toString())
+                    val t = Instant.ofEpochMilli( dataSnapshot.child("birth").value as Long).atZone(ZoneId.systemDefault()).toLocalDate()
+
+
+                    Log.d("time111", Period.between( t, LocalDate.now() ).years.toString())
+
+
+                    //val period = Period(date, end, PeriodType.yearMothDay())
                 }
 
                 if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {

@@ -57,8 +57,8 @@ class RegisGpsActivity : AppCompatActivity(), LocationListener {
     }
     private fun  getLocation(location:Location){
         val intent = Intent(this@RegisGpsActivity, Regis_Sex_Activity::class.java)
-        intent.putExtra("X",  location.latitude.toString())
-        intent.putExtra("Y",   location.longitude.toString())
+        intent.putExtra("X",  location.latitude)
+        intent.putExtra("Y",   location.longitude)
         intent.putExtra("Name", getIntent().getStringExtra("Name"))
         intent.putExtra("Type", getIntent().getStringExtra("Type"))
         intent.putExtra("email", getIntent().getStringExtra("email"))
