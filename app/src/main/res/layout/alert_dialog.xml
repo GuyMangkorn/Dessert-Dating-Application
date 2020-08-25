@@ -41,39 +41,17 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:background="@mipmap/ic_launcher"/>
-    </LinearLayout>
-        <LinearLayout
+        <TextView
             android:padding="10dp"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-            <TextView
-                android:padding="10dp"
-                android:layout_gravity="center"
-                android:id="@+id/message_alert"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:text="Message"/>
+            android:layout_gravity="center"
+            android:id="@+id/message_alert"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="Message"/>
+    </LinearLayout>
 
-            <CheckBox
-                android:text="answer 1"
-                android:id="@+id/checkbox_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <CheckBox
-                android:text="answer 2"
-                android:id="@+id/checkbox_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <CheckBox
-                android:text="answer 3"
-                android:id="@+id/checkbox_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
     <LinearLayout
         android:id="@+id/linear_alert"
         android:layout_width="match_parent"

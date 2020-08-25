@@ -56,6 +56,7 @@ class Switch_pageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_switch_page)
 
         getMyUser()
+        //OpenDialog()
        /* MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)
         mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
@@ -73,52 +74,6 @@ class Switch_pageActivity : AppCompatActivity() {
         }
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
         bar = findViewById(R.id.bar2)
-        if (intent.hasExtra("NewMatch")) {
-            val uid = intent.getStringArrayListExtra("NewMatch")
-            getDatabase(uid[0])
-            //final ArrayList<String> name = getIntent().getStringArrayListExtra("NameMatch");
-            //Toast.makeText(Switch_pageActivity.this,name.get(0),Toast.LENGTH_SHORT).show();
-            /*for(int i = 0 ; i<2;i++) {
-                final Dialog dialog2 = new Dialog(Switch_pageActivity.this);
-                LayoutInflater inflater = getLayoutInflater();
-                final View view = inflater.inflate(R.layout.show_match, null);
-                ImageView imageView = view.findViewById(R.id.image_match);
-                ImageView star = view.findViewById(R.id.star);
-                TextView textView = view.findViewById(R.id.textmatch);
-                TextView textView2 = view.findViewById(R.id.io);
-                TextView textView3 = view.findViewById(R.id.textBig);
-                TextView textView4 = view.findViewById(R.id.textmatch2);
-                Button button = view.findViewById(R.id.mess);
-                textView.setText("กายน่ารัก");
-                textView4.setText("  " + "ถูกใจคุณเหมือนกัน");
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog2.dismiss();
-                        Intent intent = new Intent(Switch_pageActivity.this, ChatActivity.class);
-                        Bundle b = new Bundle();
-                        b.putString("time_chk", "");
-                        b.putString("matchId", uid.get(0));
-                        b.putString("nameMatch", "กายน่ารัก");
-                        b.putString("first_chat", "");
-                        b.putString("unread", "0");
-                        intent.putExtras(b);
-                        startActivity(intent);
-                    }
-                });
-                textView2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog2.dismiss();
-                    }
-                });
-                Glide.with(this).load(R.drawable.ic_profile).into(imageView);
-                dialog2.getWindow().setBackgroundDrawable(new ColorDrawable((Color.TRANSPARENT)));
-                dialog2.setContentView(view);
-                dialog2.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-                dialog2.show();
-            }*/
-        }
         if (intent.hasExtra("warning")) {
             val choice = this.resources.getStringArray(R.array.report_item)
             var nameAndValue = ""
@@ -293,48 +248,9 @@ class Switch_pageActivity : AppCompatActivity() {
 
         })
     }
-
-    private fun getDatabase(uid: String) {
-        val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(uid)
-        userDb.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var url0 = "null"
-                url0 = snapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
-                val name = snapshot.child("name").value.toString()
-                val dialog2 = Dialog(this@Switch_pageActivity)
-                val inflater = layoutInflater
-                val view = inflater.inflate(R.layout.show_match, null)
-                val imageView = view.findViewById<ImageView>(R.id.image_match)
-                val star = view.findViewById<ImageView>(R.id.star)
-                val textView = view.findViewById<TextView>(R.id.textmatch)
-                val textView2 = view.findViewById<TextView>(R.id.io)
-                val textView3 = view.findViewById<TextView>(R.id.textBig)
-                val textView4 = view.findViewById<TextView>(R.id.textmatch2)
-                val button = view.findViewById<Button>(R.id.mess)
-                textView.text = name
-                textView4.text = "  " + "ถูกใจคุณเหมือนกัน"
-                button.setOnClickListener {
-                    dialog2.dismiss()
-                    val intent = Intent(this@Switch_pageActivity, ChatActivity::class.java)
-                    val b = Bundle()
-                    b.putString("time_chk", "")
-                    b.putString("matchId", uid)
-                    b.putString("nameMatch", "กายน่ารัก")
-                    b.putString("first_chat", "")
-                    b.putString("unread", "0")
-                    intent.putExtras(b)
-                    startActivity(intent)
-                }
-                textView2.setOnClickListener { dialog2.dismiss() }
-                Glide.with(this@Switch_pageActivity).load(url0).into(imageView)
-                dialog2.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                dialog2.setContentView(view)
-                dialog2.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
-                dialog2.show()
-            }
-
-            override fun onCancelled(error: DatabaseError) {}
-        })
+    private fun OpenDialog(){
+        val exampleClass:ExampleClass = ExampleClass()
+        exampleClass.show(supportFragmentManager,"example Dialog")
     }
 
     fun setCurrentIndex(newValueFormCurrentIndex: Int) {
@@ -355,26 +271,7 @@ class Switch_pageActivity : AppCompatActivity() {
         }
     }
 
-    private val read_input = 0
     override fun onResume() {
-        /*final SharedPreferences mySharedPreferences = this.getSharedPreferences("SentRead", Context.MODE_PRIVATE);
-        int read = mySharedPreferences.getInt("Read",0 );
-
-        final SharedPreferences SharedRead = this.getSharedPreferences("SentRead", Context.MODE_PRIVATE);
-        int left_total = SharedRead.getInt("ReadFirst",0 );
-        read_input = read_input+read;
-        mySharedPreferences.edit().clear().commit();
-        //Toast.makeText(Switch_pageActivity.this,(left)+" , "+(read),Toast.LENGTH_SHORT).show();
-        if(read != 0){
-            int Restore =  left-read;
-            left = Restore;
-            if(Restore > 0) {
-                bar.showBadge(R.id.item4, Restore);
-            }else{
-                bar.dismissBadge(R.id.item4);
-                left = 0;
-            }
-        }*/
         super.onResume()
     }
 
