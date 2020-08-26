@@ -32,10 +32,8 @@ import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import java.text.SimpleDateFormat
-import java.time.Instant
+import java.time.Duration
 import java.time.LocalDate
-import java.time.Period
-import java.time.ZoneId
 import java.util.*
 
 class Switch_pageActivity : AppCompatActivity() {
@@ -232,14 +230,14 @@ class Switch_pageActivity : AppCompatActivity() {
             }
         })
 
-        userDb.child("lastOnline").onDisconnect().setValue(ServerValue.TIMESTAMP)
-                /*.let {
+       // userDb.child("lastOnline").onDisconnect().setValue(ServerValue.TIMESTAMP)
+                userDb.onDisconnect().let {
             val status_up2 = HashMap<String?, Any?>()
-            status_up2["date"] = date_user
+            status_up2["date"] = ServerValue.TIMESTAMP
             status_up2["status"] = 0
-            status_up2["time"] = time_user
+            //status_up2["time"] = time_user
             it.updateChildren(status_up2)
-        }*/
+        }
         val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
@@ -260,7 +258,9 @@ class Switch_pageActivity : AppCompatActivity() {
                 val df: LocalDate
                 val sfd = SimpleDateFormat("dd-MM-yyyy",
                         Locale.getDefault())
-                if (dataSnapshot.hasChild("birth")) {
+                Date().time
+                Log.d("time111", sfd.format(1598428015326))
+                /*   if (dataSnapshot.hasChild("birth")) {
                     val date = Date(dataSnapshot.child("birth").value as Long)
                     val text = sfd.format(date)
                     Log.d("time111", sfd.format(dataSnapshot.child("birth").value as Long))
@@ -274,7 +274,7 @@ class Switch_pageActivity : AppCompatActivity() {
 
 
                     //val period = Period(date, end, PeriodType.yearMothDay())
-                }
+                }*/
 
                 if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {
                     Log.d("vvv", "1")

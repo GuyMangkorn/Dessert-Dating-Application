@@ -1,8 +1,6 @@
 package com.jabirdeveloper.tinderswipe.Listcard
 
 import android.content.Context
-import android.location.Address
-import android.location.Geocoder
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -22,12 +20,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
-import com.jabirdeveloper.tinderswipe.Cards.cards
 import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -255,6 +251,10 @@ class ListcardActivity : Fragment() {
     private fun getUser(result2:ArrayList<*>,start:Int,type:Boolean,startNoti:Int)
     {
         var max = start+20
+        var myself = ""
+        var off_status = false
+        var typetime=""
+        var time=""
         Log.d("max",(start+20).toString() + " " + result2.size)
         if(result2.size < start+20) {
             max = result2.size
@@ -263,18 +263,24 @@ class ListcardActivity : Fragment() {
         {
             val user = result2[x] as Map<*, *>
             Log.d("ghu", user["name"].toString() + " , "+user["distance_other"].toString())
-            var myself = ""
-            var off_status = false
 
-            var time_opposite = "null"
-            var date_opposite = "null"
+//
+//            var time_opposite = "null"
+//            var date_opposite = "null"
+//            if (user["time"] != null) {
+//                time_opposite = user["time"].toString()
+//            }
+//            if (user["date"] != null) {
+//                date_opposite = user["date"].toString()
+//            }
+//            time_change(time_opposite, date_opposite)
+            if (user["typeTime"] != null) {
+                typetime = user["typeTime"].toString()
+                Log.d("type55","0")
+            }
             if (user["time"] != null) {
-                time_opposite = user["time"].toString()
+                time = user["time"].toString()
             }
-            if (user["date"] != null) {
-                date_opposite = user["date"].toString()
-            }
-            time_change(time_opposite, date_opposite)
             if (user["myself"] != null) {
                 myself = user["myself"].toString()
             }
@@ -286,11 +292,11 @@ class ListcardActivity : Fragment() {
 
             var status = "offline"
             if (user["status"] == 1) {
-                status = user["status"].toString()
+                status = "online"
             }
             val df2 = DecimalFormat("#.#")
             val dis = df2.format(user["distance_other"])
-            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, sum_string, user["Age"].toString(), user["sex"].toString(), myself, off_status)
+            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, off_status,typetime,time)
 
             resultMatches.add(obj)
             if (resultMatches.size > 0) {
@@ -359,7 +365,7 @@ class ListcardActivity : Fragment() {
         if (dataSnapshot.child("Status").hasChild("date")) {
             date_opposite = dataSnapshot.child("Status").child("date").value.toString()
         }
-        time_change(time_opposite, date_opposite)
+        //time_change(time_opposite, date_opposite)
         var name = ""
         var profileImageUrl = ""
         val x = ""
@@ -472,22 +478,22 @@ class ListcardActivity : Fragment() {
                 }
                 chk_b2 - chk_b1
             })*/
-
-            if(resultMatches2.size-1 < startNode){
-                startNode = resultMatches2.size-1
-            }
-            for (i in 0 until startNode) {
-
-                val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
-                        resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
-                        resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
-                resultMatches.add(obj)
-
-
-            }
-
-
-            mMatchesAdapter.notifyDataSetChanged()
+//
+//            if(resultMatches2.size-1 < startNode){
+//                startNode = resultMatches2.size-1
+//            }
+//            for (i in 0 until startNode) {
+//
+//                val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
+//                        resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
+//                        resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
+//                resultMatches.add(obj)
+//
+//
+//            }
+//
+//
+//            mMatchesAdapter.notifyDataSetChanged()
         }
         // mMatchesAdapter.notifyDataSetChanged()
 
@@ -503,74 +509,74 @@ class ListcardActivity : Fragment() {
 
 
     private fun time_change(time_opposite: String, date_opposite: String) {
-        val date_user: String
-        val time_user: String
-        var diff_dated = 0
+        val dateUser: String
+        val timeUser: String
+        var diffDated = 0
         val calendar = Calendar.getInstance()
         val currentDate = SimpleDateFormat("dd/MM/yyyy")
-        date_user = currentDate.format(calendar.time)
+        dateUser = currentDate.format(calendar.time)
         val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-        time_user = currentTime.format(calendar.time)
+        timeUser = currentTime.format(calendar.time)
         if (date_opposite !== "null") {
-            var opposite_date: Date? = null
+            var oppositeDate: Date? = null
             try {
-                opposite_date = currentDate.parse(date_opposite)
+                oppositeDate = currentDate.parse(date_opposite)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-            var user_date: Date? = null
+            var userDate: Date? = null
             try {
-                user_date = currentDate.parse(date_user)
+                userDate = currentDate.parse(dateUser)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-            val diff_date = user_date!!.time - opposite_date!!.time
-            diff_dated = TimeUnit.DAYS.convert(diff_date, TimeUnit.MILLISECONDS).toInt()
+            val diffDate = userDate!!.time - oppositeDate!!.time
+            diffDated = TimeUnit.DAYS.convert(diffDate, TimeUnit.MILLISECONDS).toInt()
         }
         if (time_opposite !== "null") {
-            val time_opposite_date = date_opposite.substring(0, 2).toInt()
-            val time_user_date = date_user.substring(0, 2).toInt()
-            val time_opposite_hr = time_opposite.substring(0, 2).toInt()
-            val time_opposite_mm = time_opposite.substring(3, 5).toInt()
-            val time_user_mm = time_user.substring(3, 5).toInt()
-            val time_user_hr = time_user.substring(0, 2).toInt()
+            val timeOppositeDate = date_opposite.substring(0, 2).toInt()
+            val timeUserDate = dateUser.substring(0, 2).toInt()
+            val timeOppositeHr = time_opposite.substring(0, 2).toInt()
+            val timeOppositeMm = time_opposite.substring(3, 5).toInt()
+            val timeUserMm = timeUser.substring(3, 5).toInt()
+            val timeUserHr = timeUser.substring(0, 2).toInt()
             var sum = 0
-            if (diff_dated < 2) {
-                if (time_user_hr >= time_opposite_hr && diff_dated >= 1) {
+            if (diffDated < 2) {
+                if (timeUserHr >= timeOppositeHr && diffDated >= 1) {
                     sum_string = "d1"
                 } else {
-                    if (time_user_mm > time_opposite_mm) {
-                        val time_mm = time_user_mm - time_opposite_mm
+                    if (timeUserMm > timeOppositeMm) {
+                        val time_mm = timeUserMm - timeOppositeMm
                         sum += time_mm
-                        if (time_opposite_date != time_user_date) {
-                            sum += (24 - time_opposite_hr + time_user_hr) * 60
-                        } else if (time_opposite_hr != time_user_hr) {
-                            sum += (time_user_hr - time_opposite_hr) * 60
+                        if (timeOppositeDate != timeUserDate) {
+                            sum += (24 - timeOppositeHr + timeUserHr) * 60
+                        } else if (timeOppositeHr != timeUserHr) {
+                            sum += (timeUserHr - timeOppositeHr) * 60
                         }
                         sum_string = sum.toString()
-                    } else if (time_user_mm < time_opposite_mm) {
-                        sum = 60 - time_opposite_mm + time_user_mm
-                        sum = if (time_opposite_date != time_user_date) {
-                            (24 - time_opposite_hr - 1 + time_user_hr) * 60 + sum
+                    } else if (timeUserMm < timeOppositeMm) {
+                        sum = 60 - timeOppositeMm + timeUserMm
+                        sum = if (timeOppositeDate != timeUserDate) {
+                            (24 - timeOppositeHr - 1 + timeUserHr) * 60 + sum
                         } else {
-                            (time_user_hr - time_opposite_hr - 1) * 60 + sum
+                            (timeUserHr - timeOppositeHr - 1) * 60 + sum
                         }
                         sum_string = sum.toString()
-                    } else if (time_user_mm == time_opposite_mm && time_user_hr != time_opposite_hr) {
-                        sum = if (time_opposite_date != time_user_date) {
-                            (24 - time_opposite_hr + time_user_hr) * 60
+                    } else if (timeUserMm == timeOppositeMm && timeUserHr != timeOppositeHr) {
+                        sum = if (timeOppositeDate != timeUserDate) {
+                            (24 - timeOppositeHr + timeUserHr) * 60
                         } else {
-                            val time_mm = time_user_hr - time_opposite_hr
+                            val time_mm = timeUserHr - timeOppositeHr
                             time_mm * 60
                         }
                         sum_string = sum.toString()
-                    } else if (time_user_mm == time_opposite_mm && time_opposite_hr == time_user_hr) {
+                    } else if (timeUserMm == timeOppositeMm && timeOppositeHr == timeUserHr) {
                         sum_string = "1"
                     }
                 }
-            } else if (diff_dated >= 2) {
+            } else if (diffDated >= 2) {
                 sum_string = "d"
-                val jj = diff_dated.toString()
+                val jj = diffDated.toString()
                 sum_string += jj
             }
         } else {

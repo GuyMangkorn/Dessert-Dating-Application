@@ -687,8 +687,10 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     val profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
 
                     var status = "offline"
-                    if (dataSnapshot.child("Status").hasChild("status")) {
-                        status = dataSnapshot.child("Status").child("status").value.toString()
+                    if (dataSnapshot.hasChild("status")) {
+                        if(dataSnapshot.child("status").value == 1)
+                        status = "online"
+                        Log.d("statt","1")
                     }
                     if (dataSnapshot.child("Vip").value == 1) {
                         vip = true

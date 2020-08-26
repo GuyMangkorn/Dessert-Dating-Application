@@ -137,17 +137,9 @@ class Setting2Activity : AppCompatActivity() {
         })
         logout.setOnClickListener(View.OnClickListener {
             val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
-            val date_user: String
-            val time_user: String
-            val calendar = Calendar.getInstance()
-            val currentDate = SimpleDateFormat("dd/MM/yyyy")
-            date_user = currentDate.format(calendar.time)
-            val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-            time_user = currentTime.format(calendar.time)
             val status_up2 = HashMap<String?, Any?>()
-            status_up2["date"] = date_user
+            status_up2["date"] = ServerValue.TIMESTAMP
             status_up2["status"] = 0
-            status_up2["time"] = time_user
             userDb.updateChildren(status_up2)
             mAuth.signOut()
             val intent = Intent(applicationContext, ChooseLoginRegistrationActivity::class.java)
