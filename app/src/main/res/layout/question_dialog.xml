@@ -20,7 +20,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
                 <ImageView
-                    android:id="@+id/icon_alert"
+                    android:id="@+id/icon_QA"
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
                 <TextView
                     android:padding="10dp"
                     android:layout_gravity="center"
-                    android:id="@+id/message_alert"
+                    android:id="@+id/message_QA"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,6 +41,7 @@
                 android:orientation="vertical"
                 android:layout_height="wrap_content">
                 <RadioGroup
+                    android:id="@+id/radioGroup_QA"
                     android:layout_marginStart="12dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">

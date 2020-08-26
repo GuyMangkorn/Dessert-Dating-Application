@@ -21,10 +21,12 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.functions.HttpsCallableResult
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
@@ -54,7 +56,7 @@ class Switch_pageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-
+        //getDataOncall()
         getMyUser()
         //OpenDialog()
        /* MobileAds.initialize(this) {}
@@ -247,6 +249,21 @@ class Switch_pageActivity : AppCompatActivity() {
             }
 
         })
+    }
+    var text:String = ""
+    private fun getDataOncall(): Task<HttpsCallableResult> {
+        // Create the arguments to the callable function.
+        val data = hashMapOf(
+                "questions" to text
+        )
+
+        return functions
+                .getHttpsCallable("addQuestions")
+                .call(data)
+                .addOnSuccessListener {  task ->
+                    val data = task.data as Map<*, *>
+                    Log.d("testDatatatat",data.get("choice").toString())
+                }
     }
     private fun OpenDialog(){
         val exampleClass:ExampleClass = ExampleClass()
