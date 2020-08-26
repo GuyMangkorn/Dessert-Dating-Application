@@ -300,6 +300,9 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
         return view
     }
+
+
+
     fun aa ()
     {
         val data = hashMapOf(
