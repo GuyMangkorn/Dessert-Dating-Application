@@ -26,7 +26,6 @@ class ExampleClass : AppCompatDialogFragment() {
     var listener: ExampleClassListener? = null
     var radio1 : RadioButton? = null
     var radio2 : RadioButton? = null
-    var radio3 : RadioButton? = null
     var image1 : ImageView? = null
     var radioGroup1 : RadioGroup? = null
     var question:String = ""
@@ -76,7 +75,6 @@ class ExampleClass : AppCompatDialogFragment() {
                 })
         radio1 = view.findViewById(R.id.radioButton_QA1)
         radio2 = view.findViewById(R.id.radioButton_QA2)
-        radio3 = view.findViewById(R.id.radioButton_QA3)
         radioGroup1 = view.findViewById(R.id.radioGroup_QA)
         return builder.create()
     }

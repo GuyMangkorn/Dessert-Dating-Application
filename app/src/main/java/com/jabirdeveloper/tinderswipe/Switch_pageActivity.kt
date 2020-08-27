@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Switch_pageActivity : AppCompatActivity() {
     private lateinit var selectedFragment: Fragment
@@ -294,8 +295,10 @@ class Switch_pageActivity : AppCompatActivity() {
                 .getHttpsCallable("addQuestions")
                 .call(data)
                 .addOnSuccessListener {  task ->
-                    val data = task.data as Map<*, *>
-                    Log.d("testDatatatat",data.toString())
+                    val data = task.data as Map<*,*>
+                    val questions = data.get("questions") as Map<*,*>
+                    Log.d("testDatatatat",data.get("questions").toString())
+                    Log.d("testDatatatat",questions.get("question1").toString())
                 }
                 .addOnFailureListener{
                     Log.d("testDatatatat","error")
