@@ -38,6 +38,7 @@ import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Switch_pageActivity : AppCompatActivity() {
     private lateinit var selectedFragment: Fragment
@@ -298,14 +299,21 @@ class Switch_pageActivity : AppCompatActivity() {
                     val data = task.data as Map<*,*>
                     val questions = data.get("questions") as Map<*,*>
                     Log.d("testDatatatat",data.get("questions").toString())
-                    Log.d("testDatatatat",questions.get("question1").toString())
+                    val dd = questions.get("question1") as Map<*,*>
+                    val key = dd.keys.toString().replace("[","").replace("]","");
+                    Log.d("testDatatatat",key)
+                    //val gg = dd.get(key) as Map<*,*>
+                    //val ListChoice = gg.values.toList()
+                    //Log.d("testDatatatat",ListChoice.toString())
+                    //OpenDialog(key)
                 }
                 .addOnFailureListener{
                     Log.d("testDatatatat","error")
                 }
     }
-    private fun OpenDialog(){
+    private fun OpenDialog(question : String){
         val exampleClass:ExampleClass = ExampleClass()
+        exampleClass.setData(question)
         exampleClass.show(supportFragmentManager,"example Dialog")
     }
 
