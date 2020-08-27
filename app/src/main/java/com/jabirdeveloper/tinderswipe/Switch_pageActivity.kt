@@ -58,7 +58,7 @@ class Switch_pageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-        //getDataOncall()
+        getDataOncall()
         getMyUser()
         //OpenDialog()
        /* MobileAds.initialize(this) {}
@@ -295,7 +295,10 @@ class Switch_pageActivity : AppCompatActivity() {
                 .call(data)
                 .addOnSuccessListener {  task ->
                     val data = task.data as Map<*, *>
-                    Log.d("testDatatatat",data.get("choice").toString())
+                    Log.d("testDatatatat",data.toString())
+                }
+                .addOnFailureListener{
+                    Log.d("testDatatatat","error")
                 }
     }
     private fun OpenDialog(){
