@@ -160,6 +160,14 @@
     <string name="choose_gender">โปรดเลือกเพศของคุณ</string>
     <string name="choose_photo">โปรดเลือกรูปโปรไฟล์ของคุณ</string>
     <string name="off_status">ไม่แสดงสถานะ</string>
+    <string name="ok_QA">ตกลง</string>
+    <string name="QA_choice1">สำคัญนิดหน่อย</string>
+    <string name="QA_choice2">ค่อนข้างสำคัญ</string>
+    <string name="QA_choice3">สำคัญ</string>
+    <string name="QA_choice4">สำคัญมาก</string>
+    <string name="QA_choice5">เป็นเรื่องคอขาดบาดตาย</string>
+
+
 
 
     <string-array name="shopping_item">
@@ -249,4 +257,6 @@
     <string-array name="chat_item_image">
         <item>ดาวน์โหลดภาพ</item>
     </string-array>
+    <string name="QA_improtant">ความสำคัญของคำถามนี้</string>
+
 </resources>
