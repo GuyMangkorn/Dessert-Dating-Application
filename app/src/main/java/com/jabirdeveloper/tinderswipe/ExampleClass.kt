@@ -55,10 +55,14 @@ class ExampleClass : AppCompatDialogFragment() {
         confirmText = view.findViewById(R.id.QA_confirm)
         dismissText = view.findViewById(R.id.QA_dismiss)
         confirmText!!.setOnClickListener {
-            if(radioGroup1!!.checkedRadioButtonId == -1){
-                
+            val checked = radioGroup1!!.checkedRadioButtonId
+            if(checked == -1){
+
             }else{
-                Log.d("Check_IsCheck" ,radioGroup1!!.checkedRadioButtonId.toString())
+                Log.d("Check_IsCheck" ,checked.toString())
+                if (checked == R.id.radioButton_QA1){
+                    Log.d("Check_IsCheck" ,"เห็นด้วย Checked")
+                }
             }
 
 
