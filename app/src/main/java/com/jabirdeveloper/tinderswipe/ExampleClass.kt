@@ -26,11 +26,12 @@ class ExampleClass : AppCompatDialogFragment() {
     var listener: ExampleClassListener? = null
     var radio1 : RadioButton? = null
     var radio2 : RadioButton? = null
-    var image1 : ImageView? = null
     var questionText : TextView? = null
+    var confirmText : TextView? = null
+    var dismissText : TextView? = null
     var radioGroup1 : RadioGroup? = null
     var question:String = ""
-     var Choice:ArrayList<String>? = ArrayList()
+    var Choice:ArrayList<String>? = ArrayList()
     private lateinit var functions: FirebaseFunctions
 
     @SuppressLint("UseRequireInsteadOfGet")
@@ -40,41 +41,47 @@ class ExampleClass : AppCompatDialogFragment() {
         val view: View = lay.inflate(R.layout.question_dialog, null)
         val wm: DisplayMetrics? = resources.displayMetrics
         var height: Int = wm!!.heightPixels
-        //functions = Firebase.functions
         var width: Int = wm!!.widthPixels
-        //image1!!.layoutParams.height = ((height*.3).toInt())
-        //image1!!.layoutParams.width = ((width*.8).toInt())
-        //image1!!.requestLayout()
         questionText = view.findViewById(R.id.message_QA)
         questionText!!.text = question
-        Log.d("Check_IsCheck", "$width , $height")
-        builder.setContentView(view)
-        builder.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                /*.setV("cancel", object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-
-                    }
-
-                })
-                .setPositiveButton("ok", object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-                        val check: Int
-                        if (radio1!!.isChecked) {
-                            Log.d("Check_IsCheck", "p1 isChecked")
-                            check = 1
-                        } else {
-                            Log.d("Check_IsCheck", "p2 isChecked")
-                            check = 2
-                        }
-                        //listener!!.applyTexts(check)
-                    }
-
-                })*/
         radio1 = view.findViewById(R.id.radioButton_QA1)
         radio1!!.text = Choice!![0]
         radio2 = view.findViewById(R.id.radioButton_QA2)
         radio2!!.text = Choice!![1]
         radioGroup1 = view.findViewById(R.id.radioGroup_QA)
+        //Log.d("Check_IsCheck", "$width , $height")
+        builder.setContentView(view)
+        builder.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        confirmText = view.findViewById(R.id.QA_confirm)
+        dismissText = view.findViewById(R.id.QA_dismiss)
+        confirmText!!.setOnClickListener {
+            if(radioGroup1!!.checkedRadioButtonId == -1){
+
+            }else{
+                Log.d("Check_IsCheck" ,radioGroup1!!.checkedRadioButtonId.toString())
+            }
+
+
+
+            builder.dismiss() }
+        dismissText!!.setOnClickListener { builder.dismiss() }
+        //confirmText!!.setOnLongClickListener{}
+
+        /*
+         .setPositiveButton("ok", object : DialogInterface.OnClickListener {
+             override fun onClick(p0: DialogInterface?, p1: Int) {
+                 val check: Int
+                 if (radio1!!.isChecked) {
+                     Log.d("Check_IsCheck", "p1 isChecked")
+                     check = 1
+                 } else {
+                     Log.d("Check_IsCheck", "p2 isChecked")
+                     check = 2
+                 }
+                 //listener!!.applyTexts(check)
+             }
+
+         })*/
         builder.show()
         return builder
     }

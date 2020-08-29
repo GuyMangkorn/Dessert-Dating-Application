@@ -257,6 +257,6 @@
     <string-array name="chat_item_image">
         <item>ดาวน์โหลดภาพ</item>
     </string-array>
-    <string name="QA_improtant">ความสำคัญของคำถามนี้</string>
+    <string name="QA_improtant">ความสำคัญของคำถามนี้ ?</string>
 
 </resources>
