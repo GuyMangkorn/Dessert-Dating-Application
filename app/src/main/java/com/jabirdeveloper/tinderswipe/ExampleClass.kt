@@ -59,9 +59,10 @@ class ExampleClass : AppCompatDialogFragment() {
             if(checked == -1){
 
             }else{
-                Log.d("Check_IsCheck" ,checked.toString())
                 if (checked == R.id.radioButton_QA1){
                     Log.d("Check_IsCheck" ,"เห็นด้วย Checked")
+                }else{
+                    Log.d("Check_IsCheck" ,"ไม่เห็นเห็นด้วย Checked")
                 }
             }
 
