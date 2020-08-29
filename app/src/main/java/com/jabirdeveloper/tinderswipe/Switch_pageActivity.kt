@@ -311,11 +311,11 @@ class Switch_pageActivity : AppCompatActivity() {
                     Log.d("testDatatatat","error")
                 }
     }
-    private fun OpenDialog(question : String){
-        val exampleClass:ExampleClass = ExampleClass()
-        exampleClass.setData(question)
-        exampleClass.show(supportFragmentManager,"example Dialog")
-    }
+//    private fun OpenDialog(question : String){
+//        val exampleClass:ExampleClass = ExampleClass()
+//        exampleClass.setData(question)
+//        exampleClass.show(supportFragmentManager,"example Dialog")
+//    }
 
     fun setCurrentIndex(newValueFormCurrentIndex: Int) {
         if (newValueFormCurrentIndex > 0) {
