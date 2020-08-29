@@ -56,7 +56,7 @@ class ExampleClass : AppCompatDialogFragment() {
         dismissText = view.findViewById(R.id.QA_dismiss)
         confirmText!!.setOnClickListener {
             if(radioGroup1!!.checkedRadioButtonId == -1){
-
+                
             }else{
                 Log.d("Check_IsCheck" ,radioGroup1!!.checkedRadioButtonId.toString())
             }
