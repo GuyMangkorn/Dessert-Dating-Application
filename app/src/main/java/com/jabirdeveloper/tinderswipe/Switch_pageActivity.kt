@@ -3,7 +3,6 @@ package com.jabirdeveloper.tinderswipe
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
@@ -12,11 +11,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -30,11 +27,9 @@ import com.google.firebase.functions.HttpsCallableResult
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
-import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import java.text.SimpleDateFormat
-import java.time.Duration
 import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
@@ -60,7 +55,7 @@ class Switch_pageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-        getDataOncall()
+        //getDataOncall()
         getMyUser()
         //OpenDialog()
        /* MobileAds.initialize(this) {}
@@ -300,20 +295,19 @@ class Switch_pageActivity : AppCompatActivity() {
                     val questions = data.get("questions") as Map<*,*>
                     Log.d("testDatatatat",data.get("questions").toString())
                     val dd = questions.get("question1") as Map<*,*>
-                    val key = dd.keys.toString().replace("[","").replace("]","");
+                    val key = dd.keys.toString().replace("[","").replace("]","")
                     Log.d("testDatatatat",key)
-                    //val gg = dd.get(key) as Map<*,*>
-                    //val ListChoice = gg.values.toList()
-                    //Log.d("testDatatatat",ListChoice.toString())
-                    //OpenDialog(key)
+                    val gg = dd.get(key) as ArrayList<*>
+                    Log.d("testDatatatat",gg.toString())
+                    OpenDialog(key,gg)
                 }
                 .addOnFailureListener{
                     Log.d("testDatatatat","error")
                 }
     }
-    private fun OpenDialog(question : String){
+    private fun OpenDialog(question: String, gg: ArrayList<*>){
         val exampleClass:ExampleClass = ExampleClass()
-        exampleClass.setData(question)
+        exampleClass.setData(question, gg as ArrayList<String>)
         exampleClass.show(supportFragmentManager,"example Dialog")
     }
 

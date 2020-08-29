@@ -9,7 +9,7 @@
     <string name="make_an_order">Make an order</string>
     <string name="dialog_title">งานอดิเรก</string>
     <string name="ok">OK</string>
-    <string name="dismiss_label">ยกเลิก</string>
+    <string name="dismiss_label">Cancel</string>
     <string name="clear_all_label">เคลียร์</string>
     <string name="txt_obtener_items">Obtener Items</string>
     <string name="bar_profile">Profile</string>
@@ -160,6 +160,13 @@
     <string name="choose_gender">Please choose your gender</string>
     <string name="choose_photo">Please choose your profile picture.</string>
     <string name="off_status">Status not displayed</string>
+    <string name="QA_improtant">How Important for you?</string>
+    <string name="ok_QA">Confirm</string>
+    <string name="QA_choice1">A little important</string>
+    <string name="QA_choice2">Absolutely important</string>
+    <string name="QA_choice3">Important</string>
+    <string name="QA_choice4">Very Important</string>
+    <string name="QA_choice5">Serious Important!</string>
 
     <string-array name="shopping_item">
         <item>จัดดอกไม้-ทำสวน</item>
@@ -279,5 +286,8 @@
         <item>m71.435,364.222 l-0.609,-2.272c-3.155,-11.773 -14.993,-19.159 -26.957,-16.819l-25.041,4.902c-6.307,1.235 -11.875,5.07 -15.277,10.522 -3.402,5.452 -4.399,12.14 -2.736,18.347l1.513,5.646c1.663,6.208 5.871,11.5 11.544,14.522 3.393,1.807 7.168,2.725 10.956,2.725 2.543,0 5.093,-0.414 7.535,-1.251l24.137,-8.275c11.529,-3.955 18.09,-16.274 14.935,-28.047zM51.635,378.079 L27.498,386.354c-2.193,0.752 -4.529,0.566 -6.577,-0.524 -2.047,-1.09 -3.505,-2.925 -4.105,-5.165l-1.513,-5.646c-0.601,-2.24 -0.255,-4.557 0.973,-6.525s3.158,-3.297 5.434,-3.742l25.041,-4.902c0.53,-0.104 1.059,-0.154 1.582,-0.154 3.674,0 7.023,2.471 8.006,6.136l0.608,2.271c1.122,4.189 -1.211,8.57 -5.312,9.976z</item>
 
     </string-array>
+
+
+
 
 </resources>
