@@ -190,8 +190,7 @@ class Setting2Activity : AppCompatActivity() {
     }
 
     private fun delete() {
-        mAuth.currentUser!!.delete().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+
                 val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(currentUid)
                 filepath.delete()
                 val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
@@ -254,11 +253,10 @@ class Setting2Activity : AppCompatActivity() {
                 val intent = Intent(this@Setting2Activity, ChooseLoginRegistrationActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
+                mAuth.signOut()
                 finish()
-            } else {
-                Toast.makeText(applicationContext, R.string.try_again, Toast.LENGTH_SHORT).show()
-            }
-        }
+
+
     }
 
 
@@ -342,7 +340,7 @@ class Setting2Activity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        var inflater = menuInflater
+        val inflater = menuInflater
         inflater.inflate(R.menu.correct,menu)
         return true
     }

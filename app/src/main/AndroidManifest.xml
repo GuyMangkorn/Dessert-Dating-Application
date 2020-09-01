@@ -12,7 +12,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.android.vending.BILLING" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -22,8 +24,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:icon">
-
-        <activity android:name=".show_gps_open"></activity>
+        <activity android:name=".BandUser"></activity>
+        <activity android:name=".show_gps_open" />
         <activity
             android:name=".LikeYou.LikeYouActivity"
             android:screenOrientation="portrait" />
@@ -44,14 +46,12 @@
         <activity
             android:name=".Setting2Activity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileUserOppositeActivity2"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Register.PhoneActivity"
             android:screenOrientation="portrait" />
@@ -73,7 +73,6 @@
         <activity
             android:name=".Chat.ChatActivity"
             android:hardwareAccelerated="true" />
-
         <activity
             android:name=".SettingActivity"
             android:screenOrientation="portrait" />
@@ -81,7 +80,6 @@
             android:name=".LoginActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".Register.RegistrationActivity" />
-
         <activity
             android:name=".First_Activity"
             android:screenOrientation="portrait">
@@ -91,10 +89,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6552917645420581~7846747654"/>
-
+            android:value="ca-app-pub-6552917645420581~7846747654" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

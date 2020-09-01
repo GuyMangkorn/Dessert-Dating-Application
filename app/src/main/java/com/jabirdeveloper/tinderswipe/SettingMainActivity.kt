@@ -311,12 +311,9 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     override fun onResume() {
         super.onResume()
         val handler = Handler()
-        handler.postDelayed({
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Unconfined)  { // launch a new coroutine in background and continue
 
-                getData()
-            }
-        }, 0)
+        getData()
+
 
 
         gotoProfile = true

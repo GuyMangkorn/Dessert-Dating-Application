@@ -13,6 +13,7 @@
     <color name="background_white">#FFFDFA</color>
     <color name="pink">#D941FF</color>
     <color name="white_tran">#80FFFFFF</color>
+    <color name="red">#FF004E</color>
 
     <integer-array name="google_glyph_colors">
         <item>@color/text_black_gray</item>

@@ -3,16 +3,23 @@ package com.jabirdeveloper.tinderswipe
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -32,7 +39,6 @@ import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class Switch_pageActivity : AppCompatActivity() {
@@ -55,7 +61,7 @@ class Switch_pageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-        //getDataOncall()
+        getDataOncall()
         getMyUser()
         /*MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)
@@ -114,29 +120,49 @@ class Switch_pageActivity : AppCompatActivity() {
         bar!!.setOnItemSelectedListener(object : ChipNavigationBar.OnItemSelectedListener {
             override fun onItemSelected(i: Int) {
                 Log.d("num", i.toString())
-                when (i) {
-                    R.id.item1 -> {
-                        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page1).commit()
-                        activeFragment = page1
-                        true
+                if (isOnline(applicationContext)) {
+                    when (i) {
+                        R.id.item1 -> {
+                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page1).commit()
+                            activeFragment = page1
+                            true
+                        }
+                        R.id.item2 -> {
+                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page2).commit()
+                            activeFragment = page2
+                            true
+                        }
+                        R.id.item3 -> {
+                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page3).commit()
+                            activeFragment = page3
+                            true
+                        }
+                        R.id.item4 -> {
+                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page4).commit()
+                            activeFragment = page4
+                            true
+                        }
+                        else -> false
                     }
-                    R.id.item2 -> {
-                        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page2).commit()
-                        activeFragment = page2
-                        true
+                } else {
+                    val builder = AlertDialog.Builder(this@Switch_pageActivity)
+                    builder.setTitle("Internet ของคุณปิดอยุ่")
+                    builder.setMessage("กรุณาเปิด Internet บนอุปกรณ์ของคุณเพื่อใช้งานแอปพลิเคชัน")
+                    builder.setPositiveButton("เปิด internet") { dialog, which ->
+                        val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                        startActivity(intent)
                     }
-                    R.id.item3 -> {
-                        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page3).commit()
-                        activeFragment = page3
-                        true
-                    }
-                    R.id.item4 -> {
-                        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page4).commit()
-                        activeFragment = page4
-                        true
-                    }
-                    else -> false
+                            .setNegativeButton("ปิด app") { _, _ ->
+                                val intent = Intent(this@Switch_pageActivity, show_gps_open::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                finish()
+                                startActivity(intent)
+                            }
+                    val mGPSDialog:Dialog = builder.create()
+                    mGPSDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Switch_pageActivity, R.drawable.myrect2))
+                    mGPSDialog.show()
                 }
+
             }
         })
     }
@@ -289,26 +315,27 @@ class Switch_pageActivity : AppCompatActivity() {
         return functions
                 .getHttpsCallable("addQuestions")
                 .call(data)
-                .addOnSuccessListener {  task ->
-                    val data = task.data as Map<*,*>
-                    val questions = data.get("questions") as Map<*,*>
-                    Log.d("testDatatatat",data.get("questions").toString())
-                    val dd = questions.get("question1") as Map<*,*>
-                    val key = dd.keys.toString().replace("[","").replace("]","")
-                    Log.d("testDatatatat",key)
-                    val gg = dd.get(key) as ArrayList<*>
-                    Log.d("testDatatatat",gg.toString())
-                    OpenDialog(key,gg)
+                .addOnSuccessListener { task ->
+                    val data = task.data as Map<*, *>
+                    val questions = data.get("questions") as Map<*, *>
+                    Log.d("testDatatatat", data.get("questions").toString())
+                    val dd = questions.get("question1") as Map<*, *>
+                    val key = dd.keys.toString().replace("[", "").replace("]", "");
+                    Log.d("testDatatatat", key)
+                    //val gg = dd.get(key) as Map<*,*>
+                    //val ListChoice = gg.values.toList()
+                    //Log.d("testDatatatat",ListChoice.toString())
+                    //OpenDialog(key)
                 }
                 .addOnFailureListener{
-                    Log.d("testDatatatat","error")
+                    Log.d("testDatatatat", "error")
                 }
     }
-    private fun OpenDialog(question: String, gg: ArrayList<*>){
+   /* private fun OpenDialog(question : String){
         val exampleClass:ExampleClass = ExampleClass()
-        exampleClass.setData(question, gg as ArrayList<String>)
+        exampleClass.setData(question)
         exampleClass.show(supportFragmentManager,"example Dialog")
-    }
+    }*/
 
     fun setCurrentIndex(newValueFormCurrentIndex: Int) {
         if (newValueFormCurrentIndex > 0) {
@@ -327,9 +354,15 @@ class Switch_pageActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+                return true
+        }
+        return false
     }
 
     var doubleBackToExitPressedOnce = false

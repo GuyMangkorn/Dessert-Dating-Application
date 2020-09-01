@@ -94,22 +94,34 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         firebaseAuthStateListener = AuthStateListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
-                val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(user.uid)
+                val userdb = FirebaseDatabase.getInstance().reference
                 userdb.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if (dataSnapshot.hasChild("sex")) {
-                            val intent = Intent(this@ChooseLoginRegistrationActivity, Switch_pageActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.putExtra("first", "0")
-                            startActivity(intent)
-                            finish()
-                            return
-                        } else {
-                            dialog.dismiss()
-                            val intent = Intent(this@ChooseLoginRegistrationActivity, Regis_name_Activity::class.java)
-                            intent.putExtra("Type", "face")
-                            startActivity(intent)
-                            return
+                        when {
+                            dataSnapshot.child("BlackList").hasChild(user.uid) -> {
+                                dialog.dismiss()
+                                mAuth.signOut()
+                                val intent = Intent(this@ChooseLoginRegistrationActivity, BandUser::class.java)
+                                startActivity(intent)
+                            }
+                            dataSnapshot.child("Users").child(user.uid).hasChild("sex") -> {
+                                dialog.dismiss()
+                                val intent = Intent(this@ChooseLoginRegistrationActivity, Switch_pageActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.putExtra("first", "0")
+                                startActivity(intent)
+                                finish()
+                                return
+                            }
+                            else -> {
+
+                                    dialog.dismiss()
+                                    val intent = Intent(this@ChooseLoginRegistrationActivity, Regis_name_Activity::class.java)
+                                    intent.putExtra("Type", "face")
+                                    startActivity(intent)
+                                    return
+
+                            }
                         }
                     }
 
@@ -218,6 +230,10 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                 Log.d("TAG", "Google sign in failed", e)
                 // ...
             }
+        }
+        if(requestCode == 1150)
+        {
+            mAuth.removeAuthStateListener(firebaseAuthStateListener)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
