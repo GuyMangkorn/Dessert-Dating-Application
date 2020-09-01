@@ -12,10 +12,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.ktx.functions
@@ -30,6 +27,7 @@ class ExampleClass : AppCompatDialogFragment() {
     var confirmText : TextView? = null
     var dismissText : TextView? = null
     var radioGroup1 : RadioGroup? = null
+    var radioGroupWeight : RadioGroup? = null
     var question:String = ""
     var Choice:ArrayList<String>? = ArrayList()
     private lateinit var functions: FirebaseFunctions
@@ -49,6 +47,7 @@ class ExampleClass : AppCompatDialogFragment() {
         radio2 = view.findViewById(R.id.radioButton_QA2)
         radio2!!.text = Choice!![1]
         radioGroup1 = view.findViewById(R.id.radioGroup_QA)
+        radioGroupWeight = view.findViewById(R.id.radioGroup_QAWeight)
         //Log.d("Check_IsCheck", "$width , $height")
         builder.setContentView(view)
         builder.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -56,37 +55,28 @@ class ExampleClass : AppCompatDialogFragment() {
         dismissText = view.findViewById(R.id.QA_dismiss)
         confirmText!!.setOnClickListener {
             val checked = radioGroup1!!.checkedRadioButtonId
-            if(checked == -1){
+            val checkedWeight = radioGroupWeight!!.checkedRadioButtonId
 
+            if(checked == -1 || checkedWeight == -1){
+                Toast.makeText(activity,"กรุณาเลือกคำตอบของท่าน",Toast.LENGTH_SHORT).show()
             }else{
-                if (checked == R.id.radioButton_QA1){
-                    Log.d("Check_IsCheck" ,"เห็นด้วย Checked")
-                }else{
-                    Log.d("Check_IsCheck" ,"ไม่เห็นเห็นด้วย Checked")
+                when(checked){
+                    R.id.radioButton_QA1 -> Log.d("Check_IsCheck" ,"*1*")
+                    R.id.radioButton_QA2 -> Log.d("Check_IsCheck" ,"*0*")
                 }
-            }
+                when(checkedWeight){
+                    R.id.radioButton_QAWeight1 -> Log.d("Check_IsCheck" ,"1 point")
+                    R.id.radioButton_QAWeight2 -> Log.d("Check_IsCheck" ,"10 points")
+                    R.id.radioButton_QAWeight3 -> Log.d("Check_IsCheck" ,"100 points")
+                    R.id.radioButton_QAWeight4 -> Log.d("Check_IsCheck" ,"150 points")
+                    R.id.radioButton_QAWeight5 -> Log.d("Check_IsCheck" ,"250 points")
+                }
+                builder.dismiss() }
 
+        }
+            dismissText!!.setOnClickListener { builder.dismiss() }
+        
 
-
-            builder.dismiss() }
-        dismissText!!.setOnClickListener { builder.dismiss() }
-        //confirmText!!.setOnLongClickListener{}
-
-        /*
-         .setPositiveButton("ok", object : DialogInterface.OnClickListener {
-             override fun onClick(p0: DialogInterface?, p1: Int) {
-                 val check: Int
-                 if (radio1!!.isChecked) {
-                     Log.d("Check_IsCheck", "p1 isChecked")
-                     check = 1
-                 } else {
-                     Log.d("Check_IsCheck", "p2 isChecked")
-                     check = 2
-                 }
-                 //listener!!.applyTexts(check)
-             }
-
-         })*/
         builder.show()
         return builder
     }

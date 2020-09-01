@@ -57,7 +57,6 @@ class Switch_pageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_switch_page)
         //getDataOncall()
         getMyUser()
-        //OpenDialog()
         /*MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)
         mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
