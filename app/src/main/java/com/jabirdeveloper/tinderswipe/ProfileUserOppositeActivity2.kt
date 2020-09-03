@@ -822,7 +822,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     }
 
     private fun getdis() {
-        val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
+        /*val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
         userdb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -834,7 +834,10 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
-        })
+        })*/
+        val preferences = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+        x_user = preferences.getString("X", "").toString().toDouble()
+        y_user = preferences.getString("Y", "").toString().toDouble()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -857,4 +860,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     override fun onBillingError(errorCode: Int, error: Throwable?) {
 
     }
+
+
 }

@@ -8,6 +8,7 @@
             android:layout_centerInParent="true"
             android:id="@+id/slide_1"
             android:adjustViewBounds="true"
+            android:src="@drawable/tran"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

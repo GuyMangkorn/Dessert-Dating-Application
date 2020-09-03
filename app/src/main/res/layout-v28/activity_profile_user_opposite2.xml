@@ -87,7 +87,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:text="Mai siravit"
+
                         android:textColor="@color/c2"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -96,7 +96,7 @@
                         android:id="@+id/age_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="21"
+
                         android:textColor="@color/c2"
                         android:textSize="20dp" />
 
@@ -136,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="ผู้ชาย"
+
 
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
@@ -178,7 +178,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="Microsoft"
+
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
 
@@ -217,7 +217,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="พระจอมเกล้าเพราะนครเหนือ"
+
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
 
@@ -257,7 +257,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="กรุงเทพมหานคร"
+
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
 
@@ -296,7 +296,7 @@
                     android:paddingTop="5dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
-                    android:text="ไม่ใช่มะม่วงก็ร่วงได้"
+
                     android:textColor="@color/text_gray"
                     android:textSize="16dp" />
 
@@ -334,7 +334,7 @@
                     android:paddingTop="5dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
-                    android:text="ภาษาไทย"
+
                     android:textColor="@color/text_gray"
                     android:gravity="left"
                     android:textSize="16dp" />
@@ -373,7 +373,7 @@
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
                     android:textColor="@color/text_gray"
-                    android:text="@string/religion"
+
                     android:textSize="16dp" />
 
 
