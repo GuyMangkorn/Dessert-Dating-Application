@@ -175,6 +175,10 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
             intent.putExtra("setImage", "1")
             startActivity(intent)
         })
+        view.findViewById<LinearLayout>(R.id.linearLayout22).setOnClickListener {
+            val intent = Intent(context, SendEmail::class.java)
+            startActivity(intent)
+        }
 
         return view
     }

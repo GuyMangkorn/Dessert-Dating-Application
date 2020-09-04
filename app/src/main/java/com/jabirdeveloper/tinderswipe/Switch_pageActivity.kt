@@ -316,16 +316,16 @@ class Switch_pageActivity : AppCompatActivity() {
                 .getHttpsCallable("addQuestions")
                 .call(data)
                 .addOnSuccessListener { task ->
-                    val data = task.data as Map<*, *>
-                    val questions = data.get("questions") as Map<*, *>
-                    Log.d("testDatatatat", data.get("questions").toString())
-                    val dd = questions.get("question1") as Map<*, *>
-                    val key = dd.keys.toString().replace("[", "").replace("]", "");
-                    Log.d("testDatatatat", key)
-                    //val gg = dd.get(key) as Map<*,*>
-                    //val ListChoice = gg.values.toList()
-                    //Log.d("testDatatatat",ListChoice.toString())
-                    //OpenDialog(key)
+//                    val data = task.data as Map<*, *>
+//                    val questions = data.get("questions") as Map<*, *>
+//                    Log.d("testDatatatat", data.get("questions").toString())
+//                    val dd = questions.get("question1") as Map<*, *>
+//                    val key = dd.keys.toString().replace("[", "").replace("]", "");
+//                    Log.d("testDatatatat", key)
+//                    //val gg = dd.get(key) as Map<*,*>
+//                    //val ListChoice = gg.values.toList()
+//                    //Log.d("testDatatatat",ListChoice.toString())
+//                    //OpenDialog(key)
                 }
                 .addOnFailureListener{
                     Log.d("testDatatatat", "error")
