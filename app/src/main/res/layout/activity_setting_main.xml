@@ -380,6 +380,15 @@
                 android:src="@drawable/ic_chevron_right_black_24dp"/>
         </LinearLayout>
     </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout22"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/c1"
+            android:orientation="vertical"
+            >
+
+        </LinearLayout>
 
 
 
