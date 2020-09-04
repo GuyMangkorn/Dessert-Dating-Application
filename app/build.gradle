@@ -36,6 +36,7 @@ dependencies {
 
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.afollestad:viewpagerdots:1.0.0' //เทส dot Viewpager
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.yarolegovich:lovely-dialog:1.1.0'
     implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'

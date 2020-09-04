@@ -36,9 +36,12 @@ import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
+import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
+import com.jabirdeveloper.tinderswipe.QAStore.QAObject
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class Switch_pageActivity : AppCompatActivity() {
@@ -61,7 +64,7 @@ class Switch_pageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-        getDataOncall()
+        //getDataOncall()
         getMyUser()
         /*MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)
@@ -158,7 +161,7 @@ class Switch_pageActivity : AppCompatActivity() {
                                 finish()
                                 startActivity(intent)
                             }
-                    val mGPSDialog:Dialog = builder.create()
+                    val mGPSDialog: Dialog = builder.create()
                     mGPSDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Switch_pageActivity, R.drawable.myrect2))
                     mGPSDialog.show()
                 }
@@ -305,7 +308,8 @@ class Switch_pageActivity : AppCompatActivity() {
 
         })
     }
-    var text:String = ""
+    private var resultFetchQA:ArrayList<QAObject> = ArrayList()
+    private var text:String = ""
     private fun getDataOncall(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
@@ -318,24 +322,33 @@ class Switch_pageActivity : AppCompatActivity() {
                 .addOnSuccessListener { task ->
                     val data = task.data as Map<*, *>
                     val questions = data.get("questions") as Map<*, *>
-                    Log.d("testDatatatat", data.get("questions").toString())
-                    val dd = questions.get("question1") as Map<*, *>
-                    val key = dd.keys.toString().replace("[", "").replace("]", "");
-                    Log.d("testDatatatat", key)
-                    //val gg = dd.get(key) as Map<*,*>
-                    //val ListChoice = gg.values.toList()
-                    //Log.d("testDatatatat",ListChoice.toString())
-                    //OpenDialog(key)
+                    Log.d("testDatatatat", questions.toString())
+                    val keys = questions.keys
+
+                    val Set = questions.get("Set1") as Map<*, *>
+
+
+                        for(entry2 in Set.keys){
+                            val value: String = entry2.toString()
+                            val key = Set.get(value) as Map<*,*>
+                            val keyString = key.keys.toString().replace("[", "").replace("]", "")
+                            Log.d("testDatatatat", keyString)
+                            val on = QAObject(keyString,key.get(keyString) as ArrayList<String>)
+                            resultFetchQA.add(on)
+
+                        }
+
+                    OpenDialog(resultFetchQA)
                 }
                 .addOnFailureListener{
                     Log.d("testDatatatat", "error")
                 }
     }
-   /* private fun OpenDialog(question : String){
-        val exampleClass:ExampleClass = ExampleClass()
-        exampleClass.setData(question)
-        exampleClass.show(supportFragmentManager,"example Dialog")
-    }*/
+   private fun OpenDialog(ListChoice: ArrayList<QAObject>){
+        val exampleClass: ExampleClass = ExampleClass()
+        exampleClass.setData(ListChoice)
+        exampleClass.show(supportFragmentManager, "example Dialog")
+    }
 
     fun setCurrentIndex(newValueFormCurrentIndex: Int) {
         if (newValueFormCurrentIndex > 0) {
