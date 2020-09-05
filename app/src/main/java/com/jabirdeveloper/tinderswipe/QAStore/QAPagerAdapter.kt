@@ -12,9 +12,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.R
 
 class QAPagerAdapter(val context: Context, val choice: ArrayList<QAObject>,val dialog: Dialog,val viewpager:ViewPager2) : RecyclerView.Adapter<QAPagerAdapter.Holder?>() {
+    private val hashMapQA:HashMap<String,Map<*,*>> = HashMap()
+    val userId = FirebaseAuth.getInstance().currentUser!!.uid
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val radioGroupChoice:RadioGroup = itemView.findViewById(R.id.radioGroup_QA)
         val radioGroupChoiceWeight:RadioGroup = itemView.findViewById(R.id.radioGroup_QAWeight)
@@ -60,24 +65,30 @@ class QAPagerAdapter(val context: Context, val choice: ArrayList<QAObject>,val d
             }
         }
         holder.confirmButton.setOnClickListener {
+            var answerWeight:Int=0
+            var answerQA:Int=0
             val chk1 = holder.radioGroupChoice.checkedRadioButtonId
             val chk2 = holder.radioGroupChoiceWeight.checkedRadioButtonId
             if (chk1 == -1 || chk2 == -1) {
                 Toast.makeText(context,"กรุณาเลือกคำตอบและตอบให้ครบถ้วน",Toast.LENGTH_SHORT).show()
             } else {
                 when (chk1) {
-                    R.id.radioButton_QA1 -> Log.d("Check_IsCheck", "*1*")
-                    R.id.radioButton_QA2 -> Log.d("Check_IsCheck", "*0*")
+                    R.id.radioButton_QA1 -> answerQA = 1
+                    R.id.radioButton_QA2 -> answerQA = 0
                 }
                 when (chk2) {
-                    R.id.radioButton_QAWeight1 -> Log.d("Check_IsCheck", "1 point")
-                    R.id.radioButton_QAWeight2 -> Log.d("Check_IsCheck", "10 points")
-                    R.id.radioButton_QAWeight3 -> Log.d("Check_IsCheck", "100 points")
-                    R.id.radioButton_QAWeight4 -> Log.d("Check_IsCheck", "150 points")
-                    R.id.radioButton_QAWeight5 -> Log.d("Check_IsCheck", "250 points")
+                    R.id.radioButton_QAWeight1 -> answerWeight = 1
+                    R.id.radioButton_QAWeight2 -> answerWeight = 10
+                    R.id.radioButton_QAWeight3 -> answerWeight = 100
+                    R.id.radioButton_QAWeight4 -> answerWeight = 150
+                    R.id.radioButton_QAWeight5 -> answerWeight = 250
                 }
+                val inputMap =  mapOf("question" to answerQA, "weight" to answerWeight)
+                hashMapQA.put("question${position+1}", inputMap as Map<*,*>)
+                Log.d("Check_IsCheck",hashMapQA.toString())
                 viewpager.setCurrentItem(++viewpager.currentItem, false)
                 if (position==itemCount-1){
+                    FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").child("Set1").setValue(hashMapQA)
                     dialog.dismiss()
                 }
             }
