@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -176,8 +177,20 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
             startActivity(intent)
         })
         view.findViewById<LinearLayout>(R.id.linearLayout22).setOnClickListener {
-            val intent = Intent(context, SendEmail::class.java)
-            startActivity(intent)
+//            val intent = Intent(context, SendEmail::class.java)
+//            startActivity(intent)
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:")
+            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("dessert2500@gmail.com"))
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Dessert 1.0.0 ข้อเสนอแนะ")
+            intent.putExtra(Intent.EXTRA_TEXT, "มีอะไรก็พูดมา")
+            try {
+                startActivity(Intent.createChooser(intent, "Choose email"))
+            }
+            catch (e: Exception)
+            {
+
+            }
         }
 
         return view

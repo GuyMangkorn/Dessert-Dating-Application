@@ -30,19 +30,14 @@ public class JavaMailAPI extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        String host = "smtp.gmail.com";
-        String username = "techdeveloper.aj@gmail.com";
-        //Enter your Gmail password
-        String password = "";
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.socketFactory.port", "465");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.port", "465");
 
-        Properties prop = new Properties();
-        prop.put("mail.smtp.auth", true);
-        prop.put("mail.smtp.starttls.enable", "true");
-        prop.put("mail.smtp.host", host);
-        prop.put("mail.smtp.port", 587);
-        prop.put("mail.smtp.ssl.trust", host);
-
-        session = Session.getDefaultInstance(prop, new javax.mail.Authenticator() {
+        session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(Utils.EMAIL, Utils.PASSWORD);
             }
