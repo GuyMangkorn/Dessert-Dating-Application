@@ -80,18 +80,33 @@
             android:orientation="horizontal"
             android:layout_height="wrap_content">
             <TextView
+                android:textStyle="bold"
+                android:textColor="@color/c3"
                 android:id="@+id/QA_dismiss"
                 android:padding="10dp"
                 android:text="@string/dismiss_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
+                android:textStyle="bold"
+                android:textColor="@color/c3"
                 android:id="@+id/QA_confirm"
                 android:padding="10dp"
-                android:text="@string/ok_QA"
+                android:text="@string/next_QA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/page_QA"
+                android:textSize="10dp"
+                android:hint="0 / 3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
             </LinearLayout>
 

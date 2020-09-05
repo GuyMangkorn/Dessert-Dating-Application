@@ -64,7 +64,7 @@ class Switch_pageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-        //getDataOncall()
+        getDataOncall()
         getMyUser()
         /*MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)

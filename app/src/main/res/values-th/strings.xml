@@ -160,7 +160,9 @@
     <string name="choose_gender">โปรดเลือกเพศของคุณ</string>
     <string name="choose_photo">โปรดเลือกรูปโปรไฟล์ของคุณ</string>
     <string name="off_status">ไม่แสดงสถานะ</string>
-    <string name="ok_QA">ตกลง</string>
+    <string name="ok_QA">ยืนยัน</string>
+    <string name="next_QA">ถัดไป</string>
+    <string name="previous_QA">ย้อนกลับ</string>
     <string name="QA_choice1">สำคัญนิดหน่อย</string>
     <string name="QA_choice2">ค่อนข้างสำคัญ</string>
     <string name="QA_choice3">สำคัญ</string>
