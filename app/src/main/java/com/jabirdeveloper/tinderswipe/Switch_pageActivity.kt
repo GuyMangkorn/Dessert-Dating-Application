@@ -14,6 +14,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -38,6 +40,10 @@ import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
+import com.skyfishjy.library.RippleBackground
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -60,17 +66,16 @@ class Switch_pageActivity : AppCompatActivity() {
     private val page4 = MatchesActivity()
     private  var functions = Firebase.functions
     private var activeFragment: Fragment = MainActivity()
+    private lateinit var candy:LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-        //getDataOncall()
+        candy = findViewById(R.id.candyCane)
+      //  val rippleBackground: RippleBackground = findViewById<RippleBackground>(R.id.content)
+      //  rippleBackground.startRippleAnimation()
         getMyUser()
-        /*MobileAds.initialize(this) {}
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
-        mInterstitialAd.show()*/
+
         rewardedAd = RewardedAd(this,
                 "ca-app-pub-3940256099942544/5224354917")
         val adLoadCallback = object: RewardedAdLoadCallback() {
@@ -119,7 +124,6 @@ class Switch_pageActivity : AppCompatActivity() {
             id = R.id.item1
             intent.removeExtra("back")
         }
-
         bar!!.setOnItemSelectedListener(object : ChipNavigationBar.OnItemSelectedListener {
             override fun onItemSelected(i: Int) {
                 Log.d("num", i.toString())
@@ -169,144 +173,100 @@ class Switch_pageActivity : AppCompatActivity() {
             }
         })
     }
-    fun createAndLoadRewardedAd(): RewardedAd {
-        val rewardedAd = RewardedAd(this, "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object: RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
-                // Ad successfully loaded.
-            }
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
-                // Ad failed to load.
-            }
-        }
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
-        return rewardedAd
-    }
+
     private fun getMyUser()
     {
-        var current = FirebaseAuth.getInstance().uid.toString()
         val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
+        GlobalScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
 
-        val date_user: String
-        val time_user: String
-        val calendar = Calendar.getInstance()
-        val currentDate = SimpleDateFormat("dd/MM/yyyy")
-        date_user = currentDate.format(calendar.time)
-        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-        time_user = currentTime.format(calendar.time)
-        val connectedRef: DatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected")
-        connectedRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val connected = snapshot.getValue(Boolean::class.java)!!
-                if (connected) {
-                    val status_up = HashMap<String?, Any?>()
-                    status_up["status"] = 1
-                    userDb.updateChildren(status_up)
-                } else {
-                    Log.d("TAG112", "not connected")
+            val connectedRef: DatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected")
+            connectedRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val connected = snapshot.getValue(Boolean::class.java)!!
+                    if (connected) {
+                        val status_up = HashMap<String?, Any?>()
+                        status_up["status"] = 1
+                        userDb.updateChildren(status_up)
+                    } else {
+                        Log.d("TAG112", "not connected")
+                    }
+                    userDb.onDisconnect().let {
+                        val status_up2 = HashMap<String?, Any?>()
+                        status_up2["date"] = ServerValue.TIMESTAMP
+                        status_up2["status"] = 0
+                        it.updateChildren(status_up2)
+                    }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("TAG112", "Listener was cancelled")
-            }
-        })
-
-       // userDb.child("lastOnline").onDisconnect().setValue(ServerValue.TIMESTAMP)
-                userDb.onDisconnect().let {
-            val status_up2 = HashMap<String?, Any?>()
-            status_up2["date"] = ServerValue.TIMESTAMP
-            status_up2["status"] = 0
-            //status_up2["time"] = time_user
-            it.updateChildren(status_up2)
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w("TAG112", "Listener was cancelled")
+                }
+            })
         }
-        val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-        userDb.addListenerForSingleValueEvent(object : ValueEventListener {
-            @SuppressLint("SetTextI18n")
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                /*   val gender  = if (dataSnapshot.child("sex").value == "Male") {
-                    MyUser.putInt("gender",R.drawable.ic_man)
-                } else MyUser.putInt("gender",R.drawable.ic_woman)*/
-                /*   if(dataSnapshot.hasChild("lastOnline")){
-                    val date = Date(dataSnapshot.child("lastOnline").value as Long)
-                    val sfd = SimpleDateFormat("dd-MM-yyyy HH:mm",
-                            Locale.getDefault())
-                    val text = sfd.format(date)
-                    var ty = date.time
-                    Log.d("time", text)
-                    Log.d("time", ty.toString())
-                }*/
-                val df: LocalDate
-                val sfd = SimpleDateFormat("dd-MM-yyyy",
-                        Locale.getDefault())
-                Date().time
-                Log.d("time111", sfd.format(1598428015326))
-                /*   if (dataSnapshot.hasChild("birth")) {
-                    val date = Date(dataSnapshot.child("birth").value as Long)
-                    val text = sfd.format(date)
-                    Log.d("time111", sfd.format(dataSnapshot.child("birth").value as Long))
-
-                    sfd.format(Calendar.getInstance().time)
-                    Log.d("time111", sfd.format(Calendar.getInstance().time).toString())
-                    val t = Instant.ofEpochMilli( dataSnapshot.child("birth").value as Long).atZone(ZoneId.systemDefault()).toLocalDate()
-
-
-                    Log.d("time111", Period.between( t, LocalDate.now() ).years.toString())
-
-
-                    //val period = Period(date, end, PeriodType.yearMothDay())
-                }*/
-
-                if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {
-                    Log.d("vvv", "1")
-                    MyUser.putBoolean("Vip", true)
-                } else MyUser.putBoolean("Vip", false)
-                if (dataSnapshot.child("connection").hasChild("yep")) {
-                    MyUser.putInt("c", dataSnapshot.child("connection").child("yep").childrenCount.toInt())
-                }
-                if (dataSnapshot.hasChild("see_profile")) {
-                    MyUser.putInt("s", dataSnapshot.child("see_profile").childrenCount.toInt())
-                }
-                MyUser.putString("name", dataSnapshot.child("name").value.toString())
-                MyUser.putInt("Age", dataSnapshot.child("Age").value.toString().toInt())
-                MyUser.putInt("MaxLike", dataSnapshot.child("MaxLike").value.toString().toInt())
-                MyUser.putInt("MaxChat", dataSnapshot.child("MaxChat").value.toString().toInt())
-                MyUser.putInt("MaxAdmob", dataSnapshot.child("MaxAdmob").value.toString().toInt())
-                MyUser.putInt("MaxStar", dataSnapshot.child("MaxStar").value.toString().toInt())
-                MyUser.putInt("OppositeUserAgeMin", dataSnapshot.child("OppositeUserAgeMin").value.toString().toInt())
-                MyUser.putInt("OppositeUserAgeMax", dataSnapshot.child("OppositeUserAgeMax").value.toString().toInt())
-                MyUser.putString("OppositeUserSex", dataSnapshot.child("OppositeUserSex").value.toString())
-                MyUser.putString("Distance", dataSnapshot.child("Distance").value.toString())
-
-                if (dataSnapshot.hasChild("Location")) {
-                    MyUser.putString("X", dataSnapshot.child("Location").child("X").value.toString())
-                    MyUser.putString("Y", dataSnapshot.child("Location").child("Y").value.toString())
+        GlobalScope.launch(Dispatchers.IO) {
+            userDb.addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        get(dataSnapshot)
 
                 }
-                if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
-                    MyUser.putString("image", dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString())
 
-                } else {
-                    MyUser.putString("image", "")
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.d("tagh", "3")
                 }
-                MyUser.apply()
-                supportFragmentManager.beginTransaction().apply {
-                    add(R.id.fragment_container2, page1).hide(page1)
-                    add(R.id.fragment_container2, page2).hide(page2)
-                    add(R.id.fragment_container2, page3).hide(page3)
-                    add(R.id.fragment_container2, page4).hide(page4)
-                }.commit()
-                bar!!.setItemSelected(id, true)
 
+            })
+        }
+
+    }
+    private fun get(dataSnapshot : DataSnapshot)
+    {
+        GlobalScope.launch(Dispatchers.Default)
+        {
+            val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+            if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {
+                Log.d("vvv", "1")
+                MyUser.putBoolean("Vip", true)
+            } else MyUser.putBoolean("Vip", false)
+            if (dataSnapshot.child("connection").hasChild("yep")) {
+                MyUser.putInt("c", dataSnapshot.child("connection").child("yep").childrenCount.toInt())
+            }
+            if (dataSnapshot.hasChild("see_profile")) {
+                MyUser.putInt("s", dataSnapshot.child("see_profile").childrenCount.toInt())
+            }
+            MyUser.putString("name", dataSnapshot.child("name").value.toString())
+            MyUser.putInt("Age", dataSnapshot.child("Age").value.toString().toInt())
+            MyUser.putInt("MaxLike", dataSnapshot.child("MaxLike").value.toString().toInt())
+            MyUser.putInt("MaxChat", dataSnapshot.child("MaxChat").value.toString().toInt())
+            MyUser.putInt("MaxAdmob", dataSnapshot.child("MaxAdmob").value.toString().toInt())
+            MyUser.putInt("MaxStar", dataSnapshot.child("MaxStar").value.toString().toInt())
+            MyUser.putInt("OppositeUserAgeMin", dataSnapshot.child("OppositeUserAgeMin").value.toString().toInt())
+            MyUser.putInt("OppositeUserAgeMax", dataSnapshot.child("OppositeUserAgeMax").value.toString().toInt())
+            MyUser.putString("OppositeUserSex", dataSnapshot.child("OppositeUserSex").value.toString())
+            MyUser.putString("Distance", dataSnapshot.child("Distance").value.toString())
+
+            if (dataSnapshot.hasChild("Location")) {
+                MyUser.putString("X", dataSnapshot.child("Location").child("X").value.toString())
+                MyUser.putString("Y", dataSnapshot.child("Location").child("Y").value.toString())
 
             }
+            if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
+                MyUser.putString("image", dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString())
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("tagh", "3")
+            } else {
+                MyUser.putString("image", "")
             }
+            MyUser.apply()
+        }
 
-        })
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.fragment_container2, page1).hide(page1)
+            add(R.id.fragment_container2, page2).hide(page2)
+            add(R.id.fragment_container2, page3).hide(page3)
+            add(R.id.fragment_container2, page4).hide(page4)
+        }.commit()
+        bar!!.setItemSelected(id, true).let { candy.visibility = View.GONE }
     }
     private var resultFetchQA:ArrayList<QAObject> = ArrayList()
     private var text:String = ""
@@ -330,10 +290,10 @@ class Switch_pageActivity : AppCompatActivity() {
 
                         for(entry2 in Set.keys){
                             val value: String = entry2.toString()
-                            val key = Set.get(value) as Map<*,*>
+                            val key = Set.get(value) as Map<*, *>
                             val keyString = key.keys.toString().replace("[", "").replace("]", "")
                             Log.d("testDatatatat", keyString)
-                            val on = QAObject(keyString,key.get(keyString) as ArrayList<String>)
+                            val on = QAObject(keyString, key.get(keyString) as ArrayList<String>)
                             resultFetchQA.add(on)
 
                         }
