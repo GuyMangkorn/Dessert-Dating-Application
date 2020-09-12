@@ -88,7 +88,7 @@ class QAPagerAdapter(val context: Context, val choice: ArrayList<QAObject>,val d
                 Log.d("Check_IsCheck",hashMapQA.toString())
                 viewpager.setCurrentItem(++viewpager.currentItem, false)
                 if (position==itemCount-1){
-                    FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").child("Set1").setValue(hashMapQA)
+                    FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").setValue(hashMapQA)
                     dialog.dismiss()
                 }
             }

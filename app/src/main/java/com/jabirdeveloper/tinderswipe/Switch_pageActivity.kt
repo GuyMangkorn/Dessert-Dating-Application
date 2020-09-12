@@ -66,6 +66,7 @@ class Switch_pageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_switch_page)
         //getDataOncall()
         getMyUser()
+        //getUidtest()
         /*MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)
         mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
@@ -310,6 +311,20 @@ class Switch_pageActivity : AppCompatActivity() {
     }
     private var resultFetchQA:ArrayList<QAObject> = ArrayList()
     private var text:String = ""
+    private fun getUidtest() : Task<HttpsCallableResult> {
+        val data = hashMapOf(
+                "uid" to text
+        )
+        return  functions
+                .getHttpsCallable("getPercentageMatching")
+                .call(data)
+                .addOnSuccessListener { task ->
+                    val data = task.data as Map<*,*>
+                    Log.d("testDatatatat", data.toString())
+                }.addOnFailureListener{
+                    Log.d("testDatatatat", "error")
+                }
+    }
     private fun getDataOncall(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
