@@ -65,6 +65,7 @@ class Switch_pageActivity : AppCompatActivity() {
         loadLocal()
         setContentView(R.layout.activity_switch_page)
         //getDataOncall()
+        //QAcalculate()
         getMyUser()
         /*MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)
@@ -168,6 +169,23 @@ class Switch_pageActivity : AppCompatActivity() {
 
             }
         })
+    }
+    fun QAcalculate() : Task<HttpsCallableResult> {
+        // Create the arguments to the callable function.
+        val data = hashMapOf(
+                "questions" to text
+        )
+        return functions
+                .getHttpsCallable("getPercentageMatching")
+                .call(data)
+                .addOnSuccessListener { task ->
+                    val data = task.data as Map<*, *>
+                    Log.d("testDatatatat", data.toString())
+
+                }
+                .addOnFailureListener{
+                    Log.d("testDatatatat", "error")
+                }
     }
     fun createAndLoadRewardedAd(): RewardedAd {
         val rewardedAd = RewardedAd(this, "ca-app-pub-3940256099942544/5224354917")
