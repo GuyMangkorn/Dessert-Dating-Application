@@ -26,6 +26,7 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.vision.text.Line
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -67,11 +68,6 @@ class Switch_pageActivity : AppCompatActivity() {
         //getDataOncall()
         //QAcalculate()
         getMyUser()
-        /*MobileAds.initialize(this) {}
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
-        mInterstitialAd.show()*/
         rewardedAd = RewardedAd(this,
                 "ca-app-pub-3940256099942544/5224354917")
         val adLoadCallback = object: RewardedAdLoadCallback() {
@@ -315,7 +311,7 @@ class Switch_pageActivity : AppCompatActivity() {
                     add(R.id.fragment_container2, page3).hide(page3)
                     add(R.id.fragment_container2, page4).hide(page4)
                 }.commit()
-                bar!!.setItemSelected(id, true)
+                bar!!.setItemSelected(id, true).let { findViewById<LinearLayout>(R.id.candyCane).visibility = View.GONE }
 
 
             }

@@ -7,6 +7,7 @@
     <color name="c2">#26C6DA</color>
     <color name="c3">#FFA726</color>
     <color name="c4">#AB47BC</color>
+    <color name="c4tran">#80AB47BC</color>
     <color name="text_gray">#9A9A9A</color>
     <color name="text_black_gray">#292929</color>
     <color name="background_gray">#F1F1F1</color>

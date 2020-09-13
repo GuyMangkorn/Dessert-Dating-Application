@@ -10,10 +10,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -51,9 +48,9 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 0
     private lateinit var thai: TextView
     private lateinit var eng: TextView
-    private lateinit var face: LinearLayout
-    private lateinit var google: LinearLayout
-    private lateinit var mPhone: LinearLayout
+    private lateinit var face: ImageView
+    private lateinit var google: ImageView
+    private lateinit var mPhone: ImageView
     private lateinit var dialog: Dialog
     private lateinit var dialog2: Dialog
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,11 +58,7 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         loadLocal()
         setContentView(R.layout.activity_choose_login_registration)
 
-        val constraintLayout: ConstraintLayout = findViewById(R.id.gra)
-        val animationDrawable: AnimationDrawable = constraintLayout.background as AnimationDrawable
-        animationDrawable.setEnterFadeDuration(10)
-        animationDrawable.setExitFadeDuration(3000)
-        animationDrawable.start()
+        findViewById<TextView>(R.id.clickToTest).setOnClickListener {  findViewById<LinearLayout>(R.id.testlogin).visibility = View.VISIBLE; findViewById<TextView>(R.id.clickToTest).visibility = View.GONE}
         mAuth = FirebaseAuth.getInstance()
         thai = findViewById(R.id.thai_lang)
         eng = findViewById(R.id.eng_lang)
@@ -85,11 +78,11 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val langure = preferences.getString("My_Lang", "")
         if (langure == "th") {
-            thai.setTextColor(ContextCompat.getColor(applicationContext, R.color.cpb_white))
-            eng.setTextColor(ContextCompat.getColor(applicationContext, R.color.white_tran))
+            thai.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4))
+            eng.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4tran))
         } else {
-            thai.setTextColor(ContextCompat.getColor(applicationContext, R.color.white_tran))
-            eng.setTextColor(ContextCompat.getColor(applicationContext, R.color.cpb_white))
+            thai.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4tran))
+            eng.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4))
         }
         firebaseAuthStateListener = AuthStateListener {
             val user = FirebaseAuth.getInstance().currentUser
