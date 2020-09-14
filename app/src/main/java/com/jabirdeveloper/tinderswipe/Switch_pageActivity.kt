@@ -177,6 +177,9 @@ class Switch_pageActivity : AppCompatActivity() {
                 .addOnSuccessListener { task ->
                     val data = task.data as Map<*, *>
                     Log.d("testDatatatat", data.toString())
+                    val ff = data.get("dictionary") as Map<*,*>
+                    Log.d("testDatatatat", ff.get("ebXPfMCd45OYfgzRXq2DYztLJT93").toString())
+
 
                 }
                 .addOnFailureListener{
