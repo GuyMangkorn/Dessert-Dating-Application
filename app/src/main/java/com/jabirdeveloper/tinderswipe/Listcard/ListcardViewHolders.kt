@@ -29,6 +29,7 @@ class ListcardViewHolders(itemView: View, private val context: Context) : Recycl
     var mDistance: TextView = itemView.findViewById(R.id.distance_text)
     var mStatus: TextView = itemView.findViewById(R.id.status_time)
     var tag: TextView = itemView.findViewById(R.id.tagkm)
+    var percent:TextView = itemView.findViewById(R.id.Latest_chat)
     var myself: TextView = itemView.findViewById(R.id.myself)
     var mMatchImage: ImageView = itemView.findViewById(R.id.Match_Image)
     var on_off_list: ImageView = itemView.findViewById(R.id.on_off_matches)

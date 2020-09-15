@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -42,6 +43,7 @@ class ListcardActivity : Fragment() {
     var x_opposite = 0.0
     var y_opposite = 0.0
     private var isScroll = false
+    private var percentageMath:Map<*,*>? = null
     private lateinit var currentUserId: String
     private var oppositUserSex: String? = null
     private var age = 0
@@ -84,7 +86,7 @@ class ListcardActivity : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
 
 
-            getStartAt()
+            percentage()
 
         }
 
@@ -187,7 +189,26 @@ class ListcardActivity : Fragment() {
         }
         callFunction(100, true, 0)
 
+    }
+    private fun percentage(){
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val data = hashMapOf(
+                    "question" to "Questions"
+            )
+            functions
+                    .getHttpsCallable("getPercentageMatching")
+                    .call(data)
+                    .addOnSuccessListener { task ->
+                        val data = task.data as Map<*, *>
+                        Log.d("testDatatatat", data.toString())
+                        percentageMath = data.get("dictionary") as Map<*, *>
 
+                        getStartAt()
+                    }
+                    .addOnFailureListener {
+                        Log.d("testDatatatat", "error")
+                    }
+        }
     }
 
     private fun callFunction(limit: Int, type: Boolean, count: Int) {
@@ -262,7 +283,14 @@ class ListcardActivity : Fragment() {
             }
             val df2 = DecimalFormat("#.#")
             val dis = df2.format(user["distance_other"])
-            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, off_status, typetime, time)
+            var percentAdd:String? = "0"
+            if(percentageMath!!.get(user["key"].toString()) != null){
+                percentAdd = percentageMath!!.get(user["key"].toString()).toString()
+                //percentAdd = percentAdd.toString()
+                //Log.d("testDatatatat", percentAdd)
+            }
+            //Log.d("testDatatatat", percentageMath!!.get(user["key"].toString()).toString())
+            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, off_status, typetime, time,percentAdd)
 
             resultMatches.add(obj)
             if (resultMatches.size > 0) {
@@ -284,7 +312,6 @@ class ListcardActivity : Fragment() {
 
 
 }
-
 
 
 
