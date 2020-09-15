@@ -28,7 +28,9 @@ class ListcardAdapter(private val matchesList: ArrayList<ListcardObject?>, priva
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ListcardViewHolders, position: Int) {
-
+        //Log.d("testDatatatat", matchesList.elementAt(position)!!.percent.toString())
+        holder.percent.visibility = View.VISIBLE
+        holder.percent.text = "ความเข้ากัน ${(matchesList.elementAt(position)!!.percent.toString())} %"
         Log.d("dddddddddddddddddddddd", matchesList.size.toString())
         Glide.with(context).load(matchesList[position]!!.profileImageUrl).listener(object : RequestListener<Drawable?> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {

@@ -54,7 +54,7 @@ class SwitchpageActivity : AppCompatActivity() {
         loadLocal()
         setContentView(R.layout.activity_switch_page)
         getMyUser()
-
+        //QAcalculate()
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
             val choice = this.resources.getStringArray(R.array.report_item)
@@ -145,7 +145,7 @@ class SwitchpageActivity : AppCompatActivity() {
     fun QAcalculate(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
-                "questions" to text
+                "uid" to text
         )
         return functions
                 .getHttpsCallable("getPercentageMatching")
