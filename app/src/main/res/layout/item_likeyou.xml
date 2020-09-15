@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/dd_22"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="90dp"
         android:padding="3dp">
 
         <RelativeLayout
@@ -70,25 +70,26 @@
                         android:maxEms="7"
                         android:layout_height="wrap_content"
                         android:text="Matches's Name"
-                        android:textColor="@color/text_black_gray"
+                        android:textColor="#EC407A"
                         android:textSize="16dp"
+
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:visibility="visible"
                         android:id="@+id/tagkm"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:background="@drawable/tag2"
+
                         android:paddingLeft="4dp"
                         android:paddingRight="4dp"
                         android:text="18"
                         android:textAlignment="center"
-                        android:textColor="@color/c2"
-                        android:textSize="12dp"
+                        android:textColor="@color/c3"
+                        android:textSize="16dp"
                         />
 
 
@@ -101,7 +102,7 @@
                     android:layout_gravity="center"
 
                     android:text="วันนี้ 15.00"
-                    android:textColor="@color/text_black_gray"
+                    android:textColor="@color/c4"
                     android:textSize="12dp" />
 
 

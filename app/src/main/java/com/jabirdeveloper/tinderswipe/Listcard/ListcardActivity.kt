@@ -116,25 +116,7 @@ class ListcardActivity : Fragment() {
                         callFunction(countLimit, false, resultMatches.size)
                         startNode = 20
                     }
-                    /*   Log.d("valueofStartNOde",startNode.toString()+" , "+br_check+" , "+resultMatches2.size )
-                       startNode += 20
-                       if(startNode > resultMatches2.size){
-                           startNode = resultMatches2.size-1
-                           count2 = 1;
-                           Log.d("valueofStartNOde",startNode.toString())
-                       }
-                       Log.d("valueofStartNOde_final",startNode.toString())
-                       if(count2 != 1) {
-                           for (i in startNode - 20 until startNode) {
-                               val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
-                                       resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
-                                       resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
-                               resultMatches.add(obj)
-                           }
-                           mMatchesAdapter.notifyDataSetChanged()
-                       }*/
 
-                    //FecthMatchformation()
 
                 }
 
@@ -174,8 +156,6 @@ class ListcardActivity : Fragment() {
         val userdb = FirebaseDatabase.getInstance().reference.child("Users")
         userdb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                br_check = snapshot.childrenCount.toInt()
-                Log.d("dddddd", br_check.toString())
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
                     getUsergender()
                 }
@@ -260,16 +240,6 @@ class ListcardActivity : Fragment() {
             val user = result2[x] as Map<*, *>
             Log.d("ghu", user["name"].toString() + " , " + user["distance_other"].toString())
 
-//
-//            var time_opposite = "null"
-//            var date_opposite = "null"
-//            if (user["time"] != null) {
-//                time_opposite = user["time"].toString()
-//            }
-//            if (user["date"] != null) {
-//                date_opposite = user["date"].toString()
-//            }
-//            time_change(time_opposite, date_opposite)
             if (user["typeTime"] != null) {
                 typetime = user["typeTime"].toString()
                 Log.d("type55", "0")
@@ -307,287 +277,11 @@ class ListcardActivity : Fragment() {
         else mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
     }
 
-    private val UidMatch: MutableList<String?>? = java.util.ArrayList()
-    private var chk_num1 = 0
-    private var chk_num2 = 0
-    private fun FecthMatchformation() {
-        val userDb = FirebaseDatabase.getInstance().reference.child("Users")
-        userDb.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                Log.d("checksnap", dataSnapshot.key)
-                ++br_check2
-                age = dataSnapshot.child("Age").value.toString().toInt()
-                if (age in OppositeUserAgeMin..OppositeUserAgeMax && !dataSnapshot.child("connection").child("matches").hasChild(currentUserId)
-                        && dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")
-                        && currentUserId != dataSnapshot.key
-                        && !dataSnapshot.hasChild("off_list")) {
-                    x_opposite = dataSnapshot.child("Location").child("X").value.toString().toDouble()
-                    y_opposite = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
-                    val distance = CalculateDistance.calculate(x_user, y_user, x_opposite, y_opposite)
-                    if (distance < distanceUser) {
-                        if (oppositUserSex == "All") {
-                            if (!UidMatch!!.contains(dataSnapshot.key))
-                                fet(dataSnapshot, distance)
-                        } else if (dataSnapshot.child("sex").value.toString() == oppositUserSex) {
-                            if (!UidMatch!!.contains(dataSnapshot.key))
-                                fet(dataSnapshot, distance)
-                        }
-                    }
-                }
-                Log.d("ddf", resultMatches.size.toString())
-                if (resultMatches.size > 0) {
-                    pro.visibility = View.GONE
-                    // search.visibility = View.GONE
-                    // handler.removeCallbacks(runnable)
-                }
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    private var br_check = 0
-    private var br_check2 = 0
-    private fun fet(dataSnapshot: DataSnapshot, distance_1: Double) {
-        UidMatch!!.add(dataSnapshot.key)
-        var time_opposite = "null"
-        var date_opposite = "null"
-
-        if (dataSnapshot.child("Status").hasChild("time")) {
-            time_opposite = dataSnapshot.child("Status").child("time").value.toString()
-        }
-        if (dataSnapshot.child("Status").hasChild("date")) {
-            date_opposite = dataSnapshot.child("Status").child("date").value.toString()
-        }
-        //time_change(time_opposite, date_opposite)
-        var name = ""
-        var profileImageUrl = ""
-        val x = ""
-        val y = ""
-        var myself = ""
-        var off_status = false
-        val Age: String = dataSnapshot.child("Age").value.toString()
-        val gender: String = dataSnapshot.child("sex").value.toString()
-        if (dataSnapshot.hasChild("myself")) {
-            myself = dataSnapshot.child("myself").value.toString()
-        }
-        if (dataSnapshot.child("name").value != null) {
-            name = dataSnapshot.child("name").value.toString()
-        }
-        profileImageUrl = "default"
-        if (dataSnapshot.hasChild("ProfileImage")) {
-            profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
-        }
-        var status = "offline"
-        if (dataSnapshot.child("Status").hasChild("status")) {
-            status = dataSnapshot.child("Status").child("status").value.toString()
-        }
-        if (dataSnapshot.hasChild("off_status")) {
-            off_status = true
-        }
-        // val obj = ListcardObject(userId, name, profileImageUrl, distance_1, status, sum_string, Age, gender, myself, off_status)
-
-        //resultMatches2.add(obj)
-
-        /*
-        resultMatches2.sortWith(Comparator { o1, o2 ->
-            val chk = o1!!.time!!.substring(0, 1)
-            val chk2 = o2!!.time!!.substring(0, 1)
-            if (chk == "d") {
-                var sum = 0
-                sum = o1.time!!.substring(1).toInt()
-                chk_num1 = sum * 60 * 24
-            } else {
-                chk_num1 = o1.time!!.toInt()
-            }
-            if (chk2 == "d") {
-                var sum2 = 0
-                sum2 = o2.time!!.substring(1).toInt()
-                chk_num2 = sum2 * 60 * 24
-            } else {
-                chk_num2 = o2.time!!.toInt()
-            }
-            Log.d("125", o1.getName())
-            chk_num1.compareTo(chk_num2)
-        })
-        resultMatches2.sortWith(Comparator { o1, o2 -> ((o1!!.getDistance() * 10).toInt()).compareTo((o2!!.getDistance() * 10).toInt()) })
-        resultMatches2.sortWith(Comparator { o1, o2 ->
-            var b1 = false
-            var b2 = false
-            var chk_b1 = 0
-            var chk_b2 = 0
-            if (o1!!.getStatus_opposite() == "online") {
-                b1 = true
-            }
-            if (o2!!.getStatus_opposite() == "online") {
-                b2 = true
-            }
-            if (b1) {
-                chk_b1 = 1
-            }
-            if (b2) {
-                chk_b2 = 1
-            }
-            chk_b2 - chk_b1
-        })*/
-        Log.d("checkBrbrbrbr", (br_check - 1).toString() + " : " + startNode)
-        if (br_check2 == br_check) {
-            /*resultMatches2.sortWith(Comparator { o1, o2 ->
-                val chk = o1!!.time!!.substring(0, 1)
-                val chk2 = o2!!.time!!.substring(0, 1)
-                if (chk == "d") {
-                    var sum = 0
-                    sum = o1.time!!.substring(1).toInt()
-                    chk_num1 = sum * 60 * 24
-                } else {
-                    chk_num1 = o1.time!!.toInt()
-                }
-                if (chk2 == "d") {
-                    var sum2 = 0
-                    sum2 = o2.time!!.substring(1).toInt()
-                    chk_num2 = sum2 * 60 * 24
-                } else {
-                    chk_num2 = o2.time!!.toInt()
-                }
-                Log.d("125", o1.name)
-                chk_num1.compareTo(chk_num2)
-            })
-            resultMatches2.sortWith(Comparator { o1, o2 -> ((o1!!.distance * 10).toInt()).compareTo((o2!!.distance * 10).toInt()) })
-            resultMatches2.sortWith(Comparator { o1, o2 ->
-                var b1 = false
-                var b2 = false
-                var chk_b1 = 0
-                var chk_b2 = 0
-                if (o1!!.status_opposite == "online") {
-                    b1 = true
-                }
-                if (o2!!.status_opposite == "online") {
-                    b2 = true
-                }
-                if (b1) {
-                    chk_b1 = 1
-                }
-                if (b2) {
-                    chk_b2 = 1
-                }
-                chk_b2 - chk_b1
-            })*/
-//
-//            if(resultMatches2.size-1 < startNode){
-//                startNode = resultMatches2.size-1
-//            }
-//            for (i in 0 until startNode) {
-//
-//                val obj = ListcardObject(resultMatches2.elementAt(i)!!.userId, resultMatches2.elementAt(i)!!.name, resultMatches2.elementAt(i)!!.profileImageUrl,
-//                        resultMatches2.elementAt(i)!!.distance, resultMatches2.elementAt(i)!!.status_opposite, resultMatches2.elementAt(i)!!.time,
-//                        resultMatches2.elementAt(i)!!.Age, resultMatches2.elementAt(i)!!.gender, resultMatches2.elementAt(i)!!.myself, resultMatches2.elementAt(i)!!.off_status)
-//                resultMatches.add(obj)
-//
-//
-//            }
-//
-//
-//            mMatchesAdapter.notifyDataSetChanged()
-        }
-        // mMatchesAdapter.notifyDataSetChanged()
-
-    }
-
     private val resultMatches: ArrayList<ListcardObject?> = ArrayList()
-    private val resultMatches2: ArrayList<ListcardObject?> = ArrayList()
     private fun getDataSetMatches(): ArrayList<ListcardObject?> {
         return resultMatches
     }
 
-
-    private fun time_change(time_opposite: String, date_opposite: String) {
-        val dateUser: String
-        val timeUser: String
-        var diffDated = 0
-        val calendar = Calendar.getInstance()
-        val currentDate = SimpleDateFormat("dd/MM/yyyy")
-        dateUser = currentDate.format(calendar.time)
-        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-        timeUser = currentTime.format(calendar.time)
-        if (date_opposite !== "null") {
-            var oppositeDate: Date? = null
-            try {
-                oppositeDate = currentDate.parse(date_opposite)
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
-            var userDate: Date? = null
-            try {
-                userDate = currentDate.parse(dateUser)
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
-            val diffDate = userDate!!.time - oppositeDate!!.time
-            diffDated = TimeUnit.DAYS.convert(diffDate, TimeUnit.MILLISECONDS).toInt()
-        }
-        if (time_opposite !== "null") {
-            val timeOppositeDate = date_opposite.substring(0, 2).toInt()
-            val timeUserDate = dateUser.substring(0, 2).toInt()
-            val timeOppositeHr = time_opposite.substring(0, 2).toInt()
-            val timeOppositeMm = time_opposite.substring(3, 5).toInt()
-            val timeUserMm = timeUser.substring(3, 5).toInt()
-            val timeUserHr = timeUser.substring(0, 2).toInt()
-            var sum = 0
-            if (diffDated < 2) {
-                if (timeUserHr >= timeOppositeHr && diffDated >= 1) {
-                    sum_string = "d1"
-                } else {
-                    if (timeUserMm > timeOppositeMm) {
-                        val time_mm = timeUserMm - timeOppositeMm
-                        sum += time_mm
-                        if (timeOppositeDate != timeUserDate) {
-                            sum += (24 - timeOppositeHr + timeUserHr) * 60
-                        } else if (timeOppositeHr != timeUserHr) {
-                            sum += (timeUserHr - timeOppositeHr) * 60
-                        }
-                        sum_string = sum.toString()
-                    } else if (timeUserMm < timeOppositeMm) {
-                        sum = 60 - timeOppositeMm + timeUserMm
-                        sum = if (timeOppositeDate != timeUserDate) {
-                            (24 - timeOppositeHr - 1 + timeUserHr) * 60 + sum
-                        } else {
-                            (timeUserHr - timeOppositeHr - 1) * 60 + sum
-                        }
-                        sum_string = sum.toString()
-                    } else if (timeUserMm == timeOppositeMm && timeUserHr != timeOppositeHr) {
-                        sum = if (timeOppositeDate != timeUserDate) {
-                            (24 - timeOppositeHr + timeUserHr) * 60
-                        } else {
-                            val time_mm = timeUserHr - timeOppositeHr
-                            time_mm * 60
-                        }
-                        sum_string = sum.toString()
-                    } else if (timeUserMm == timeOppositeMm && timeOppositeHr == timeUserHr) {
-                        sum_string = "1"
-                    }
-                }
-            } else if (diffDated >= 2) {
-                sum_string = "d"
-                val jj = diffDated.toString()
-                sum_string += jj
-            }
-        } else {
-            sum_string = "null"
-        }
-    }
-
-    suspend fun fetchAndShowFeedData() {
-        getStartAt()
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-
-    }
 
 }
 

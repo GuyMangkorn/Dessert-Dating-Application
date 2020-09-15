@@ -16,16 +16,20 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.functions.ktx.functions
+import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -49,9 +53,11 @@ class LikeYouActivity : AppCompatActivity() {
     private lateinit var ff: Geocoder
     private var activity = this
     var toolbar: Toolbar? = null
+    private var functions = Firebase.functions
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_like_you)
+        callFunction(100, true, 0)
         button = findViewById(R.id.buttonsee)
         empty = findViewById(R.id.empty)
         toolbar = findViewById(R.id.my_tools)
@@ -203,6 +209,34 @@ class LikeYouActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+    private fun callFunction(limit: Int, type: Boolean, count: Int) {
+        var pre = count
+        GlobalScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+            val data = hashMapOf(
+                    "x_user" to x_user,
+                    "y_user" to y_user
+            )
+            functions.getHttpsCallable("testa")
+                    .call(data)
+                    .addOnFailureListener { Log.d("ghu", "failed") }
+                    .addOnSuccessListener { task ->
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then result will throw an Exception which will be
+                        // propagated down.
+                       // val result1 = task.data as Map<*, *>
+
+                        //Log.d("ghu", result1.toString())
+//                        resultLimit = result1["o"] as ArrayList<*>
+//                        if (resultLimit.isNotEmpty())
+//                            if (type)
+//                                getUser(resultLimit, 0, type, 0)
+//                            else
+//                                getUser(resultLimit, 0, type, resultMatches.size - 1)
+
+
+                    }
+        }
+    }
 
     private fun FecthHi(key: String, time: String?) {
         val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(key)
@@ -224,7 +258,6 @@ class LikeYouActivity : AppCompatActivity() {
                     }
                     val x: Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
                     val y: Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
-                    val dss = MainActivity()
                     val distance = CalculateDistance.calculate(x_user, y_user, x, y)
                     val preferences = activity.getSharedPreferences("Settings", Context.MODE_PRIVATE)
                     val langure = preferences.getString("My_Lang", "")
