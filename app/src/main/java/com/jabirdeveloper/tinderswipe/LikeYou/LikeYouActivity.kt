@@ -16,19 +16,16 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.R
-import com.jabirdeveloper.tinderswipe.SettingMainActivity
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -228,7 +225,7 @@ class LikeYouActivity : AppCompatActivity() {
                     val x:Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
                     val y:Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                     val dss = MainActivity()
-                    val distance = dss.Calllat(x_user, y_user, x, y)
+                    val distance = CalculateDistance.calculate(x_user, y_user, x, y)
                     val preferences = activity.getSharedPreferences("Settings", Context.MODE_PRIVATE)
                     val langure = preferences.getString("My_Lang", "")
                     val ff: Geocoder

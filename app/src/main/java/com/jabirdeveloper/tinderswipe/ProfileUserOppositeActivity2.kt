@@ -37,6 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
+import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.tapadoo.alerter.Alerter
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
@@ -696,8 +697,8 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     x_opposite = java.lang.Double.valueOf(x)
                     y_opposite = java.lang.Double.valueOf(y)
                     val dss = MainActivity()
-                    val distance = dss.Calllat(x_user, y_user, x_opposite, y_opposite)
-                    val distance_1 = df2.format(distance)
+                    val distance = CalculateDistance.calculate(x_user, y_user, x_opposite, y_opposite)
+                    val distance1 = df2.format(distance)
                     val ff: Geocoder = if (language_2 == "th") {
                         Geocoder(this@ProfileUserOppositeActivity2)
                     } else {
@@ -707,7 +708,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     try {
                         addresses = ff.getFromLocation(x_opposite, y_opposite, 1)
                         val city = addresses[0]!!.getAdminArea()
-                        city1.text = "$city ,  $distance_1 ${getString(R.string.kilometer)}"
+                        city1.text = "$city ,  $distance1 ${getString(R.string.kilometer)}"
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }

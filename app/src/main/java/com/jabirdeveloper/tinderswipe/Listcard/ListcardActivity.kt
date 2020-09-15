@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
+import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.R
 import kotlinx.coroutines.Dispatchers
@@ -326,8 +327,7 @@ class ListcardActivity : Fragment() {
                         && !dataSnapshot.hasChild("off_list")) {
                     x_opposite = dataSnapshot.child("Location").child("X").value.toString().toDouble()
                     y_opposite = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
-                    val dss = MainActivity()
-                    val distance = dss.Calllat(x_user, y_user, x_opposite, y_opposite)
+                    val distance = CalculateDistance.calculate(x_user, y_user, x_opposite, y_opposite)
                     if (distance < distanceUser) {
                         if (oppositUserSex == "All") {
                             if(!UidMatch!!.contains(dataSnapshot.key))

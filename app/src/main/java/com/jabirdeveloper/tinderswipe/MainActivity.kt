@@ -41,45 +41,35 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Cards.arrayAdapter
 import com.jabirdeveloper.tinderswipe.Cards.cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
+import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
 
-class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHandler  {
+class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHandler {
 
     private lateinit var mLocationManager: LocationManager
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mGPSDialog: Dialog
-    private lateinit var oppositUserSex: String
+    private lateinit var oppositeUserSex: String
     private var dis: String? = null
-    private val xx = true
-    private var OppositeUserAgeMin = 0
-    private var OppositeUserAgeMax = 0
-    private var age = 0
+    private var oppositeUserAgeMin = 0
+    private var oppositeUserAgeMax = 0
     private lateinit var arrayAdapter: arrayAdapter
     private lateinit var usersDb: DatabaseReference
-    private lateinit var get_status: DatabaseReference
     private var distance = 0.0
-    private var x_user = 0.0
-    private var y_user = 0.0
-    private var distance_1 = 0.0
+    private var xUser = 0.0
+    private var yUser = 0.0
     private lateinit var like: FloatingActionButton
     private lateinit var dislike: FloatingActionButton
     private lateinit var star: FloatingActionButton
@@ -87,34 +77,33 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private lateinit var anime1: ImageView
     private lateinit var anime2: ImageView
     private lateinit var textgps: TextView
-    private lateinit var textgps2: TextView
+    private lateinit var textGps2: TextView
     private lateinit var handler: Handler
     private var maxlike = 0
     private var maxstar = 0
     private var maxadmob = 0
     private lateinit var dialog: Dialog
-    private var status_vip = false
+    private var statusVip = false
     private lateinit var rowItem: ArrayList<cards>
     private lateinit var po: cards
     private lateinit var currentUid: String
-    private var time_send: String? = null
-    private lateinit var touch_gps: ImageView
-    private var noti_match: String? = null
+    private var timeSend: String? = null
+    private lateinit var touchGps: ImageView
+    private var notificationMatch: String? = null
     private lateinit var cardStackView: CardStackView
-    lateinit var manager:CardStackLayoutManager
-    private  var functions = Firebase.functions
+    lateinit var manager: CardStackLayoutManager
+    private var functions = Firebase.functions
     lateinit var rewardedAd: RewardedAd
     private lateinit var bp: BillingProcessor
     private var countLimit = 0
     private var countLimit2 = 0
     private var countLimit3 = 1
     private var countDataSet = 100
-    private var countDataSefdfft = 100
-    private lateinit var resultlimit : ArrayList<*>
+    private lateinit var resultlimit: ArrayList<*>
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("ghj","สร้างละ")
+        Log.d("ghj", "สร้างละ")
         val view = inflater.inflate(R.layout.activity_main, container, false)
-        val view2 = inflater.inflate(R.layout.item, container, false)
+
         bp = BillingProcessor(requireContext(), Id.Id, this)
         bp.initialize()
         mAuth = FirebaseAuth.getInstance()
@@ -123,18 +112,13 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-        val data = hashMapOf(
-                "sex" to "Male",
-                "min" to 18,
-                "max" to 30
-        )
 
         layout_gps = view.findViewById(R.id.layout_in)
         textgps = view.findViewById(R.id.textView8)
-        textgps2 = view.findViewById(R.id.textView9)
-        touch_gps = view.findViewById(R.id.imageView3)
+        textGps2 = view.findViewById(R.id.textView9)
+        touchGps = view.findViewById(R.id.imageView3)
         textgps.setText(R.string.touch_settings)
-        textgps2.setText(R.string.Area)
+        textGps2.setText(R.string.Area)
         like = view.findViewById(R.id.like_button)
         dislike = view.findViewById(R.id.dislike_button)
         star = view.findViewById(R.id.star_button)
@@ -161,45 +145,41 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         manager = CardStackLayoutManager(context, object : CardStackListener {
             override fun onCardDragging(direction: Direction?, ratio: Float) {}
             override fun onCardSwiped(direction: Direction?) {
-                po = rowItem.get(manager.topPosition - 1)
-                val UserId = po.userId!!
-                val calendar = Calendar.getInstance()
-                val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                val time_user = currentTime.format(calendar.time)
-                val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                val date_user = currentDate.format(calendar.time)
+                po = rowItem[manager.topPosition - 1]
+                val userId = po.userId!!
+                val d = DateTime
+                val timeUser = d.time()
+                val dateUser = d.date()
 
                 if (direction == Direction.Right) {
-                    if (maxlike > 0 || status_vip) {
-                        val Datetime = hashMapOf<String, Any>()
-                        Datetime["date"] = date_user
-                        Datetime["time"] = time_user
-                        usersDb.child(UserId).child("connection").child("yep").child(currentUid).updateChildren(Datetime)
+                    if (maxlike > 0 || statusVip) {
+                        val datetime = hashMapOf<String, Any>()
+                        datetime["date"] = dateUser
+                        datetime["time"] = timeUser
+                        usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                         maxlike--
                         usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
-                        isConnectionMatches(UserId)
-                    }
-                    else {
+                        isConnectionMatches(userId)
+                    } else {
                         handler.postDelayed(Runnable { cardStackView.rewind() }, 200)
                         openDialog()
                     }
                 }
                 if (direction == Direction.Left) {
-                    usersDb.child(UserId).child("connection").child("nope").child(currentUid).setValue(true)
+                    usersDb.child(userId).child("connection").child("nope").child(currentUid).setValue(true)
                 }
                 if (direction == Direction.Top) {
-                    if (maxstar > 0 || status_vip) {
-                        val Datetime = hashMapOf<String, Any>()
-                        Datetime["date"] = date_user
-                        Datetime["time"] = time_user
-                        Datetime["super"] = true
-                        usersDb.child(UserId).child("connection").child("yep").child(currentUid).updateChildren(Datetime)
-                        usersDb.child(currentUid).child("star_s").child(UserId).setValue(true)
+                    if (maxstar > 0 || statusVip) {
+                        val datetime = hashMapOf<String, Any>()
+                        datetime["date"] = dateUser
+                        datetime["time"] = timeUser
+                        datetime["super"] = true
+                        usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
+                        usersDb.child(currentUid).child("star_s").child(userId).setValue(true)
                         maxstar--
                         usersDb.child(currentUid).child("MaxStar").setValue(maxstar)
-                        isConnectionMatches(UserId)
-                    }
-                    else {
+                        isConnectionMatches(userId)
+                    } else {
                         handler.postDelayed(Runnable { cardStackView.rewind() }, 200)
                         openDialog()
                     }
@@ -215,18 +195,16 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             override fun onCardAppeared(view: View?, position: Int) {
                 Log.d("ggg", "$position $countLimit $countLimit3 " + rowItem.size)
 
-                if(countLimit2 == 5 && countLimit< countDataSet)
-                {
-                    getUser(resultlimit,false,rowItem.size-1,5)
-                    countLimit2=0
+                if (countLimit2 == 5 && countLimit < countDataSet) {
+                    getUser(resultlimit, false, rowItem.size - 1, 5)
+                    countLimit2 = 0
                 }
-                if(countLimit3%countDataSet == 0 && countLimit3>0)
-                {
+                if (countLimit3 % countDataSet == 0 && countLimit3 > 0) {
                     val handler = Handler()
                     handler.postDelayed({
-                        callFunctions(countDataSet,false,rowItem.size-1)
-                        countLimit=0
-                        countLimit2=0
+                        callFunctions(countDataSet, false, rowItem.size - 1)
+                        countLimit = 0
+                        countLimit2 = 0
                     }, 300)
 
                 }
@@ -256,24 +234,24 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         cardStackView.adapter = arrayAdapter
         cardStackView.itemAnimator = DefaultItemAnimator()
         like.setOnClickListener(View.OnClickListener {
-                val setting = SwipeAnimationSetting.Builder()
-                        .setDirection(Direction.Right)
-                        .setDuration(Duration.Normal.duration)
-                        .setInterpolator(AccelerateInterpolator())
-                        .build()
-                manager.setSwipeAnimationSetting(setting)
-                cardStackView.swipe()
+            val setting = SwipeAnimationSetting.Builder()
+                    .setDirection(Direction.Right)
+                    .setDuration(Duration.Normal.duration)
+                    .setInterpolator(AccelerateInterpolator())
+                    .build()
+            manager.setSwipeAnimationSetting(setting)
+            cardStackView.swipe()
         })
         dislike.setOnClickListener(View.OnClickListener {
-                val setting = SwipeAnimationSetting.Builder()
-                        .setDirection(Direction.Left)
-                        .setDuration(Duration.Normal.duration)
-                        .setInterpolator(AccelerateInterpolator())
-                        .build()
-                manager.setSwipeAnimationSetting(setting)
-                cardStackView.swipe()
+            val setting = SwipeAnimationSetting.Builder()
+                    .setDirection(Direction.Left)
+                    .setDuration(Duration.Normal.duration)
+                    .setInterpolator(AccelerateInterpolator())
+                    .build()
+            manager.setSwipeAnimationSetting(setting)
+            cardStackView.swipe()
         })
-        touch_gps.setOnClickListener(View.OnClickListener { startActivityForResult(Intent(context, Setting2Activity::class.java), 1112) })
+        touchGps.setOnClickListener(View.OnClickListener { startActivityForResult(Intent(context, Setting2Activity::class.java), 1112) })
         star.setOnClickListener(View.OnClickListener {
             val setting = SwipeAnimationSetting.Builder()
                     .setDirection(Direction.Top)
@@ -287,10 +265,11 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         runnable!!.run()
         rewardedAd = RewardedAd(requireActivity(),
                 "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object: RewardedAdLoadCallback() {
+        val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 Toast.makeText(requireContext(), "สวย", Toast.LENGTH_SHORT).show()
             }
+
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 Toast.makeText(requireContext(), errorCode.toString(), Toast.LENGTH_SHORT).show()
             }
@@ -301,34 +280,14 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         return view
     }
 
-
-
-    fun aa ()
-    {
-        val data = hashMapOf(
-                "sex" to "Male",
-                "min" to 18,
-                "max" to 30
-        )
-        functions.getHttpsCallable("get2222")
-                .call(data)
-                .addOnFailureListener { Log.d("ghj","failed") }
-                .addOnSuccessListener {  task ->
-                    // This continuation runs on either success or failure, but if the task
-                    // has failed then result will throw an Exception which will be
-                    // propagated down.
-                    val result1 = task.data as Map<*, *>
-                    Log.d("ghj",result1.toString())
-
-                }
-    }
     fun createAndLoadRewardedAd(): RewardedAd {
         rewardedAd = RewardedAd(requireActivity(),
                 "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object: RewardedAdLoadCallback() {
+        val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 Toast.makeText(requireContext(), "สวย", Toast.LENGTH_SHORT).show()
             }
+
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 Toast.makeText(requireContext(), errorCode.toString(), Toast.LENGTH_SHORT).show()
             }
@@ -336,48 +295,49 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
         return rewardedAd
     }
+
     fun openDialog() {
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.vip_dialog, null)
         val b1 = view.findViewById<Button>(R.id.buy)
         val b2 = view.findViewById<Button>(R.id.admob)
         val text = view.findViewById<TextView>(R.id.test_de)
-        if(maxadmob <= 0)
-        {
+        if (maxadmob <= 0) {
             text.text = "โฆษณาที่คุณสามารถดูได้ในวันนี้หมดแล้ว \n สมัคร Dessert VIP เพื่อรับสิทธิพิเศษ"
             b2.visibility = View.GONE
         }
         b2.setOnClickListener {
             if (rewardedAd.isLoaded) {
                 val activityContext: Activity = requireActivity()
-                val adCallback = object: RewardedAdCallback() {
+                val adCallback = object : RewardedAdCallback() {
                     override fun onRewardedAdOpened() {
                         rewardedAd = createAndLoadRewardedAd()
                     }
+
                     override fun onRewardedAdClosed() {
 
                     }
+
                     override fun onUserEarnedReward(@NonNull reward: RewardItem) {
                         Log.d("TAG", maxlike.toString())
                         maxlike += 1
                         maxadmob -= 1
-                        if(maxlike >= 10)
+                        if (maxlike >= 10)
                             dialog.dismiss()
-                        else if(maxadmob <= 0)
-                        {
+                        else if (maxadmob <= 0) {
                             b2.visibility = View.GONE
                         }
 
                         usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
                         usersDb.child(currentUid).child("MaxAdmob").setValue(maxadmob)
                     }
+
                     override fun onRewardedAdFailedToShow(errorCode: Int) {
                         Log.d("TAG", "The rewarded ad wasn't loaded yet.")
                     }
                 }
                 rewardedAd.show(activityContext, adCallback)
-            }
-            else {
+            } else {
                 Log.d("TAG", "The rewarded ad wasn't loaded yet.")
             }
         }
@@ -394,11 +354,11 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(view)
         val pagerModels: ArrayList<PagerModel?> = ArrayList()
-        pagerModels.add(PagerModel("สมัคร Desert เพื่อกดถูกใจได้ไม่จำกัด ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา","จำนวนการกดถูกใจของคุณหมด", R.drawable.ic_heart))
-        pagerModels.add(PagerModel( "คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร","รับ 5 Star ฟรีทุกวัน",R.drawable.ic_starss))
-        pagerModels.add(PagerModel( "สามารถทักทายได้เต็มที ไม่จำกัดจำนวน","ทักทายได้ไม่จำกัด",R.drawable.ic_hand))
-        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ","ใครถูกใจคุณ", R.drawable.ic_love2))
-        pagerModels.add(PagerModel( "ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ","ใครเข้ามาดูโปรไฟล์คุณ",R.drawable.ic_vision))
+        pagerModels.add(PagerModel("สมัคร Desert เพื่อกดถูกใจได้ไม่จำกัด ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "จำนวนการกดถูกใจของคุณหมด", R.drawable.ic_heart))
+        pagerModels.add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
+        pagerModels.add(PagerModel("สามารถทักทายได้เต็มที ไม่จำกัดจำนวน", "ทักทายได้ไม่จำกัด", R.drawable.ic_hand))
+        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
+        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
         val adapter = VipSlide(requireContext(), pagerModels)
         val pager: AutoScrollViewPager = dialog.findViewById(R.id.viewpage)
         pager.adapter = adapter
@@ -427,8 +387,8 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     }
 
     private fun isConnectionMatches(userId: String) {
-        val currentuserConnectionDb = usersDb.child(currentUid).child("connection").child("yep").child(userId)
-        currentuserConnectionDb.addListenerForSingleValueEvent(object : ValueEventListener {
+        val currentUserConnectionDb = usersDb.child(currentUid).child("connection").child("yep").child(userId)
+        currentUserConnectionDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key
@@ -451,7 +411,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                             .child("yep")
                             .child(dataSnapshot.key!!)
                             .setValue(null)
-                    if (noti_match == "1") {
+                    if (notificationMatch == "1") {
                         dialog = Dialog(requireContext())
                         val inflater = layoutInflater
                         val view = inflater.inflate(R.layout.show_match, null)
@@ -459,14 +419,13 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                         val star = view.findViewById<ImageView>(R.id.star)
                         val textView = view.findViewById<TextView>(R.id.textmatch)
                         val textView2 = view.findViewById<TextView>(R.id.io)
-                        val textView3 = view.findViewById<TextView>(R.id.textBig)
                         val textView4 = view.findViewById<TextView>(R.id.textmatch2)
                         val button = view.findViewById<Button>(R.id.mess)
                         button.setOnClickListener {
                             dialog.dismiss()
                             val intent = Intent(context, ChatActivity::class.java)
                             val b = Bundle()
-                            b.putString("time_chk", time_send)
+                            b.putString("time_chk", timeSend)
                             b.putString("matchId", po.userId)
                             b.putString("nameMatch", po.name)
                             b.putString("first_chat", "")
@@ -478,7 +437,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                         textView.text = po.name
                         if (dataSnapshot.hasChild("super")) {
                             star.visibility = View.VISIBLE
-                            //textView3.setText("Star");
                             textView4.text = "  " + "ส่งดาวให้คุณให้คุณ"
                         } else textView4.text = "  " + "ถูกใจคุณเหมือนกัน"
                         Glide.with(requireContext()).load(po.profileImageUrl).into(imageView)
@@ -496,16 +454,16 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
     fun getdis() {
         val preferences = requireContext().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        oppositUserSex = preferences.getString("OppositeUserSex", "All").toString()
-        OppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
-        OppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
+        oppositeUserSex = preferences.getString("OppositeUserSex", "All").toString()
+        oppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
+        oppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
 
-        x_user = preferences.getString("X", "").toString().toDouble()
-        y_user = preferences.getString("Y", "").toString().toDouble()
+        xUser = preferences.getString("X", "").toString().toDouble()
+        yUser = preferences.getString("Y", "").toString().toDouble()
         maxlike = preferences.getInt("MaxLike", 0)
         maxadmob = preferences.getInt("MaxAdmob", 0)
         maxstar = preferences.getInt("MaxStar", 0)
-        status_vip = preferences.getBoolean("Vip", false)
+        statusVip = preferences.getBoolean("Vip", false)
         distance = when (preferences.getString("Distance", "Untitled")) {
             "true" -> {
                 1000.0
@@ -517,80 +475,75 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-       // getOppositSexUser()
-        callFunctions(countDataSet,true,0)
-
+        callFunctions(countDataSet, true, 0)
 
 
     }
-    private fun callFunctions(limit:Int,type:Boolean,count:Int)
-    {
+
+    private fun callFunctions(limit: Int, type: Boolean, count: Int) {
         val preferences2 = requireActivity().getSharedPreferences("notification_match", Context.MODE_PRIVATE)
-        noti_match = preferences2.getString("noti", "1")
+        notificationMatch = preferences2.getString("noti", "1")
         var pre = 0
-        var vvip=0
-        if(!type) pre = 0
+        var vvip = 0
+        if (!type) pre = 0
 
         val data = hashMapOf(
-                "sex" to oppositUserSex,
-                "min" to OppositeUserAgeMin,
-                "max" to OppositeUserAgeMax,
-                "x_user" to x_user,
-                "y_user" to y_user,
+                "sex" to oppositeUserSex,
+                "min" to oppositeUserAgeMin,
+                "max" to oppositeUserAgeMax,
+                "x_user" to xUser,
+                "y_user" to yUser,
                 "distance" to distance,
-                "limit" to pre+limit,
+                "limit" to pre + limit,
                 "prelimit" to pre
         )
-        Log.d("tagkl",data.toString())
+        Log.d("tagkl", data.toString())
 
         functions.getHttpsCallable("get2222")
                 .call(data)
-                .addOnFailureListener { Log.d("ghj","failed") }
-                .addOnSuccessListener {  task ->
+                .addOnFailureListener { Log.d("ghj", "failed") }
+                .addOnSuccessListener { task ->
                     // This continuation runs on either success or failure, but if the task
                     // has failed then result will throw an Exception which will be
                     // propagated down.
                     val result1 = task.data as Map<*, *>
-                    Log.d("ghjlast",result1.toString())
+                    Log.d("ghjlast", result1.toString())
                     resultlimit = result1["o"] as ArrayList<*>
-                    if(resultlimit.isNotEmpty())
-                    getUser(resultlimit,type,count,10)
-
+                    if (resultlimit.isNotEmpty())
+                        getUser(resultlimit, type, count, 10)
 
 
                 }
     }
 
-    private fun getUser(result2:ArrayList<*>,type:Boolean,count:Int,limit: Int)
-    {
+    private fun getUser(result2: ArrayList<*>, type: Boolean, count: Int, limit: Int) {
         val preferences = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val langure = preferences.getString("My_Lang", "")
+        val language = preferences.getString("My_Lang", "")
         val ff: Geocoder
-        var addresses: MutableList<Address?>? = null
-        ff = if (langure == "th") {
+        var addresses: MutableList<Address>
+        ff = if (language == "th") {
             Geocoder(context)
         } else {
             Geocoder(context, Locale.UK)
         }
-        Log.d("iop","")
-        var a = countLimit+limit
-        if(result2.size < countLimit+limit)
+        Log.d("iop", "")
+        var a = countLimit + limit
+        if (result2.size < countLimit + limit)
             a = result2.size
-        for(x in countLimit until a)
-        {
+        for (x in countLimit until a) {
             countLimit++
-            Log.d("iop","$countLimit ${result2.size}")
+            Log.d("iop", "$countLimit ${result2.size}")
             val user = result2[x] as Map<*, *>
-            Log.d("ghj", user["name"].toString() + " , "+user["distance_other"].toString())
+            Log.d("ghj", user["name"].toString() + " , " + user["distance_other"].toString())
             var myself = ""
             var citysend: String? = ""
-            var off_status = false
+            var offStatus = false
             var vip = false
-            var star_s = false
+            var starS = false
             val location = user["Location"] as Map<*, *>
             try {
                 addresses = ff.getFromLocation(location["X"].toString().toDouble(), location["Y"].toString().toDouble(), 1)
-                val city = addresses[0]!!.adminArea
+                val city = addresses[0].adminArea
                 citysend = city
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -599,7 +552,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 myself = user["myself"].toString()
             }
             if (user["off_status"] != null) {
-                off_status = true
+                offStatus = true
             }
             (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
             val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
@@ -613,297 +566,33 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             }
 
             if (user["star_s"] != null) {
-                if((user["star_s"] as Map<*, *>)[currentUid] != null)
-                    star_s = true
+                if ((user["star_s"] as Map<*, *>)[currentUid] != null)
+                    starS = true
             }
             dis = df2.format(user["distance_other"])
-            rowItem.add(cards(user["key"].toString()
-                        , user["name"].toString()
-                        , profileImageUrl
-                        , user["Age"].toString()
-                        , dis
-                        , citysend
-                        , status
-                        , myself
-                        , off_status
-                        , vip
-                        , star_s))
+            rowItem.add(cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
 
         }
 
-        if(type)
-        arrayAdapter.notifyDataSetChanged()
+        if (type)
+            arrayAdapter.notifyDataSetChanged()
         else {
-            arrayAdapter.notifyItemRangeChanged(count,rowItem.size)
+            arrayAdapter.notifyItemRangeChanged(count, rowItem.size)
         }
     }
 
 
     private val df2: DecimalFormat = DecimalFormat("#.#")
-    fun getOppositSexUser() {
-        var getuser: Query? = usersDb
-        getuser = usersDb.orderByChild("Age").startAt(OppositeUserAgeMin.toDouble()).endAt(OppositeUserAgeMax.toDouble())
-        getuser.addChildEventListener(object: ChildEventListener{
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
-                val x = dataSnapshot.child("Location").child("X").value.toString().toDouble()
-                val y = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
-                val dsv = MainActivity()
-                distance_1 = dsv.Calllat(x_user, y_user, x, y)
-                if (currentUid != dataSnapshot.key && distance_1 <= distance
-                        && !dataSnapshot.child("connection").child("matches").hasChild(currentUid)
-                        && !dataSnapshot.child("connection").child("yep").hasChild(currentUid)
-                        && !dataSnapshot.child("connection").child("nope").hasChild(currentUid)
-                        && dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")
-                        && !dataSnapshot.hasChild("off_card")) {
-                    dis = df2.format(distance_1)
-                    val preferences = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                    val langure = preferences.getString("My_Lang", "")
-                    val ff: Geocoder
-                    var myself = ""
-                    var citysend: String? = ""
-                    var off_status = false
-                    var vip = false
-                    var star_s = false
-
-                    ff = if (langure == "th") {
-                        Geocoder(context)
-                    } else {
-                        Geocoder(context, Locale.UK)
-                    }
-                    var addresses: MutableList<Address?>? = null
-                    try {
-                        addresses = ff.getFromLocation(x, y, 1)
-                        val city = addresses[0]!!.adminArea
-                        citysend = city
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-
-                    if (dataSnapshot.hasChild("myself")) {
-                        myself = dataSnapshot.child("myself").value.toString()
-                    }
-                    if (dataSnapshot.hasChild("off_status")) {
-                        off_status = true
-                    }
-
-                    val profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
-
-                    var status = "offline"
-                    if (dataSnapshot.hasChild("status")) {
-                        if(dataSnapshot.child("status").value == 1)
-                        status = "online"
-                        Log.d("statt","1")
-                    }
-                    if (dataSnapshot.child("Vip").value == 1) {
-                        vip = true
-                    }
-                    if (dataSnapshot.child("star_s").hasChild(currentUid)) {
-                        star_s = true
-                    }
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
-
-
-                        if (oppositUserSex == "All") {
-                            if (dataSnapshot.exists() && distance_1 < distance) {
-                                rowItem.add(cards(dataSnapshot.key
-                                        , dataSnapshot.child("name").value.toString()
-                                        , profileImageUrl
-                                        , dataSnapshot.child("Age").value.toString()
-                                        , dis
-                                        , citysend
-                                        , status
-                                        , myself
-                                        , off_status
-                                        , vip
-                                        , star_s))
-                            }
-                        } else {
-                            if (dataSnapshot.exists()
-                                    && dataSnapshot.child("sex").value.toString() == oppositUserSex && distance_1 < distance) {
-                                rowItem.add(cards(dataSnapshot.key
-                                        , dataSnapshot.child("name").value.toString()
-                                        , profileImageUrl
-                                        , dataSnapshot.child("Age").value.toString()
-                                        , dis
-                                        , citysend
-                                        , status
-                                        , myself
-                                        , off_status
-                                        , vip
-                                        , star_s))
-                            }
-                        }
-
-
-                    }
-
-                    /*   rowItem.sortWith(Comparator { o1, o2 ->
-                           var i = 0
-                           var j = 0
-                           if (o1!!.getVip()) i = 1
-                           if (o2!!.getVip()) j = 1
-                           j - i
-                       })
-                       if (star_s) {
-                           Log.d("dda", dataSnapshot.child("name").value.toString())
-                           rowItem.sortWith(Comparator { o1, o2 ->
-                               var i = 0
-                               var j = 0
-                               if (o1!!.getStar()) i = 1
-                               if (o2!!.getStar()) j = 1
-                               j - i
-                           })
-                       }*/
-
-                    arrayAdapter.notifyDataSetChanged()
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
-            }
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-
-            }
-
-        })
-        /*usersDb.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-
-                if (currentUid != dataSnapshot.key
-                        && age <= OppositeUserAgeMax && age >= OppositeUserAgeMin && !dataSnapshot.child("connection").child("matches").hasChild(currentUid)
-                        && !dataSnapshot.child("connection").child("yep").hasChild(currentUid)
-                        && !dataSnapshot.child("connection").child("nope").hasChild(currentUid)
-                        && dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")
-                        && !dataSnapshot.hasChild("off_card")) {
-                    val x: String
-                    val y: String
-                    var myself = ""
-                    var citysend: String? = ""
-                    var off_status = false
-                    var vip = false
-                    var star_s = false
-                    if (dataSnapshot.hasChild("Location")) {
-                        if (dataSnapshot.child("Location").child("X").value != null && dataSnapshot.child("Location").child("Y").value != null) {
-                            x = dataSnapshot.child("Location").child("X").value.toString()
-                            y = dataSnapshot.child("Location").child("Y").value.toString()
-                            x_opposite = java.lang.Double.valueOf(x)
-                            y_opposite = java.lang.Double.valueOf(y)
-                            val dsv = MainActivity()
-                            distance_1 = dsv.Calllat(x_user, y_user, x_opposite, y_opposite)
-                            dis = df2.format(distance_1)
-                            val preferences = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                            val langure = preferences.getString("My_Lang", "")
-                            val ff: Geocoder
-                            ff = if (langure == "th") {
-                                Geocoder(context)
-                            } else {
-                                Geocoder(context, Locale.UK)
-                            }
-                            var addresses: MutableList<Address?>? = null
-                            try {
-                                addresses = ff.getFromLocation(x_opposite, y_opposite, 1)
-                                val city = addresses[0]!!.adminArea
-                                citysend = city
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-                    if (dataSnapshot.hasChild("myself")) {
-                        myself = dataSnapshot.child("myself").value.toString()
-                    }
-                    if (dataSnapshot.hasChild("off_status")) {
-                        off_status = true
-                    }
-                    var profileImageUrl = "default"
-                    if (dataSnapshot.hasChild("ProfileImage")) {
-                        profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
-                    }
-                    var status = "offline"
-                    if (dataSnapshot.child("Status").hasChild("status")) {
-                        status = dataSnapshot.child("Status").child("status").value.toString()
-                    }
-                    if (dataSnapshot.hasChild("Vip")) {
-                        vip = true
-                    }
-                    if (dataSnapshot.child("star_s").hasChild(currentUid)) {
-                        star_s = true
-                    }
-                    if (oppositUserSex == "All") {
-                        if (dataSnapshot.exists() && distance_1 < distance) {
-                            rowItem.add(cards(dataSnapshot.key
-                                    , dataSnapshot.child("name").value.toString()
-                                    , profileImageUrl
-                                    , dataSnapshot.child("Age").value.toString()
-                                    , dis
-                                    , citysend
-                                    , status
-                                    , myself
-                                    , off_status
-                                    , vip
-                                    , star_s))
-                        }
-                    } else {
-                        if (dataSnapshot.exists()
-                                && dataSnapshot.child("sex").value.toString() == oppositUserSex && distance_1 < distance) {
-                            rowItem.add(cards(dataSnapshot.key
-                                    , dataSnapshot.child("name").value.toString()
-                                    , profileImageUrl
-                                    , dataSnapshot.child("Age").value.toString()
-                                    , dis
-                                    , citysend
-                                    , status
-                                    , myself
-                                    , off_status
-                                    , vip
-                                    , star_s))
-                        }
-                    }
-                 /*   rowItem.sortWith(Comparator { o1, o2 ->
-                        var i = 0
-                        var j = 0
-                        if (o1!!.getVip()) i = 1
-                        if (o2!!.getVip()) j = 1
-                        j - i
-                    })
-                    if (star_s) {
-                        Log.d("dda", dataSnapshot.child("name").value.toString())
-                        rowItem.sortWith(Comparator { o1, o2 ->
-                            var i = 0
-                            var j = 0
-                            if (o1!!.getStar()) i = 1
-                            if (o2!!.getStar()) j = 1
-                            j - i
-                        })
-                    }*/
-                    arrayAdapter.notifyDataSetChanged()
-                }
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })*/
-    }
 
     override fun onLocationChanged(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
-        val Locationinfo_data = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid).child("Location")
-        val locationinfo= hashMapOf<String,Any>()
-        locationinfo["X"] = latitude
-        locationinfo["Y"] = longitude
-        Locationinfo_data.updateChildren(locationinfo)
+        val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid).child("Location")
+        val location = hashMapOf<String, Any>()
+        location["X"] = latitude
+        location["Y"] = longitude
+        locationData.updateChildren(location)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
@@ -933,12 +622,10 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0) {
             requireActivity().recreate()
-            if (mLocationManager == null) {
-                mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            }
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 showGPSDiabledDialog()
             }
+            else mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         }
         if (requestCode == 1112) {
             handler.postDelayed(Runnable {
@@ -949,16 +636,13 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             }, 400)
         }
         if (requestCode == 115) {
-            when(resultCode)
-            {
-                1 -> Like()
-                2 -> DisLike()
+            when (resultCode) {
+                1 -> like()
+                2 -> disLike()
                 3 -> star()
             }
         }
-        if (!bp.handleActivityResult(requestCode, resultCode, data)) {
 
-        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -971,58 +655,22 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         }
     }
 
-    fun Calllat(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val lonlon = Math.toRadians(lon2 - lon1)
-        val latlat = Math.toRadians(lat2 - lat1)
-        val lat1r = Math.toRadians(lat1)
-        val lat2r = Math.toRadians(lat2)
-        val R = 6371.0
-        val a = sin(latlat / 2) * sin(latlat / 2) + cos(lat1r) * cos(lat2r) * sin(lonlon / 2) * sin(lonlon / 2)
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        return R * c
-    }
-
-    private val idd = 0
-   /* fun status(Status_User: String, current: String) {
-        val date_user: String
-        val time_user: String
-        get_status = FirebaseDatabase.getInstance().reference.child("Users").child(current)
-        val calendar = Calendar.getInstance()
-        val currentDate = SimpleDateFormat("dd/MM/yyyy")
-        date_user = currentDate.format(calendar.time)
-        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-        time_user = currentTime.format(calendar.time)
-        time_send = time_user
-        if (Status_User == "offline") {
-            val status_up = HashMap<String?, Any?>()
-            status_up["date"] = date_user
-            status_up["status"] = Status_User
-            status_up["time"] = time_user
-            get_status.updateChildren(status_up)
-        } else {
-            val status_up = HashMap<String?, Any?>()
-            status_up["status"] = Status_User
-            get_status.updateChildren(status_up)
-        }
-    }*/
-
     override fun onStart() {
         super.onStart()
         Log.d("4581", this::manager.isInitialized.toString())
 
 
     }
-    override fun onResume() {
-        super.onResume()
 
-    }
+
 
     override fun onPause() {
         super.onPause()
 
         mLocationManager.removeUpdates(this)
     }
-    private fun Like() {
+
+    private fun like() {
         val handler = Handler()
         handler.postDelayed({
             val setting = SwipeAnimationSetting.Builder()
@@ -1036,7 +684,8 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
 
     }
-    private fun DisLike() {
+
+    private fun disLike() {
         val handler = Handler()
         handler.postDelayed({
             val setting = SwipeAnimationSetting.Builder()
@@ -1048,6 +697,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             cardStackView.swipe()
         }, 300)
     }
+
     private fun star() {
         val handler = Handler()
         handler.postDelayed({
@@ -1076,6 +726,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     override fun onBillingError(errorCode: Int, error: Throwable?) {
 
     }
+
     override fun onDestroy() {
         bp.release()
         super.onDestroy()
