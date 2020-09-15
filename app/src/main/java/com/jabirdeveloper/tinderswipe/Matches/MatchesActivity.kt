@@ -15,9 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.R
-import com.jabirdeveloper.tinderswipe.Switch_pageActivity
+import com.jabirdeveloper.tinderswipe.SwitchpageActivity
 import com.wang.avi.AVLoadingIndicatorView
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -243,7 +242,7 @@ class MatchesActivity : Fragment() {
         val total = dd - unread
 
         //Toast.makeText(mContext,"total_after : "+(total),Toast.LENGTH_SHORT).show();
-        (mContext as Switch_pageActivity?)!!.setCurrentIndex(total)
+        (mContext as SwitchpageActivity?)!!.setCurrentIndex(total)
         val MyUnread1 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
         val editorRead = MyUnread1.edit()
         editorRead.putInt("total", total)

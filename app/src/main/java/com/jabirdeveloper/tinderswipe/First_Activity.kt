@@ -2,13 +2,9 @@ package com.jabirdeveloper.tinderswipe
 
 import android.Manifest
 import android.app.Dialog
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -17,13 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -32,8 +22,6 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.hanks.htextview.base.AnimationListener
 import com.hanks.htextview.base.HTextView
 import com.hanks.htextview.line.LineTextView
-import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
-import com.jabirdeveloper.tinderswipe.First_Activity
 import com.jaredrummler.android.widget.AnimatedSvgView
 import java.util.*
 
@@ -42,7 +30,7 @@ class First_Activity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private var usersDb: DatabaseReference? = null
     private var first = true
-    private val plus: Switch_pageActivity? = Switch_pageActivity()
+    private val plus: SwitchpageActivity? = SwitchpageActivity()
     private var hTextView: LineTextView? = null
     private var mContext: Context? = null
     private var mLocationManager: LocationManager? = null
@@ -358,7 +346,7 @@ class First_Activity : AppCompatActivity() {
                     val editorRead = MyUnread.edit()
                     editorRead.putInt("total", count_number_chat!!.toInt())
                     editorRead.apply()
-                    val intent = Intent(this@First_Activity, Switch_pageActivity::class.java)
+                    val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
                     var sum_report:Int? = 0
                     if (UidMatch_New!!.size > 0) {
                         intent.putExtra("NewMatch", UidMatch_New as ArrayList<String?>?)

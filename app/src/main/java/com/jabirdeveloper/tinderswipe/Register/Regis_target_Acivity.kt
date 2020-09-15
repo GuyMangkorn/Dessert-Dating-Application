@@ -29,14 +29,12 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.jabirdeveloper.tinderswipe.R
-import com.jabirdeveloper.tinderswipe.Register.Regis_target_Acivity
-import com.jabirdeveloper.tinderswipe.Switch_pageActivity
+import com.jabirdeveloper.tinderswipe.SwitchpageActivity
 import com.tapadoo.alerter.Alerter
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.*
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "NAME_SHADOWING")
 class Regis_target_Acivity : AppCompatActivity() {
@@ -164,7 +162,7 @@ class Regis_target_Acivity : AppCompatActivity() {
                         "profileImageUrl0" to uri.toString()
                         )
                         currentUserDb.child("ProfileImage").updateChildren(userInfo as Map<String, Any>)
-                        val intent = Intent(this@Regis_target_Acivity, Switch_pageActivity::class.java)
+                        val intent = Intent(this@Regis_target_Acivity, SwitchpageActivity::class.java)
                         intent.putExtra("first", "0")
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
@@ -183,7 +181,7 @@ class Regis_target_Acivity : AppCompatActivity() {
             }
         } else {
             dialog.dismiss()
-            val intent = Intent(this@Regis_target_Acivity, Switch_pageActivity::class.java)
+            val intent = Intent(this@Regis_target_Acivity, SwitchpageActivity::class.java)
             intent.putExtra("first", "0")
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

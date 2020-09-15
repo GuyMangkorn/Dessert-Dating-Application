@@ -22,7 +22,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.View.OnTouchListener
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -905,7 +904,7 @@ class ChatActivity : AppCompatActivity() {
                 finish()
                 return
             }
-            val intent = Intent(this@ChatActivity, Switch_pageActivity::class.java)
+            val intent = Intent(this@ChatActivity, SwitchpageActivity::class.java)
             intent.putExtra("first", 1)
             startActivity(intent)
             finish()

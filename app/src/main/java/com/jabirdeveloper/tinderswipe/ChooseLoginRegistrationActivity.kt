@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.facebook.*
 import com.facebook.login.LoginManager
@@ -99,7 +97,7 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                             }
                             dataSnapshot.child("Users").child(user.uid).hasChild("sex") -> {
                                 dialog.dismiss()
-                                val intent = Intent(this@ChooseLoginRegistrationActivity, Switch_pageActivity::class.java)
+                                val intent = Intent(this@ChooseLoginRegistrationActivity, SwitchpageActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 intent.putExtra("first", "0")
                                 startActivity(intent)

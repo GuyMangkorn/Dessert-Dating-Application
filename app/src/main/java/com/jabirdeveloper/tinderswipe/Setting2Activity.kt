@@ -6,8 +6,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -23,7 +21,6 @@ import com.google.firebase.storage.FirebaseStorage
 import hearsilent.discreteslider.DiscreteSlider
 import hearsilent.discreteslider.DiscreteSlider.OnValueChangedListener
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -94,7 +91,7 @@ class Setting2Activity : AppCompatActivity() {
                 save()
                 finish()
                 overridePendingTransition(0, 0)
-                startActivity(Intent(this@Setting2Activity, Switch_pageActivity::class.java))
+                startActivity(Intent(this@Setting2Activity, SwitchpageActivity::class.java))
                 overridePendingTransition(0, 0)
 
             }
@@ -414,7 +411,7 @@ class Setting2Activity : AppCompatActivity() {
         Handler().postDelayed({
             finish()
             overridePendingTransition(0, 0)
-            startActivity(Intent(this@Setting2Activity, Switch_pageActivity::class.java))
+            startActivity(Intent(this@Setting2Activity, SwitchpageActivity::class.java))
             overridePendingTransition(0, 0)
         }, 100)
     }

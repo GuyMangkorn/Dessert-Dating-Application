@@ -41,7 +41,7 @@
             android:name=".ImageChat.ItemImageActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Switch_pageActivity"
+            android:name=".SwitchpageActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".Register.Regis_ageActivity" />
         <activity

@@ -26,7 +26,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.jabirdeveloper.tinderswipe.R
-import com.jabirdeveloper.tinderswipe.Switch_pageActivity
+import com.jabirdeveloper.tinderswipe.SwitchpageActivity
 import com.tapadoo.alerter.Alerter
 import java.util.concurrent.TimeUnit
 
@@ -69,7 +69,7 @@ class VerifyActivity : AppCompatActivity() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         dialog.dismiss()
                         if (dataSnapshot.hasChild("sex")) {
-                            val intent = Intent(this@VerifyActivity, Switch_pageActivity::class.java)
+                            val intent = Intent(this@VerifyActivity, SwitchpageActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             intent.putExtra("first", "0")
                             startActivity(intent)
