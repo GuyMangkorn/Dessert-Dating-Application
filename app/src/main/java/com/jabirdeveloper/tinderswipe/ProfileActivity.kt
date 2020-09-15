@@ -185,7 +185,7 @@ class ProfileActivity : AppCompatActivity() {
         mUserDatabase.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.childrenCount > 0) {
-                    val map= dataSnapshot.value as MutableMap<*, *>
+                    val map = dataSnapshot.value as MutableMap<*, *>
                     if (map["myself"] != null && map["myself"] != "") {
                         l3.visibility = View.VISIBLE
                         myself.text = map["myself"].toString()

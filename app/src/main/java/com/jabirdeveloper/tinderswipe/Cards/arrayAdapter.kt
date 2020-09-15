@@ -18,7 +18,6 @@ import com.jabirdeveloper.tinderswipe.ProfileUserOppositeActivity2
 import com.jabirdeveloper.tinderswipe.R
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by manel on 9/5/2017.
@@ -81,14 +80,14 @@ class arrayAdapter(private var items: ArrayList<cards>, private val context: Con
                 val time_user = currentTime.format(calendar.time)
                 val currentDate = SimpleDateFormat("dd/MM/yyyy")
                 val date_user = currentDate.format(calendar.time)
-                val newDate = hashMapOf<String,Any>()
+                val newDate = hashMapOf<String, Any>()
                 newDate["date"] = date_user
                 newDate["time"] = time_user
                 CurrentUserConnectionDb.updateChildren(newDate)
                 val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
                 intent.putExtra("User_opposite", items[position].userId)
                 intent.putExtra("form_main", "1")
-                activity.startActivityForResult(intent,115)
+                activity.startActivityForResult(intent, 115)
             })
         }
 

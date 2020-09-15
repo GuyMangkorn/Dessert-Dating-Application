@@ -187,7 +187,7 @@ class ChatActivity : AppCompatActivity() {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
                 //Toast.makeText(ChatActivity.this,"chk",Toast.LENGTH_SHORT).show();
-                mRecordStatus.text  = ("00:00")
+                mRecordStatus.text = ("00:00")
                 T = Timer()
                 T!!.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
@@ -314,7 +314,7 @@ class ChatActivity : AppCompatActivity() {
         });*/
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Open_menu.setOnClickListener(View.OnClickListener {
-            if (menu.visibility  == View.GONE) {
+            if (menu.visibility == View.GONE) {
                 Open_menu.visibility = View.GONE
                 menu.visibility = View.VISIBLE
             }
@@ -354,13 +354,13 @@ class ChatActivity : AppCompatActivity() {
                 Open_menu.visibility = View.GONE
             }
         })
-        mSendEditText!!.setOnFocusChangeListener{ view, b ->
+        mSendEditText!!.setOnFocusChangeListener { view, b ->
             if (b) {
                 LinearRecord.visibility = View.GONE
                 menu.visibility = View.GONE
                 Open_menu.visibility = View.VISIBLE
             } else {
-                menu.visibility =  View.VISIBLE
+                menu.visibility = View.VISIBLE
                 Open_menu.visibility = View.GONE
             }
         }
@@ -539,11 +539,11 @@ class ChatActivity : AppCompatActivity() {
             var time: String
             var url_send = "default"
             var audio: String
-            var read : String
+            var read: String
             var audio_length: String
             val MyInNode = getSharedPreferences(FetchId.elementAt(i), Context.MODE_PRIVATE)
             message = MyInNode.getString("text", "null")!!
-            read = MyInNode.getString("read","null")!!
+            read = MyInNode.getString("read", "null")!!
             createdByUser = MyInNode.getString("createByUser", "null")!!
             time = MyInNode.getString("time", "null")!!
             val Check = MyInNode.getString("image", "null")
@@ -558,8 +558,8 @@ class ChatActivity : AppCompatActivity() {
                 var currentUserBoolean = false
                 if (createdByUser == currentUserId) {
                     currentUserBoolean = true
-                }else if(c == FetchId.size){
-                    if(createdByUser != currentUserId)
+                } else if (c == FetchId.size) {
+                    if (createdByUser != currentUserId)
                         Chat_check_read()
                 }
                 val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, url_send, chk2, matchId, audio, audio_length, currentUserId)
@@ -647,7 +647,7 @@ class ChatActivity : AppCompatActivity() {
                                 } else {
                                     if (active) {
                                         if (dataSnapshot.child("read").value.toString() == "Unread") {
-                                            Toast.makeText(this@ChatActivity,dataSnapshot.child("read").value.toString(),Toast.LENGTH_LONG).show()
+                                            Toast.makeText(this@ChatActivity, dataSnapshot.child("read").value.toString(), Toast.LENGTH_LONG).show()
                                             Chat_check_read()
                                         }
                                     }
@@ -667,7 +667,7 @@ class ChatActivity : AppCompatActivity() {
                             }
                         }
                     } else if (dataSnapshot.key != start) {
-                        Toast.makeText(this@ChatActivity,"First",Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@ChatActivity, "First", Toast.LENGTH_LONG).show()
 
                         c++
                         var message: String? = null
@@ -748,9 +748,6 @@ class ChatActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-
-
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

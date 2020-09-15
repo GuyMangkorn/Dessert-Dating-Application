@@ -55,16 +55,18 @@ class RegisGpsActivity : AppCompatActivity(), LocationListener {
             //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0f, this)
         }
     }
-    private fun  getLocation(location:Location){
+
+    private fun getLocation(location: Location) {
         val intent = Intent(this@RegisGpsActivity, Regis_Sex_Activity::class.java)
-        intent.putExtra("X",  location.latitude)
-        intent.putExtra("Y",   location.longitude)
+        intent.putExtra("X", location.latitude)
+        intent.putExtra("Y", location.longitude)
         intent.putExtra("Name", getIntent().getStringExtra("Name"))
         intent.putExtra("Type", getIntent().getStringExtra("Type"))
         intent.putExtra("email", getIntent().getStringExtra("email"))
         intent.putExtra("password", getIntent().getStringExtra("password"))
         startActivity(intent)
     }
+
     override fun onLocationChanged(location: Location) {
         /*val latitude = location.latitude
         val longitude = location.longitude

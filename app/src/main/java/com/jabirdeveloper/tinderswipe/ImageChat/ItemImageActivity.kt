@@ -23,16 +23,16 @@ class ItemImageActivity : AppCompatActivity() {
     private lateinit var adapter: RecyclerView.Adapter<*>
     private var countImg = 0
     private var count = 0
-    private var count_real:Int? = 0
-    private lateinit var mLinearView:LinearLayout
-    private lateinit var mLinearRe:LinearLayout
+    private var count_real: Int? = 0
+    private lateinit var mLinearView: LinearLayout
+    private lateinit var mLinearRe: LinearLayout
     private lateinit var screenAdapterImage: ScreenAdapterImage
     private lateinit var Nest: NestedScrollView
     private var chk_1time = false
-    private lateinit var All_image_click:Button
+    private lateinit var All_image_click: Button
     private lateinit var mCount_img: TextView
-    private lateinit var set_date:TextView
-    private lateinit var name_sender:TextView
+    private lateinit var set_date: TextView
+    private lateinit var name_sender: TextView
     private var findImage: DatabaseReference? = null
     private var mDatabaseName: DatabaseReference? = null
     private var currentUid: String? = null
@@ -76,7 +76,7 @@ class ItemImageActivity : AppCompatActivity() {
             name_sender.visibility = View.GONE
             set_date.visibility = View.GONE
             mLinearRe.visibility = View.VISIBLE
-            mRecyclerview.adapter =adapter
+            mRecyclerview.adapter = adapter
             Nest.post(Runnable { Nest.fullScroll(View.FOCUS_DOWN) })
         })
         getName()
@@ -89,7 +89,7 @@ class ItemImageActivity : AppCompatActivity() {
                         set_date.text = (resultImage[position]!!.date + " " + resultImage[position]!!.time)
                         false
                     } else {
-                        name_sender.text =nameMatch
+                        name_sender.text = nameMatch
                         set_date.text = (resultImage[position]!!.date + " " + resultImage[position]!!.time)
                         false
                     }
@@ -103,7 +103,7 @@ class ItemImageActivity : AppCompatActivity() {
                 if (resultImage.elementAt(position)!!.create) {
                     name_sender.text = nameUser
                 } else {
-                    name_sender.text  = nameMatch
+                    name_sender.text = nameMatch
                 }
             }
 

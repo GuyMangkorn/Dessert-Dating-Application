@@ -17,14 +17,14 @@ import java.util.*
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-    private var message1:String? = null
+    private var message1: String? = null
     private var notificationManager: NotificationManagerCompat? = null
-    private var datatype:String? = null
-    private var id_plus2:Int = 0
+    private var datatype: String? = null
+    private var id_plus2: Int = 0
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
-        Log.d("NotificationMessage",p0)
+        Log.d("NotificationMessage", p0)
     }
 
     override fun onMessageReceived(p0: RemoteMessage) {
@@ -34,13 +34,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         //message2 = p0.data.get("message")
         //message3 = p0.data.get("name_user")
-        Log.d("NotificationMessage",datatype)
-        Log.d("NotificationMessage",message1)
+        Log.d("NotificationMessage", datatype)
+        Log.d("NotificationMessage", message1)
         //Log.d("NotificationMessage",message2)
         // Log.d("NotificationMessage",message3)
         //Notification_match(p0.data.get("name_user"))
-        when(datatype){
-            "direct_message" ->  Notification_chat(p0.data.get("message"),p0.data.get("time"),p0.data.get("createBy"),p0.data.get("name_user"),p0.data.get("url"))
+        when (datatype) {
+            "direct_message" -> Notification_chat(p0.data.get("message"), p0.data.get("time"), p0.data.get("createBy"), p0.data.get("name_user"), p0.data.get("url"))
             else -> {
                 Notification_match(p0.data.get("name_user"))
             }
@@ -53,6 +53,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onDeletedMessages() {
         super.onDeletedMessages()
     }
+
     private fun Notification_match(name: String?) {
         //String name = NameMatch.get(NameMatch.size()-1);
         val intent = Intent(this, SwitchpageActivity::class.java)
@@ -87,6 +88,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
         notificationManager!!.notify(id + random.nextInt(9999 - 1000) + 1000, notification)
     }
+
     fun getCroppedBitmap(bitmap: Bitmap): Bitmap? {
         val output = Bitmap.createBitmap(bitmap.width,
                 bitmap.height, Bitmap.Config.ARGB_8888)
@@ -106,11 +108,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         //return _bmp;
         return output
     }
-    private var id_plus:Int = 0
-    private val bitmaptest : MutableList<Bitmap?>? = ArrayList()
+
+    private var id_plus: Int = 0
+    private val bitmaptest: MutableList<Bitmap?>? = ArrayList()
     private val IDNotification: MutableList<String?>? = ArrayList()
     private val IndexNotification: MutableList<Int?>? = ArrayList()
-    private fun Notification_chat(lastChat: String?, time: String?, ID: String?,Names: String?,Url: String?) {
+    private fun Notification_chat(lastChat: String?, time: String?, ID: String?, Names: String?, Url: String?) {
         var icon: Bitmap? = null
         var Name: String? = "null"
         val intent = Intent(this, ChatActivity::class.java)

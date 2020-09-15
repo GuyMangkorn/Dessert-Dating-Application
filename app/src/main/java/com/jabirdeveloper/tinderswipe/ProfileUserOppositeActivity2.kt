@@ -113,6 +113,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private var maxChat = 0
     private var statusVip = false
     lateinit var rewardedAd: RewardedAd
+
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,10 +178,11 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         }
         rewardedAd = RewardedAd(this,
                 "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object: RewardedAdLoadCallback() {
+        val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 Toast.makeText(this@ProfileUserOppositeActivity2, "สวย", Toast.LENGTH_SHORT).show()
             }
+
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 Toast.makeText(this@ProfileUserOppositeActivity2, errorCode.toString(), Toast.LENGTH_SHORT).show()
             }
@@ -200,7 +202,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 setResult(1)
 
             } else {
-                val DateTime = hashMapOf<String,Any>()
+                val DateTime = hashMapOf<String, Any>()
                 DateTime["date"] = date_user!!
                 DateTime["time"] = time_user!!
                 usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(DateTime)
@@ -223,7 +225,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             if (!intent.hasExtra("form_like")) {
                 setResult(3)
             } else {
-                val Datetime = hashMapOf<String,Any>()
+                val Datetime = hashMapOf<String, Any>()
                 Datetime["date"] = date_user!!
                 Datetime["time"] = time_user!!
                 Datetime["super"] = true
@@ -281,7 +283,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         val currentDate = SimpleDateFormat("dd/MM/yyyy")
                         val date_user = currentDate.format(calendar.time)
                         val newMessageDb = mDatabaseChat.child(key).push()
-                        val newMessage = hashMapOf<String,Any>()
+                        val newMessage = hashMapOf<String, Any>()
                         newMessage["createByUser"] = currentUid
                         newMessage["text"] = text!!
                         newMessage["time"] = time_user
@@ -291,8 +293,9 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         dialog.dismiss()
                         maxChat--
                         usersDb.child(currentUid).child("MaxChat").setValue(maxChat)
+                    } else {
+                        Toast.makeText(this@ProfileUserOppositeActivity2, "พิมพ์ข้อความสักหน่อยสิ", Toast.LENGTH_SHORT).show()
                     }
-                    else {Toast.makeText(this@ProfileUserOppositeActivity2, "พิมพ์ข้อความสักหน่อยสิ", Toast.LENGTH_SHORT).show()}
                 }
                 close.setOnClickListener { dialog.dismiss() }
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -307,38 +310,39 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 val b2 = view.findViewById<Button>(R.id.admob)
                 val text = view.findViewById<TextView>(R.id.test_de)
                 text.text = "ดูโฆษณาเพื่อรับ จำนวนกดทักทาย เพิ่ม \nหรือ สมัคร Dessert VIP เพื่อรับสิทธิพิเศษต่างๆ"
-                if(maxadmob <= 0)
-                {
+                if (maxadmob <= 0) {
                     text.text = "โฆษณาที่คุณสามารถดูได้ในวันนี้หมดแล้ว \n สมัคร Dessert VIP เพื่อรับสิทธิพิเศษ"
                     b2.visibility = View.GONE
                 }
                 b2.setOnClickListener {
                     if (rewardedAd.isLoaded) {
                         val activityContext: Activity = this
-                        val adCallback = object: RewardedAdCallback() {
+                        val adCallback = object : RewardedAdCallback() {
                             override fun onRewardedAdOpened() {
                                 rewardedAd = createAndLoadRewardedAd()
                             }
+
                             override fun onRewardedAdClosed() {
 
                             }
+
                             override fun onUserEarnedReward(@NonNull reward: RewardItem) {
                                 maxChat++
                                 maxadmob--
-                                if(maxChat >= 10)
+                                if (maxChat >= 10)
                                     dialog.dismiss()
-                                else if(maxadmob <= 0)
+                                else if (maxadmob <= 0)
                                     b2.visibility = View.GONE
                                 usersDb.child(currentUid).child("MaxChat").setValue(maxChat)
                                 usersDb.child(currentUid).child("MaxAdmob").setValue(maxChat)
                             }
+
                             override fun onRewardedAdFailedToShow(errorCode: Int) {
                                 // Ad failed to display.
                             }
                         }
                         rewardedAd.show(activityContext, adCallback)
-                    }
-                    else {
+                    } else {
                         Log.d("TAG", "The rewarded ad wasn't loaded yet.")
                     }
                 }
@@ -350,18 +354,18 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 dialog.setContentView(view)
                 val pagerModels: ArrayList<PagerModel?> = ArrayList()
-                pagerModels.add(PagerModel("สมัคร Dessert VIP เพื่อทักทายแบบไม่จำกัดจำนวน","จำนวนคำทักทายของคุณหมด", R.drawable.ic_hand))
-                pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา","ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
-                pagerModels.add(PagerModel( "คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร","รับ 5 Star ฟรีทุกวัน",R.drawable.ic_starss))
-                pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ","ใครถูกใจคุณ", R.drawable.ic_love2))
-                pagerModels.add(PagerModel( "ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ","ใครเข้ามาดูโปรไฟล์คุณ",R.drawable.ic_vision))
+                pagerModels.add(PagerModel("สมัคร Dessert VIP เพื่อทักทายแบบไม่จำกัดจำนวน", "จำนวนคำทักทายของคุณหมด", R.drawable.ic_hand))
+                pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
+                pagerModels.add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
+                pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
+                pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
                 val adapter = VipSlide(this@ProfileUserOppositeActivity2, pagerModels)
                 val pager: AutoScrollViewPager = dialog.findViewById(R.id.viewpage)
                 pager.adapter = adapter
                 pager.startAutoScroll()
                 val indicator: CircleIndicator = view.findViewById(R.id.indicator)
                 indicator.setViewPager(pager)
-                val width = (resources.displayMetrics.widthPixels * 0.90) .toInt()
+                val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
                 dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
                 dialog.show()
             }
@@ -394,12 +398,14 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         })
 
     }
+
     fun createAndLoadRewardedAd(): RewardedAd {
         val rewardedAd = RewardedAd(this, "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object: RewardedAdLoadCallback() {
+        val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 // Ad successfully loaded.
             }
+
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 // Ad failed to load.
             }
@@ -407,6 +413,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
         return rewardedAd
     }
+
     private fun isConnectionMatches2() {
         val currentuserConnectionDb = usersDb.child(currentUid).child("connection").child("yep").child(matchId)
         currentuserConnectionDb.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -445,7 +452,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         if (dataSnapshot.hasChild("super")) {
                             star.visibility = View.VISIBLE
                             //textView3.setText("Star");
-                            textView4.text =" ส่งดาวให้คุณให้คุณ"
+                            textView4.text = " ส่งดาวให้คุณให้คุณ"
                         } else textView4.text = " ถูกใจคุณเหมือนกัน"
                         Glide.with(this@ProfileUserOppositeActivity2).load(Url0).into(imageView)
                         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -468,7 +475,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 //val date_user: String
                 //val date_user_before: String
-                var date_before:Boolean = true
+                var date_before: Boolean = true
                 /*var date_after = 0
                 val currentDate = SimpleDateFormat("dd/MM/yyyy")
                 val calendar = Calendar.getInstance()
@@ -477,16 +484,16 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 date_after = Integer.valueOf(after)*/
                 if (dataSnapshot.child(currentUserId).child("PutReportId").hasChild(matchId)) {
                     date_before = false
-                }else{
+                } else {
                     val date_user: String
                     val currentDate = SimpleDateFormat("dd/MM/yyyy")
                     val calendar = Calendar.getInstance()
                     date_user = currentDate.format(calendar.time)
-                    val ff = hashMapOf<String,Any>()
+                    val ff = hashMapOf<String, Any>()
                     ff["date"] = date_user
                     usersDb.child(currentUserId).child("PutReportId").child(matchId).updateChildren(ff)
                 }
-                Log.d("test_boolean","$date_before , $matchId")
+                Log.d("test_boolean", "$date_before , $matchId")
                 if (date_before) {
                     if (return_d == 0) {
                         return_d = -1
@@ -498,18 +505,18 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                                 .show()
                     }
                     if (!dataSnapshot.child(matchId).hasChild("Report")) {
-                        val jj = hashMapOf<String,Any>()
+                        val jj = hashMapOf<String, Any>()
                         jj[Child] = "1"
                         usersDb.child(matchId).child("Report").updateChildren(jj)
                     } else if (dataSnapshot.child(matchId).hasChild("Report")) {
                         if (dataSnapshot.child(matchId).child("Report").hasChild(Child)) {
                             val count_rep = Integer.valueOf(dataSnapshot.child(matchId).child("Report").child(Child).value.toString()) + 1
                             val input_count = count_rep.toString()
-                            val jj = hashMapOf<String,Any>()
+                            val jj = hashMapOf<String, Any>()
                             jj[Child] = input_count
                             usersDb.child(matchId).child("Report").updateChildren(jj)
                         } else {
-                            val jj = hashMapOf<String,Any>()
+                            val jj = hashMapOf<String, Any>()
                             jj[Child] = "1"
                             usersDb.child(matchId).child("Report").updateChildren(jj)
                         }
@@ -718,7 +725,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     } else {
                         0
                     }
-                    maxadmob= if (dataSnapshot.hasChild("MaxAdmob")) {
+                    maxadmob = if (dataSnapshot.hasChild("MaxAdmob")) {
                         val a = dataSnapshot.child("MaxAdmob").value.toString()
                         a.toInt()
                     } else {
@@ -792,9 +799,10 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         usersDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 maxChat = dataSnapshot.child(currentUid).child("MaxChat").value.toString().toInt();
-                if(dataSnapshot.child(currentUid).child("Vip").value == 1){statusVip = true}
-                if (maxChat <= 0)
-                {
+                if (dataSnapshot.child(currentUid).child("Vip").value == 1) {
+                    statusVip = true
+                }
+                if (maxChat <= 0) {
                     click = false
                 }
                 if (dataSnapshot.child(matchId).child("connection").child("chatna").hasChild(currentUid)) {
@@ -846,6 +854,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     override fun onBillingInitialized() {
 
     }

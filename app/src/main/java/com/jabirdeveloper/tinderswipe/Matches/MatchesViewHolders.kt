@@ -20,8 +20,6 @@ import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.R
 import com.tapadoo.alerter.Alerter
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MatchesViewHolders(itemView: View, private val context: Context?, private val matchesList: MutableList<MatchesObject?>?) : RecyclerView.ViewHolder(itemView) {
     var mMatchId: TextView?
@@ -39,9 +37,9 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
     private var Show: String? = null
     private val i_1: Intent?
     private var i = 0
-    private var return_d:Int? = 0
+    private var return_d: Int? = 0
     private lateinit var mDialog: Dialog
-    private var position:Int? = 0
+    private var position: Int? = 0
     private val mDataReport: DatabaseReference?
     var progressBar: ProgressBar?
     fun set(position: Int) {
@@ -110,7 +108,7 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
             } else {
                 Toast.makeText(context, "" + item, Toast.LENGTH_SHORT).show()
             }
-            mLinear?.background =  ContextCompat.getDrawable(context!!, R.drawable.background_click)
+            mLinear?.background = ContextCompat.getDrawable(context!!, R.drawable.background_click)
             true
         }
         dd.setOnDismissListener { mLinear!!.background = ContextCompat.getDrawable(context!!, R.drawable.background_click) }
@@ -140,7 +138,7 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         mDataReport!!.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val MatchId = mMatchId!!.text.toString()
-                var date_before:Boolean = true
+                var date_before: Boolean = true
                 if (dataSnapshot.child(userID.toString()).child("PutReportId").hasChild(MatchId)) {
                     date_before = false
                 } else {
@@ -209,6 +207,7 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+
     init {
         i_1 = Intent(context, MatchesActivity::class.java)
         mDataReport = FirebaseDatabase.getInstance().reference.child("Users")

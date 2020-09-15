@@ -14,8 +14,6 @@ import androidx.appcompat.widget.Toolbar
 import com.jabirdeveloper.tinderswipe.R
 import com.jabirdeveloper.tinderswipe.Register.Regis_ageActivity
 import com.tapadoo.alerter.Alerter
-import java.security.Timestamp
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneOffset
@@ -28,12 +26,12 @@ class Regis_ageActivity : AppCompatActivity() {
     private var m = 0
     private var d = 0
     private var dateLong = 0
-    private lateinit var button:Button
-    private lateinit var toolbar:Toolbar
-    private lateinit var calendar:Calendar
-    private lateinit var datePicker:DatePicker
-    private lateinit var date:LocalDate
-    private lateinit var intent1:Intent
+    private lateinit var button: Button
+    private lateinit var toolbar: Toolbar
+    private lateinit var calendar: Calendar
+    private lateinit var datePicker: DatePicker
+    private lateinit var date: LocalDate
+    private lateinit var intent1: Intent
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadLocal()
@@ -55,7 +53,7 @@ class Regis_ageActivity : AppCompatActivity() {
 
         datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)) { _, year, month, dayOfMonth ->
             y = year
-            m = month+1
+            m = month + 1
             d = dayOfMonth
 
 
@@ -65,17 +63,17 @@ class Regis_ageActivity : AppCompatActivity() {
             if (age >= 18) {
                 Alerter.hide()
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    date = LocalDate.of(y,m,d)
+                    date = LocalDate.of(y, m, d)
                     date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
-                    intent1.putExtra("Birth",date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
+                    intent1.putExtra("Birth", date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
                 } else {
-                    val date = Date(y,m,d)
-                    intent1.putExtra("Birth",date.time)
+                    val date = Date(y, m, d)
+                    intent1.putExtra("Birth", date.time)
                 }
                 intent1.putExtra("Sex", intent.getStringExtra("Sex"))
                 intent1.putExtra("Type", intent.getStringExtra("Type"))
-                intent1.putExtra("X", intent.getDoubleExtra("X",0.0))
-                intent1.putExtra("Y", intent.getDoubleExtra("Y",0.0))
+                intent1.putExtra("X", intent.getDoubleExtra("X", 0.0))
+                intent1.putExtra("Y", intent.getDoubleExtra("Y", 0.0))
                 intent1.putExtra("Name", intent.getStringExtra("Name"))
                 intent1.putExtra("Age", age)
                 intent1.putExtra("email", intent.getStringExtra("email"))
@@ -116,14 +114,14 @@ class Regis_ageActivity : AppCompatActivity() {
                 LocalDate.of(year, month, dayOfMonth),
                 LocalDate.now()
         ).years;
-       /* val dob = Calendar.getInstance()
-        val today = Calendar.getInstance()
-        dob[year, month] = dayOfMonth
-        var age = today[Calendar.YEAR] - dob[Calendar.YEAR]
-        if (today[Calendar.DAY_OF_YEAR] < dob[Calendar.DAY_OF_YEAR]) {
-            age--
-        }
-        return age*/
+        /* val dob = Calendar.getInstance()
+         val today = Calendar.getInstance()
+         dob[year, month] = dayOfMonth
+         var age = today[Calendar.YEAR] - dob[Calendar.YEAR]
+         if (today[Calendar.DAY_OF_YEAR] < dob[Calendar.DAY_OF_YEAR]) {
+             age--
+         }
+         return age*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

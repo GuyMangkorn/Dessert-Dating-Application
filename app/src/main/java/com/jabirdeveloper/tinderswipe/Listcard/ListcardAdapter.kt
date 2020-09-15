@@ -2,7 +2,6 @@ package com.jabirdeveloper.tinderswipe.Listcard
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.jabirdeveloper.tinderswipe.R
-import java.text.DecimalFormat
 
 class ListcardAdapter(private val matchesList: ArrayList<ListcardObject?>, private val context: Context) : RecyclerView.Adapter<ListcardViewHolders>() {
 
@@ -31,7 +29,7 @@ class ListcardAdapter(private val matchesList: ArrayList<ListcardObject?>, priva
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ListcardViewHolders, position: Int) {
 
-        Log.d("dddddddddddddddddddddd",matchesList.size.toString())
+        Log.d("dddddddddddddddddddddd", matchesList.size.toString())
         Glide.with(context).load(matchesList[position]!!.profileImageUrl).listener(object : RequestListener<Drawable?> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
                 return false
@@ -47,15 +45,21 @@ class ListcardAdapter(private val matchesList: ArrayList<ListcardObject?>, priva
             holder.on_off_list.visibility = View.VISIBLE
             if (matchesList[position]!!.status_opposite == "offline") {
                 Glide.with(context).load(R.drawable.offline_user).into(holder.on_off_list)
-                if(matchesList[position]!!.typeTime != "")
-                {
+                if (matchesList[position]!!.typeTime != "") {
                     val time = matchesList[position]!!.time
-                    when(matchesList[position]!!.typeTime)
-                    {
-                        "d" -> {holder.mStatus.text = time + " " + context.getString(R.string.days_ago)}
-                        "h" -> {holder.mStatus.text = time + " " + context.getString(R.string.hours_ago)}
-                        "m" -> {holder.mStatus.text = time + " " + context.getString(R.string.minutes_ago)}
-                        "0" -> { holder.mStatus.text = "เมื่อสักครู่" }
+                    when (matchesList[position]!!.typeTime) {
+                        "d" -> {
+                            holder.mStatus.text = time + " " + context.getString(R.string.days_ago)
+                        }
+                        "h" -> {
+                            holder.mStatus.text = time + " " + context.getString(R.string.hours_ago)
+                        }
+                        "m" -> {
+                            holder.mStatus.text = time + " " + context.getString(R.string.minutes_ago)
+                        }
+                        "0" -> {
+                            holder.mStatus.text = "เมื่อสักครู่"
+                        }
                     }
                 }
 //                if (matchesList[position]!!.time != "null") {
@@ -88,13 +92,13 @@ class ListcardAdapter(private val matchesList: ArrayList<ListcardObject?>, priva
         }
         holder.mDistance.text = matchesList[position]!!.distance + " " + context.getString(R.string.kilometer)
         holder.tag.visibility = View.VISIBLE
-      /*  if (matchesList[position]!!.getGender() == "Male") {
-            holder.tag.text = context.getString(R.string.male) + " " + matchesList[position]!!.getAge()
-            holder.tag.setTextColor(Color.parseColor("#FF9800"))
-        } else {
-            holder.tag.text = context.getString(R.string.female) + " " + matchesList[position]!!.getAge()
-            holder.tag.setTextColor(Color.parseColor("#FF9800"))
-        }*/
+        /*  if (matchesList[position]!!.getGender() == "Male") {
+              holder.tag.text = context.getString(R.string.male) + " " + matchesList[position]!!.getAge()
+              holder.tag.setTextColor(Color.parseColor("#FF9800"))
+          } else {
+              holder.tag.text = context.getString(R.string.female) + " " + matchesList[position]!!.getAge()
+              holder.tag.setTextColor(Color.parseColor("#FF9800"))
+          }*/
         holder.tag.text = matchesList[position]!!.Age
         holder.mMatchId.text = matchesList[position]!!.userId
         holder.mMatchId.visibility = View.GONE

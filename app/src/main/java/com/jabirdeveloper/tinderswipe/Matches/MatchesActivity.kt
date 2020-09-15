@@ -37,6 +37,7 @@ class MatchesActivity : Fragment() {
     private var p1: AVLoadingIndicatorView? = null
     private lateinit var text_empty: TextView
     private lateinit var chat_empty: TextView
+
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_matches, container, false)
@@ -68,13 +69,14 @@ class MatchesActivity : Fragment() {
         CheckNode()
         return view
     }
+
     private var check_first_connection = true
     private var check_first_matches = true
     private var check_first_remove: String? = "null"
     private var UserMatch_count = 0
     private fun CheckNode() {
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
-        matchDbCheck.orderByKey().addChildEventListener(object : ChildEventListener{
+        matchDbCheck.orderByKey().addChildEventListener(object : ChildEventListener {
             override fun onCancelled(error: DatabaseError) {}
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
@@ -82,8 +84,8 @@ class MatchesActivity : Fragment() {
                 if (snapshot.key.toString() == ("connection")) {
                     //Checkconnection()
                     CheckNodeMatch()
-                    Log.d("test_check_matches","connection_accept")
-                }else if(check_first_connection){
+                    Log.d("test_check_matches", "connection_accept")
+                } else if (check_first_connection) {
                     check_first_connection = false
                     Log.d("test_check_matches", "connection_reject ")
                     p1!!.hide()
@@ -91,14 +93,17 @@ class MatchesActivity : Fragment() {
                     mRecyclerView.visibility = View.GONE
                 }
             }
+
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                if (snapshot.key.toString() == "connection"){
+                if (snapshot.key.toString() == "connection") {
                     check_first_connection = true
                 }
-                Log.d("test_check_matches", snapshot.key) }
+                Log.d("test_check_matches", snapshot.key)
+            }
 
         })
     }
+
     /*private fun Checkconnection(){
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
         matchDbCheck.orderByKey().equalTo("connection").addListenerForSingleValueEvent(object : ValueEventListener{
@@ -118,29 +123,31 @@ class MatchesActivity : Fragment() {
     }*/
     private fun CheckNodeMatch() {
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection");
-        matchDbCheck.orderByKey().addChildEventListener(object : ChildEventListener{
+        matchDbCheck.orderByKey().addChildEventListener(object : ChildEventListener {
             override fun onCancelled(error: DatabaseError) {}
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                if(snapshot.key.toString() == ("matches")) {
-                        getUserMarchId()
-                    Log.d("test_check_matches","matches_accept")
+                if (snapshot.key.toString() == ("matches")) {
+                    getUserMarchId()
+                    Log.d("test_check_matches", "matches_accept")
                     //CheckNodeMatch2()
-                    }else if(check_first_matches){
-                        check_first_matches = false
-                        Log.d("test_check_matches", "matches_reject")
-                         p1!!.hide()
-                         chat_empty.visibility = View.VISIBLE
-                         mRecyclerView.visibility = View.GONE
-                    }
+                } else if (check_first_matches) {
+                    check_first_matches = false
+                    Log.d("test_check_matches", "matches_reject")
+                    p1!!.hide()
+                    chat_empty.visibility = View.VISIBLE
+                    mRecyclerView.visibility = View.GONE
+                }
 
             }
+
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                if (snapshot.key.toString() == "matches"){
+                if (snapshot.key.toString() == "matches") {
                     check_first_matches = true
                 }
-                Log.d("test_check_matches", snapshot.key)}
+                Log.d("test_check_matches", snapshot.key)
+            }
         })
     }
 
@@ -190,11 +197,11 @@ class MatchesActivity : Fragment() {
     private fun getUserMarchId() {
         val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches")
         matchDb.addChildEventListener(object : ChildEventListener {
-                override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 ++UserMatch_count
-                    Log.d("test_check_matches","onChildAdd : ${dataSnapshot.key}")
-                    val chatID = dataSnapshot.child("ChatId").value.toString()
-                    Check_data(dataSnapshot.key, chatID)
+                Log.d("test_check_matches", "onChildAdd : ${dataSnapshot.key}")
+                val chatID = dataSnapshot.child("ChatId").value.toString()
+                Check_data(dataSnapshot.key, chatID)
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
@@ -225,8 +232,8 @@ class MatchesActivity : Fragment() {
     }
 
     private fun UnMatch(key: String?) {
-        var index = resultMatches!!.map { T -> T!!.userId.equals(key)  }.indexOf(element = true)
-        Log.d("count_indexsomethings","$key ,index: $index")
+        var index = resultMatches!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
+        Log.d("count_indexsomethings", "$key ,index: $index")
         val MatchIDStored = mContext!!.getSharedPreferences(currentUserId + "Match_first", Context.MODE_PRIVATE)
         val editor2 = MatchIDStored.edit()
         editor2.remove(key).apply()
@@ -336,7 +343,7 @@ class MatchesActivity : Fragment() {
                             get_node(key, chatID)
                         }
                     } else {
-                        Log.d("test_check_matches","datachage $key")
+                        Log.d("test_check_matches", "datachage $key")
                         checkNodeFirst(key, chatID)
                     }
                 }
@@ -538,7 +545,7 @@ class MatchesActivity : Fragment() {
                     val gender = dataSnapshot.child("sex").value.toString()
                     if (!first_hi) {
                         Inception = false
-                        var j = resultHi!!.map { T -> T!!.userId.equals(key)  }.indexOf(element = true)
+                        var j = resultHi!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
                         //for (j in 0 until resultHi!!.size-1) {
                         //if (resultHi[j]!!.userId == key) {
                         if (resultHi.size == 1) {
@@ -670,15 +677,15 @@ class MatchesActivity : Fragment() {
                             }
                             chk_b2 - chk_b1
                         })
-                        resultMatches.subList(local,resultMatches.size).sortWith(Comparator { o1, o2 ->
+                        resultMatches.subList(local, resultMatches.size).sortWith(Comparator { o1, o2 ->
                             var b1 = false
                             var b2 = false
                             var chk_b1 = 0
                             var chk_b2 = 0
-                            if (o1!!.time!!.substring(2,3) == ":") {
+                            if (o1!!.time!!.substring(2, 3) == ":") {
                                 b1 = true
                             }
-                            if (o2!!.time!!.substring(2,3) == ":") {
+                            if (o2!!.time!!.substring(2, 3) == ":") {
                                 b2 = true
                             }
                             if (b1) {
@@ -854,20 +861,19 @@ class MatchesActivity : Fragment() {
     }
 
 
-
     override fun onResume() {
         super.onResume()
-        
+
         val MyUnread = mContext!!.getSharedPreferences("NotificationActive", Context.MODE_PRIVATE)
         val S1 = MyUnread.getString("ID", "null")
         if (S1 != "null") {
-            var index = resultMatches!!.map { T -> T!!.userId.equals(S1)  }.indexOf(element = true)
-            Log.d("count_indexsomethings","$index , $S1")
+            var index = resultMatches!!.map { T -> T!!.userId.equals(S1) }.indexOf(element = true)
+            Log.d("count_indexsomethings", "$index , $S1")
             if (resultMatches!!.size > 0) {
-                resultMatches.elementAt(index)?.count_unread=0
+                resultMatches.elementAt(index)?.count_unread = 0
                 mMatchesAdapter.notifyDataSetChanged()
             } else {
-                resultMatches.elementAt(0)?.count_unread=0
+                resultMatches.elementAt(0)?.count_unread = 0
                 mMatchesAdapter.notifyDataSetChanged()
             }
             MyUnread.edit().clear().apply()
@@ -875,15 +881,15 @@ class MatchesActivity : Fragment() {
         val MyDelete = mContext!!.getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
         val S2 = MyDelete.getString("ID", "null")
         if (S2 != "null") {
-            var index = resultMatches!!.map { T -> T!!.userId.equals(S2)  }.indexOf(element = true)
-            Log.d("count_indexsomethings","$index , $S2")
+            var index = resultMatches!!.map { T -> T!!.userId.equals(S2) }.indexOf(element = true)
+            Log.d("count_indexsomethings", "$index , $S2")
             if (resultMatches!!.size > 0) {
-                resultMatches.elementAt(index)?.late=""
-                resultMatches.elementAt(index)?.time="-1"
+                resultMatches.elementAt(index)?.late = ""
+                resultMatches.elementAt(index)?.time = "-1"
                 mMatchesAdapter.notifyDataSetChanged()
             } else {
-                resultMatches.elementAt(0)?.late=""
-                resultMatches.elementAt(0)?.time="-1"
+                resultMatches.elementAt(0)?.late = ""
+                resultMatches.elementAt(0)?.time = "-1"
                 mMatchesAdapter.notifyDataSetChanged()
             }
             MyDelete.edit().clear().apply()

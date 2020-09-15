@@ -21,7 +21,6 @@ import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
-import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,9 +50,9 @@ class ListcardActivity : Fragment() {
     private var OppositeUserAgeMax = 0
     private var distanceUser = 0.0
     private var count = 0
-    private var count2:Int = 0
+    private var count2: Int = 0
     private var currentItem = 0
-    private var  totalItem = 0
+    private var totalItem = 0
     private var scrollOutItem = 0
     private var sum_string: String? = null
     private lateinit var pro: ProgressBar
@@ -61,9 +60,9 @@ class ListcardActivity : Fragment() {
     private lateinit var anime1: ImageView
     private lateinit var anime2: ImageView
     private lateinit var handler: Handler
-    private lateinit var supportFragmentManager:Fragment
-    private  var functions = Firebase.functions
-    private lateinit var resultLimit:ArrayList<*>
+    private lateinit var supportFragmentManager: Fragment
+    private var functions = Firebase.functions
+    private lateinit var resultLimit: ArrayList<*>
     private var countLimit = 100
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_listcard, container, false)
@@ -89,9 +88,9 @@ class ListcardActivity : Fragment() {
 
         }
 
-        mRecyclerView.addOnScrollListener(object  : RecyclerView.OnScrollListener(){
+        mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if(newState ==AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     isScroll = true
 
                 }
@@ -103,20 +102,18 @@ class ListcardActivity : Fragment() {
                 currentItem = mMatchesLayoutManager.childCount
                 totalItem = mMatchesLayoutManager.itemCount
                 scrollOutItem = (mMatchesLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                Log.d("scrcc","$currentItem $totalItem $scrollOutItem")
-                Log.d("scrcc",resultLimit.size.toString()+"$countLimit")
+                Log.d("scrcc", "$currentItem $totalItem $scrollOutItem")
+                Log.d("scrcc", resultLimit.size.toString() + "$countLimit")
 
-                if(isScroll &&  currentItem+scrollOutItem == totalItem){
+                if (isScroll && currentItem + scrollOutItem == totalItem) {
                     isScroll = false
 
-                    if(startNode < countLimit)
-                    {
-                        getUser(resultLimit,startNode,false,resultMatches.size-1)
+                    if (startNode < countLimit) {
+                        getUser(resultLimit, startNode, false, resultMatches.size - 1)
                         startNode += 20
                     }
-                    if((currentItem+scrollOutItem)%countLimit == 0)
-                    {
-                        callFunction(countLimit,false,resultMatches.size)
+                    if ((currentItem + scrollOutItem) % countLimit == 0) {
+                        callFunction(countLimit, false, resultMatches.size)
                         startNode = 20
                     }
                     /*   Log.d("valueofStartNOde",startNode.toString()+" , "+br_check+" , "+resultMatches2.size )
@@ -154,9 +151,7 @@ class ListcardActivity : Fragment() {
         return view
 
 
-
     }
-
 
 
     private val runnable: Runnable? = object : Runnable {
@@ -174,13 +169,14 @@ class ListcardActivity : Fragment() {
             handler.postDelayed(this, 1500)
         }
     }
-    private fun  getStartAt(){
+
+    private fun getStartAt() {
         val userdb = FirebaseDatabase.getInstance().reference.child("Users")
-        userdb.addListenerForSingleValueEvent(object : ValueEventListener{
+        userdb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 br_check = snapshot.childrenCount.toInt()
-                Log.d("dddddd",br_check.toString())
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default)  {
+                Log.d("dddddd", br_check.toString())
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
                     getUsergender()
                 }
 
@@ -190,6 +186,7 @@ class ListcardActivity : Fragment() {
             }
         })
     }
+
     private fun getUsergender() {
         val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
         oppositUserSex = preferences.getString("OppositeUserSex", "All").toString()
@@ -208,13 +205,12 @@ class ListcardActivity : Fragment() {
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-        callFunction(100,true,0)
-
+        callFunction(100, true, 0)
 
 
     }
-    private fun callFunction(limit:Int,type: Boolean,count:Int)
-    {
+
+    private fun callFunction(limit: Int, type: Boolean, count: Int) {
         var pre = count
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             val data = hashMapOf(
@@ -224,46 +220,45 @@ class ListcardActivity : Fragment() {
                     "x_user" to x_user,
                     "y_user" to y_user,
                     "distance" to distanceUser,
-                    "limit" to count+limit,
+                    "limit" to count + limit,
                     "prelimit" to count
             )
             //FecthMatchformation()
             functions.getHttpsCallable("getUserList")
                     .call(data)
-                    .addOnFailureListener { Log.d("ghu","failed") }
-                    .addOnSuccessListener {  task ->
+                    .addOnFailureListener { Log.d("ghu", "failed") }
+                    .addOnSuccessListener { task ->
                         // This continuation runs on either success or failure, but if the task
                         // has failed then result will throw an Exception which will be
                         // propagated down.
                         val result1 = task.data as Map<*, *>
 
-                        Log.d("ghu",result1.toString())
+                        Log.d("ghu", result1.toString())
                         resultLimit = result1["o"] as ArrayList<*>
-                        if(resultLimit.isNotEmpty())
-                            if(type)
-                            getUser(resultLimit,0,type,0)
-                        else
-                                getUser(resultLimit,0,type,resultMatches.size-1)
+                        if (resultLimit.isNotEmpty())
+                            if (type)
+                                getUser(resultLimit, 0, type, 0)
+                            else
+                                getUser(resultLimit, 0, type, resultMatches.size - 1)
 
 
                     }
         }
     }
-    private fun getUser(result2:ArrayList<*>,start:Int,type:Boolean,startNoti:Int)
-    {
-        var max = start+20
+
+    private fun getUser(result2: ArrayList<*>, start: Int, type: Boolean, startNoti: Int) {
+        var max = start + 20
         var myself = ""
         var off_status = false
-        var typetime=""
-        var time=""
-        Log.d("max",(start+20).toString() + " " + result2.size)
-        if(result2.size < start+20) {
+        var typetime = ""
+        var time = ""
+        Log.d("max", (start + 20).toString() + " " + result2.size)
+        if (result2.size < start + 20) {
             max = result2.size
         }
-        for(x in start until max)
-        {
+        for (x in start until max) {
             val user = result2[x] as Map<*, *>
-            Log.d("ghu", user["name"].toString() + " , "+user["distance_other"].toString())
+            Log.d("ghu", user["name"].toString() + " , " + user["distance_other"].toString())
 
 //
 //            var time_opposite = "null"
@@ -277,7 +272,7 @@ class ListcardActivity : Fragment() {
 //            time_change(time_opposite, date_opposite)
             if (user["typeTime"] != null) {
                 typetime = user["typeTime"].toString()
-                Log.d("type55","0")
+                Log.d("type55", "0")
             }
             if (user["time"] != null) {
                 time = user["time"].toString()
@@ -297,7 +292,7 @@ class ListcardActivity : Fragment() {
             }
             val df2 = DecimalFormat("#.#")
             val dis = df2.format(user["distance_other"])
-            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, off_status,typetime,time)
+            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, off_status, typetime, time)
 
             resultMatches.add(obj)
             if (resultMatches.size > 0) {
@@ -306,11 +301,12 @@ class ListcardActivity : Fragment() {
                 // handler.removeCallbacks(runnable)
             }
         }
-        Log.d("sss","$startNoti " + resultMatches.size)
-        if(type)
-        mMatchesAdapter.notifyDataSetChanged()
-        else mMatchesAdapter.notifyItemRangeChanged(startNoti,resultMatches.size)
+        Log.d("sss", "$startNoti " + resultMatches.size)
+        if (type)
+            mMatchesAdapter.notifyDataSetChanged()
+        else mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
     }
+
     private val UidMatch: MutableList<String?>? = java.util.ArrayList()
     private var chk_num1 = 0
     private var chk_num2 = 0
@@ -318,7 +314,7 @@ class ListcardActivity : Fragment() {
         val userDb = FirebaseDatabase.getInstance().reference.child("Users")
         userDb.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                Log.d("checksnap",dataSnapshot.key)
+                Log.d("checksnap", dataSnapshot.key)
                 ++br_check2
                 age = dataSnapshot.child("Age").value.toString().toInt()
                 if (age in OppositeUserAgeMin..OppositeUserAgeMax && !dataSnapshot.child("connection").child("matches").hasChild(currentUserId)
@@ -330,10 +326,10 @@ class ListcardActivity : Fragment() {
                     val distance = CalculateDistance.calculate(x_user, y_user, x_opposite, y_opposite)
                     if (distance < distanceUser) {
                         if (oppositUserSex == "All") {
-                            if(!UidMatch!!.contains(dataSnapshot.key))
+                            if (!UidMatch!!.contains(dataSnapshot.key))
                                 fet(dataSnapshot, distance)
                         } else if (dataSnapshot.child("sex").value.toString() == oppositUserSex) {
-                            if(!UidMatch!!.contains(dataSnapshot.key))
+                            if (!UidMatch!!.contains(dataSnapshot.key))
                                 fet(dataSnapshot, distance)
                         }
                     }
@@ -352,6 +348,7 @@ class ListcardActivity : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+
     private var br_check = 0
     private var br_check2 = 0
     private fun fet(dataSnapshot: DataSnapshot, distance_1: Double) {
@@ -436,8 +433,8 @@ class ListcardActivity : Fragment() {
             }
             chk_b2 - chk_b1
         })*/
-        Log.d("checkBrbrbrbr",(br_check-1).toString()+" : "+startNode)
-        if(br_check2 == br_check) {
+        Log.d("checkBrbrbrbr", (br_check - 1).toString() + " : " + startNode)
+        if (br_check2 == br_check) {
             /*resultMatches2.sortWith(Comparator { o1, o2 ->
                 val chk = o1!!.time!!.substring(0, 1)
                 val chk2 = o2!!.time!!.substring(0, 1)
@@ -504,8 +501,6 @@ class ListcardActivity : Fragment() {
     private fun getDataSetMatches(): ArrayList<ListcardObject?> {
         return resultMatches
     }
-
-
 
 
     private fun time_change(time_opposite: String, date_opposite: String) {
@@ -583,6 +578,7 @@ class ListcardActivity : Fragment() {
             sum_string = "null"
         }
     }
+
     suspend fun fetchAndShowFeedData() {
         getStartAt()
     }

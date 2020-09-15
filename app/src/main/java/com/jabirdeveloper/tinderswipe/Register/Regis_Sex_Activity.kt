@@ -15,7 +15,7 @@ import com.tapadoo.alerter.Alerter
 
 class Regis_Sex_Activity : AppCompatActivity() {
     private lateinit var b3: Button
-    private  var sex: String? =null
+    private var sex: String? = null
     private lateinit var imageView: ImageView
     private lateinit var imageView2: ImageView
     private lateinit var toolbar: Toolbar
@@ -44,8 +44,8 @@ class Regis_Sex_Activity : AppCompatActivity() {
                 Alerter.hide()
                 val intent = Intent(this@Regis_Sex_Activity, Regis_ageActivity::class.java)
                 intent.putExtra("Sex", sex)
-                intent.putExtra("X", getIntent().getDoubleExtra("X",0.0))
-                intent.putExtra("Y", getIntent().getDoubleExtra("Y",0.0))
+                intent.putExtra("X", getIntent().getDoubleExtra("X", 0.0))
+                intent.putExtra("Y", getIntent().getDoubleExtra("Y", 0.0))
                 intent.putExtra("Type", getIntent().getStringExtra("Type"))
                 intent.putExtra("Name", getIntent().getStringExtra("Name"))
                 intent.putExtra("email", getIntent().getStringExtra("email"))

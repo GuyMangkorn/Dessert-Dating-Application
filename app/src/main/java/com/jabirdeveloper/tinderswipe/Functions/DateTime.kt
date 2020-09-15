@@ -10,6 +10,7 @@ object DateTime {
     fun date(): String {
         return currentDate.format(calendar.time)
     }
+
     fun time(): String {
         return currentTime.format(calendar.time)
     }

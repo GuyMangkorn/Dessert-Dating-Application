@@ -29,7 +29,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerView.ViewHolder(itemView) {
-    var mMessage:TextView
+    var mMessage: TextView
     var time_send: TextView
     var mMatchId: TextView
     var mMatchIdReal: TextView
@@ -44,6 +44,7 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
     var mImage_sent: ImageView
     var stop_Animate: ImageView? = null
     var progressBarAudio: ProgressBar
+
     //var mRecycler: RecyclerView?
     var mChk: TextView
     var mChk_2: TextView
@@ -230,7 +231,7 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
                         }
                     }
                 }
-                builder.setOnDismissListener { mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_1_photo)}
+                builder.setOnDismissListener { mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_1_photo) }
                 alert_dialog = builder.create()
                 alert_dialog!!.show()
                 alert_dialog!!.window!!.setLayout(800, 245)

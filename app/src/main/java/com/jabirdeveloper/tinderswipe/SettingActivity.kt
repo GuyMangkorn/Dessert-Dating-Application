@@ -11,7 +11,6 @@ import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -41,50 +40,49 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.util.*
 import kotlin.collections.HashMap
 
 @Suppress("UNREACHABLE_CODE", "NAME_SHADOWING")
 open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var editname: CustomEdittext
-    private lateinit var  editcareer: CustomEdittext
-    private lateinit var  editstudy: CustomEdittext
-    private lateinit var  editmy: CustomEdittext
-    private lateinit var  Image1: ImageView
-    private lateinit var  Image2: ImageView
-    private lateinit var  Image3: ImageView
-    private lateinit var  Image4: ImageView
-    private lateinit var  Image5: ImageView
-    private lateinit var  Image6: ImageView
-    private lateinit var  add1: ImageView
-    private lateinit var  add2: ImageView
-    private lateinit var  add3: ImageView
-    private lateinit var  add4: ImageView
-    private lateinit var  add5: ImageView
-    private lateinit var  add6: ImageView
-    private lateinit var  mAuth: FirebaseAuth
-    private lateinit var  mUserDatabase: DatabaseReference
-    private lateinit var  userId: String
-    private lateinit var  name: String
-    private lateinit var  profile: String
-    private lateinit var  Y: String
-    private lateinit var  resulturi: Uri
-    private lateinit var  religion: TextView
-    private lateinit var  language: TextView
-    private lateinit var  listItems: Array<String?>
-    private lateinit var  listItems2: Array<String?>
-    private lateinit var  listItems3: Array<String?>
-    private lateinit var  item2: String
-    private lateinit var  item: String
-    private lateinit var  toolbar: Toolbar
-    private lateinit var  params: GridLayout.LayoutParams
-    private lateinit var  flexLayout: FlexboxLayout
-    private  var  selectedPosition = -1
+    private lateinit var editcareer: CustomEdittext
+    private lateinit var editstudy: CustomEdittext
+    private lateinit var editmy: CustomEdittext
+    private lateinit var Image1: ImageView
+    private lateinit var Image2: ImageView
+    private lateinit var Image3: ImageView
+    private lateinit var Image4: ImageView
+    private lateinit var Image5: ImageView
+    private lateinit var Image6: ImageView
+    private lateinit var add1: ImageView
+    private lateinit var add2: ImageView
+    private lateinit var add3: ImageView
+    private lateinit var add4: ImageView
+    private lateinit var add5: ImageView
+    private lateinit var add6: ImageView
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mUserDatabase: DatabaseReference
+    private lateinit var userId: String
+    private lateinit var name: String
+    private lateinit var profile: String
+    private lateinit var Y: String
+    private lateinit var resulturi: Uri
+    private lateinit var religion: TextView
+    private lateinit var language: TextView
+    private lateinit var listItems: Array<String?>
+    private lateinit var listItems2: Array<String?>
+    private lateinit var listItems3: Array<String?>
+    private lateinit var item2: String
+    private lateinit var item: String
+    private lateinit var toolbar: Toolbar
+    private lateinit var params: GridLayout.LayoutParams
+    private lateinit var flexLayout: FlexboxLayout
+    private var selectedPosition = -1
     private lateinit var checkedItems: BooleanArray
     private lateinit var checkedItems2: BooleanArray
     private lateinit var checkedItems3: BooleanArray
-    private lateinit var  dialog: Dialog
+    private lateinit var dialog: Dialog
     private var list: ArrayList<Int> = ArrayList()
     private var mUserItems: ArrayList<Int?> = ArrayList()
     private var mUserItems2: ArrayList<Int?> = ArrayList()
@@ -305,9 +303,9 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
             val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(userId).child(str!!)
             filepath.delete().addOnSuccessListener {
                 mUserDatabase.child("ProfileImage").child(str).removeValue()
-                if(str == "profileImageUrl0"){
+                if (str == "profileImageUrl0") {
                     val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-                    MyUser.putString("image","")
+                    MyUser.putString("image", "")
                     MyUser.apply()
                 }
 
@@ -441,18 +439,16 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveUserinFormation() {
-        val userInfo = hashMapOf<String,Any?>()
+        val userInfo = hashMapOf<String, Any?>()
         val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
         if (editmy.text.toString().trim { it <= ' ' }.isNotEmpty())
             userInfo["myself"] = editmy.text.toString()
         else userInfo["myself"] = null
 
-        if (editname.text.toString().trim { it <= ' ' }.isNotEmpty())
-        {
-            MyUser.putString("name",editname.text.toString())
+        if (editname.text.toString().trim { it <= ' ' }.isNotEmpty()) {
+            MyUser.putString("name", editname.text.toString())
             userInfo["name"] = editname.text.toString()
-        }
-        else userInfo["name"] = null
+        } else userInfo["name"] = null
 
         if (editcareer.text.toString().trim { it <= ' ' }.isNotEmpty())
             userInfo["career"] = editcareer.text.toString()
@@ -465,12 +461,12 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         if (selectedPosition != -1) userInfo["religion"] = selectedPosition
         mUserDatabase.updateChildren(userInfo)
 
-        val userInfo12 = hashMapOf<String,Any?>()
+        val userInfo12 = hashMapOf<String, Any?>()
         for (u in mUserItems2.indices)
             userInfo12["language$u"] = mUserItems2[u]!!.toInt()
         mUserDatabase.child("language").setValue(userInfo12)
 
-        val userInfo2:MutableMap<String,Any> = HashMap()
+        val userInfo2: MutableMap<String, Any> = HashMap()
         for (u in mUserItems.indices) userInfo2["hobby$u"] = mUserItems[u]!!.toInt()
         mUserDatabase.child("hobby").setValue(userInfo2)
         MyUser.apply()
@@ -536,8 +532,8 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         var bitmap: Bitmap? = null
         val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(userId).child("profileImageUrl$Y")
         try {
-            Log.d("123",Build.VERSION.SDK_INT.toString())
-            bitmap = if(Build.VERSION.SDK_INT >= 29) {
+            Log.d("123", Build.VERSION.SDK_INT.toString())
+            bitmap = if (Build.VERSION.SDK_INT >= 29) {
                 val source = ImageDecoder.createSource(this.contentResolver, resulturi!!)
                 ImageDecoder.decodeBitmap(source)
             } else {
@@ -554,7 +550,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                 .addOnSuccessListener { faces ->
                     if (faces.isNotEmpty()) {
                         NSFWDetector.isNSFW(bitmap) { isNSFW, confidence, image ->
-                            if (isNSFW){
+                            if (isNSFW) {
                                 Toast.makeText(this, "โรคจิต", Toast.LENGTH_SHORT).show()
                                 gh()
                                 dialog.dismiss()
@@ -568,14 +564,14 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                                 uploadTask.addOnSuccessListener {
                                     val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(userId).child("profileImageUrl$Y")
                                     filepath.downloadUrl.addOnSuccessListener { uri ->
-                                        val userInfo = hashMapOf<String,Any>()
+                                        val userInfo = hashMapOf<String, Any>()
                                         userInfo["profileImageUrl$Y"] = uri.toString()
                                         mUserDatabase.child("ProfileImage").updateChildren(userInfo)
                                         when (i) {
                                             1 -> {
                                                 Glide.with(application).load(resulturi).into(Image1)
                                                 val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-                                                MyUser.putString("image",resulturi.toString())
+                                                MyUser.putString("image", resulturi.toString())
                                                 MyUser.apply()
                                                 add1.visibility = View.GONE
                                             }
@@ -621,11 +617,11 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                 .addOnFailureListener { }
 
     }
-    fun gh()
-    {
+
+    fun gh() {
         dialog.dismiss()
-        var imageDelete : ImageView? = null
-        var add : ImageView? = null
+        var imageDelete: ImageView? = null
+        var add: ImageView? = null
         when (i) {
             1 -> {
                 imageDelete = Image1
@@ -656,6 +652,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         imageDelete?.setImageResource(R.drawable.tran)
         add?.visibility = View.VISIBLE
     }
+
     override fun onStop() {
         super.onStop()
         saveUserinFormation()

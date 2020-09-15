@@ -69,22 +69,22 @@ class Regis_target_Acivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        x = intent.getDoubleExtra("X",x)
-        y = intent.getDoubleExtra("Y",y)
+        x = intent.getDoubleExtra("X", x)
+        y = intent.getDoubleExtra("Y", y)
         Toast.makeText(this, "$x , $y", Toast.LENGTH_SHORT).show()
         Type = intent.getStringExtra("Type")
         email = intent.getStringExtra("email")
         pass = intent.getStringExtra("password")
         name = intent.getStringExtra("Name")
         sex = intent.getStringExtra("Sex")
-        Age = intent.getIntExtra("Age",Age)
+        Age = intent.getIntExtra("Age", Age)
 
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.progress_dialog, null)
         dialog = Dialog(this)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(view)
-        val width = (resources.displayMetrics.widthPixels * 0.80) .toInt()
+        val width = (resources.displayMetrics.widthPixels * 0.80).toInt()
         dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
         imageView.setOnClickListener(View.OnClickListener { InputImage() })
         b1.setOnClickListener(View.OnClickListener { createId(1) })
@@ -113,24 +113,24 @@ class Regis_target_Acivity : AppCompatActivity() {
         UserId = mAuth.currentUser!!.uid
         currentUserDb = FirebaseDatabase.getInstance().reference.child("Users").child(UserId)
         val userInfo = hashMapOf(
-        "name" to name,
-        "sex" to sex,
-        "Age" to Age,
-        "Distance" to "Untitled",
-        "OppositeUserSex" to "All",
-        "OppositeUserAgeMin" to 18,
-        "OppositeUserAgeMax" to 70,
-        "MaxChat" to 20,
-        "MaxLike" to 40,
-        "MaxAdmob" to 10,
-        "MaxStar" to 3,
-        "Vip" to 0,
-        "birth" to intent.getLongExtra("Birth",0)
+                "name" to name,
+                "sex" to sex,
+                "Age" to Age,
+                "Distance" to "Untitled",
+                "OppositeUserSex" to "All",
+                "OppositeUserAgeMin" to 18,
+                "OppositeUserAgeMax" to 70,
+                "MaxChat" to 20,
+                "MaxLike" to 40,
+                "MaxAdmob" to 10,
+                "MaxStar" to 3,
+                "Vip" to 0,
+                "birth" to intent.getLongExtra("Birth", 0)
         )
         currentUserDb.updateChildren(userInfo as Map<String, Any>)
         val location = hashMapOf(
-        "X" to x,
-        "Y" to y
+                "X" to x,
+                "Y" to y
         )
         currentUserDb.child("Location").updateChildren(location as Map<String, Any>)
         if (i == 1) {
@@ -139,7 +139,7 @@ class Regis_target_Acivity : AppCompatActivity() {
                 var bitmap: Bitmap? = null
                 val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(UserId).child("profileImageUrl0")
                 try {
-                    bitmap = if(Build.VERSION.SDK_INT >= 29) {
+                    bitmap = if (Build.VERSION.SDK_INT >= 29) {
                         val source = ImageDecoder.createSource(this.contentResolver, resultUri!!)
                         ImageDecoder.decodeBitmap(source)
                     } else {
@@ -159,7 +159,7 @@ class Regis_target_Acivity : AppCompatActivity() {
                     filepath.downloadUrl.addOnSuccessListener { uri ->
                         dialog.dismiss()
                         val userInfo = hashMapOf(
-                        "profileImageUrl0" to uri.toString()
+                                "profileImageUrl0" to uri.toString()
                         )
                         currentUserDb.child("ProfileImage").updateChildren(userInfo as Map<String, Any>)
                         val intent = Intent(this@Regis_target_Acivity, SwitchpageActivity::class.java)

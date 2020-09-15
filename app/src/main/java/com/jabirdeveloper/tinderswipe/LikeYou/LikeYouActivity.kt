@@ -222,8 +222,8 @@ class LikeYouActivity : AppCompatActivity() {
                     if (dataSnapshot.hasChild("myself")) {
                         myself = dataSnapshot.child("myself").value.toString()
                     }
-                    val x:Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
-                    val y:Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
+                    val x: Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
+                    val y: Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                     val dss = MainActivity()
                     val distance = CalculateDistance.calculate(x_user, y_user, x, y)
                     val preferences = activity.getSharedPreferences("Settings", Context.MODE_PRIVATE)
@@ -243,16 +243,7 @@ class LikeYouActivity : AppCompatActivity() {
                         e.printStackTrace()
                     }
                     resultLike!!.add(LikeYouObject(
-                            userId
-                            , profileImageUrl
-                            , name
-                            , status
-                            , Age
-                            , gender
-                            , myself
-                            , distance
-                            , city
-                            , time))
+                            userId, profileImageUrl, name, status, Age, gender, myself, distance, city, time))
                 }
                 LikeYouAdapter.notifyDataSetChanged()
             }
@@ -278,25 +269,25 @@ class LikeYouActivity : AppCompatActivity() {
 
 
     private fun buy_see() {
-            val currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
-            val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
-            databaseReference.child("buy_see").setValue(true).addOnSuccessListener {
-                activity.finish()
-                activity.overridePendingTransition(0, 0)
-                activity.startActivity(activity.intent)
-                activity.overridePendingTransition(0, 0)
-            }
+        val currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
+        val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
+        databaseReference.child("buy_see").setValue(true).addOnSuccessListener {
+            activity.finish()
+            activity.overridePendingTransition(0, 0)
+            activity.startActivity(activity.intent)
+            activity.overridePendingTransition(0, 0)
         }
+    }
 
     private fun buy_like() {
-            val currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
-            val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
-            databaseReference.child("buy_like").setValue(true).addOnSuccessListener {
-                activity.finish()
-                activity.overridePendingTransition(0, 0)
-                activity.startActivity(activity.intent)
-                activity.overridePendingTransition(0, 0)
-            }
+        val currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
+        val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
+        databaseReference.child("buy_like").setValue(true).addOnSuccessListener {
+            activity.finish()
+            activity.overridePendingTransition(0, 0)
+            activity.startActivity(activity.intent)
+            activity.overridePendingTransition(0, 0)
         }
+    }
 
 }

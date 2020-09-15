@@ -1,6 +1,5 @@
 package com.jabirdeveloper.tinderswipe.Listcard
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -88,7 +87,7 @@ class ListcardViewHolders(itemView: View, private val context: Context) : Recycl
         mDataReport.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val MatchId = mMatchId.text.toString()
-                var date_before:Boolean = true
+                var date_before: Boolean = true
                 if (dataSnapshot.child(userID).child("PutReportId").hasChild(MatchId)) {
                     date_before = false
                 } else {

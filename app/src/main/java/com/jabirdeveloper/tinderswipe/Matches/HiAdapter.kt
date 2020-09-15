@@ -50,7 +50,7 @@ class HiAdapter(private val Hilist: MutableList<HiObject?>?, private val context
                     val datachat = FirebaseDatabase.getInstance().reference
                     datachat.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val chatId:String = dataSnapshot.child("Users").child(userID).child("connection").child("chatna").child(Hilist.elementAt(position)!!.userId!!).value.toString()
+                            val chatId: String = dataSnapshot.child("Users").child(userID).child("connection").child("chatna").child(Hilist.elementAt(position)!!.userId!!).value.toString()
                             if (dataSnapshot.child("Chat").hasChild(chatId)) {
                                 datachat.child("Chat").child(chatId).removeValue()
                             }

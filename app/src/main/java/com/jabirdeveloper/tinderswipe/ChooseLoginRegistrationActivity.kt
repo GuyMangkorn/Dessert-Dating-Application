@@ -9,10 +9,16 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.facebook.*
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
@@ -56,7 +62,7 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         loadLocal()
         setContentView(R.layout.activity_choose_login_registration)
 
-        findViewById<TextView>(R.id.clickToTest).setOnClickListener {  findViewById<LinearLayout>(R.id.testlogin).visibility = View.VISIBLE; findViewById<TextView>(R.id.clickToTest).visibility = View.GONE}
+        findViewById<TextView>(R.id.clickToTest).setOnClickListener { findViewById<LinearLayout>(R.id.testlogin).visibility = View.VISIBLE; findViewById<TextView>(R.id.clickToTest).visibility = View.GONE }
         mAuth = FirebaseAuth.getInstance()
         thai = findViewById(R.id.thai_lang)
         eng = findViewById(R.id.eng_lang)
@@ -106,11 +112,11 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                             }
                             else -> {
 
-                                    dialog.dismiss()
-                                    val intent = Intent(this@ChooseLoginRegistrationActivity, Regis_name_Activity::class.java)
-                                    intent.putExtra("Type", "face")
-                                    startActivity(intent)
-                                    return
+                                dialog.dismiss()
+                                val intent = Intent(this@ChooseLoginRegistrationActivity, Regis_name_Activity::class.java)
+                                intent.putExtra("Type", "face")
+                                startActivity(intent)
+                                return
 
                             }
                         }
@@ -222,8 +228,7 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                 // ...
             }
         }
-        if(requestCode == 1150)
-        {
+        if (requestCode == 1150) {
             mAuth.removeAuthStateListener(firebaseAuthStateListener)
         }
         super.onActivityResult(requestCode, resultCode, data)

@@ -40,6 +40,7 @@ class VerifyActivity : AppCompatActivity() {
     private lateinit var commend: TextView
     private lateinit var dialog: Dialog
     private lateinit var toolbar: Toolbar
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,16 +111,16 @@ class VerifyActivity : AppCompatActivity() {
                 this,  // Activity (for callback binding)
                 callbacks) // OnVerificationStateChangedCallbacks
     }
+
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-            if(verificationCodeBysystem != "")
-            {Log.d("afg","2")
+            if (verificationCodeBysystem != "") {
+                Log.d("afg", "2")
                 val code = credential.smsCode
                 verifyCode(code)
-            }
-            else {
-                Log.d("afg","3")
+            } else {
+                Log.d("afg", "3")
                 singInTheUserByCredentials(credential)
                 Alerter.create(this@VerifyActivity)
                         .setTitle(getString(R.string.Sign))
@@ -129,15 +130,16 @@ class VerifyActivity : AppCompatActivity() {
                 progressBar.visibility = View.VISIBLE
             }
         }
+
         override fun onVerificationFailed(e: FirebaseException) {
             // This callback is invoked in an invalid request for verification is made,
             // for instance if the the phone number format is not valid.
             Log.w("TAG", "onVerificationFailed", e)
 
             if (e is FirebaseAuthInvalidCredentialsException) {
-                Log.d("afg","อิหยัง")
+                Log.d("afg", "อิหยัง")
             } else if (e is FirebaseTooManyRequestsException) {
-                Log.d("afg","หมด")
+                Log.d("afg", "หมด")
             }
 
             // Show a message and update the UI
@@ -162,14 +164,13 @@ class VerifyActivity : AppCompatActivity() {
         }
 
         override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-            android.util.Log.d("afg","1")
-            if(verificationCodeBysystem != "")
-            {android.util.Log.d("afg","2")
+            android.util.Log.d("afg", "1")
+            if (verificationCodeBysystem != "") {
+                android.util.Log.d("afg", "2")
                 val code = phoneAuthCredential.smsCode
                 verifyCode(code)
-            }
-            else {
-                android.util.Log.d("afg","3")
+            } else {
+                android.util.Log.d("afg", "3")
                 singInTheUserByCredentials(phoneAuthCredential)
                 Alerter.create(this@VerifyActivity)
                         .setTitle(getString(R.string.Sign))

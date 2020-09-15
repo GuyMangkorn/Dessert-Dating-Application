@@ -56,6 +56,7 @@ import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+@Suppress("NAME_SHADOWING")
 class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHandler {
 
     private lateinit var mLocationManager: LocationManager
@@ -484,7 +485,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         val preferences2 = requireActivity().getSharedPreferences("notification_match", Context.MODE_PRIVATE)
         notificationMatch = preferences2.getString("noti", "1")
         var pre = 0
-        var vvip = 0
         if (!type) pre = 0
 
         val data = hashMapOf(
@@ -507,7 +507,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     // has failed then result will throw an Exception which will be
                     // propagated down.
                     val result1 = task.data as Map<*, *>
-                    Log.d("ghjlast", result1.toString())
                     resultlimit = result1["o"] as ArrayList<*>
                     if (resultlimit.isNotEmpty())
                         getUser(resultlimit, type, count, 10)
@@ -599,15 +598,15 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     override fun onProviderEnabled(provider: String?) {}
     override fun onProviderDisabled(provider: String?) {
         if (provider == LocationManager.GPS_PROVIDER) {
-            showGPSDiabledDialog()
+            showGPSDisabledDialog()
         }
     }
 
-    fun showGPSDiabledDialog() {
+    private fun showGPSDisabledDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(R.string.GPS_Disabled)
         builder.setMessage(R.string.GPS_open)
-        builder.setPositiveButton(R.string.open_gps) { dialog, which -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { _, _ ->
+        builder.setPositiveButton(R.string.open_gps) { _, _ -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { _, _ ->
             val intent = Intent(context, show_gps_open::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             requireActivity().finish()
@@ -623,9 +622,8 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         if (requestCode == 0) {
             requireActivity().recreate()
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                showGPSDiabledDialog()
-            }
-            else mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                showGPSDisabledDialog()
+            } else mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         }
         if (requestCode == 1112) {
             handler.postDelayed(Runnable {
@@ -661,7 +659,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
 
     }
-
 
 
     override fun onPause() {

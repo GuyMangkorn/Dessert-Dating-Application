@@ -36,8 +36,8 @@ class ImageAllAdapter(private val image_all: MutableList<ScreenObject?>?, privat
         private val m1: ImageView? = ItemView.findViewById(R.id.all_image_1)
         private val m2: ImageView? = ItemView.findViewById(R.id.all_image_2)
         private val m3: ImageView? = ItemView.findViewById(R.id.all_image_3)
-        private  var MatchId: TextView = ItemView.findViewById(R.id.chatId_image)
-        private  var Chatid: TextView = ItemView.findViewById(R.id.matchId_image)
+        private var MatchId: TextView = ItemView.findViewById(R.id.chatId_image)
+        private var Chatid: TextView = ItemView.findViewById(R.id.matchId_image)
         fun set(position: Int) {
             Chatid.text = (image_all!![position]!!.ChatID)
             MatchId.text = (image_all[position]!!.MatchId)

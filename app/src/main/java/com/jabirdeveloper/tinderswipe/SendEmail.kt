@@ -1,9 +1,6 @@
 package com.jabirdeveloper.tinderswipe
 
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -12,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class SendEmail : AppCompatActivity() {
-    private lateinit var email:TextView
-    private lateinit var subject:TextView
-    private lateinit var message:TextView
-    private lateinit var button:Button
+    private lateinit var email: TextView
+    private lateinit var subject: TextView
+    private lateinit var message: TextView
+    private lateinit var button: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_email)
@@ -26,12 +23,13 @@ class SendEmail : AppCompatActivity() {
 
         button.setOnClickListener { senEmail() }
     }
+
     private fun senEmail() {
         val mEmail: String = email.text.toString()
         val mSubject: String = subject.text.toString()
         val mMessage: String = message.text.toString()
-       // val javaMailAPI = JavaMailAPI(this, mEmail, mSubject, mMessage)
-       // javaMailAPI.execute()
+        // val javaMailAPI = JavaMailAPI(this, mEmail, mSubject, mMessage)
+        // javaMailAPI.execute()
 //        val mailto = "mailto:bob@example.org" +
 //                "?cc=" + "alice@example.com" +
 //                "&subject=" + Uri.encode(mSubject) +

@@ -17,11 +17,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.*
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.bumptech.glide.Glide
@@ -37,10 +35,9 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.jabirdeveloper.tinderswipe.LikeYou.LikeYouActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
 import java.util.*
@@ -66,7 +63,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     private lateinit var p1: ProgressBar
     private lateinit var dialog: Dialog
     private lateinit var dialog2: Dialog
-    private lateinit var bp:BillingProcessor
+    private lateinit var bp: BillingProcessor
     private var s = 0
     private var c = 0
     private lateinit var vvip: ImageView
@@ -81,10 +78,11 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         bp.initialize()
         rewardedAd = RewardedAd(requireActivity(),
                 "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object: RewardedAdLoadCallback() {
+        val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 Toast.makeText(requireContext(), "สวย", Toast.LENGTH_SHORT).show()
             }
+
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 Toast.makeText(requireContext(), errorCode.toString(), Toast.LENGTH_SHORT).show()
             }
@@ -123,23 +121,25 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         ad.setOnClickListener {
             if (rewardedAd.isLoaded) {
                 val activityContext: Activity = requireActivity()
-                val adCallback = object: RewardedAdCallback() {
+                val adCallback = object : RewardedAdCallback() {
                     override fun onRewardedAdOpened() {
                         rewardedAd = createAndLoadRewardedAd()
                     }
+
                     override fun onRewardedAdClosed() {
 
                     }
+
                     override fun onUserEarnedReward(@NonNull reward: RewardItem) {
 
                     }
+
                     override fun onRewardedAdFailedToShow(errorCode: Int) {
                         // Ad failed to display.
                     }
                 }
                 rewardedAd.show(activityContext, adCallback)
-            }
-            else {
+            } else {
                 Log.d("TAG", "The rewarded ad wasn't loaded yet.")
             }
         }
@@ -156,11 +156,11 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         })
         setting2.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, Setting2Activity::class.java)
-            startActivityForResult(intent,15)
+            startActivityForResult(intent, 15)
         })
         edit.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, SettingActivity::class.java)
-            startActivityForResult(intent,14)
+            startActivityForResult(intent, 14)
         })
         imageView.setOnClickListener(View.OnClickListener {
             if (gotoProfile) {
@@ -186,9 +186,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
             intent.putExtra(Intent.EXTRA_TEXT, "มีอะไรก็พูดมา")
             try {
                 startActivity(Intent.createChooser(intent, "Choose email"))
-            }
-            catch (e: Exception)
-            {
+            } catch (e: Exception) {
 
             }
         }
@@ -223,18 +221,18 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(view)
         val pagerModels: ArrayList<PagerModel?> = ArrayList()
-        pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา","ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
-        pagerModels.add(PagerModel("ทักทายคนที่คุณอยากทำความรู้จักได้ไม่จำกัดจำนวน","ทักทายได้ไม่จำกัด", R.drawable.ic_hand))
-        pagerModels.add(PagerModel( "คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร","รับ 5 Star ฟรีทุกวัน",R.drawable.ic_starss))
-        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ","ใครถูกใจคุณ", R.drawable.ic_love2))
-        pagerModels.add(PagerModel( "ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ","ใครเข้ามาดูโปรไฟล์คุณ",R.drawable.ic_vision))
+        pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
+        pagerModels.add(PagerModel("ทักทายคนที่คุณอยากทำความรู้จักได้ไม่จำกัดจำนวน", "ทักทายได้ไม่จำกัด", R.drawable.ic_hand))
+        pagerModels.add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
+        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
+        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
         val adapter = VipSlide(requireContext(), pagerModels)
         val pager: AutoScrollViewPager = dialog.findViewById(R.id.viewpage)
         pager.adapter = adapter
         pager.startAutoScroll()
         val indicator: CircleIndicator = view.findViewById(R.id.indicator)
         indicator.setViewPager(pager)
-        val width = (resources.displayMetrics.widthPixels * 0.90) .toInt()
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
         dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
         dialog.show()
 
@@ -247,12 +245,14 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
         dialog.show()*/
     }
+
     fun createAndLoadRewardedAd(): RewardedAd {
         val rewardedAd = RewardedAd(requireContext(), "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object: RewardedAdLoadCallback() {
+        val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 // Ad successfully loaded.
             }
+
             override fun onRewardedAdFailedToLoad(errorCode: Int) {
                 // Ad failed to load.
             }
@@ -260,66 +260,66 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
         return rewardedAd
     }
+
     private fun getData() {
         val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-                val gender  = if (preferences.getString("image", "")== "Male") {
-                    R.drawable.ic_man
-                } else R.drawable.ic_woman
-                if (preferences.getString("image", "")!!.isNotEmpty()) {
-                    Glide.with(requireContext()).load(preferences.getString("image", ""))
-                            .placeholder(R.color.background_gray).listener(object : RequestListener<Drawable?> {
-                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
-                                    return false
-                                }
+        val gender = if (preferences.getString("image", "") == "Male") {
+            R.drawable.ic_man
+        } else R.drawable.ic_woman
+        if (preferences.getString("image", "")!!.isNotEmpty()) {
+            Glide.with(requireContext()).load(preferences.getString("image", ""))
+                    .placeholder(R.color.background_gray).listener(object : RequestListener<Drawable?> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
 
-                                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    p1.visibility = View.GONE
-                                    return false
-                                }
-                            })
-                            .apply(RequestOptions().override(300, 300)).into(imageView)
-                } else {
-                    gotoProfile = false
-                    Glide.with(requireContext()).load(gender).placeholder(R.color.background_gray)
-                            .listener(object : RequestListener<Drawable?> {
-                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
-                                    return false
-                                }
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            p1.visibility = View.GONE
+                            return false
+                        }
+                    })
+                    .apply(RequestOptions().override(300, 300)).into(imageView)
+        } else {
+            gotoProfile = false
+            Glide.with(requireContext()).load(gender).placeholder(R.color.background_gray)
+                    .listener(object : RequestListener<Drawable?> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
 
-                                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    p1.visibility = View.GONE
-                                    return false
-                                }
-                            })
-                            .apply(RequestOptions().override(300, 300)).into(imageView)
-                }
-                if (preferences.getBoolean("Vip", false)) {
-                    vip.setText(R.string.You_are_vip)
-                    statusDialog = true
-                }
-                    count.text = preferences.getInt("c", 0).toString()
-                    see.text = preferences.getInt("s", 0).toString()
-                    name.text = preferences.getString("name", "")
-                    age.text = ", "+preferences.getInt("Age", 18).toString()
-                    val lat_double = preferences.getString("X", "").toString().toDouble()
-                    val lon_double = preferences.getString("Y", "").toString().toDouble()
-                    val preferences2 = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                    val langure = preferences2.getString("My_Lang", "")
-                    val ff: Geocoder
-                    ff = if (langure == "th") {
-                        Geocoder(context)
-                    } else {
-                        Geocoder(context, Locale.UK)
-                    }
-                    var addresses: MutableList<Address?>? = null
-                    try {
-                        addresses = ff.getFromLocation(lat_double, lon_double, 1)
-                        val city = addresses[0]!!.adminArea
-                        mcity.text = city
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            p1.visibility = View.GONE
+                            return false
+                        }
+                    })
+                    .apply(RequestOptions().override(300, 300)).into(imageView)
+        }
+        if (preferences.getBoolean("Vip", false)) {
+            vip.setText(R.string.You_are_vip)
+            statusDialog = true
+        }
+        count.text = preferences.getInt("c", 0).toString()
+        see.text = preferences.getInt("s", 0).toString()
+        name.text = preferences.getString("name", "")
+        age.text = ", " + preferences.getInt("Age", 18).toString()
+        val lat_double = preferences.getString("X", "").toString().toDouble()
+        val lon_double = preferences.getString("Y", "").toString().toDouble()
+        val preferences2 = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val langure = preferences2.getString("My_Lang", "")
+        val ff: Geocoder
+        ff = if (langure == "th") {
+            Geocoder(context)
+        } else {
+            Geocoder(context, Locale.UK)
+        }
+        var addresses: MutableList<Address?>? = null
+        try {
+            addresses = ff.getFromLocation(lat_double, lon_double, 1)
+            val city = addresses[0]!!.adminArea
+            mcity.text = city
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
 
 
     }
@@ -365,11 +365,10 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (!bp.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data)
-            if(requestCode == 14)
-            {
+            if (requestCode == 14) {
                 getData()
                 onAttach(requireContext())
-                Log.d("ghj","1")
+                Log.d("ghj", "1")
             }
         }
     }

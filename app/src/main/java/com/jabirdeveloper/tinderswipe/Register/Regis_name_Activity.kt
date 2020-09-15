@@ -15,10 +15,10 @@ import com.jabirdeveloper.tinderswipe.Register.Regis_name_Activity
 import com.tapadoo.alerter.Alerter
 
 class Regis_name_Activity : AppCompatActivity() {
-    private lateinit var b1:Button
-    private lateinit var t1:EditText
-    private lateinit var firebaseAuth:FirebaseAuth
-    private lateinit var toolbar:Toolbar
+    private lateinit var b1: Button
+    private lateinit var t1: EditText
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var toolbar: Toolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regis_name_)

@@ -80,7 +80,7 @@ class Setting2Activity : AppCompatActivity() {
         text_seekAge = findViewById(R.id.seek_age_text)
         getdisAge()
         change.setOnClickListener(View.OnClickListener {
-            val mBuilder = AlertDialog.Builder(this@Setting2Activity,R.style.CustomDialog)
+            val mBuilder = AlertDialog.Builder(this@Setting2Activity, R.style.CustomDialog)
             mBuilder.setTitle(R.string.language)
             mBuilder.setSingleChoiceItems(order, check_item) { _, which -> //item2 = order[which];
                 selectedPosition = which
@@ -166,8 +166,8 @@ class Setting2Activity : AppCompatActivity() {
                 mBuilder.setMessage(R.string.Vision_closed_match)
                 mBuilder.setCancelable(true)
                 mBuilder.setOnCancelListener { on_off_card.isChecked = true }
-                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_card.isChecked = false;}
-                mBuilder.setNegativeButton("ยกเลิก") { _, _ -> on_off_card.isChecked = true;}
+                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_card.isChecked = false; }
+                mBuilder.setNegativeButton("ยกเลิก") { _, _ -> on_off_card.isChecked = true; }
                 val mDialog = mBuilder.create()
                 mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
                 mDialog.show()
@@ -180,8 +180,8 @@ class Setting2Activity : AppCompatActivity() {
                 mBuilder.setMessage(R.string.Vision_closed_nearby)
                 mBuilder.setCancelable(true)
                 mBuilder.setOnCancelListener { on_off_list.isChecked = true }
-                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_list.isChecked = false ;}
-                mBuilder.setNegativeButton(R.string.cancle) { _, _ -> on_off_list.isChecked = true ;}
+                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_list.isChecked = false; }
+                mBuilder.setNegativeButton(R.string.cancle) { _, _ -> on_off_list.isChecked = true; }
                 val mDialog = mBuilder.create()
                 mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
                 mDialog.show()
@@ -191,70 +191,70 @@ class Setting2Activity : AppCompatActivity() {
 
     private fun delete() {
 
-                val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(currentUid)
-                filepath.delete()
-                val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
-                userDb.removeValue()
-                val userAllDb = FirebaseDatabase.getInstance().reference.child("Users")
-                userAllDb.addChildEventListener(object : ChildEventListener {
-                    override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                        if (dataSnapshot.child("connection").child("yep").hasChild(currentUid)) {
-                            FirebaseDatabase.getInstance().reference
-                                    .child("Users")
-                                    .child(dataSnapshot.key.toString())
-                                    .child("connection")
-                                    .child("yep")
-                                    .child(currentUid)
-                                    .removeValue()
-                        }
-                        if (dataSnapshot.child("connection").child("matches").hasChild(currentUid)) {
-                            FirebaseDatabase.getInstance().reference
-                                    .child("Users")
-                                    .child(dataSnapshot.key.toString())
-                                    .child("connection")
-                                    .child("matches")
-                                    .child(currentUid)
-                                    .removeValue()
-                        }
-                        if (dataSnapshot.child("connection").child("chatna").hasChild(currentUid)) {
-                            FirebaseDatabase.getInstance().reference
-                                    .child("Users")
-                                    .child(dataSnapshot.key.toString())
-                                    .child("connection")
-                                    .child("chatna")
-                                    .child(currentUid)
-                                    .removeValue()
-                            Toast.makeText(applicationContext, currentUid, Toast.LENGTH_SHORT).show()
-                        }
-                        if (dataSnapshot.child("connection").child("nope").hasChild(currentUid)) {
-                            FirebaseDatabase.getInstance().reference
-                                    .child("Users")
-                                    .child(dataSnapshot.key.toString())
-                                    .child("connection")
-                                    .child("nope")
-                                    .child(currentUid)
-                                    .removeValue()
-                        }
-                        if (dataSnapshot.child("see_profile").hasChild(currentUid)) {
-                            FirebaseDatabase.getInstance().reference
-                                    .child("Users")
-                                    .child(dataSnapshot.key.toString())
-                                    .child("see_profile")
-                                    .child(currentUid)
-                                    .removeValue()
-                        }
-                    }
+        val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(currentUid)
+        filepath.delete()
+        val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
+        userDb.removeValue()
+        val userAllDb = FirebaseDatabase.getInstance().reference.child("Users")
+        userAllDb.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                if (dataSnapshot.child("connection").child("yep").hasChild(currentUid)) {
+                    FirebaseDatabase.getInstance().reference
+                            .child("Users")
+                            .child(dataSnapshot.key.toString())
+                            .child("connection")
+                            .child("yep")
+                            .child(currentUid)
+                            .removeValue()
+                }
+                if (dataSnapshot.child("connection").child("matches").hasChild(currentUid)) {
+                    FirebaseDatabase.getInstance().reference
+                            .child("Users")
+                            .child(dataSnapshot.key.toString())
+                            .child("connection")
+                            .child("matches")
+                            .child(currentUid)
+                            .removeValue()
+                }
+                if (dataSnapshot.child("connection").child("chatna").hasChild(currentUid)) {
+                    FirebaseDatabase.getInstance().reference
+                            .child("Users")
+                            .child(dataSnapshot.key.toString())
+                            .child("connection")
+                            .child("chatna")
+                            .child(currentUid)
+                            .removeValue()
+                    Toast.makeText(applicationContext, currentUid, Toast.LENGTH_SHORT).show()
+                }
+                if (dataSnapshot.child("connection").child("nope").hasChild(currentUid)) {
+                    FirebaseDatabase.getInstance().reference
+                            .child("Users")
+                            .child(dataSnapshot.key.toString())
+                            .child("connection")
+                            .child("nope")
+                            .child(currentUid)
+                            .removeValue()
+                }
+                if (dataSnapshot.child("see_profile").hasChild(currentUid)) {
+                    FirebaseDatabase.getInstance().reference
+                            .child("Users")
+                            .child(dataSnapshot.key.toString())
+                            .child("see_profile")
+                            .child(currentUid)
+                            .removeValue()
+                }
+            }
 
-                    override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-                    override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-                    override fun onCancelled(databaseError: DatabaseError) {}
-                })
-                val intent = Intent(this@Setting2Activity, ChooseLoginRegistrationActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                mAuth.signOut()
-                finish()
+            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
+            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+        val intent = Intent(this@Setting2Activity, ChooseLoginRegistrationActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        mAuth.signOut()
+        finish()
 
 
     }
@@ -296,9 +296,15 @@ class Setting2Activity : AppCompatActivity() {
                 }
                 if (dataSnapshot.hasChild("OppositeUserSex")) {
                     when (dataSnapshot.child("OppositeUserSex").value.toString()) {
-                        "Male" -> {radioGroup.check(R.id.radioButton);map["gender"] = "Male"}
-                        "Female" -> {radioGroup.check(R.id.radioButton2);map["gender"] = "Female"}
-                        "All" -> {radioGroup.check(R.id.radioButton3);map["gender"] = "All"}
+                        "Male" -> {
+                            radioGroup.check(R.id.radioButton);map["gender"] = "Male"
+                        }
+                        "Female" -> {
+                            radioGroup.check(R.id.radioButton2);map["gender"] = "Female"
+                        }
+                        "All" -> {
+                            radioGroup.check(R.id.radioButton3);map["gender"] = "All"
+                        }
                     }
 
                 }
@@ -368,7 +374,8 @@ class Setting2Activity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-    fun save(){
+
+    fun save() {
         var value = ""
         val progress = seekBar_2.progress + 1
         if (progress in 0..189) {
@@ -400,10 +407,10 @@ class Setting2Activity : AppCompatActivity() {
                 "off_card" to card,
                 "off_list" to list
         )
-        MyUser.putInt("OppositeUserAgeMin",minV)
-        MyUser.putInt("OppositeUserAgeMax",maxV)
-        MyUser.putString("OppositeUserSex",gender)
-        MyUser.putString("Distance",value)
+        MyUser.putInt("OppositeUserAgeMin", minV)
+        MyUser.putInt("OppositeUserAgeMax", maxV)
+        MyUser.putString("OppositeUserSex", gender)
+        MyUser.putString("Distance", value)
         currentUserDb.updateChildren(userInfo as Map<String, Any>)
         val editor = getSharedPreferences("notification_match", Context.MODE_PRIVATE).edit()
         editor.putString("noti", noti_match)
@@ -415,21 +422,21 @@ class Setting2Activity : AppCompatActivity() {
             overridePendingTransition(0, 0)
         }, 100)
     }
+
     override fun onBackPressed() {
         super.onBackPressed()
         val user = FirebaseAuth.getInstance().currentUser
-        if(map["Distance"] != seekBar_2.progress) valCh = true
-        if(map["noti"] != noti_1.isChecked) valCh = true
-        if(map["on_off"] != online.isChecked) valCh = true
-        if(map["off_card"] != on_off_card.isChecked) valCh = true
-        if(map["off_list"] != on_off_list.isChecked) valCh = true
-        if(minV != map["OppositeUserAgeMin"]) valCh = true
-        if(maxV != map["OppositeUserAgeMax"]) valCh = true
-        if(gender != map["gender"]) valCh = true
+        if (map["Distance"] != seekBar_2.progress) valCh = true
+        if (map["noti"] != noti_1.isChecked) valCh = true
+        if (map["on_off"] != online.isChecked) valCh = true
+        if (map["off_card"] != on_off_card.isChecked) valCh = true
+        if (map["off_list"] != on_off_list.isChecked) valCh = true
+        if (minV != map["OppositeUserAgeMin"]) valCh = true
+        if (maxV != map["OppositeUserAgeMax"]) valCh = true
+        if (gender != map["gender"]) valCh = true
         if (user != null && valCh) {
             save()
         }
-
 
 
     }
