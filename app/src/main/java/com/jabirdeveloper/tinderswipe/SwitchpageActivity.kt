@@ -29,7 +29,7 @@ import com.google.firebase.functions.HttpsCallableResult
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
-import com.jabirdeveloper.tinderswipe.Listcard.ListcardActivity
+import com.jabirdeveloper.tinderswipe.Listcard.ListCardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
@@ -45,7 +45,7 @@ class SwitchpageActivity : AppCompatActivity() {
     private lateinit var dialog: Dialog
     private val page1 = SettingMainActivity()
     private val page2 = MainActivity()
-    private val page3 = ListcardActivity()
+    private val page3 = ListCardActivity()
     private val page4 = MatchesActivity()
     private var functions = Firebase.functions
     private var activeFragment: Fragment = MainActivity()

@@ -19,7 +19,7 @@ import com.jabirdeveloper.tinderswipe.ProfileUserOppositeActivity2
 import com.jabirdeveloper.tinderswipe.R
 import java.util.*
 
-class ListcardViewHolders(itemView: View, private val context: Context) : RecyclerView.ViewHolder(itemView) {
+class ListCardViewHolders(itemView: View, private val context: Context) : RecyclerView.ViewHolder(itemView) {
     var mMatchId: TextView = itemView.findViewById(R.id.id)
     var mMatchName: TextView = itemView.findViewById(R.id.Matches_name)
     var mDistance: TextView = itemView.findViewById(R.id.distance_text)

@@ -28,7 +28,7 @@ import kotlin.collections.ArrayList
 
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class ListcardActivity : Fragment() {
+class ListCardActivity : Fragment() {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mMatchesAdapter: RecyclerView.Adapter<*>
     private lateinit var mMatchesLayoutManager: RecyclerView.LayoutManager
@@ -37,7 +37,7 @@ class ListcardActivity : Fragment() {
     private var isScroll = false
     private var percentageMath:Map<*,*>? = null
     private lateinit var currentUserId: String
-    private var oppositUserSex: String? = null
+    private var oppositeUserSex: String? = null
     private var startNode = 20
     private var oppositeUserAgeMin = 0
     private var oppositeUserAgeMax = 0
@@ -158,7 +158,7 @@ class ListcardActivity : Fragment() {
 
     private fun getUsergender() {
         val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        oppositUserSex = preferences.getString("OppositeUserSex", "All").toString()
+        oppositeUserSex = preferences.getString("OppositeUserSex", "All").toString()
         oppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
         oppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
         xUser = preferences.getString("X", "").toString().toDouble()
@@ -205,7 +205,7 @@ class ListcardActivity : Fragment() {
         var pre = count
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             val data = hashMapOf(
-                    "sex" to oppositUserSex,
+                    "sex" to oppositeUserSex,
                     "min" to oppositeUserAgeMin,
                     "max" to oppositeUserAgeMax,
                     "x_user" to xUser,

@@ -16,18 +16,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.jabirdeveloper.tinderswipe.R
 
-class ListCardAdapter(private val matchesList: ArrayList<ListCardObject?>, private val context: Context) : RecyclerView.Adapter<ListcardViewHolders>() {
+class ListCardAdapter(private val matchesList: ArrayList<ListCardObject?>, private val context: Context) : RecyclerView.Adapter<ListCardViewHolders>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListcardViewHolders {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListCardViewHolders {
 
         val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.item_matches, null, false)
         val lp = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         layoutView.layoutParams = lp
-        return ListcardViewHolders(layoutView, context)
+        return ListCardViewHolders(layoutView, context)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ListcardViewHolders, position: Int) {
+    override fun onBindViewHolder(holder: ListCardViewHolders, position: Int) {
         //Log.d("testDatatatat", matchesList.elementAt(position)!!.percent.toString())
         holder.percent.visibility = View.VISIBLE
         holder.percent.text = "ความเข้ากัน ${(matchesList.elementAt(position)!!.percent.toString())} %"
