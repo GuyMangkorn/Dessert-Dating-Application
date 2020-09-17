@@ -66,33 +66,34 @@ class MatchesActivity : Fragment() {
         date_user = currentDate.format(calendar.time)
         mRecyclerView.visibility = View.GONE
         Chat_na_check()
-        CheckNode()
+        checkFirst()
         return view
     }
 
-    private var check_first_connection = true
-    private var check_first_matches = true
+    //private var check_first_connection = true
+   // private var check_first_matches = true
     private var check_first_remove: String? = "null"
     private var UserMatch_count = 0
-    private fun CheckNode() {
+    /*private fun checkNode(code:String) {
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
-        matchDbCheck.orderByKey().addChildEventListener(object : ChildEventListener {
+        matchDbCheck.orderByKey().equalTo(code).addChildEventListener(object : ChildEventListener {
             override fun onCancelled(error: DatabaseError) {}
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                if (snapshot.key.toString() == ("connection")) {
-                    //Checkconnection()
-                    CheckNodeMatch()
-                    Log.d("test_check_matches", "connection_accept")
-                } else if (check_first_connection) {
-                    check_first_connection = false
-                    Log.d("test_check_matches", "connection_reject ")
-                    p1!!.hide()
-                    chat_empty.visibility = View.VISIBLE
-                    mRecyclerView.visibility = View.GONE
+                    if (snapshot.key.equals("connection")) {
+                        //Checkconnection()
+                        CheckNodeMatch()
+                        Log.d("test_check_matches", "connection_accept")
+                    } else if(check_first_connection){
+                        check_first_connection = false
+                        Log.d("test_check_matches", "connection_reject ")
+                        p1!!.hide()
+                        chat_empty.visibility = View.VISIBLE
+                        mRecyclerView.visibility = View.GONE
+                    }
                 }
-            }
+
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 if (snapshot.key.toString() == "connection") {
@@ -101,16 +102,18 @@ class MatchesActivity : Fragment() {
                 Log.d("test_check_matches", snapshot.key)
             }
 
+
         })
     }
 
-    /*private fun Checkconnection(){
+    private fun checkConnection(){
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
-        matchDbCheck.orderByKey().equalTo("connection").addListenerForSingleValueEvent(object : ValueEventListener{
+        matchDbCheck.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    CheckNodeMatch()
+                if (snapshot.hasChild("connection")) {
+                    /*CheckNodeMatch()*/
+                    checkNode("connection")
                     Log.d("test_check_matches", "connection_accept")
                 } else {
                     Log.d("test_check_matches", "connection_reject")
@@ -120,27 +123,32 @@ class MatchesActivity : Fragment() {
                 }
             }
         })
-    }*/
+    }
     private fun CheckNodeMatch() {
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection");
-        matchDbCheck.orderByKey().addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(error: DatabaseError) {}
+        matchDbCheck.orderByPriority().equalTo("matches").addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(error: DatabaseError) {
+
+            }
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                if (snapshot.key.toString() == ("matches")) {
-                    getUserMarchId()
-                    Log.d("test_check_matches", "matches_accept")
-                    //CheckNodeMatch2()
-                } else if (check_first_matches) {
-                    check_first_matches = false
-                    Log.d("test_check_matches", "matches_reject")
-                    p1!!.hide()
-                    chat_empty.visibility = View.VISIBLE
-                    mRecyclerView.visibility = View.GONE
+                    if (snapshot.key.toString() == ("matches")) {
+                        check_first_matches = false
+                        getUserMarchId()
+                        Log.d("test_check_matches", "matches_accept" + snapshot.key)
+                        chat_empty.visibility = View.GONE
+                        //CheckNodeMatch2()
+                    } else if(check_first_matches){
+                        check_first_matches = false
+                        Log.d("test_check_matches", "matches_reject" + snapshot.key)
+                        p1!!.hide()
+                        chat_empty.visibility = View.VISIBLE
+                        mRecyclerView.visibility = View.GONE
+                    }
                 }
 
-            }
+
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 if (snapshot.key.toString() == "matches") {
@@ -149,7 +157,7 @@ class MatchesActivity : Fragment() {
                 Log.d("test_check_matches", snapshot.key)
             }
         })
-    }
+    }*/
 
     /*private fun CheckNodeMatch2(){
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection");
@@ -193,7 +201,24 @@ class MatchesActivity : Fragment() {
         });
     }*/
 
-
+    private fun checkFirst(){
+        val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches")
+        matchDbCheck.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {}
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    chat_empty.visibility = View.GONE
+                    getUserMarchId();
+                    Log.d("test_check_matches", "matches_accept")
+                } else {
+                    Log.d("test_check_matches", "matches_reject")
+                    p1!!.hide()
+                    chat_empty.visibility = View.VISIBLE
+                    mRecyclerView.visibility = View.GONE
+                }
+            }
+        })
+    }
     private fun getUserMarchId() {
         val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches")
         matchDb.addChildEventListener(object : ChildEventListener {
@@ -617,7 +642,7 @@ class MatchesActivity : Fragment() {
                         p1?.hide()
                     }
                     //Toast.makeText(mContext,resultMatches!!.elementAt(resultMatches.size - 1)!!.getUserId(),Toast.LENGTH_SHORT).show()
-                    /*if (resultMatches!!.size > count) {    //ลูปเช็ค list ซ้ำ
+                    if (resultMatches!!.size > count) {    //ลูปเช็ค list ซ้ำ
 
                         for (j in 0 until (resultMatches.size-1)) {
                             //var index = resultMatches!!.map { T -> T!!.userId.equals(S1)  }.indexOf(element = true)
@@ -647,7 +672,7 @@ class MatchesActivity : Fragment() {
                                 }
                             }
                         }
-                    }*/
+                    }
                 }
                 if (resultMatches!!.size > 1) { // ลูปเรียงจากเวลาการแชทล่าสุด
                     if (resultMatches.elementAt(resultMatches.size - 1)!!.time != "-1") {
