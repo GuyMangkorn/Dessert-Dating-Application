@@ -102,8 +102,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private var maxlike = 0
     private var maxstar = 0
     private var maxadmob = 0
-    private var timeUser1: String? = null
-    private var dateUser1: String? = null
     private var drawableGender = 0
     private var maxChat = 0
     private var statusVip = false
@@ -158,7 +156,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         l6.visibility = View.GONE
         val preferences2 = getSharedPreferences("notification_match", Context.MODE_PRIVATE)
         notificationMatch = preferences2.getString("noti", "1")
-        getdis()
+        getDistance()
         getUserinfo()
         madoo = findViewById(R.id.linearLayout17)
         if (intent.hasExtra("form_main")) {
@@ -185,17 +183,16 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         like = findViewById(R.id.like_button)
         dislike = findViewById(R.id.dislike_button)
         star = findViewById(R.id.star_button)
-        val d = DateTime
-        val timeUser = d.time()
-        val dateUser = d.date()
+
         like.setOnClickListener(View.OnClickListener {
             if (!intent.hasExtra("form_like")) {
                 setResult(1)
 
             } else {
+                val d = DateTime
                 val dateTime = hashMapOf<String, Any>()
-                dateTime["date"] = dateUser
-                dateTime["time"] = timeUser
+                dateTime["date"] = d.date()
+                dateTime["time"] = d.time()
                 usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(dateTime)
                 maxlike--
                 usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
@@ -216,9 +213,10 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             if (!intent.hasExtra("form_like")) {
                 setResult(3)
             } else {
+                val d = DateTime
                 val datetime = hashMapOf<String, Any>()
-                datetime["date"] = dateUser
-                datetime["time"] = timeUser
+                datetime["date"] = d.date()
+                datetime["time"] = d.time()
                 datetime["super"] = true
                 usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                 maxstar--
@@ -247,14 +245,12 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key!!
                         usersDb.child(matchId).child("connection").child("chatna").child(currentUid).setValue(key)
                         val d = DateTime
-                        val timeUser = d.time()
-                        val dateUser = d.date()
                         val newMessageDb = mDatabaseChat.child(key).push()
                         val newMessage = hashMapOf<String, Any>()
                         newMessage["createByUser"] = currentUid
                         newMessage["text"] = text!!
-                        newMessage["time"] = timeUser
-                        newMessage["date"] = dateUser
+                        newMessage["time"] = d.time()
+                        newMessage["date"] = d.time()
                         newMessage["read"] = "Unread"
                         newMessageDb.updateChildren(newMessage)
                         dialog.dismiss()
@@ -418,14 +414,11 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         textView.text = name.text.toString()
                         if (dataSnapshot.hasChild("super")) {
                             star.visibility = View.VISIBLE
-                            //textView3.setText("Star");
                             textView4.text = " ส่งดาวให้คุณให้คุณ"
                         } else textView4.text = " ถูกใจคุณเหมือนกัน"
                         Glide.with(this@ProfileUserOppositeActivity2).load(url0).into(imageView)
                         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                         dialog.setContentView(view)
-                        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-                        val height = (resources.displayMetrics.heightPixels * 0.90).toInt()
                         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                         dialog.show()
                     }
@@ -630,8 +623,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         flexboxLayout.addView(textView)
     }
 
-    private fun getdis() {
-
+    private fun getDistance() {
         val preferences = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
         xUser = preferences.getString("X", "").toString().toDouble()
         yUser = preferences.getString("Y", "").toString().toDouble()

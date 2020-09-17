@@ -20,17 +20,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
-import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -38,31 +32,24 @@ class ListcardActivity : Fragment() {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mMatchesAdapter: RecyclerView.Adapter<*>
     private lateinit var mMatchesLayoutManager: RecyclerView.LayoutManager
-    var x_user = 0.0
-    var y_user = 0.0
-    var x_opposite = 0.0
-    var y_opposite = 0.0
+    private var xUser = 0.0
+    private var yUser = 0.0
     private var isScroll = false
     private var percentageMath:Map<*,*>? = null
     private lateinit var currentUserId: String
     private var oppositUserSex: String? = null
-    private var age = 0
     private var startNode = 20
-    private var OppositeUserAgeMin = 0
-    private var OppositeUserAgeMax = 0
+    private var oppositeUserAgeMin = 0
+    private var oppositeUserAgeMax = 0
     private var distanceUser = 0.0
-    private var count = 0
-    private var count2: Int = 0
     private var currentItem = 0
     private var totalItem = 0
     private var scrollOutItem = 0
-    private var sum_string: String? = null
     private lateinit var pro: ProgressBar
     private lateinit var search: ConstraintLayout
     private lateinit var anime1: ImageView
     private lateinit var anime2: ImageView
     private lateinit var handler: Handler
-    private lateinit var supportFragmentManager: Fragment
     private var functions = Firebase.functions
     private lateinit var resultLimit: ArrayList<*>
     private var countLimit = 100
@@ -78,7 +65,7 @@ class ListcardActivity : Fragment() {
         mRecyclerView.setHasFixedSize(true)
         mMatchesLayoutManager = LinearLayoutManager(context)
         mRecyclerView.layoutManager = mMatchesLayoutManager
-        mMatchesAdapter = ListcardAdapter(getDataSetMatches(), requireContext())
+        mMatchesAdapter = ListCardAdapter(getDataSetMatches(), requireContext())
         mRecyclerView.adapter = mMatchesAdapter
         anime1 = view.findViewById(R.id.anime1)
         anime2 = view.findViewById(R.id.anime2)
@@ -172,10 +159,10 @@ class ListcardActivity : Fragment() {
     private fun getUsergender() {
         val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
         oppositUserSex = preferences.getString("OppositeUserSex", "All").toString()
-        OppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
-        OppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
-        x_user = preferences.getString("X", "").toString().toDouble()
-        y_user = preferences.getString("Y", "").toString().toDouble()
+        oppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
+        oppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
+        xUser = preferences.getString("X", "").toString().toDouble()
+        yUser = preferences.getString("Y", "").toString().toDouble()
         distanceUser = when (preferences.getString("Distance", "Untitled")) {
             "true" -> {
                 1000.0
@@ -204,7 +191,7 @@ class ListcardActivity : Fragment() {
                     .addOnSuccessListener { task ->
                         val data = task.data as Map<*, *>
                         Log.d("testDatatatat", data.toString())
-                        percentageMath = data.get("dictionary") as Map<*, *>
+                        percentageMath = data["dictionary"] as Map<*, *>
 
                         getStartAt()
                     }
@@ -219,10 +206,10 @@ class ListcardActivity : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             val data = hashMapOf(
                     "sex" to oppositUserSex,
-                    "min" to OppositeUserAgeMin,
-                    "max" to OppositeUserAgeMax,
-                    "x_user" to x_user,
-                    "y_user" to y_user,
+                    "min" to oppositeUserAgeMin,
+                    "max" to oppositeUserAgeMax,
+                    "x_user" to xUser,
+                    "y_user" to yUser,
                     "distance" to distanceUser,
                     "limit" to count + limit,
                     "prelimit" to count
@@ -252,9 +239,7 @@ class ListcardActivity : Fragment() {
 
     private fun getUser(result2: ArrayList<*>, start: Int, type: Boolean, startNoti: Int) {
         var max = start + 20
-        var myself = ""
-        var off_status = false
-        var typetime = ""
+        var typeTime = ""
         var time = ""
         Log.d("max", (start + 20).toString() + " " + result2.size)
         if (result2.size < start + 20) {
@@ -262,10 +247,12 @@ class ListcardActivity : Fragment() {
         }
         for (x in start until max) {
             val user = result2[x] as Map<*, *>
+            var myself = ""
+            var offStatus = false
             Log.d("ghu", user["name"].toString() + " , " + user["distance_other"].toString())
 
             if (user["typeTime"] != null) {
-                typetime = user["typeTime"].toString()
+                typeTime = user["typeTime"].toString()
                 Log.d("type55", "0")
             }
             if (user["time"] != null) {
@@ -275,7 +262,7 @@ class ListcardActivity : Fragment() {
                 myself = user["myself"].toString()
             }
             if (user["off_status"] != null) {
-                off_status = true
+                offStatus = true
             }
             (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
             val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
@@ -293,7 +280,7 @@ class ListcardActivity : Fragment() {
                 //Log.d("testDatatatat", percentAdd)
             }
             //Log.d("testDatatatat", percentageMath!!.get(user["key"].toString()).toString())
-            val obj = ListcardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, off_status, typetime, time,percentAdd)
+            val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time,percentAdd)
 
             resultMatches.add(obj)
             if (resultMatches.size > 0) {
@@ -308,8 +295,8 @@ class ListcardActivity : Fragment() {
         else mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
     }
 
-    private val resultMatches: ArrayList<ListcardObject?> = ArrayList()
-    private fun getDataSetMatches(): ArrayList<ListcardObject?> {
+    private val resultMatches: ArrayList<ListCardObject?> = ArrayList()
+    private fun getDataSetMatches(): ArrayList<ListCardObject?> {
         return resultMatches
     }
 
