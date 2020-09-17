@@ -44,7 +44,19 @@
     <style name="EditTextTintTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/c2</item>
     </style>
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">#FFC107</item>
+        <!-- Used for the title and text -->
 
+
+        <!-- Used for the background -->
+        <item name="android:background">#4CAF50</item>
+
+
+        <item name="android:textColor">#FFC107</item>
+        
+    </style>
     <style name="alertButton" parent="AlertButton">
         <item name="colorButtonNormal">@color/float_transparent</item>
     </style>

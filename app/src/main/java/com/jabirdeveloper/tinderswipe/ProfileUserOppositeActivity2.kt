@@ -2,7 +2,6 @@ package com.jabirdeveloper.tinderswipe
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -13,8 +12,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
@@ -38,18 +35,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
-import com.tapadoo.alerter.Alerter
+import com.jabirdeveloper.tinderswipe.Functions.DateTime
+import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 @Suppress("NAME_SHADOWING")
 class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBillingHandler {
     private lateinit var currentUserId: String
     private lateinit var matchId: String
-    private lateinit var findImage: DatabaseReference
     private lateinit var mUserDatabase: DatabaseReference
     private lateinit var mLinear: LinearLayout
     private lateinit var l1: LinearLayout
@@ -59,17 +55,17 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private lateinit var l5: LinearLayout
     private lateinit var l6: LinearLayout
     private lateinit var madoo: LinearLayout
-    private var Url0: String? = null
-    private var Url1: String? = null
-    private var Url2: String? = null
-    private var Url3: String? = null
-    private var Url4: String? = null
-    private var Url5: String? = null
-    private var language_2: String? = null
+    private var url0: String? = null
+    private var url1: String? = null
+    private var url2: String? = null
+    private var url3: String? = null
+    private var url4: String? = null
+    private var url5: String? = null
+    private var language2: String? = null
     private lateinit var currentUid: String
     private var send: String? = null
     private lateinit var bp: BillingProcessor
-    private var noti_match: String? = null
+    private var notificationMatch: String? = null
     private lateinit var listItems: Array<String?>
     private lateinit var listItems2: Array<String?>
     private lateinit var listItems3: Array<String?>
@@ -87,12 +83,11 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private lateinit var flexboxLayout: FlexboxLayout
     private lateinit var params: GridLayout.LayoutParams
     private lateinit var fab: FloatingActionButton
-    private var return_d = 0
     private var click = true
-    private var x_user = 0.0
-    private var y_user = 0.0
-    private var x_opposite = 0.0
-    private var y_opposite = 0.0
+    private var xUser = 0.0
+    private var yUser = 0.0
+    private var xOpposite = 0.0
+    private var yOpposite = 0.0
     private lateinit var like: FloatingActionButton
     private lateinit var dislike: FloatingActionButton
     private lateinit var star: FloatingActionButton
@@ -107,9 +102,9 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private var maxlike = 0
     private var maxstar = 0
     private var maxadmob = 0
-    private var time_user: String? = null
-    private var date_user: String? = null
-    private var drawable_gender = 0
+    private var timeUser1: String? = null
+    private var dateUser1: String? = null
+    private var drawableGender = 0
     private var maxChat = 0
     private var statusVip = false
     lateinit var rewardedAd: RewardedAd
@@ -124,7 +119,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         bp = BillingProcessor(this, Id.Id, this)
         bp.initialize()
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        language_2 = preferences.getString("My_Lang", "")
+        language2 = preferences.getString("My_Lang", "")
         currentUid = mAuth.currentUser!!.uid
         usersDb = FirebaseDatabase.getInstance().reference.child("Users")
         mUserDatabase = FirebaseDatabase.getInstance().reference.child("Users").child(matchId)
@@ -162,8 +157,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         l5.visibility = View.GONE
         l6.visibility = View.GONE
         val preferences2 = getSharedPreferences("notification_match", Context.MODE_PRIVATE)
-        noti_match = preferences2.getString("noti", "1")
-        // findIamge()
+        notificationMatch = preferences2.getString("noti", "1")
         getdis()
         getUserinfo()
         madoo = findViewById(R.id.linearLayout17)
@@ -191,21 +185,18 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         like = findViewById(R.id.like_button)
         dislike = findViewById(R.id.dislike_button)
         star = findViewById(R.id.star_button)
-        val calendar = Calendar.getInstance()
-        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-        time_user = currentTime.format(calendar.time)
-        val currentDate = SimpleDateFormat("dd/MM/yyyy")
-        date_user = currentDate.format(calendar.time)
-        val main = MainActivity()
+        val d = DateTime
+        val timeUser = d.time()
+        val dateUser = d.date()
         like.setOnClickListener(View.OnClickListener {
             if (!intent.hasExtra("form_like")) {
                 setResult(1)
 
             } else {
-                val DateTime = hashMapOf<String, Any>()
-                DateTime["date"] = date_user!!
-                DateTime["time"] = time_user!!
-                usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(DateTime)
+                val dateTime = hashMapOf<String, Any>()
+                dateTime["date"] = dateUser
+                dateTime["time"] = timeUser
+                usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(dateTime)
                 maxlike--
                 usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
             }
@@ -225,51 +216,29 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             if (!intent.hasExtra("form_like")) {
                 setResult(3)
             } else {
-                val Datetime = hashMapOf<String, Any>()
-                Datetime["date"] = date_user!!
-                Datetime["time"] = time_user!!
-                Datetime["super"] = true
-                usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(Datetime)
+                val datetime = hashMapOf<String, Any>()
+                datetime["date"] = dateUser
+                datetime["time"] = timeUser
+                datetime["super"] = true
+                usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                 maxstar--
                 usersDb.child(currentUid).child("MaxStar").setValue(maxstar)
             }
             onBackPressed()
         })
-        report.setOnClickListener(View.OnClickListener {
-            val choice = resources.getStringArray(R.array.report_item)
-            val checked_item = BooleanArray(choice.size)
-            val builder = AlertDialog.Builder(this@ProfileUserOppositeActivity2)
-            builder.setTitle(R.string.dialog_reportUser)
-            builder.setMultiChoiceItems(R.array.report_item, checked_item) { _, which, isChecked ->
-                checked_item[which] = isChecked
-                val item = choice[which]
-            }
-            builder.setPositiveButton(R.string.dialog_report) { _, _ ->
-                return_d = 0
-                i = 0
-                while (i < choice.size) {
-                    val checked = checked_item[i]
-                    if (checked) {
-                        update(i.toString()!!)
-                    }
-                    i++
-                }
-                //UpdateDate()
-            }
-            builder.setNegativeButton(R.string.cancle) { dialog, which -> dialog.dismiss() }
-            val mDialog = builder.create()
-            mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@ProfileUserOppositeActivity2, R.drawable.myrect2))
+        report.setOnClickListener {
+            val mDialog = ReportUser(this@ProfileUserOppositeActivity2, matchId).reportDialog()
             mDialog.show()
-        })
+        }
         fab.setOnClickListener(View.OnClickListener {
             if (click || statusVip) {
                 val inflater = layoutInflater
                 val view2 = inflater.inflate(R.layout.sayhi_dialog, null)
                 val b1 = view2.findViewById<Button>(R.id.buy)
                 val close = view2.findViewById<ImageView>(R.id.close)
-                val textsend = view2.findViewById<EditText>(R.id.text_send)
+                val textSend = view2.findViewById<EditText>(R.id.text_send)
                 b1.setOnClickListener {
-                    text = textsend.text.toString()
+                    text = textSend.text.toString()
                     if (text!!.trim { it <= ' ' }.isNotEmpty()) {
                         Toast.makeText(this@ProfileUserOppositeActivity2, text, Toast.LENGTH_SHORT).show()
                         send = text
@@ -277,17 +246,15 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         fab.isClickable = false
                         val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key!!
                         usersDb.child(matchId).child("connection").child("chatna").child(currentUid).setValue(key)
-                        val calendar = Calendar.getInstance()
-                        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                        val time_user = currentTime.format(calendar.time)
-                        val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                        val date_user = currentDate.format(calendar.time)
+                        val d = DateTime
+                        val timeUser = d.time()
+                        val dateUser = d.date()
                         val newMessageDb = mDatabaseChat.child(key).push()
                         val newMessage = hashMapOf<String, Any>()
                         newMessage["createByUser"] = currentUid
                         newMessage["text"] = text!!
-                        newMessage["time"] = time_user
-                        newMessage["date"] = date_user
+                        newMessage["time"] = timeUser
+                        newMessage["date"] = dateUser
                         newMessage["read"] = "Unread"
                         newMessageDb.updateChildren(newMessage)
                         dialog.dismiss()
@@ -424,7 +391,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     usersDb.child(currentUid).child("connection").child("matches").child(dataSnapshot.key!!).child("ChatId").setValue(key)
                     usersDb.child(dataSnapshot.key!!).child("connection").child("yep").child(currentUid).setValue(null)
                     usersDb.child(currentUid).child("connection").child("yep").child(dataSnapshot.key!!).setValue(null)
-                    if (noti_match == "1") {
+                    if (notificationMatch == "1") {
                         dialog = Dialog(this@ProfileUserOppositeActivity2)
                         val inflater = layoutInflater
                         val view = inflater.inflate(R.layout.show_match, null)
@@ -439,7 +406,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                             dialog.dismiss()
                             val intent = Intent(this@ProfileUserOppositeActivity2, ChatActivity::class.java)
                             val b = Bundle()
-                            b.putString("time_chk", time_user)
+                            b.putString("time_chk", DateTime.time())
                             b.putString("matchId", matchId)
                             b.putString("nameMatch", name.text.toString())
                             b.putString("first_chat", "")
@@ -454,7 +421,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                             //textView3.setText("Star");
                             textView4.text = " ส่งดาวให้คุณให้คุณ"
                         } else textView4.text = " ถูกใจคุณเหมือนกัน"
-                        Glide.with(this@ProfileUserOppositeActivity2).load(Url0).into(imageView)
+                        Glide.with(this@ProfileUserOppositeActivity2).load(url0).into(imageView)
                         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                         dialog.setContentView(view)
                         val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
@@ -469,173 +436,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         })
     }
 
-    private fun update(Child: String) {
-        usersDb.addListenerForSingleValueEvent(object : ValueEventListener {
-            @SuppressLint("SimpleDateFormat")
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                //val date_user: String
-                //val date_user_before: String
-                var date_before: Boolean = true
-                /*var date_after = 0
-                val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                val calendar = Calendar.getInstance()
-                date_user = currentDate.format(calendar.time)
-                val after = date_user.substring(0, 2)
-                date_after = Integer.valueOf(after)*/
-                if (dataSnapshot.child(currentUserId).child("PutReportId").hasChild(matchId)) {
-                    date_before = false
-                } else {
-                    val date_user: String
-                    val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                    val calendar = Calendar.getInstance()
-                    date_user = currentDate.format(calendar.time)
-                    val ff = hashMapOf<String, Any>()
-                    ff["date"] = date_user
-                    usersDb.child(currentUserId).child("PutReportId").child(matchId).updateChildren(ff)
-                }
-                Log.d("test_boolean", "$date_before , $matchId")
-                if (date_before) {
-                    if (return_d == 0) {
-                        return_d = -1
-                        Alerter.create(this@ProfileUserOppositeActivity2)
-                                .setTitle(getString(R.string.report_suc))
-                                .setText(getString(R.string.report_suc2))
-                                .setBackgroundColorInt(Color.parseColor("#7AFFCF"))
-                                .setIcon(ContextCompat.getDrawable(this@ProfileUserOppositeActivity2, R.drawable.ic_check)!!)
-                                .show()
-                    }
-                    if (!dataSnapshot.child(matchId).hasChild("Report")) {
-                        val jj = hashMapOf<String, Any>()
-                        jj[Child] = "1"
-                        usersDb.child(matchId).child("Report").updateChildren(jj)
-                    } else if (dataSnapshot.child(matchId).hasChild("Report")) {
-                        if (dataSnapshot.child(matchId).child("Report").hasChild(Child)) {
-                            val count_rep = Integer.valueOf(dataSnapshot.child(matchId).child("Report").child(Child).value.toString()) + 1
-                            val input_count = count_rep.toString()
-                            val jj = hashMapOf<String, Any>()
-                            jj[Child] = input_count
-                            usersDb.child(matchId).child("Report").updateChildren(jj)
-                        } else {
-                            val jj = hashMapOf<String, Any>()
-                            jj[Child] = "1"
-                            usersDb.child(matchId).child("Report").updateChildren(jj)
-                        }
-                    }
-                } else {
-                    if (return_d == 0) {
-                        return_d = -1
-                        Alerter.create(this@ProfileUserOppositeActivity2)
-                                .setTitle(getString(R.string.report_failed))
-                                .setText(getString(R.string.report_fail))
-                                .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                                .setIcon(ContextCompat.getDrawable(applicationContext, R.drawable.ic_do_not_disturb_black_24dp)!!)
-                                .show()
-                        val builder = AlertDialog.Builder(this@ProfileUserOppositeActivity2)
-                        val view = LayoutInflater.from(this@ProfileUserOppositeActivity2).inflate(R.layout.alert_dialog, null)
-                        val title = view.findViewById<View?>(R.id.title_alert) as TextView
-                        val li = view.findViewById<View?>(R.id.linear_alert) as LinearLayout
-                        val icon = view.findViewById<View?>(R.id.icon_alert) as ImageView
-                        val message = view.findViewById<View?>(R.id.message_alert) as TextView
-                        val dis = view.findViewById<View?>(R.id.dis_alert) as TextView
-                        val yes = view.findViewById<View?>(R.id.yes_alert) as TextView
-                        yes.setText(R.string.report_close)
-                        li.gravity = Gravity.CENTER
-                        dis.visibility = View.GONE
-                        title.setText(R.string.report_alert)
-                        message.setText(R.string.report_reset)
-                        icon.background = ContextCompat.getDrawable(this@ProfileUserOppositeActivity2, R.drawable.ic_warning_black_24dp)
-                        builder.setView(view)
-                        val mDialog = builder.show()
-                        yes.setOnClickListener { mDialog.dismiss() }
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    private fun isConnectionMatches(userId: String?) {
-        val currentuserConnectionDb = usersDb.child(currentUid).child("connection").child("yep").child(userId!!)
-        currentuserConnectionDb.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key
-                    usersDb.child(dataSnapshot.key!!).child("connection").child("matches").child(currentUid).child("ChatId").setValue(key)
-                    usersDb.child(currentUid).child("connection").child("matches").child(dataSnapshot.key!!).child("ChatId").setValue(key)
-                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D941FF")))
-                    click = false
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    private fun findIamge() {
-        findImage = FirebaseDatabase.getInstance().reference.child("Users").child(matchId).child("ProfileImage")
-        findImage.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    if (dataSnapshot.hasChild("profileImageUrl0")) {
-                        Url0 = dataSnapshot.child("profileImageUrl0").value.toString()
-                        ++i
-                        if (dataSnapshot.hasChild("profileImageUrl1")) {
-                            Url1 = dataSnapshot.child("profileImageUrl1").value.toString()
-                            ++i
-                        } else {
-                            Url1 = "null"
-                        }
-                        if (dataSnapshot.hasChild("profileImageUrl2")) {
-                            Url2 = dataSnapshot.child("profileImageUrl2").value.toString()
-                            ++i
-                        } else {
-                            Url2 = "null"
-                        }
-                        if (dataSnapshot.hasChild("profileImageUrl3")) {
-                            Url3 = dataSnapshot.child("profileImageUrl3").value.toString()
-                            ++i
-                        } else {
-                            Url3 = "null"
-                        }
-                        if (dataSnapshot.hasChild("profileImageUrl4")) {
-                            Url4 = dataSnapshot.child("profileImageUrl4").value.toString()
-                            ++i
-                        } else {
-                            Url4 = "null"
-                        }
-                        if (dataSnapshot.hasChild("profileImageUrl5")) {
-                            Url5 = dataSnapshot.child("profileImageUrl5").value.toString()
-                            ++i
-                        } else {
-                            Url5 = "null"
-                        }
-                        if (i > 1) {
-                            for (j in 0 until i) {
-                                val layoutParams = LinearLayout.LayoutParams(
-                                        50, 12, 0.5f)
-                                layoutParams.setMargins(5, 0, 5, 0)
-                                val layout = LinearLayout(this@ProfileUserOppositeActivity2)
-                                layout.background = ContextCompat.getDrawable(this@ProfileUserOppositeActivity2, R.drawable.image_notselector)
-                                layout.layoutParams = LinearLayout.LayoutParams(50, 12)
-                                layout.id = j
-                                mLinear.addView(layout, layoutParams)
-                            }
-                        }
-                        adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, i, Url0, Url1, Url2, Url3, Url4, Url5, 0)
-                        Log.d("111", "1")
-                    } else {
-                        adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, Url0, Url1, Url2, Url3, Url4, Url5, drawable_gender)
-                    }
-                } else {
-                    adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, Url0, Url1, Url2, Url3, Url4, Url5, drawable_gender)
-                }
-                viewPager.adapter = adapter
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
 
     private val df2: DecimalFormat = DecimalFormat("#.#")
     private fun getUserinfo() {
@@ -644,37 +444,37 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.child("ProfileImage").exists()) {
                     if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
-                        Url0 = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
+                        url0 = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
                         i++
                         if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl1")) {
-                            Url1 = dataSnapshot.child("ProfileImage").child("profileImageUrl1").value.toString()
+                            url1 = dataSnapshot.child("ProfileImage").child("profileImageUrl1").value.toString()
                             i++
                         } else {
-                            Url1 = "null"
+                            url1 = "null"
                         }
                         if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl2")) {
-                            Url2 = dataSnapshot.child("ProfileImage").child("profileImageUrl2").value.toString()
+                            url2 = dataSnapshot.child("ProfileImage").child("profileImageUrl2").value.toString()
                             i++
                         } else {
-                            Url2 = "null"
+                            url2 = "null"
                         }
                         if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl3")) {
-                            Url3 = dataSnapshot.child("ProfileImage").child("profileImageUrl3").value.toString()
+                            url3 = dataSnapshot.child("ProfileImage").child("profileImageUrl3").value.toString()
                             i++
                         } else {
-                            Url3 = "null"
+                            url3 = "null"
                         }
                         if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl4")) {
-                            Url4 = dataSnapshot.child("ProfileImage").child("profileImageUrl4").value.toString()
+                            url4 = dataSnapshot.child("ProfileImage").child("profileImageUrl4").value.toString()
                             i++
                         } else {
-                            Url4 = "null"
+                            url4 = "null"
                         }
                         if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl5")) {
-                            Url5 = dataSnapshot.child("ProfileImage").child("profileImageUrl5").value.toString()
+                            url5 = dataSnapshot.child("ProfileImage").child("profileImageUrl5").value.toString()
                             i++
                         } else {
-                            Url5 = "null"
+                            url5 = "null"
                         }
                         if (i > 1) {
                             for (j in 0 until i) {
@@ -688,32 +488,32 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                                 mLinear.addView(layout, layoutParams)
                             }
                         }
-                        adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, i, Url0, Url1, Url2, Url3, Url4, Url5, 0)
+                        adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, i, url0, url1, url2, url3, url4, url5, 0)
                         Log.d("111", "1")
                     } else {
-                        adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, Url0, Url1, Url2, Url3, Url4, Url5, drawable_gender)
+                        adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, url0, url1, url2, url3, url4, url5, drawableGender)
                     }
                 } else {
-                    adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, Url0, Url1, Url2, Url3, Url4, Url5, drawable_gender)
+                    adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, url0, url1, url2, url3, url4, url5, drawableGender)
                 }
                 viewPager.adapter = adapter
                 if (dataSnapshot.exists() && dataSnapshot.childrenCount > 0) {
                     val map = dataSnapshot.value as MutableMap<*, *>
-                    var x: String = dataSnapshot.child("Location").child("X").value.toString()
-                    var y: String = dataSnapshot.child("Location").child("Y").value.toString()
-                    x_opposite = java.lang.Double.valueOf(x)
-                    y_opposite = java.lang.Double.valueOf(y)
+                    val x: String = dataSnapshot.child("Location").child("X").value.toString()
+                    val y: String = dataSnapshot.child("Location").child("Y").value.toString()
+                    xOpposite = java.lang.Double.valueOf(x)
+                    yOpposite = java.lang.Double.valueOf(y)
                     val dss = MainActivity()
-                    val distance = CalculateDistance.calculate(x_user, y_user, x_opposite, y_opposite)
+                    val distance = CalculateDistance.calculate(xUser, yUser, xOpposite, yOpposite)
                     val distance1 = df2.format(distance)
-                    val ff: Geocoder = if (language_2 == "th") {
+                    val ff: Geocoder = if (language2 == "th") {
                         Geocoder(this@ProfileUserOppositeActivity2)
                     } else {
                         Geocoder(this@ProfileUserOppositeActivity2, Locale.UK)
                     }
                     var addresses: MutableList<Address?>? = null
                     try {
-                        addresses = ff.getFromLocation(x_opposite, y_opposite, 1)
+                        addresses = ff.getFromLocation(xOpposite, yOpposite, 1)
                         val city = addresses[0]!!.getAdminArea()
                         city1.text = "$city ,  $distance1 ${getString(R.string.kilometer)}"
                     } catch (e: IOException) {
@@ -742,7 +542,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         myself.text = map["myself"].toString()
                     }
                     if (map["sex"] != null) {
-                        drawable_gender = if (map["sex"].toString() == "Male") {
+                        drawableGender = if (map["sex"].toString() == "Male") {
                             gender.setText(R.string.Male_gender)
                             R.drawable.ic_man
                         } else {
@@ -780,7 +580,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     }
                     if (map["religion"] != null && map["religion"] != "") {
                         l5.visibility = View.VISIBLE
-                        religion.text = listItems3.get(map["religion"].toString().toInt())
+                        religion.text = listItems3[map["religion"].toString().toInt()]
                     }
                     if (map["hobby"] != null && map["hobby"] != "") {
                         l6.visibility = View.VISIBLE
@@ -788,7 +588,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         val str = ""
                         for (u in 0 until size) {
                             val position = dataSnapshot.child("hobby").child("hobby$u").value.toString().toInt()
-                            addT(listItems.get(position))
+                            addT(listItems[position])
                         }
                     }
                 }
@@ -831,22 +631,10 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     }
 
     private fun getdis() {
-        /*val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
-        userdb.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                val x: String = dataSnapshot.child("Location").child("X").value.toString()
-                val y: String = dataSnapshot.child("Location").child("Y").value.toString()
-                x_user = java.lang.Double.valueOf(x)
-                y_user = java.lang.Double.valueOf(y)
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })*/
         val preferences = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        x_user = preferences.getString("X", "").toString().toDouble()
-        y_user = preferences.getString("Y", "").toString().toDouble()
+        xUser = preferences.getString("X", "").toString().toDouble()
+        yUser = preferences.getString("Y", "").toString().toDouble()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
