@@ -212,6 +212,7 @@ class MatchesActivity : Fragment() {
                     Log.d("test_check_matches", "matches_accept")
                 } else {
                     Log.d("test_check_matches", "matches_reject")
+                    getUserMarchId();
                     p1!!.hide()
                     chat_empty.visibility = View.VISIBLE
                     mRecyclerView.visibility = View.GONE
@@ -812,69 +813,7 @@ class MatchesActivity : Fragment() {
         })
     }
 
-    /*private List<String> IDNotification = new ArrayList<String>();
-    private List<Integer> IndexNotification = new ArrayList<Integer>();
-    private int id_plus  = 0;
-    private void Notification_chat(Bitmap icon, String lastChat, String Name, String time, String ID){
-        Intent intent = new Intent(mContext, ChatActivity.class);
-        Bundle b = new Bundle();
-        Random random = new Random();
-        boolean TwoItems = false;
-        int id = 0;
-        if(IDNotification.size() == 0) {
-            id = ++id_plus;
-            IDNotification.add(ID);
-            IndexNotification.add(id);
-        }else{
-            for(int i = 0;i<IDNotification.size();i++){
-                if(IDNotification.get(i).equals(ID)){
-                    TwoItems = true;
-                    id = IndexNotification.get(i);
-                }
-            }
-            if(TwoItems == false){
-                id = ++id_plus;
-                Toast.makeText(mContext,"id :"+(id),Toast.LENGTH_SHORT).show();
-                IDNotification.add(ID);
-                IndexNotification.add(id);
-            }
-        }
-        b.putString("time_chk",time);
-        b.putString("matchId",ID);
-        b.putString("nameMatch",Name);
-        b.putString("unread","-1");
-        intent.putExtras(b);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,1,intent,PendingIntent.FLAG_ONE_SHOT);
-        Notification notification = new NotificationCompat.Builder(mContext,CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_love)
-                .setContentTitle(Name)
-                .setGroup("Chat")
-                .setContentText(lastChat)
-                .setLargeIcon(icon)
-                .setColor(0xFFCC00)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build();
-        Notification Sum = new NotificationCompat.Builder(mContext,CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_love)
-                .setStyle(new NotificationCompat.InboxStyle().setBigContentTitle("ข้อความใหม่").setSummaryText("ข้อความใหม่ต้าวหี"))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setGroup("Chat")
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                .setAutoCancel(true)
-                .setGroupSummary(true)
-                .build();
 
-        notificationManager = NotificationManagerCompat.from(mContext);
-
-        if(id == 2){
-            notificationManager.notify(id+random.nextInt(9999 - 1000) + 1000,Sum);
-        }
-        notificationManager.notify(id,notification);
-    }*/
     private val resultMatches: ArrayList<MatchesObject?>? = ArrayList()
     private fun getDataSetMatches(): MutableList<MatchesObject?>? {
         return resultMatches
