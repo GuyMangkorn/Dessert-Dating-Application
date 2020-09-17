@@ -272,20 +272,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         })
         handler = Handler()
         runnable!!.run()
-        rewardedAd = RewardedAd(requireActivity(),
-                "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object : RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
-                Toast.makeText(requireContext(), "สวย", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
-                Toast.makeText(requireContext(), errorCode.toString(), Toast.LENGTH_SHORT).show()
-            }
-        }
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
-        Log.d("458", this::manager.isInitialized.toString())
-
         return view
     }
 
@@ -315,6 +301,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             text.text = "โฆษณาที่คุณสามารถดูได้ในวันนี้หมดแล้ว \n สมัคร Dessert VIP เพื่อรับสิทธิพิเศษ"
             b2.visibility = View.GONE
         }
+        rewardedAd = createAndLoadRewardedAd()
         b2.setOnClickListener {
             if (rewardedAd.isLoaded) {
                 val activityContext: Activity = requireActivity()
@@ -484,7 +471,10 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-        callFunctions(countDataSet, true, 0)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+            callFunctions(countDataSet, true, 0)
+        }
+
 
 
     }

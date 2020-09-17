@@ -187,7 +187,10 @@ class ListcardActivity : Fragment() {
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-        callFunction(100, true, 0)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+            callFunction(100, true, 0)
+        }
+
 
     }
     private fun percentage(){
