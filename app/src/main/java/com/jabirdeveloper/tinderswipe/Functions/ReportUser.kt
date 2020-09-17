@@ -2,7 +2,7 @@ package com.jabirdeveloper.tinderswipe.Functions
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
+
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -26,16 +27,16 @@ class ReportUser(private var context: Activity, private var matchId: String) {
     private var usersDb = FirebaseDatabase.getInstance().reference.child("Users")
     private var currentUserId = FirebaseAuth.getInstance().uid!!
     fun reportDialog(): AlertDialog {
+
         val choice = context.resources.getStringArray(R.array.report_item)
         val checkedItem = BooleanArray(choice.size)
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(R.string.dialog_reportUser)
-        builder.setMultiChoiceItems(R.array.report_item, checkedItem) { _, which, isChecked ->
-            checkedItem[which] = isChecked
-            val item = choice[which]
+        val mBuilder = androidx.appcompat.app.AlertDialog.Builder(context)
+        mBuilder.setTitle(R.string.dialog_reportUser)
+        mBuilder.setMultiChoiceItems(R.array.report_item, checkedItem) { _, position, isChecked ->
+            checkedItem[position] = isChecked
         }
-        builder.setCancelable(true)
-        builder.setPositiveButton(R.string.dialog_report) { _, _ ->
+        mBuilder.setCancelable(true)
+        mBuilder.setPositiveButton(R.string.ok) { _, _ ->
             i = 0
             while (i < choice.size) {
                 val checked = checkedItem[i]
@@ -45,9 +46,10 @@ class ReportUser(private var context: Activity, private var matchId: String) {
                 i++
             }
         }
-        builder.setNegativeButton(R.string.cancle) { dialog, which -> dialog.dismiss() }
-        val mDialog = builder.create()
+        mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
+        val mDialog = mBuilder.create()
         mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.myrect2))
+
         return mDialog
     }
 
@@ -56,7 +58,7 @@ class ReportUser(private var context: Activity, private var matchId: String) {
             @SuppressLint("SimpleDateFormat")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                var dateBefore: Boolean = true
+                var dateBefore = true
 
                 if (dataSnapshot.child(currentUserId).child("PutReportId").hasChild(matchId)) {
                     dateBefore = false
