@@ -99,23 +99,31 @@ class SwitchpageActivity : AppCompatActivity() {
                 if (isOnline(applicationContext)) {
                     when (i) {
                         R.id.item1 -> {
-                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page1).commit()
+                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page1).commit()
                             activeFragment = page1
-
+                            id = R.id.item1
                         }
                         R.id.item2 -> {
-                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page2).commit()
+                            if(R.id.item2 < id)
+                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page2).commit()
+                            else
+                                supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page2).commit()
                             activeFragment = page2
+                            id = R.id.item2
 
                         }
                         R.id.item3 -> {
-                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page3).commit()
+                            if(R.id.item3 < id)
+                                supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page3).commit()
+                            else
+                                supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page3).commit()
                             activeFragment = page3
-
+                            id = R.id.item3
                         }
                         R.id.item4 -> {
                             supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page4).commit()
                             activeFragment = page4
+                            id = R.id.item4
 
                         }
                     }
