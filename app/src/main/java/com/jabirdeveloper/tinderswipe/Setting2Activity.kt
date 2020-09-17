@@ -249,12 +249,14 @@ class Setting2Activity : AppCompatActivity() {
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
             override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onCancelled(databaseError: DatabaseError) {}
-        })
-        val intent = Intent(this@Setting2Activity, ChooseLoginRegistrationActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        mAuth.signOut()
-        finish()
+        }).let {
+            val intent = Intent(this@Setting2Activity, ChooseLoginRegistrationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            mAuth.signOut()
+        }
+
+
 
 
     }

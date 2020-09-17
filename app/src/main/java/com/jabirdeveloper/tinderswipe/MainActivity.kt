@@ -101,6 +101,9 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private var countLimit3 = 1
     private var countDataSet = 100
     private lateinit var resultlimit: ArrayList<*>
+    private var checkEmpty = false
+    private var empty = 0
+    private var countEmpty = 0
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("ghj", "สร้างละ")
         val view = inflater.inflate(R.layout.activity_main, container, false)
@@ -186,9 +189,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     }
                 }
 
-                if (arrayAdapter.itemCount <= 1) {
-                    layout_gps.visibility = View.VISIBLE
-                }
+
             }
 
             override fun onCardRewound() {}
@@ -216,6 +217,13 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
             override fun onCardDisappeared(view: View?, position: Int) {
                 Log.d("ggg", "$position $countLimit $countLimit3 " + rowItem.size)
+                if(checkEmpty)
+                {
+                    Log.d("ggg2", "$countEmpty $empty")
+                    if(countEmpty == empty-1)
+                        layout_gps.visibility = View.VISIBLE
+                    countEmpty++
+                }
                 countLimit2++
                 countLimit3++
             }
@@ -526,9 +534,14 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             Geocoder(context, Locale.UK)
         }
         Log.d("iop", "")
+
         var a = countLimit + limit
         if (result2.size < countLimit + limit)
-            a = result2.size
+            {
+                a = result2.size
+                checkEmpty=true
+                this.empty=result2.size
+            }
         for (x in countLimit until a) {
             countLimit++
             Log.d("iop", "$countLimit ${result2.size}")
@@ -572,7 +585,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             rowItem.add(cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
 
         }
-
         if (type)
             arrayAdapter.notifyDataSetChanged()
         else {
