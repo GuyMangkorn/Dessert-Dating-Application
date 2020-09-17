@@ -609,7 +609,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         builder.setTitle(R.string.GPS_Disabled)
         builder.setMessage(R.string.GPS_open)
         builder.setPositiveButton(R.string.open_gps) { _, _ -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { _, _ ->
-            val intent = Intent(context, show_gps_open::class.java)
+            val intent = Intent(context, ShowGpsOpen::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             requireActivity().finish()
             startActivity(intent)

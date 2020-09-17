@@ -23,14 +23,13 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:icon">
-        <activity android:name=".SendEmail"></activity>
         <!-- Include the AdActivity configChanges and theme. -->
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
         <activity android:name=".BandUser" />
-        <activity android:name=".show_gps_open" />
+        <activity android:name=".ShowGpsOpen" />
         <activity
             android:name=".LikeYou.LikeYouActivity"
             android:screenOrientation="portrait" />

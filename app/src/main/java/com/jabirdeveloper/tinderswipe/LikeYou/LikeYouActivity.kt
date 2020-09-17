@@ -5,10 +5,8 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +28,6 @@ import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,8 +61,8 @@ class LikeYouActivity : AppCompatActivity() {
         button.setOnClickListener(View.OnClickListener { openDialog() })
         blurView = findViewById(R.id.blurView)
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val langure = preferences.getString("My_Lang", "")
-        ff = if (langure == "th") {
+        val language = preferences.getString("My_Lang", "")
+        ff = if (language == "th") {
             Geocoder(this@LikeYouActivity)
         } else {
             Geocoder(this@LikeYouActivity, Locale.UK)

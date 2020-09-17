@@ -12,7 +12,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.github.demono.AutoScrollViewPager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -37,11 +35,10 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.jabirdeveloper.tinderswipe.Functions.DialogSlide
 import com.jabirdeveloper.tinderswipe.LikeYou.LikeYouActivity
-import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 
 class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     private lateinit var setting: TextView
@@ -54,8 +51,8 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     private lateinit var ad: TextView
     private lateinit var setting2: LinearLayout
     private lateinit var edit: LinearLayout
-    private lateinit var like_you: LinearLayout
-    private lateinit var see_profile_you: LinearLayout
+    private lateinit var likeYou: LinearLayout
+    private lateinit var seeProfileYou: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var userId: String
     private lateinit var imageView: ImageView
@@ -76,19 +73,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         super.onCreate(savedInstanceState)
         bp = BillingProcessor(requireContext(), Id.Id, this)
         bp.initialize()
-        rewardedAd = RewardedAd(requireActivity(),
-                "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object : RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
-                Toast.makeText(requireContext(), "สวย", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
-                Toast.makeText(requireContext(), errorCode.toString(), Toast.LENGTH_SHORT).show()
-            }
-        }
-        val ff = 0
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
+        rewardedAd = createAndLoadRewardedAd()
         dialog = Dialog(requireContext())
         val view2 = inflater.inflate(R.layout.progress_dialog, null)
         dialog2 = Dialog(requireContext())
@@ -109,8 +94,8 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         setting = view.findViewById(R.id.b1)
         setting2 = view.findViewById(R.id.linearLayout20)
         edit = view.findViewById(R.id.linearLayout21)
-        like_you = view.findViewById(R.id.like_you)
-        see_profile_you = view.findViewById(R.id.see_porfile_you)
+        likeYou = view.findViewById(R.id.like_you)
+        seeProfileYou = view.findViewById(R.id.see_porfile_you)
         vip = view.findViewById(R.id.vip)
         vvip = view.findViewById(R.id.vvip)
         setimage = view.findViewById(R.id.goto_set_image)
@@ -143,12 +128,12 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                 Log.d("TAG", "The rewarded ad wasn't loaded yet.")
             }
         }
-        like_you.setOnClickListener(View.OnClickListener {
+        likeYou.setOnClickListener(View.OnClickListener {
             dialog2.show()
             val intent = Intent(context, LikeYouActivity::class.java)
             startActivity(intent)
         })
-        see_profile_you.setOnClickListener(View.OnClickListener {
+        seeProfileYou.setOnClickListener(View.OnClickListener {
             dialog2.show()
             val intent = Intent(context, LikeYouActivity::class.java)
             intent.putExtra("See", "1")
@@ -177,8 +162,6 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
             startActivity(intent)
         })
         view.findViewById<LinearLayout>(R.id.linearLayout22).setOnClickListener {
-//            val intent = Intent(context, SendEmail::class.java)
-//            startActivity(intent)
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse("mailto:")
             intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("dessert2500@gmail.com"))
@@ -220,30 +203,11 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         text.text = "สมัคร Desert VIP เพื่อรับสิทธิพิเศษต่างๆ"
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(view)
-        val pagerModels: ArrayList<PagerModel?> = ArrayList()
-        pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
-        pagerModels.add(PagerModel("ทักทายคนที่คุณอยากทำความรู้จักได้ไม่จำกัดจำนวน", "ทักทายได้ไม่จำกัด", R.drawable.ic_hand))
-        pagerModels.add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
-        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
-        pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
-        val adapter = VipSlide(requireContext(), pagerModels)
-        val pager: AutoScrollViewPager = dialog.findViewById(R.id.viewpage)
-        pager.adapter = adapter
-        pager.startAutoScroll()
-        val indicator: CircleIndicator = view.findViewById(R.id.indicator)
-        indicator.setViewPager(pager)
+        DialogSlide(requireContext(), dialog, view).start()
         val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
         dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
         dialog.show()
 
-        /*val inflater = layoutInflater
-        val view = inflater.inflate(R.layout.dfg, null)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(view)
-        val width = (resources.displayMetrics.widthPixels * 0.90) .toInt()
-        dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-        dialog.show()*/
     }
 
     fun createAndLoadRewardedAd(): RewardedAd {
@@ -261,6 +225,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         return rewardedAd
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getData() {
         val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
         val gender = if (preferences.getString("image", "") == "Male") {
@@ -302,8 +267,8 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         see.text = preferences.getInt("s", 0).toString()
         name.text = preferences.getString("name", "")
         age.text = ", " + preferences.getInt("Age", 18).toString()
-        val lat_double = preferences.getString("X", "").toString().toDouble()
-        val lon_double = preferences.getString("Y", "").toString().toDouble()
+        val latDouble = preferences.getString("X", "").toString().toDouble()
+        val lonDouble = preferences.getString("Y", "").toString().toDouble()
         val preferences2 = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val langure = preferences2.getString("My_Lang", "")
         val ff: Geocoder
@@ -314,7 +279,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         }
         var addresses: MutableList<Address?>? = null
         try {
-            addresses = ff.getFromLocation(lat_double, lon_double, 1)
+            addresses = ff.getFromLocation(latDouble, lonDouble, 1)
             val city = addresses[0]!!.adminArea
             mcity.text = city
         } catch (e: IOException) {
@@ -327,13 +292,8 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
 
     override fun onResume() {
         super.onResume()
-        val handler = Handler()
-
-        getData()
-
-
-
         gotoProfile = true
+        getData()
     }
 
     override fun onStop() {

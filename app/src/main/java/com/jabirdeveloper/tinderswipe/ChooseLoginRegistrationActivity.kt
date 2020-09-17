@@ -21,7 +21,6 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -30,8 +29,10 @@ import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.*
-import com.hanks.htextview.fade.FadeTextView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.jabirdeveloper.tinderswipe.Register.PhoneActivity
 import com.jabirdeveloper.tinderswipe.Register.Regis_name_Activity
 import com.jabirdeveloper.tinderswipe.Register.RegistrationActivity
@@ -40,14 +41,9 @@ import java.util.*
 class ChooseLoginRegistrationActivity : AppCompatActivity() {
     private lateinit var mLogin: Button
     private lateinit var mRegister: Button
-    private lateinit var test: Button
-    private lateinit var nameFace: TextView
     private lateinit var mCallbackManager: CallbackManager
     private lateinit var firebaseAuthStateListener: AuthStateListener
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var usersDb: DatabaseReference
-    private lateinit var textView: FadeTextView
-    private lateinit var loginButton: LoginButton
     private lateinit var googleSignInClientg: GoogleSignInClient
     private val RC_SIGN_IN = 0
     private lateinit var thai: TextView

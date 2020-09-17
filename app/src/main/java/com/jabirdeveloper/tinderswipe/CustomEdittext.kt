@@ -17,7 +17,7 @@ class CustomEdittext : EditText {
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
         if (event.keyCode == KeyEvent.KEYCODE_BACK &&
                 event.action == KeyEvent.ACTION_UP) {
-            if (mOnImeBack != null) mOnImeBack!!.onImeBack(this, this.text.toString())
+            mOnImeBack.onImeBack(this, this.text.toString())
         }
         return super.dispatchKeyEvent(event)
     }
