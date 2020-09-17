@@ -147,8 +147,6 @@ class ChatActivity : AppCompatActivity() {
         mRecordStatus = findViewById<View?>(R.id.record_status) as TextView
         LinearRecord = findViewById<View?>(R.id.Linear_record) as LinearLayout
         menubar = findViewById(R.id.menubar)
-        fileName = externalCacheDir!!.absolutePath
-        fileName += "/recorded_audio.3gp"
         linearLayout_oval_send = findViewById<View?>(R.id.oval_send) as LinearLayout
         mName_chat = findViewById<View?>(R.id.name_chat) as TextView
         mSend_image = findViewById(R.id.send_image)
@@ -834,6 +832,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun startRecording() {
+        fileName = externalCacheDir!!.absolutePath
+        fileName += "/recorded_audio.3gp"
         recorder = MediaRecorder()
         recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
         recorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
