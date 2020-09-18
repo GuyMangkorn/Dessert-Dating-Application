@@ -33,6 +33,7 @@ import com.jabirdeveloper.tinderswipe.Listcard.ListCardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -49,11 +50,14 @@ class SwitchpageActivity : AppCompatActivity() {
     private val page4 = MatchesActivity()
     private var functions = Firebase.functions
     private var activeFragment: Fragment = MainActivity()
+    private val j1 = CoroutineScope(Job())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_switch_page)
-        getMyUser()
+        j1.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+            getMyUser()
+        }
         //questionCalculate()
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
@@ -64,7 +68,6 @@ class SwitchpageActivity : AppCompatActivity() {
             for (i in name.indices) {
                 nameAndValue += "${i + 1}.${choice[Integer.valueOf(name[i])]}${getString(R.string.count_report)}	${value[i]} ${getString(R.string.times)}"
             }
-
             val inflater = layoutInflater
             val view = inflater.inflate(R.layout.warning_dialog, null)
             dialog = Dialog(this@SwitchpageActivity)
@@ -200,8 +203,6 @@ class SwitchpageActivity : AppCompatActivity() {
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-
                 if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {
                     Log.d("vvv", "1")
                     myUser.putBoolean("Vip", true)
@@ -235,12 +236,14 @@ class SwitchpageActivity : AppCompatActivity() {
                     myUser.putString("image", "")
                 }
                 myUser.apply()
-                supportFragmentManager.beginTransaction().apply {
-                    add(R.id.fragment_container2, page1).hide(page1)
-                    add(R.id.fragment_container2, page2).hide(page2)
-                    add(R.id.fragment_container2, page3).hide(page3)
-                    add(R.id.fragment_container2, page4).hide(page4)
-                }.commit()
+                j1.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
+                    supportFragmentManager.beginTransaction().apply {
+                        add(R.id.fragment_container2, page1).hide(page1)
+                        add(R.id.fragment_container2, page2).hide(page2)
+                        add(R.id.fragment_container2, page3).hide(page3)
+                        add(R.id.fragment_container2, page4).hide(page4)
+                    }.commit()
+                }
                 bar!!.setItemSelected(id, true).let { findViewById<LinearLayout>(R.id.candyCane).visibility = View.GONE }
 
 
@@ -359,5 +362,10 @@ class SwitchpageActivity : AppCompatActivity() {
         fun hide() {
             bar!!.visibility = View.GONE
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        j1.cancel()
     }
 }

@@ -17,14 +17,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
-import kotlin.collections.ArrayList
 
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -72,9 +74,7 @@ class ListCardActivity : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
 
-
             percentage()
-
         }
 
         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -91,12 +91,9 @@ class ListCardActivity : Fragment() {
                 currentItem = mMatchesLayoutManager.childCount
                 totalItem = mMatchesLayoutManager.itemCount
                 scrollOutItem = (mMatchesLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                Log.d("scrcc", "$currentItem $totalItem $scrollOutItem")
-                Log.d("scrcc", resultLimit.size.toString() + "$countLimit")
 
                 if (isScroll && currentItem + scrollOutItem == totalItem) {
                     isScroll = false
-
                     if (startNode < countLimit) {
                         getUser(resultLimit, startNode, false, resultMatches.size - 1)
                         startNode += 20
@@ -111,6 +108,7 @@ class ListCardActivity : Fragment() {
 
             }
         })
+
         mRecyclerView.addOnChildAttachStateChangeListener(object : OnChildAttachStateChangeListener {
             override fun onChildViewAttachedToWindow(view: View) {
                 pro.visibility = View.GONE
@@ -174,14 +172,13 @@ class ListCardActivity : Fragment() {
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
-            callFunction(100, true, 0)
-        }
+
+        callFunction(100, true, 0)
 
 
     }
+
     private fun percentage(){
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             val data = hashMapOf(
                     "question" to "Questions"
             )
@@ -189,17 +186,17 @@ class ListCardActivity : Fragment() {
                     .getHttpsCallable("getPercentageMatching")
                     .call(data)
                     .addOnSuccessListener { task ->
-                        val data = task.data as Map<*, *>
-                        Log.d("testDatatatat", data.toString())
-                        percentageMath = data["dictionary"] as Map<*, *>
+                        val datau = task.data as Map<*, *>
+                        Log.d("testDatatatat", datau.toString())
+                        percentageMath = datau["dictionary"] as Map<*, *>
 
                         getStartAt()
                     }
                     .addOnFailureListener {
                         Log.d("testDatatatat", "error")
                     }
-        }
     }
+
 
     private fun callFunction(limit: Int, type: Boolean, count: Int) {
         var pre = count
@@ -225,6 +222,7 @@ class ListCardActivity : Fragment() {
                         val result1 = task.data as Map<*, *>
 
                         Log.d("ghu", result1.toString())
+
                         resultLimit = result1["o"] as ArrayList<*>
                         if (resultLimit.isNotEmpty())
                             if (type)
@@ -238,61 +236,65 @@ class ListCardActivity : Fragment() {
     }
 
     private fun getUser(result2: ArrayList<*>, start: Int, type: Boolean, startNoti: Int) {
-        var max = start + 20
-        var typeTime = ""
-        var time = ""
-        Log.d("max", (start + 20).toString() + " " + result2.size)
-        if (result2.size < start + 20) {
-            max = result2.size
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+            var max = start + 20
+            var typeTime = ""
+            var time = ""
+            Log.d("max", (start + 20).toString() + " " + result2.size)
+            if (result2.size < start + 20) {
+                max = result2.size
+            }
+            for (x in start until max) {
+                val user = result2[x] as Map<*, *>
+                var myself = ""
+                var offStatus = false
+                Log.d("ghu", user["name"].toString() + " , " + user["distance_other"].toString())
+
+                if (user["typeTime"] != null) {
+                    typeTime = user["typeTime"].toString()
+                    Log.d("type55", "0")
+                }
+                if (user["time"] != null) {
+                    time = user["time"].toString()
+                }
+                if (user["myself"] != null) {
+                    myself = user["myself"].toString()
+                }
+                if (user["off_status"] != null) {
+                    offStatus = true
+                }
+                (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
+                val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
+
+                var status = "offline"
+                if (user["status"] == 1) {
+                    status = "online"
+                }
+                val df2 = DecimalFormat("#.#")
+                val dis = df2.format(user["distance_other"])
+                var percentAdd: String? = "0"
+                if (percentageMath!![user["key"].toString()] != null) {
+                    percentAdd = percentageMath!![user["key"].toString()].toString()
+                    //percentAdd = percentAdd.toString()
+                    //Log.d("testDatatatat", percentAdd)
+                }
+                //Log.d("testDatatatat", percentageMath!!.get(user["key"].toString()).toString())
+                val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time, percentAdd)
+
+                resultMatches.add(obj)
+                if (resultMatches.size > 0) {
+                    launch(Dispatchers.Main) {
+                        pro.visibility = View.GONE
+                    }
+                    // search.visibility = View.GONE
+                    // handler.removeCallbacks(runnable)
+                }
+            }
+            Log.d("sss", "$startNoti " + resultMatches.size)
+            if (type) {
+                mMatchesAdapter.notifyDataSetChanged()
+            } else mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
         }
-        for (x in start until max) {
-            val user = result2[x] as Map<*, *>
-            var myself = ""
-            var offStatus = false
-            Log.d("ghu", user["name"].toString() + " , " + user["distance_other"].toString())
-
-            if (user["typeTime"] != null) {
-                typeTime = user["typeTime"].toString()
-                Log.d("type55", "0")
-            }
-            if (user["time"] != null) {
-                time = user["time"].toString()
-            }
-            if (user["myself"] != null) {
-                myself = user["myself"].toString()
-            }
-            if (user["off_status"] != null) {
-                offStatus = true
-            }
-            (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
-            val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
-
-            var status = "offline"
-            if (user["status"] == 1) {
-                status = "online"
-            }
-            val df2 = DecimalFormat("#.#")
-            val dis = df2.format(user["distance_other"])
-            var percentAdd:String? = "0"
-            if(percentageMath!!.get(user["key"].toString()) != null){
-                percentAdd = percentageMath!!.get(user["key"].toString()).toString()
-                //percentAdd = percentAdd.toString()
-                //Log.d("testDatatatat", percentAdd)
-            }
-            //Log.d("testDatatatat", percentageMath!!.get(user["key"].toString()).toString())
-            val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time,percentAdd)
-
-            resultMatches.add(obj)
-            if (resultMatches.size > 0) {
-                pro.visibility = View.GONE
-                // search.visibility = View.GONE
-                // handler.removeCallbacks(runnable)
-            }
-        }
-        Log.d("sss", "$startNoti " + resultMatches.size)
-        if (type)
-            mMatchesAdapter.notifyDataSetChanged()
-        else mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
     }
 
     private val resultMatches: ArrayList<ListCardObject?> = ArrayList()

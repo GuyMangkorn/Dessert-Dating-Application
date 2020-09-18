@@ -27,8 +27,9 @@ import com.jabirdeveloper.tinderswipe.Functions.City
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -97,7 +98,7 @@ class LikeYouActivity : AppCompatActivity() {
             empty.setText(R.string.like_empty)
             supportActionBar!!.setTitle(R.string.People_like_you)
         }
-        MainScope().launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+        CoroutineScope(Job() + Dispatchers.IO).launch { // launch a new coroutine in background and continue
             val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
             userdb.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

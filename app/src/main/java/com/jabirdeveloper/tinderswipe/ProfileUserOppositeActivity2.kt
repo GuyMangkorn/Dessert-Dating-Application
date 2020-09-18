@@ -37,6 +37,7 @@ import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.jabirdeveloper.tinderswipe.Functions.ReportUser
+import kotlinx.coroutines.*
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
 import java.text.DecimalFormat
@@ -156,8 +157,16 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         l6.visibility = View.GONE
         val preferences2 = getSharedPreferences("notification_match", Context.MODE_PRIVATE)
         notificationMatch = preferences2.getString("noti", "1")
-        getDistance()
-        getUserinfo()
+        CoroutineScope(Job()).launch {
+            withContext(Dispatchers.Default) {
+                getDistance()
+            }
+            withContext(Dispatchers.IO) {
+                getUserinfo()
+            }
+
+        }
+
         madoo = findViewById(R.id.linearLayout17)
         if (intent.hasExtra("form_main")) {
             madoo.visibility = View.VISIBLE
@@ -167,19 +176,126 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         }
         if (intent.hasExtra("form_list")) {
             fab.visibility = View.VISIBLE
-        }
-        rewardedAd = RewardedAd(this,
-                "ca-app-pub-3940256099942544/5224354917")
-        val adLoadCallback = object : RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
-                Toast.makeText(this@ProfileUserOppositeActivity2, "สวย", Toast.LENGTH_SHORT).show()
-            }
+            fab.setOnClickListener {
+                if (click || statusVip) {
+                    val inflater = layoutInflater
+                    val view2 = inflater.inflate(R.layout.sayhi_dialog, null)
+                    val b1 = view2.findViewById<Button>(R.id.buy)
+                    val close = view2.findViewById<ImageView>(R.id.close)
+                    val textSend = view2.findViewById<EditText>(R.id.text_send)
+                    b1.setOnClickListener {
+                        text = textSend.text.toString()
+                        if (text!!.trim { it <= ' ' }.isNotEmpty()) {
+                            Toast.makeText(this@ProfileUserOppositeActivity2, text, Toast.LENGTH_SHORT).show()
+                            send = text
+                            fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this@ProfileUserOppositeActivity2, R.color.text_gray))
+                            fab.isClickable = false
+                            val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key!!
+                            usersDb.child(matchId).child("connection").child("chatna").child(currentUid).setValue(key)
+                            val d = DateTime
+                            val newMessageDb = mDatabaseChat.child(key).push()
+                            val newMessage = hashMapOf<String, Any>()
+                            newMessage["createByUser"] = currentUid
+                            newMessage["text"] = text!!
+                            newMessage["time"] = d.time()
+                            newMessage["date"] = d.time()
+                            newMessage["read"] = "Unread"
+                            newMessageDb.updateChildren(newMessage)
+                            dialog.dismiss()
+                            maxChat--
+                            usersDb.child(currentUid).child("MaxChat").setValue(maxChat)
+                        } else {
+                            Toast.makeText(this@ProfileUserOppositeActivity2, "พิมพ์ข้อความสักหน่อยสิ", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    close.setOnClickListener { dialog.dismiss() }
+                    dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    dialog.setContentView(view2)
+                    val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+                    dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    dialog.show()
+                } else {
 
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
-                Toast.makeText(this@ProfileUserOppositeActivity2, errorCode.toString(), Toast.LENGTH_SHORT).show()
+                    val inflater = layoutInflater
+                    val view = inflater.inflate(R.layout.vip_dialog, null)
+                    val b1 = view.findViewById<Button>(R.id.buy)
+                    val b2 = view.findViewById<Button>(R.id.admob)
+                    val text = view.findViewById<TextView>(R.id.test_de)
+                    rewardedAd = RewardedAd(this, "ca-app-pub-3940256099942544/5224354917")
+                    val adLoadCallback = object : RewardedAdLoadCallback() {
+                        override fun onRewardedAdLoaded() {
+                            b2.text = "ดูโฆษณา"
+                            Log.d("loadad", "ff")
+                        }
+
+                        override fun onRewardedAdFailedToLoad(errorCode: Int) {
+                            // Ad failed to load.
+                        }
+                    }
+                    rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
+                    text.text = "ดูโฆษณาเพื่อรับ จำนวนกดทักทาย เพิ่ม \nหรือ สมัคร Dessert VIP เพื่อรับสิทธิพิเศษต่างๆ"
+                    if (maxadmob <= 0) {
+                        text.text = "โฆษณาที่คุณสามารถดูได้ในวันนี้หมดแล้ว \n สมัคร Dessert VIP เพื่อรับสิทธิพิเศษ"
+                        b2.visibility = View.GONE
+                    }
+                    b2.setOnClickListener {
+                        if (rewardedAd.isLoaded) {
+                            val activityContext: Activity = this
+                            val adCallback = object : RewardedAdCallback() {
+                                override fun onRewardedAdOpened() {
+                                    rewardedAd = createAndLoadRewardedAd()
+                                }
+
+                                override fun onRewardedAdClosed() {
+
+                                }
+
+                                override fun onUserEarnedReward(@NonNull reward: RewardItem) {
+                                    maxChat++
+                                    maxadmob--
+                                    if (maxChat >= 10)
+                                        dialog.dismiss()
+                                    else if (maxadmob <= 0)
+                                        b2.visibility = View.GONE
+                                    usersDb.child(currentUid).child("MaxChat").setValue(maxChat)
+                                    usersDb.child(currentUid).child("MaxAdmob").setValue(maxChat)
+                                }
+
+                                override fun onRewardedAdFailedToShow(errorCode: Int) {
+                                    // Ad failed to display.
+                                }
+                            }
+                            rewardedAd.show(activityContext, adCallback)
+                        } else {
+                            Log.d("TAG", "The rewarded ad wasn't loaded yet.")
+                        }
+                    }
+                    b1.setOnClickListener {
+                        usersDb.child(currentUid).child("Vip").setValue(1)
+                        bp.subscribe(this, "YOUR SUBSCRIPTION ID FROM GOOGLE PLAY CONSOLE HERE");
+                        dialog.dismiss()
+                    }
+                    dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    dialog.setContentView(view)
+                    val pagerModels: ArrayList<PagerModel?> = ArrayList()
+                    pagerModels.add(PagerModel("สมัคร Dessert VIP เพื่อทักทายแบบไม่จำกัดจำนวน", "จำนวนคำทักทายของคุณหมด", R.drawable.ic_hand))
+                    pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
+                    pagerModels.add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
+                    pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
+                    pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
+                    val adapter = VipSlide(this@ProfileUserOppositeActivity2, pagerModels)
+                    val pager: AutoScrollViewPager = dialog.findViewById(R.id.viewpage)
+                    pager.adapter = adapter
+                    pager.startAutoScroll()
+                    val indicator: CircleIndicator = view.findViewById(R.id.indicator)
+                    indicator.setViewPager(pager)
+                    val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+                    dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    dialog.show()
+                }
             }
         }
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
+
         like = findViewById(R.id.like_button)
         dislike = findViewById(R.id.dislike_button)
         star = findViewById(R.id.star_button)
@@ -228,111 +344,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             val mDialog = ReportUser(this@ProfileUserOppositeActivity2, matchId).reportDialog()
             mDialog.show()
         }
-        fab.setOnClickListener(View.OnClickListener {
-            if (click || statusVip) {
-                val inflater = layoutInflater
-                val view2 = inflater.inflate(R.layout.sayhi_dialog, null)
-                val b1 = view2.findViewById<Button>(R.id.buy)
-                val close = view2.findViewById<ImageView>(R.id.close)
-                val textSend = view2.findViewById<EditText>(R.id.text_send)
-                b1.setOnClickListener {
-                    text = textSend.text.toString()
-                    if (text!!.trim { it <= ' ' }.isNotEmpty()) {
-                        Toast.makeText(this@ProfileUserOppositeActivity2, text, Toast.LENGTH_SHORT).show()
-                        send = text
-                        fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this@ProfileUserOppositeActivity2, R.color.text_gray))
-                        fab.isClickable = false
-                        val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key!!
-                        usersDb.child(matchId).child("connection").child("chatna").child(currentUid).setValue(key)
-                        val d = DateTime
-                        val newMessageDb = mDatabaseChat.child(key).push()
-                        val newMessage = hashMapOf<String, Any>()
-                        newMessage["createByUser"] = currentUid
-                        newMessage["text"] = text!!
-                        newMessage["time"] = d.time()
-                        newMessage["date"] = d.time()
-                        newMessage["read"] = "Unread"
-                        newMessageDb.updateChildren(newMessage)
-                        dialog.dismiss()
-                        maxChat--
-                        usersDb.child(currentUid).child("MaxChat").setValue(maxChat)
-                    } else {
-                        Toast.makeText(this@ProfileUserOppositeActivity2, "พิมพ์ข้อความสักหน่อยสิ", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                close.setOnClickListener { dialog.dismiss() }
-                dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                dialog.setContentView(view2)
-                val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-                dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-                dialog.show()
-            } else {
-                val inflater = layoutInflater
-                val view = inflater.inflate(R.layout.vip_dialog, null)
-                val b1 = view.findViewById<Button>(R.id.buy)
-                val b2 = view.findViewById<Button>(R.id.admob)
-                val text = view.findViewById<TextView>(R.id.test_de)
-                text.text = "ดูโฆษณาเพื่อรับ จำนวนกดทักทาย เพิ่ม \nหรือ สมัคร Dessert VIP เพื่อรับสิทธิพิเศษต่างๆ"
-                if (maxadmob <= 0) {
-                    text.text = "โฆษณาที่คุณสามารถดูได้ในวันนี้หมดแล้ว \n สมัคร Dessert VIP เพื่อรับสิทธิพิเศษ"
-                    b2.visibility = View.GONE
-                }
-                b2.setOnClickListener {
-                    if (rewardedAd.isLoaded) {
-                        val activityContext: Activity = this
-                        val adCallback = object : RewardedAdCallback() {
-                            override fun onRewardedAdOpened() {
-                                rewardedAd = createAndLoadRewardedAd()
-                            }
 
-                            override fun onRewardedAdClosed() {
-
-                            }
-
-                            override fun onUserEarnedReward(@NonNull reward: RewardItem) {
-                                maxChat++
-                                maxadmob--
-                                if (maxChat >= 10)
-                                    dialog.dismiss()
-                                else if (maxadmob <= 0)
-                                    b2.visibility = View.GONE
-                                usersDb.child(currentUid).child("MaxChat").setValue(maxChat)
-                                usersDb.child(currentUid).child("MaxAdmob").setValue(maxChat)
-                            }
-
-                            override fun onRewardedAdFailedToShow(errorCode: Int) {
-                                // Ad failed to display.
-                            }
-                        }
-                        rewardedAd.show(activityContext, adCallback)
-                    } else {
-                        Log.d("TAG", "The rewarded ad wasn't loaded yet.")
-                    }
-                }
-                b1.setOnClickListener {
-                    usersDb.child(currentUid).child("Vip").setValue(1)
-                    bp.subscribe(this, "YOUR SUBSCRIPTION ID FROM GOOGLE PLAY CONSOLE HERE");
-                    dialog.dismiss()
-                }
-                dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                dialog.setContentView(view)
-                val pagerModels: ArrayList<PagerModel?> = ArrayList()
-                pagerModels.add(PagerModel("สมัคร Dessert VIP เพื่อทักทายแบบไม่จำกัดจำนวน", "จำนวนคำทักทายของคุณหมด", R.drawable.ic_hand))
-                pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
-                pagerModels.add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
-                pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
-                pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
-                val adapter = VipSlide(this@ProfileUserOppositeActivity2, pagerModels)
-                val pager: AutoScrollViewPager = dialog.findViewById(R.id.viewpage)
-                pager.adapter = adapter
-                pager.startAutoScroll()
-                val indicator: CircleIndicator = view.findViewById(R.id.indicator)
-                indicator.setViewPager(pager)
-                val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-                dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-                dialog.show()
-            }
-        })
         viewPager.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 if (chk == 11) {

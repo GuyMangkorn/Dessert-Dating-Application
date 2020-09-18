@@ -30,7 +30,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
-
 import com.bumptech.glide.Glide
 import com.github.demono.AutoScrollViewPager
 import com.google.android.gms.ads.AdRequest
@@ -50,6 +49,7 @@ import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
 import java.text.DecimalFormat
@@ -107,7 +107,28 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("ghj", "สร้างละ")
         val view = inflater.inflate(R.layout.activity_main, container, false)
+        mLocationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf<String?>(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.INTERNET
+            ), 1)
+        } else {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0f, this)
+            viewLifecycleOwner.lifecycleScope.launch { // launch a new coroutine in background and continue
 
+                withContext(Dispatchers.Default) { // background thread
+                    getdis()
+                }
+                withContext(Dispatchers.IO) { // background thread
+                    callFunctions(countDataSet, true, 0)
+                }
+
+            }
+
+        }
         bp = BillingProcessor(requireContext(), Id.Id, this)
         bp.initialize()
         mAuth = FirebaseAuth.getInstance()
@@ -131,20 +152,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         rowItem = ArrayList()
         currentUid = mAuth.currentUser!!.uid
         usersDb = FirebaseDatabase.getInstance().reference.child("Users")
-        mLocationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf<String?>(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.INTERNET
-            ), 1)
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0f, this)
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
-                getdis()
-            }
-        }
         cardStackView = view.findViewById(R.id.frame)
         manager = CardStackLayoutManager(context, object : CardStackListener {
             override fun onCardDragging(direction: Direction?, ratio: Float) {}
@@ -301,7 +308,17 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             text.text = "โฆษณาที่คุณสามารถดูได้ในวันนี้หมดแล้ว \n สมัคร Dessert VIP เพื่อรับสิทธิพิเศษ"
             b2.visibility = View.GONE
         }
-        rewardedAd = createAndLoadRewardedAd()
+        rewardedAd = RewardedAd(requireContext(), "ca-app-pub-3940256099942544/5224354917")
+        val adLoadCallback = object : RewardedAdLoadCallback() {
+            override fun onRewardedAdLoaded() {
+                b2.text = "ดูโฆษณา"
+            }
+
+            override fun onRewardedAdFailedToLoad(errorCode: Int) {
+                // Ad failed to load.
+            }
+        }
+        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
         b2.setOnClickListener {
             if (rewardedAd.isLoaded) {
                 val activityContext: Activity = requireActivity()
@@ -471,9 +488,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
-            callFunctions(countDataSet, true, 0)
-        }
+
 
 
 
@@ -508,7 +523,9 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     resultlimit = result1["o"] as ArrayList<*>
                     if (resultlimit.isNotEmpty())
                         getUser(resultlimit, type, count, 10)
-
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
+                        getUser(resultlimit, type, count, 10)
+                    }
 
                 }
     }
@@ -524,7 +541,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             Geocoder(context, Locale.UK)
         }
         Log.d("iop", "")
-
         var a = countLimit + limit
         if (result2.size < countLimit + limit)
             {
@@ -575,6 +591,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             rowItem.add(Cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
 
         }
+
         if (type)
             arrayAdapter.notifyDataSetChanged()
         else {

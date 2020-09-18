@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.bumptech.glide.Glide
@@ -37,6 +38,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.jabirdeveloper.tinderswipe.Functions.DialogSlide
 import com.jabirdeveloper.tinderswipe.LikeYou.LikeYouActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 
@@ -293,7 +296,12 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     override fun onResume() {
         super.onResume()
         gotoProfile = true
-        getData()
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Unconfined) { // launch a new coroutine in background and continue
+
+            getData()
+
+        }
+
     }
 
     override fun onStop() {

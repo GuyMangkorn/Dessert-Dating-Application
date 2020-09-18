@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="30dp"
-        xmlns:tools="http://schemas.android.com/tools">
-
-<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    app:cardCornerRadius="30dp">
 
-    android:gravity="center"
-    android:orientation="vertical"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:gravity="center"
+            android:orientation="vertical"
 
 
-    >
+            >
 
 
         <TextView
@@ -85,7 +83,7 @@
                             android:id="@+id/admob"
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
-                            android:text="ดูโฆษณา"
+                            android:text="กำลังโหลดโฆษณา"
                             android:textColor="@color/text_black_gray"
                             android:background="@drawable/roundlike4"
                             />
