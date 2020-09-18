@@ -9,7 +9,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -92,7 +91,7 @@ class First_Activity : AppCompatActivity() {
         builder.setTitle(R.string.GPS_Disabled)
         builder.setMessage(R.string.GPS_open)
         builder.setPositiveButton(R.string.open_gps) { dialog, which -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { dialog, which ->
-            val intent = Intent(this@First_Activity, show_gps_open::class.java)
+            val intent = Intent(this@First_Activity, ShowGpsOpen::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             finish()
             startActivity(intent)
@@ -372,7 +371,7 @@ class First_Activity : AppCompatActivity() {
                     && grantResults!!.get(0) == PackageManager.PERMISSION_GRANTED) {
                 recreate()
             } else {
-                val intent = Intent(this@First_Activity, show_gps_open::class.java)
+                val intent = Intent(this@First_Activity, ShowGpsOpen::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 intent.putExtra("2", "2")
                 finish()
