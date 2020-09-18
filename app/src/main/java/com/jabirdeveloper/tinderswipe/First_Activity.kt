@@ -15,10 +15,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.database.*
+import com.google.firebase.functions.HttpsCallableResult
+import com.google.firebase.functions.ktx.functions
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.ktx.Firebase
 import com.hanks.htextview.base.AnimationListener
 import com.hanks.htextview.base.HTextView
 import com.hanks.htextview.line.LineTextView
@@ -33,6 +37,7 @@ class First_Activity : AppCompatActivity() {
     private val plus: SwitchpageActivity? = SwitchpageActivity()
     private var hTextView: LineTextView? = null
     private var mContext: Context? = null
+    private var functions = Firebase.functions
     private var mLocationManager: LocationManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,13 +56,13 @@ class First_Activity : AppCompatActivity() {
                         if (dataSnapshot.child(mAuth!!.currentUser!!.uid).child("sex").exists()) {
                             getUserMarchId()
                             pushToken()
+                            getUnreadFunction()
                         } else {
                             mAuth!!.signOut()
                             val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
                             startActivity(intent)
                         }
                     }
-
                     override fun onCancelled(databaseError: DatabaseError) {}
                 })
             } else {
@@ -69,7 +74,7 @@ class First_Activity : AppCompatActivity() {
         }
         mLocationManager = this@First_Activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!mLocationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showGPSDiabledDialog()
+            showGpsDisabledDialog()
         } else if (ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this@First_Activity, arrayOf<String?>(
@@ -87,7 +92,22 @@ class First_Activity : AppCompatActivity() {
         val token = FirebaseInstanceId.getInstance().token
         FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
     }
-    fun showGPSDiabledDialog() {
+    fun getUnreadFunction(): Task<HttpsCallableResult> {
+        val data = hashMapOf(
+                "uid" to "test"
+        )
+        return functions
+                .getHttpsCallable("getUnreadChat")
+                .call(data)
+                .addOnSuccessListener { task ->
+                    val data = task.data as Map<*, *>
+                    Log.d("testGetUnreadFunction", data.toString())
+                }
+                .addOnFailureListener {
+                    Log.d("testGetUnreadFunction", "error")
+                }
+    }
+    private fun showGpsDisabledDialog() {
         val builder = AlertDialog.Builder(this@First_Activity)
         builder.setTitle(R.string.GPS_Disabled)
         builder.setMessage(R.string.GPS_open)

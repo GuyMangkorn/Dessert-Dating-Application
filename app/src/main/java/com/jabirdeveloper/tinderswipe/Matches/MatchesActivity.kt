@@ -474,6 +474,7 @@ class MatchesActivity : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+    private var createByBoolean:Boolean = true
     private fun latestChat(key: String?, chatID: String?) {
         val chatDb = FirebaseDatabase.getInstance().reference.child("Chat").child(chatID.toString()).orderByKey().limitToLast(1)
         chatDb.addChildEventListener(object : ChildEventListener {
@@ -485,6 +486,7 @@ class MatchesActivity : Fragment() {
                 if (date != dateUser) {
                     time = date.substring(0, 5)
                 }
+                createByBoolean = dataSnapshot.child("createByUser").value.toString() != (currentUserId)
                 if (createBy != currentUserId) {
                     chatCheckRead(chatID, key, time, lastChat)
                 } else {
@@ -632,11 +634,12 @@ class MatchesActivity : Fragment() {
                         mRecyclerView.visibility = View.VISIBLE
                         p1?.hide()
                     }
-                    //Toast.makeText(mContext,resultMatches!!.elementAt(resultMatches.size - 1)!!.getUserId(),Toast.LENGTH_SHORT).show()
-                    if (resultMatches!!.size > userMatchCount) {    //ลูปเช็ค list ซ้ำ
+                    Log.d("chatNotificationTest"," ${resultMatches!!.size} > $userMatchCount")
+                    if (resultMatches!!.size > userMatchCount) {
+                        Log.d("chatNotificationTest","+1 $createByBoolean")
                         for (j in 0 until (resultMatches.size-1)) {
                             //var index = resultMatches!!.map { T -> T!!.userId.equals(S1)  }.indexOf(element = true)
-                            //Log.d("countIndexSomethings","$index , $S1")
+                            //Log.d("countIndexSomethings","$index , $S1")a
                             Log.d("loop1","$j ${resultMatches.elementAt(j)!!.userId} , ${resultMatches.size} , $count")
                             if (resultMatches.elementAt(j)?.userId == key) {
                                 resultMatches.elementAt(j)?.late = last_chat
@@ -664,7 +667,7 @@ class MatchesActivity : Fragment() {
                         }
                     }
                 }
-                if (resultMatches!!.size > 1) { // ลูปเรียงจากเวลาการแชทล่าสุด
+                if (resultMatches!!.size > 1) {
                     if (resultMatches.elementAt(resultMatches.size - 1)!!.time != "-1") {
                         val compare1 = resultMatches.elementAt(resultMatches.size - 1)!!.time
                         val compare2 = resultMatches.elementAt(resultMatches.size - 2)!!.time

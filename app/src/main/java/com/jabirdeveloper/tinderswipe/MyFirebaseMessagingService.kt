@@ -20,7 +20,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private var message1: String? = null
     private var notificationManager: NotificationManagerCompat? = null
     private var datatype: String? = null
-    private var id_plus2: Int = 0
+    private var idPlus2: Int = 0
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
@@ -30,19 +30,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
         message1 = p0.data.toString()
-        datatype = p0.data.get("data_type")
+        datatype = p0.data["data_type"]
 
         //message2 = p0.data.get("message")
         //message3 = p0.data.get("name_user")
-        Log.d("NotificationMessage", datatype)
-        Log.d("NotificationMessage", message1)
+        Log.d("NotificationMessage", datatype.toString())
+        Log.d("NotificationMessage", message1.toString())
         //Log.d("NotificationMessage",message2)
         // Log.d("NotificationMessage",message3)
         //Notification_match(p0.data.get("name_user"))
         when (datatype) {
-            "direct_message" -> Notification_chat(p0.data.get("message"), p0.data.get("time"), p0.data.get("createBy"), p0.data.get("name_user"), p0.data.get("url"))
+            "direct_message" -> notificationChat(p0.data["message"], p0.data["time"], p0.data["createBy"], p0.data["name_user"], p0.data["url"])
             else -> {
-                Notification_match(p0.data.get("name_user"))
+                notificationMatch(p0.data["name_user"])
             }
         }
         //Notification_chat(p0.data.get("message"),p0.data.get("time"),p0.data.get("createBy"),p0.data.get("name_user"),p0.data.get("url"))
@@ -51,15 +51,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onDeletedMessages() {
-        super.onDeletedMessages()
     }
 
-    private fun Notification_match(name: String?) {
+    private fun notificationMatch(name: String?) {
         //String name = NameMatch.get(NameMatch.size()-1);
         val intent = Intent(this, SwitchpageActivity::class.java)
         intent.putExtra("accept", "1")
         val random = Random()
-        val id = ++id_plus2
+        val id = ++idPlus2
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         val pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_ONE_SHOT)
         val notification = NotificationCompat.Builder(this, App.Companion.CHANNEL_ID!!)
@@ -73,7 +72,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build()
-        val Sum = NotificationCompat.Builder(this, App.Companion.CHANNEL_ID!!)
+        val sum = NotificationCompat.Builder(this, App.Companion.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_love)
                 .setStyle(NotificationCompat.InboxStyle().setBigContentTitle(getString(R.string.Matched)).setSummaryText(getString(R.string.new_matching)))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -84,89 +83,89 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .build()
         notificationManager = NotificationManagerCompat.from(this)
         if (id == 2) {
-            notificationManager!!.notify(id + random.nextInt(9999 - 1000) + 1000, Sum)
+            notificationManager!!.notify(id + random.nextInt(9999 - 1000) + 1000, sum)
         }
         notificationManager!!.notify(id + random.nextInt(9999 - 1000) + 1000, notification)
     }
 
-    fun getCroppedBitmap(bitmap: Bitmap): Bitmap? {
+    private fun getCropBitmap(bitmap: Bitmap): Bitmap? {
         val output = Bitmap.createBitmap(bitmap.width,
                 bitmap.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
         val color = -0xbdbdbe
         val paint = Paint()
         val rect = Rect(0, 0, bitmap.width, bitmap.height)
-        paint.setAntiAlias(true)
+        paint.isAntiAlias = true
         canvas.drawARGB(0, 0, 0, 0)
-        paint.setColor(color)
+        paint.color = color
         // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
         canvas.drawCircle((bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
                 (bitmap.width / 2).toFloat(), paint)
-        paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(bitmap, rect, rect, paint)
         //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
         //return _bmp;
         return output
     }
 
-    private var id_plus: Int = 0
-    private val bitmaptest: MutableList<Bitmap?>? = ArrayList()
-    private val IDNotification: MutableList<String?>? = ArrayList()
-    private val IndexNotification: MutableList<Int?>? = ArrayList()
-    private fun Notification_chat(lastChat: String?, time: String?, ID: String?, Names: String?, Url: String?) {
+    private var idPlus: Int = 0
+    private val bitMapTest: MutableList<Bitmap?>? = ArrayList()
+    private val idNotification: MutableList<String?>? = ArrayList()
+    private val indexNotification: MutableList<Int?>? = ArrayList()
+    private fun notificationChat(lastChat: String?, time: String?, ID: String?, Names: String?, Url: String?) {
         var icon: Bitmap? = null
-        var Name: String? = "null"
+        val name: String
         val intent = Intent(this, ChatActivity::class.java)
         val b = Bundle()
         val random = Random()
-        var TwoItems = false
+        var twoItems = false
         var id = 0
-        if (IDNotification!!.size == 0) {
-            id = ++id_plus
-            IDNotification?.add(ID)
-            IndexNotification?.add(id)
+        if (idNotification!!.size == 0) {
+            id = ++idPlus
+            idNotification.add(ID)
+            indexNotification?.add(id)
             try {
                 val url = URL(Url)
                 val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                icon = getCroppedBitmap(image)
+                icon = getCropBitmap(image)
             } catch (e: IOException) {
-                System.out.println(e)
+            e.printStackTrace()
             }
-            bitmaptest!!.add(icon)
+            bitMapTest!!.add(icon)
         } else {
-            for (i in IDNotification.indices) {
-                if (IDNotification?.get(i) == ID) {
-                    TwoItems = true
-                    id = IndexNotification?.get(i)!!
-                    icon = bitmaptest!!.elementAt(i)
+            for (i in idNotification.indices) {
+                if (idNotification.elementAt(i) == ID) {
+                    twoItems = true
+                    id = indexNotification?.get(i)!!
+                    icon = bitMapTest!!.elementAt(i)
                 }
             }
-            if (!TwoItems) {
-                id = ++id_plus
+            if (!twoItems) {
+                id = ++idPlus
                 Toast.makeText(this, "id :$id", Toast.LENGTH_SHORT).show()
-                IDNotification.add(ID)
-                IndexNotification!!.add(id)
+                idNotification.add(ID)
+                indexNotification!!.add(id)
                 try {
                     val url = URL(Url)
                     val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                    icon = getCroppedBitmap(image)
+                    icon = getCropBitmap(image)
                 } catch (e: IOException) {
-                    System.out.println(e)
+                    e.printStackTrace()
                 }
-                bitmaptest!!.add(icon)
+                bitMapTest!!.add(icon)
             }
         }
-        Name = Names;
+        name = Names.toString()
         b.putString("time_chk", time)
         b.putString("matchId", ID)
-        b.putString("nameMatch", Names)
+        b.putString("nameMatch", name)
         b.putString("unread", "-1")
         intent.putExtras(b)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         val pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_ONE_SHOT)
         val notification = NotificationCompat.Builder(this, App.Companion.CHANNEL_ID!!)
                 .setSmallIcon(R.drawable.ic_love)
-                .setContentTitle(Name)
+                .setContentTitle(name)
                 .setGroup("Chat")
                 .setContentText(lastChat)
                 .setLargeIcon(icon)
@@ -176,7 +175,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build()
-        val Sum = NotificationCompat.Builder(this, App.Companion.CHANNEL_ID!!)
+        val sum = NotificationCompat.Builder(this, App.Companion.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_love)
                 .setStyle(NotificationCompat.InboxStyle().setBigContentTitle(getString(R.string.New_message)).setSummaryText(getString(R.string.You_have_new_message)))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -187,7 +186,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .build()
         notificationManager = NotificationManagerCompat.from(this)
         if (id == 2) {
-            notificationManager!!.notify(id + random.nextInt(9999 - 1000) + 1000, Sum)
+            notificationManager!!.notify(id + random.nextInt(9999 - 1000) + 1000, sum)
         }
         notificationManager!!.notify(id, notification)
     }
