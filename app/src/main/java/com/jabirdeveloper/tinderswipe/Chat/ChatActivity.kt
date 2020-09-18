@@ -389,7 +389,6 @@ class ChatActivity : AppCompatActivity() {
                     read_already(loop.key)
                 }
             }
-
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
@@ -433,14 +432,14 @@ class ChatActivity : AppCompatActivity() {
         return c
     }
 
-    private var first_connect = true
+    private var firstConnect = true
     private var start: String? = "null"
     private fun getFirstNode() {
-        val GetStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
-        GetStart.addValueEventListener(object : ValueEventListener {
+        val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
+        getStart.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (first_connect) {
-                    first_connect = false
+                if (firstConnect) {
+                    firstConnect = false
                     if (dataSnapshot.exists()) {
                         start = dataSnapshot.value.toString()
                         getChatMessages()
@@ -468,10 +467,10 @@ class ChatActivity : AppCompatActivity() {
             FetchId!![prefs.getInt(s, 0) - 1] = s
         }
         sizePre = FetchId!!.size
-        SetMessage()
+        setMessage()
     }
 
-    private fun SetMessage() {
+    private fun setMessage() {
         for (i in (FetchId!!.indices)) {
             c++
             var message: String
