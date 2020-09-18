@@ -286,14 +286,14 @@ class SwitchpageActivity : AppCompatActivity() {
 
                     }
 
-                    OpenDialog(resultFetchQA)
+                    openDialog(resultFetchQA)
                 }
                 .addOnFailureListener {
                     Log.d("testDatatatat", "error")
                 }
     }
 
-    private fun OpenDialog(ListChoice: ArrayList<QAObject>) {
+    private fun openDialog(ListChoice: ArrayList<QAObject>) {
         val exampleClass: ExampleClass = ExampleClass()
         exampleClass.setData(ListChoice)
         exampleClass.show(supportFragmentManager, "example Dialog")

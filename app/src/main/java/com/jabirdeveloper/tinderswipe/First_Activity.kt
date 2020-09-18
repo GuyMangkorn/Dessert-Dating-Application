@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -68,7 +69,7 @@ class First_Activity : AppCompatActivity() {
         }
         mLocationManager = this@First_Activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!mLocationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showGPSDisabledDialog()
+            showGPSDiabledDialog()
         } else if (ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this@First_Activity, arrayOf<String?>(
@@ -86,13 +87,12 @@ class First_Activity : AppCompatActivity() {
         val token = FirebaseInstanceId.getInstance().token
         FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
     }
-
-    private fun showGPSDisabledDialog() {
+    fun showGPSDiabledDialog() {
         val builder = AlertDialog.Builder(this@First_Activity)
         builder.setTitle(R.string.GPS_Disabled)
         builder.setMessage(R.string.GPS_open)
         builder.setPositiveButton(R.string.open_gps) { dialog, which -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { dialog, which ->
-            val intent = Intent(this@First_Activity, ShowGpsOpen::class.java)
+            val intent = Intent(this@First_Activity, show_gps_open::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             finish()
             startActivity(intent)
@@ -372,7 +372,7 @@ class First_Activity : AppCompatActivity() {
                     && grantResults!!.get(0) == PackageManager.PERMISSION_GRANTED) {
                 recreate()
             } else {
-                val intent = Intent(this@First_Activity, ShowGpsOpen::class.java)
+                val intent = Intent(this@First_Activity, show_gps_open::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 intent.putExtra("2", "2")
                 finish()
