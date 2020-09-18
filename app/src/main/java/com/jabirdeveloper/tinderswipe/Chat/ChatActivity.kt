@@ -601,7 +601,7 @@ class ChatActivity : AppCompatActivity() {
                                     mRecyclerView.scrollToPosition(resultChat!!.size - 1)
                                     pro!!.visibility = View.INVISIBLE
                                 } else if (count_node_d < chk) {
-                                    mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.getItemCount() - 1)
+                                    mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
                                 }
                             }
                         }
