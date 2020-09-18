@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -89,8 +90,14 @@ class First_Activity : AppCompatActivity() {
     }
 
     private fun pushToken() {
-        val token = FirebaseInstanceId.getInstance().token
-        FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
+        FirebaseInstanceId.getInstance().instanceId
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        return@OnCompleteListener
+                    }
+                    val token = task.result?.token
+                    FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
+                })
     }
     fun getUnreadFunction(): Task<HttpsCallableResult> {
         val data = hashMapOf(

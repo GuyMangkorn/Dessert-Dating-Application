@@ -212,77 +212,82 @@ class ChatActivity : AppCompatActivity() {
             dd.menuInflater.inflate(R.menu.menu_bar, dd.menu)
             dd.gravity = Gravity.END
             dd.setOnMenuItemClickListener { item ->
-                if (item.itemId == R.id.menu_unmatch) {
-                    Alerter.create(this@ChatActivity)
-                            .setTitle(getString(R.string.cancel_match2))
-                            .setText(getString(R.string.cancel_match_confirm))
-                            .setIconColorFilter(Color.parseColor("#FFFFFF"))
-                            .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                            .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
-                            .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
-                            .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
-                                Alerter.hide()
-                                deletechild()
-                            })
-                            .show()
-                } else if (item.itemId == R.id.menu_delete) {
-                    val choice_text = resources.getStringArray(R.array.report_item)
-                    val checked_item = BooleanArray(choice_text.size)
-                    val builder = AlertDialog.Builder(this@ChatActivity)
-                    builder.setTitle(R.string.dialog_reportUser)
-                    builder.setMultiChoiceItems(R.array.report_item, checked_item) { dialog, which, isChecked ->
-                        checked_item[which] = isChecked
-                        val item = choice_text[which]
+                when (item.itemId) {
+                    R.id.menu_unmatch -> {
+                        Alerter.create(this@ChatActivity)
+                                .setTitle(getString(R.string.cancel_match2))
+                                .setText(getString(R.string.cancel_match_confirm))
+                                .setIconColorFilter(Color.parseColor("#FFFFFF"))
+                                .setBackgroundColorInt(Color.parseColor("#FF5050"))
+                                .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
+                                .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
+                                .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
+                                    Alerter.hide()
+                                    deleteChild()
+                                })
+                                .show()
                     }
-                    builder.setPositiveButton(getString(R.string.dialog_report)) { dialog, which ->
-                        return_d = 0
-                        i = 0
-                        while (i < choice_text.size) {
-                            val checked = checked_item[i]
-                            if (checked) {
-                                update(i.toString())
-                            }
-                            i++
+                    R.id.menu_delete -> {
+                        val choiceText = resources.getStringArray(R.array.report_item)
+                        val checkedItem = BooleanArray(choiceText.size)
+                        val builder = AlertDialog.Builder(this@ChatActivity)
+                        builder.setTitle(R.string.dialog_reportUser)
+                        builder.setMultiChoiceItems(R.array.report_item, checkedItem) { _, which, isChecked ->
+                            checkedItem[which] = isChecked
+                            //val item = choiceText[which]
                         }
-                        UpdateDate()
-                    }
-                    builder.setNegativeButton(R.string.cancle) { dialog, which -> dialog.dismiss() }
-                    val mDialog = builder.create()
-                    mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@ChatActivity, R.drawable.myrect2))
-                    mDialog.show()
-                } else if (item.itemId == R.id.delete_chat) {
-                    Alerter.create(this@ChatActivity)
-                            .setTitle(getString(R.string.delete_message_all))
-                            .setText(getString(R.string.delete_message_all_confirm))
-                            .setIconColorFilter(Color.parseColor("#FFFFFF"))
-                            .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                            .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
-                            .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
-                            .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
-                                Alerter.hide()
-                                val GetStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
-                                GetStart.setValue(FetchId!!.get(FetchId!!.size - 1))
-                                val prefs1 = getSharedPreferences(chatId, Context.MODE_PRIVATE)
-                                val allPrefs = prefs1.all
-                                val set = allPrefs.keys
-                                for (s in set) {
-                                    Log.d("Id1", s)
-                                    getSharedPreferences(s, Context.MODE_PRIVATE).edit().clear().apply()
+                        builder.setPositiveButton(getString(R.string.dialog_report)) { _, _ ->
+                            return_d = 0
+                            i = 0
+                            while (i < choiceText.size) {
+                                val checked = checkedItem[i]
+                                if (checked) {
+                                    update(i.toString())
                                 }
-                                getSharedPreferences(chatId, Context.MODE_PRIVATE).edit().clear().apply()
-                                FetchId.clear()
-                                start = "null"
-                                sizePre = 0
-                                resultChat!!.clear()
-                                mChatAdapter.notifyDataSetChanged()
-                                val RemoveNotification = getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
-                                val editorRead = RemoveNotification.edit()
-                                editorRead.putString("ID", matchId)
-                                editorRead.apply()
-                            })
-                            .show()
-                } else {
-                    Toast.makeText(this@ChatActivity, "" + item, Toast.LENGTH_SHORT).show()
+                                i++
+                            }
+                            UpdateDate()
+                        }
+                        builder.setNegativeButton(R.string.cancle) { dialog, _ -> dialog.dismiss() }
+                        val mDialog = builder.create()
+                        mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@ChatActivity, R.drawable.myrect2))
+                        mDialog.show()
+                    }
+                    R.id.delete_chat -> {
+                        Alerter.create(this@ChatActivity)
+                                .setTitle(getString(R.string.delete_message_all))
+                                .setText(getString(R.string.delete_message_all_confirm))
+                                .setIconColorFilter(Color.parseColor("#FFFFFF"))
+                                .setBackgroundColorInt(Color.parseColor("#FF5050"))
+                                .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
+                                .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
+                                .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
+                                    Alerter.hide()
+                                    val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
+                                    getStart.setValue(FetchId!!.elementAt(FetchId.size - 1))
+                                    val prefs1 = getSharedPreferences(chatId, Context.MODE_PRIVATE)
+                                    val allPrefs = prefs1.all
+                                    val set = allPrefs.keys
+                                    for (s in set) {
+                                        Log.d("Id1", s)
+                                        getSharedPreferences(s, Context.MODE_PRIVATE).edit().clear().apply()
+                                    }
+                                    getSharedPreferences(chatId, Context.MODE_PRIVATE).edit().clear().apply()
+                                    FetchId.clear()
+                                    start = "null"
+                                    sizePre = 0
+                                    resultChat!!.clear()
+                                    mChatAdapter.notifyDataSetChanged()
+                                    val removeNotification = getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
+                                    val editorRead = removeNotification.edit()
+                                    editorRead.putString("ID", matchId)
+                                    editorRead.apply()
+                                })
+                                .show()
+                    }
+                    else -> {
+                        Toast.makeText(this@ChatActivity, "" + item, Toast.LENGTH_SHORT).show()
+                    }
                 }
                 true
             }
@@ -381,7 +386,7 @@ class ChatActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_MEDIA) {
-            if (grantResults.size > 0 && grantResults!!.get(0) == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults!![0] == PackageManager.PERMISSION_GRANTED) {
             }
         }
     }
@@ -404,19 +409,19 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
-        val sendMessageText = mSendEditText!!.getText().toString()
-        if (!sendMessageText.isEmpty()) {
+        val sendMessageText = mSendEditText!!.text.toString()
+        if (sendMessageText.isNotEmpty()) {
             val calendar = Calendar.getInstance()
             val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-            val time_user = currentTime.format(calendar.time)
+            val timeUser = currentTime.format(calendar.time)
             val currentDate = SimpleDateFormat("dd/MM/yyyy")
-            val date_user = currentDate.format(calendar.time)
+            val dateUser = currentDate.format(calendar.time)
             val newMessageDb = mDatabaseChat!!.push()
             val newMessage = hashMapOf(
                     "createByUser" to currentUserId,
                     "text" to sendMessageText,
-                    "time" to time_user,
-                    "date" to date_user,
+                    "time" to timeUser,
+                    "date" to dateUser,
                     "read" to "Unread")
             newMessageDb.setValue(newMessage)
         }
@@ -444,7 +449,7 @@ class ChatActivity : AppCompatActivity() {
         dd.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (loop in dataSnapshot.children) {
-                    read_already(loop.key)
+                    readAlready(loop.key)
                 }
             }
 
@@ -452,11 +457,13 @@ class ChatActivity : AppCompatActivity() {
         })
     }
 
-    private fun read_already(key: String?) {
+    private fun readAlready(key: String?) {
         mDatabaseChat!!.child(key.toString()).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.child("createByUser").value.toString() == matchId) {
                     mDatabaseChat!!.child(key.toString()).child("read").setValue("Read")
+                    val child = dataSnapshot!!.child("text").value.toString()
+                    Log.d("chatNotificationTest","$child -1")
                 }
             }
 
@@ -523,7 +530,7 @@ class ChatActivity : AppCompatActivity() {
         }
         for (s in set) {
             Log.d("Id2", "" + prefs.getInt(s, 0))
-            FetchId!!.set(prefs.getInt(s, 0) - 1, s)
+            FetchId!![prefs.getInt(s, 0) - 1] = s
         }
         sizePre = FetchId!!.size
         SetMessage()
@@ -774,13 +781,13 @@ class ChatActivity : AppCompatActivity() {
                     val newMessageDb = mDatabaseChat!!.push()
                     val calendar = Calendar.getInstance()
                     val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                    val time_user = currentTime.format(calendar.time)
+                    val timeUser = currentTime.format(calendar.time)
                     val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                    val date_user = currentDate.format(calendar.time)
+                    val dateUser = currentDate.format(calendar.time)
                     val newMessage = hashMapOf(
                             "createByUser" to currentUserId,
-                            "time" to time_user,
-                            "date" to date_user,
+                            "time" to timeUser,
+                            "date" to dateUser,
                             "text" to "photo$currentUserId",
                             "read" to "Unread",
                             "image" to uri.toString())
@@ -814,13 +821,13 @@ class ChatActivity : AppCompatActivity() {
                     val newMessageDb = mDatabaseChat!!.push()
                     val calendar = Calendar.getInstance()
                     val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                    val time_user = currentTime.format(calendar.time)
+                    val timeUser = currentTime.format(calendar.time)
                     val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                    val date_user = currentDate.format(calendar.time)
+                    val dateUser = currentDate.format(calendar.time)
                     val newMessage = hashMapOf(
                             "createByUser" to currentUserId,
-                            "time" to time_user,
-                            "date" to date_user,
+                            "time" to timeUser,
+                            "date" to dateUser,
                             "text" to "photo$currentUserId",
                             "read" to "Unread",
                             "image" to uri.toString())
@@ -851,10 +858,10 @@ class ChatActivity : AppCompatActivity() {
         recorder!!.stop()
         recorder!!.release()
         recorder = null
-        UpLoadAudio()
+        uploadAudio()
     }
 
-    private fun UpLoadAudio() {
+    private fun uploadAudio() {
         val name = System.currentTimeMillis().toString()
         val ss2 = FirebaseStorage.getInstance().reference.child("Audio").child(currentUserId.toString()).child(matchId.toString()).child("audio$name.3gp")
         val uri = Uri.fromFile(File(fileName))
@@ -866,13 +873,13 @@ class ChatActivity : AppCompatActivity() {
                 val newMessageDb = mDatabaseChat!!.push()
                 val calendar = Calendar.getInstance()
                 val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                val time_user = currentTime.format(calendar.time)
+                val timeUser = currentTime.format(calendar.time)
                 val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                val date_user = currentDate.format(calendar.time)
+                val dateUser = currentDate.format(calendar.time)
                 val newMessage = hashMapOf(
                         "createByUser" to currentUserId,
-                        "time" to time_user,
-                        "date" to date_user,
+                        "time" to timeUser,
+                        "date" to dateUser,
                         "audio_length" to time_count.toString(),
                         "audio" to downloadUrl.toString(),
                         "text" to "audio$currentUserId",
@@ -914,19 +921,19 @@ class ChatActivity : AppCompatActivity() {
 
     }
 
-    private fun deletechild() {
-        val datadelete = FirebaseDatabase.getInstance().reference.child("Users")
-        val datachat = FirebaseDatabase.getInstance().reference
-        datachat.addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun deleteChild() {
+        val dataDelete = FirebaseDatabase.getInstance().reference.child("Users")
+        val dataChat = FirebaseDatabase.getInstance().reference
+        dataChat.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var ChatId = dataSnapshot.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("ChatId").value.toString()
-                if (dataSnapshot.child("Chat").hasChild(ChatId.toString())) {
-                    datachat.child("Chat").child(ChatId.toString()).removeValue()
+                var chatId = dataSnapshot.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("ChatId").value.toString()
+                if (dataSnapshot.child("Chat").hasChild(chatId)) {
+                    dataChat.child("Chat").child(chatId).removeValue()
                 }
-                datadelete.child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).removeValue()
-                datadelete.child(currentUserId.toString()).child("connection").child("yep").child(matchId.toString()).removeValue()
-                datadelete.child(matchId.toString()).child("connection").child("matches").child(currentUserId.toString()).removeValue()
-                datadelete.child(matchId.toString()).child("connection").child("yep").child(currentUserId.toString()).removeValue()
+                dataDelete.child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).removeValue()
+                dataDelete.child(currentUserId.toString()).child("connection").child("yep").child(matchId.toString()).removeValue()
+                dataDelete.child(matchId.toString()).child("connection").child("matches").child(currentUserId.toString()).removeValue()
+                dataDelete.child(matchId.toString()).child("connection").child("yep").child(currentUserId.toString()).removeValue()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}

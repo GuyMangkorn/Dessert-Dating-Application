@@ -54,7 +54,7 @@ class SwitchpageActivity : AppCompatActivity() {
         loadLocal()
         setContentView(R.layout.activity_switch_page)
         getMyUser()
-        //QAcalculate()
+        //questionCalculate()
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
             val choice = this.resources.getStringArray(R.array.report_item)
@@ -150,7 +150,7 @@ class SwitchpageActivity : AppCompatActivity() {
         })
     }
 
-    fun QAcalculate(): Task<HttpsCallableResult> {
+    fun questionCalculate(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
                 "uid" to text
@@ -162,9 +162,6 @@ class SwitchpageActivity : AppCompatActivity() {
                     val data = task.data as Map<*, *>
                     Log.d("testDatatatat", data.toString())
                     val ff = data.get("dictionary") as Map<*, *>
-                    Log.d("testDatatatat", ff.get("ebXPfMCd45OYfgzRXq2DYztLJT93").toString())
-
-
                 }
                 .addOnFailureListener {
                     Log.d("testDatatatat", "error")
