@@ -49,7 +49,7 @@ class First_Activity : AppCompatActivity() {
                 usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.child(mAuth!!.currentUser!!.uid).child("sex").exists()) {
-                            check_HaveMatch()
+                            getUserMarchId()
                             pushToken()
                         } else {
                             mAuth!!.signOut()
@@ -61,7 +61,7 @@ class First_Activity : AppCompatActivity() {
                     override fun onCancelled(databaseError: DatabaseError) {}
                 })
             } else {
-                val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
+                val intent = Intent( this@First_Activity, ChooseLoginRegistrationActivity::class.java)
                 startActivity(intent)
                 finish()
                 return@AuthStateListener
@@ -87,117 +87,6 @@ class First_Activity : AppCompatActivity() {
         val token = FirebaseInstanceId.getInstance().token
         FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
     }
-
-    /*private fun check_dd() {
-        val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("connection")
-        matchDb.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    if (dataSnapshot.hasChild("matches")) {
-                    } else {
-                        Check_report()
-                    }
-                } else {
-                    Check_report()
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-    //private var first_hasConnections = true
-    //private var first_hasConnections2 = true
-    private fun hasConnections() {
-        val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid)
-        matchDb.orderByKey().equalTo("connection").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    Log.d("fisrtAct_testing", "check_snapshot hasConnections")
-                    hasMatches()
-                } else {
-                    Log.d("fisrtAct_testing", "check_else hasConnections")
-                    Check_report()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {}
-        })
-        /*matchDb.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-
-                if (dataSnapshot.key == "connection") {
-                    if (first_hasConnections) {
-                        first_hasConnections = false
-                        hasMatches()
-                    }
-                } else if (first_hasConnections2) {
-                    first_hasConnections2 = false
-                    check_dd()
-                }
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                Toast.makeText(this@First_Activity, "connection_remove", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })*/
-    }
-
-    //private var first_hasMatches2 = true
-    //private var first_hasMatches = true
-    private fun hasMatches() {
-        val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("connection")
-        matchDb.orderByKey().equalTo("matches").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    Log.d("fisrtAct_testing", "check_snapshot hasMatches")
-                    getUserMarchId()
-                } else {
-                    Log.d("fisrtAct_testing", "check_else hasMatches")
-                    Check_report()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-        /*matchDb.orderByKey().equalTo("matches").addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-
-                    if (dataSnapshot.key == "matches"){
-                    if (first_hasMatches) {
-                        first_hasMatches = false
-                        getUserMarchId()
-                    }
-                } else if (first_hasMatches2) {
-                    Log.d("fisrtAct_testing","check_else")
-                    first_hasMatches2 = false
-                      getUserMarchId()
-                }
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })*/
-    }
-
-    private fun check_HaveMatch() {
-        val prefs = getSharedPreferences(mAuth!!.currentUser!!.uid + "Match_first", Context.MODE_PRIVATE)
-        val allPrefs = prefs.all
-        val set = allPrefs.keys
-        for (s in set) {
-            UidMatch?.add(s)
-            Toast.makeText(this@First_Activity, s, Toast.LENGTH_SHORT).show()
-        }
-        //Toast.makeText(First_Activity.this,"s"+(UidMatch.size()),Toast.LENGTH_SHORT).show();
-        hasConnections()
-    }
-
     fun showGPSDiabledDialog() {
         val builder = AlertDialog.Builder(this@First_Activity)
         builder.setTitle(R.string.GPS_Disabled)
@@ -215,7 +104,7 @@ class First_Activity : AppCompatActivity() {
 
     private val UidMatch_New: MutableList<String?>? = ArrayList()
     private val UidMatch: MutableList<String?>? = ArrayList()
-    private var count_number_chat: Int? = 0
+    private var countNumberChat: Int? = 0
     private var chk = 0
     private var chktotalhavechat = 0
     private var chkcountchat = 0
@@ -228,18 +117,19 @@ class First_Activity : AppCompatActivity() {
                 ++chk_node
                 ++start
                 val chatID = dataSnapshot.child("ChatId").value.toString()
-                val MatchIDStored = getSharedPreferences(mAuth!!.currentUser!!.uid + "Match_first", Context.MODE_PRIVATE)
-                val editorMatch = MatchIDStored.edit()
+                val matchIDStored = getSharedPreferences(mAuth!!.currentUser!!.uid + "Match_first", Context.MODE_PRIVATE)
+                val editorMatch = matchIDStored.edit()
                 editorMatch.putInt(dataSnapshot.key, start)
                 editorMatch.apply()
+                Log.d("count_unread",dataSnapshot.key);
                 getMatchUnread(dataSnapshot.key, chatID)
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 --chk_node
-                val MatchIDStored = getSharedPreferences("Match_First", Context.MODE_PRIVATE)
-                val editorMatch = MatchIDStored.edit()
+                val matchIDStored = getSharedPreferences("Match_First", Context.MODE_PRIVATE)
+                val editorMatch = matchIDStored.edit()
                 editorMatch.putInt(mAuth!!.currentUser!!.uid, --start)
                 editorMatch.apply()
             }
@@ -252,57 +142,56 @@ class First_Activity : AppCompatActivity() {
     private var bkk = true
     private fun getMatchUnread(MatchId: String?, ChatId: String?) {
         val chatDB = FirebaseDatabase.getInstance().reference.child("Chat")
-        val dd_1 = chatDB.child(ChatId.toString()).orderByKey().limitToLast(1)
-        dd_1.addValueEventListener(object : ValueEventListener {
+        val dd1 = chatDB.child(ChatId.toString()).orderByKey().limitToLast(1)
+        dd1.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 ++chk
                 if (dataSnapshot.exists()) {
                     for (dd in dataSnapshot.children) {
                         if (dataSnapshot.child(dd.key.toString()).child("createByUser").value.toString() == MatchId) {
                             if (!first) {
-                                Log.d("count_unread", "$chk , $sum_reported")
-                                if (chk > sum_reported) {
+                                if (chk > sumReported) {
                                     if (dataSnapshot.child(dd.key.toString()).child("read").value.toString() != "Read") {
-                                        val MyUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val dd2 = MyUnread.getInt("total", 0)
-                                        count_number_chat = dd2 + 1
-                                        val MyUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val editorRead = MyUnread2.edit()
-                                        editorRead.putInt("total", count_number_chat!!)
+                                        val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                                        val dd2 = myUnread.getInt("total", 0)
+                                        countNumberChat = dd2 + 1
+                                        Log.d("count_unread", "chat : $countNumberChat text : ${dataSnapshot.child(dd.key.toString()).child("text").value.toString()}")
+                                        val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                                        val editorRead = myUnread2.edit()
+                                        editorRead.putInt("total", countNumberChat!!)
                                         editorRead.apply()
-                                        plus?.setCurrentIndex(count_number_chat!!)
+                                        plus?.setCurrentIndex(countNumberChat!!)
                                     } else {
                                         val mySharedPreferences = getSharedPreferences("SentRead", Context.MODE_PRIVATE)
                                         val read = mySharedPreferences.getInt("Read", 0)
-                                        val MyUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val dd2 = MyUnread.getInt("total", 0)
-                                        count_number_chat = dd2 - read
-                                        if (count_number_chat!! < 0) {
-                                            count_number_chat = 0
+                                        val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                                        val dd2 = myUnread.getInt("total", 0)
+                                        countNumberChat = dd2 - read
+                                        if (countNumberChat!! < 0) {
+                                            countNumberChat = 0
                                         }
-                                        val MyUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val editorRead = MyUnread2.edit()
-                                        editorRead.putInt("total", count_number_chat!!)
+                                        val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                                        val editorRead = myUnread2.edit()
+                                        editorRead.putInt("total", countNumberChat!!)
                                         editorRead.apply()
-                                        plus!!.setCurrentIndex(count_number_chat!!)
+                                        plus!!.setCurrentIndex(countNumberChat!!)
                                     }
                                 }
                             } else {
                                 bkk = false
                                 ++chktotalhavechat;
-                                Log.d("count_unread", "before $ChatId")
                                 getLastCheck(ChatId)
                             }
                         } else if (chk == chk_node) {
                             if (bkk) {
-                                Check_report()
+                                checkReport()
                             }
                         }
                     }
                 } else {
                     if (chk == chk_node) {
                         if (bkk) {
-                            Check_report()
+                            checkReport()
                         }
                     }
                 }
@@ -317,16 +206,13 @@ class First_Activity : AppCompatActivity() {
         val dd = chatDB.orderByChild("read").equalTo("Unread")
         dd.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.d("count_unread", "after $ChatId")
                 if (first) {
                     ++chkcountchat;
-                    //Log.d("count_unread","$ChatId")
                     val count = dataSnapshot.childrenCount.toInt()
-                    count_number_chat = count + count_number_chat!!
-                    Log.d("count_unread", "$count total $count_number_chat")
-                    //Log.d("count_unread","$chk , $chk_node , $chktotalhavechat")
+                    countNumberChat = count + countNumberChat!!
+                    Log.d("count_unread", "$count total $countNumberChat")
                     if (chkcountchat == chktotalhavechat) {
-                        Check_report()
+                        checkReport()
                     }
                 }
             }
@@ -335,41 +221,41 @@ class First_Activity : AppCompatActivity() {
         })
     }
 
-    var name_caution: MutableList<String?>? = ArrayList()
-    var value_caution: MutableList<Int?>? = ArrayList()
-    private var sum_reported = 0
-    private fun Check_report() {
+    var nameCaution: MutableList<String?>? = ArrayList()
+    var valueCaution: MutableList<Int?>? = ArrayList()
+    private var sumReported = 0
+    private fun checkReport() {
         val reportDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("Report")
         reportDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (first) {
-                    sum_reported = chk_node
+                    sumReported = chk_node
                     first = false
                     bkk = false
-                    val MyUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                    val editorRead = MyUnread.edit()
-                    editorRead.putInt("total", count_number_chat!!.toInt())
+                    val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                    val editorRead = myUnread.edit()
+                    editorRead.putInt("total", countNumberChat!!.toInt())
                     editorRead.apply()
                     val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
-                    var sum_report: Int? = 0
+                    var sumReport: Int? = 0
                     if (UidMatch_New!!.size > 0) {
                         intent.putExtra("NewMatch", UidMatch_New as ArrayList<String?>?)
                     }
                     if (dataSnapshot.exists()) {
                         for (dd in dataSnapshot.children) {
-                            sum_report = Integer.valueOf(dataSnapshot.child(dd.key.toString()).value.toString())
-                            name_caution?.add(dd.key)
-                            value_caution?.add(sum_report)
+                            sumReport = Integer.valueOf(dataSnapshot.child(dd.key.toString()).value.toString())
+                            nameCaution?.add(dd.key)
+                            valueCaution?.add(sumReport)
                         }
-                        if (sum_report != 0) {
-                            intent.putExtra("warning", name_caution as ArrayList<String?>?)
-                            intent.putExtra("warning_value", value_caution as ArrayList<Int?>?)
+                        if (sumReport != 0) {
+                            intent.putExtra("warning", nameCaution as ArrayList<String?>?)
+                            intent.putExtra("warning_value", valueCaution as ArrayList<Int?>?)
                         }
-                        intent.putExtra("first", count_number_chat.toString())
+                        intent.putExtra("first", countNumberChat.toString())
                         startActivity(intent)
                         finish()
                     } else {
-                        intent.putExtra("first", count_number_chat.toString())
+                        intent.putExtra("first", countNumberChat.toString())
                         startActivity(intent)
                         finish()
                     }

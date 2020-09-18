@@ -29,23 +29,22 @@ class MatchesActivity : Fragment() {
     private lateinit var mHiAdapter: RecyclerView.Adapter<*>
     private lateinit var mMatchesLayoutManager: RecyclerView.LayoutManager
     private lateinit var mHiLayout: RecyclerView.LayoutManager
-    private lateinit var layout_chatna: LinearLayout
+    private lateinit var layoutChatNa: LinearLayout
     private var currentUserId: String? = null
-    private var date_user: String? = ""
-    private val chk = 0
+    private var dateUser: String? = ""
     private var count = 0
     private var p1: AVLoadingIndicatorView? = null
-    private lateinit var text_empty: TextView
-    private lateinit var chat_empty: TextView
+    private lateinit var textEmpty: TextView
+    private lateinit var chatEmpty: TextView
 
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_matches, container, false)
         super.onCreate(savedInstanceState)
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
-        text_empty = view.findViewById(R.id.textempty)
-        chat_empty = view.findViewById(R.id.chatempty)
-        layout_chatna = view.findViewById(R.id.layoutRe)
+        textEmpty = view.findViewById(R.id.textempty)
+        chatEmpty = view.findViewById(R.id.chatempty)
+        layoutChatNa = view.findViewById(R.id.layoutRe)
         mRecyclerView = view.findViewById(R.id.recyclerView)
         mRecyclerView.isNestedScrollingEnabled = false
         mRecyclerView.setHasFixedSize(true)
@@ -63,17 +62,14 @@ class MatchesActivity : Fragment() {
         mHiRecyclerView.adapter = mHiAdapter
         val calendar = Calendar.getInstance()
         val currentDate = SimpleDateFormat("dd/MM/yyyy")
-        date_user = currentDate.format(calendar.time)
+        dateUser = currentDate.format(calendar.time)
         mRecyclerView.visibility = View.GONE
-        Chat_na_check()
+        chatNaCheck()
         checkFirst()
         return view
     }
-
-    //private var check_first_connection = true
-   // private var check_first_matches = true
-    private var check_first_remove: String? = "null"
-    private var UserMatch_count = 0
+    private var checkFirstRemove: String? = "null"
+    private var userMatchCount = 0
     /*private fun checkNode(code:String) {
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
         matchDbCheck.orderByKey().equalTo(code).addChildEventListener(object : ChildEventListener {
@@ -207,14 +203,14 @@ class MatchesActivity : Fragment() {
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    chat_empty.visibility = View.GONE
-                    getUserMarchId();
+                    chatEmpty.visibility = View.GONE
+                    getUserMarchId()
                     Log.d("test_check_matches", "matches_accept")
                 } else {
                     Log.d("test_check_matches", "matches_reject")
-                    getUserMarchId();
+                    getUserMarchId()
                     p1!!.hide()
-                    chat_empty.visibility = View.VISIBLE
+                    chatEmpty.visibility = View.VISIBLE
                     mRecyclerView.visibility = View.GONE
                 }
             }
@@ -224,31 +220,32 @@ class MatchesActivity : Fragment() {
         val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches")
         matchDb.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                ++UserMatch_count
+                ++userMatchCount
+                if(userMatchCount == 1) chatEmpty.visibility = View.GONE
                 Log.d("test_check_matches", "onChildAdd : ${dataSnapshot.key}")
                 val chatID = dataSnapshot.child("ChatId").value.toString()
-                Check_data(dataSnapshot.key, chatID)
+                //Check_data(dataSnapshot.key, chatID)
+                testChatNode(chatID, dataSnapshot.key.toString())
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                // Toast.makeText(mContext,dataSnapshot.getKey(),Toast.LENGTH_SHORT).show();
-                if (check_first_remove == "null") {
-                    --UserMatch_count
-                    if (UserMatch_count == 0) {
-                        chat_empty.visibility = View.VISIBLE
+                if (checkFirstRemove == "null") {
+                    --userMatchCount
+                    if (userMatchCount == 0) {
+                        chatEmpty.visibility = View.VISIBLE
                         mRecyclerView.visibility = View.GONE
                     }
-                    check_first_remove = dataSnapshot.key
-                    UnMatch(dataSnapshot.key)
-                } else if (check_first_remove != dataSnapshot.key) {
-                    --UserMatch_count
-                    if (UserMatch_count == 0) {
-                        chat_empty.visibility = View.VISIBLE
+                    checkFirstRemove = dataSnapshot.key
+                    unMatch(dataSnapshot.key)
+                } else if (checkFirstRemove != dataSnapshot.key) {
+                    --userMatchCount
+                    if (userMatchCount == 0) {
+                        chatEmpty.visibility = View.VISIBLE
                         mRecyclerView.visibility = View.GONE
                     }
-                    check_first_remove = dataSnapshot.key
-                    UnMatch(dataSnapshot.key)
+                    checkFirstRemove = dataSnapshot.key
+                    unMatch(dataSnapshot.key)
                 }
             }
 
@@ -257,27 +254,22 @@ class MatchesActivity : Fragment() {
         })
     }
 
-    private fun UnMatch(key: String?) {
-        var index = resultMatches!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
-        Log.d("count_indexsomethings", "$key ,index: $index")
-        val MatchIDStored = mContext!!.getSharedPreferences(currentUserId + "Match_first", Context.MODE_PRIVATE)
-        val editor2 = MatchIDStored.edit()
+    private fun unMatch(key: String?) {
+        val index = resultMatches!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
+        Log.d("countIndexSomethings", "$key ,index: $index")
+        val matchIDStored = mContext!!.getSharedPreferences(currentUserId + "Match_first", Context.MODE_PRIVATE)
+        val editor2 = matchIDStored.edit()
         editor2.remove(key).apply()
-        //Toast.makeText(mContext,"i :"+(i)+" , "+resultMatches.get(i).getUserId(),Toast.LENGTH_SHORT).show();
-        val MyUnread2 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-        val dd = MyUnread2.getInt("total", 0)
-        //Toast.makeText(mContext,"total_before : "+(dd),Toast.LENGTH_SHORT).show();
+        val myUnread2 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+        val dd = myUnread2.getInt("total", 0)
         var unread = resultMatches[index]!!.count_unread
-        //Toast.makeText(mContext,(dd)+"-"+(unread),Toast.LENGTH_SHORT).show();
         if (unread == -1) {
             unread = 0
         }
         val total = dd - unread
-
-        //Toast.makeText(mContext,"total_after : "+(total),Toast.LENGTH_SHORT).show();
         (mContext as SwitchpageActivity?)!!.setCurrentIndex(total)
-        val MyUnread1 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-        val editorRead = MyUnread1.edit()
+        val myUnread1 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+        val editorRead = myUnread1.edit()
         editorRead.putInt("total", total)
         editorRead.apply()
         resultMatches.removeAt(index)
@@ -285,19 +277,19 @@ class MatchesActivity : Fragment() {
         mMatchesAdapter.notifyItemRangeChanged(index, resultMatches.size)
     }
 
-    private var UserChatNa_count = 0
-    private var Check_first_remove_Chatna: String? = "null"
-    private var First_system_2 = true
-    private fun Chat_na_check() {
-        val DBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
-        DBChatNa.addValueEventListener(object : ValueEventListener {
+    private var userChatNaCount = 0
+    private var checkFirstRemoveChatNa: String? = "null"
+    private var firstSystem2 = true
+    private fun chatNaCheck() {
+        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
+        dBChatNa.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (First_system_2) {
-                    First_system_2 = false
+                if (firstSystem2) {
+                    firstSystem2 = false
                     if (dataSnapshot.exists()) {
-                        Chat_na()
+                        chatNa()
                     } else {
-                        text_empty.visibility = View.VISIBLE
+                        textEmpty.visibility = View.VISIBLE
                         mHiRecyclerView.visibility = View.GONE
                     }
                 }
@@ -307,33 +299,32 @@ class MatchesActivity : Fragment() {
         })
     }
 
-    private fun Chat_na() {
-        val DBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
-        DBChatNa.addChildEventListener(object : ChildEventListener {
+    private fun chatNa() {
+        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
+        dBChatNa.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                ++UserChatNa_count
-                val ChatId = dataSnapshot.value.toString()
-                last_chat_Hi(dataSnapshot.key, ChatId)
+                ++userChatNaCount
+                val chatId = dataSnapshot.value.toString()
+                lastChatHi(dataSnapshot.key, chatId)
             }
-
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                if (Check_first_remove_Chatna == "null") {
-                    --UserChatNa_count
-                    if (UserChatNa_count == 0) {
-                        text_empty.visibility = View.VISIBLE
+                if (checkFirstRemoveChatNa == "null") {
+                    --userChatNaCount
+                    if (userChatNaCount == 0) {
+                        textEmpty.visibility = View.VISIBLE
                         mHiRecyclerView.visibility = View.GONE
                     }
-                    Check_first_remove_Chatna = dataSnapshot.key
-                    DeleteChatNA(dataSnapshot.key)
-                } else if (Check_first_remove_Chatna != dataSnapshot.key) {
-                    --UserChatNa_count
-                    if (UserChatNa_count == 0) {
-                        text_empty.visibility = View.VISIBLE
+                    checkFirstRemoveChatNa = dataSnapshot.key
+                    deleteChatNA(dataSnapshot.key)
+                } else if (checkFirstRemoveChatNa != dataSnapshot.key) {
+                    --userChatNaCount
+                    if (userChatNaCount == 0) {
+                        textEmpty.visibility = View.VISIBLE
                         mHiRecyclerView.visibility = View.GONE
                     }
-                    Check_first_remove_Chatna = dataSnapshot.key
-                    DeleteChatNA(dataSnapshot.key)
+                    checkFirstRemoveChatNa = dataSnapshot.key
+                    deleteChatNA(dataSnapshot.key)
                 }
             }
 
@@ -342,7 +333,7 @@ class MatchesActivity : Fragment() {
         })
     }
 
-    private fun DeleteChatNA(uIdChatNa: String?) {
+    private fun deleteChatNA(uIdChatNa: String?) {
         for (i in resultHi!!.indices) {
             if (resultHi[i]!!.userId == uIdChatNa) {
                 resultHi.removeAt(i)
@@ -352,7 +343,7 @@ class MatchesActivity : Fragment() {
         }
     }
 
-    private fun Check_data(key: String?, chatID: String?) {
+    /*private fun checkData(key: String?, chatID: String?) {
         val check = FirebaseDatabase.getInstance().reference
         check.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -362,14 +353,14 @@ class MatchesActivity : Fragment() {
                         if (dataSnapshot.child("Chat").hasChild(chatID.toString())) {
                             latestChat(key, chatID)
                         } else {
-                            val last_chat = ""
+                            val lastChat = ""
                             val time = "-1"
                             val count = -1
-                            FecthMatchformation(key, last_chat, time, count)
+                            fetchMatchFormation(key, lastChat, time, count)
                             get_node(key, chatID)
                         }
                     } else {
-                        Log.d("test_check_matches", "datachage $key")
+                        Log.d("test_check_matches", "dataChange $key")
                         checkNodeFirst(key, chatID)
                     }
                 }
@@ -377,7 +368,7 @@ class MatchesActivity : Fragment() {
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-    }
+    }*/
 
     /*private fun Node_first(key: String?, ChatID: String?) {
         val chatdb = FirebaseDatabase.getInstance().reference
@@ -392,32 +383,50 @@ class MatchesActivity : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }*/
+    private fun testChatNode(chatId:String,uid:String){
+        val check = FirebaseDatabase.getInstance().reference.child("Chat").child(chatId)
+        check.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    latestChat(uid, chatId)
+                }else{
+                    latestChat(uid, chatId)
+                    val lastChat = ""
+                    val time = "-1"
+                    val count = -1
+                    Log.d("test_check_matches", "dataChange $uid")
+                    fetchMatchFormation(uid, lastChat, time, count)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
 
-    private fun checkNodeFirst(key: String?, ChatID: String?) {
+        })
+    }
+    /*private fun checkNodeFirst(key: String?, ChatID: String?) {
         val check = FirebaseDatabase.getInstance().reference
         check.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.hasChild("Chat")) {
                     latestChat(key, ChatID)
                 } else {
-                    val last_chat = ""
+                    val lastChat = ""
                     val time = "-1"
                     val count = -1
                     //Log.d("test_check_matches",key)
-                    FecthMatchformation(key, last_chat, time, count)
+                    fetchMatchFormation(key, lastChat, time, count)
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-    }
+    }*/
 
-    private fun get_node(key: String?, chatID: String?) {
+    /*private fun get_node(key: String?, chatID: String?) {
         val chatdb = FirebaseDatabase.getInstance().reference.child("Chat")
         val cc = chatdb.orderByKey().equalTo(chatID)
         cc.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                check_getNode(key, chatID, dataSnapshot.key)
+                checkGetNode(key, chatID, dataSnapshot.key)
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
@@ -425,9 +434,9 @@ class MatchesActivity : Fragment() {
             override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-    }
+    }*/
 
-    private fun check_getNode(key: String?, chatID: String?, key_chatId: String?) {
+    /*private fun checkGetNode(key: String?, chatID: String?, key_chatId: String?) {
         val check = FirebaseDatabase.getInstance().reference.child("Chat")
         check.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -437,58 +446,50 @@ class MatchesActivity : Fragment() {
                     val last_chat = ""
                     val time = "-1"
                     val count = -1
-                    FecthMatchformation(key, last_chat, time, count)
+                    fetchMatchFormation(key, last_chat, time, count)
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-    }
+    }*/
 
-    private fun startNode(key: String?, keynode: String?, last_chat: String?, time: String?, count: Int) {
-        val startdb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(key.toString()).child("Start")
-        startdb.addValueEventListener(object : ValueEventListener {
+    private fun startNode(key: String?, keyNode: String?, lastChat: String?, time: String?, count: Int) {
+        val startDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(key.toString()).child("Start")
+        startDb.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
-                    if (dataSnapshot.value.toString() == keynode) {
-                        val last_chat2 = ""
+                    if (dataSnapshot.value.toString() == keyNode) {
+                        val lastChat2 = ""
                         val time2 = "-1"
-                        FecthMatchformation(key, last_chat2, time2, count)
+                        fetchMatchFormation(key, lastChat2, time2, count)
                     } else {
-                        FecthMatchformation(key, last_chat, time, count)
+                        fetchMatchFormation(key, lastChat, time, count)
                     }
                 } else {
-                    FecthMatchformation(key, last_chat, time, count)
+                    fetchMatchFormation(key, lastChat, time, count)
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-
-    //private val chk_notification = false
     private fun latestChat(key: String?, chatID: String?) {
-        val chatdb = FirebaseDatabase.getInstance().reference.child("Chat")
-        val lastNode = chatdb.child(chatID.toString()).orderByKey().limitToLast(1)
-        lastNode.addChildEventListener(object : ChildEventListener {
+        val chatDb = FirebaseDatabase.getInstance().reference.child("Chat").child(chatID.toString()).orderByKey().limitToLast(1)
+        chatDb.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                val last_chat = dataSnapshot.child("text").value.toString()
+                val lastChat = dataSnapshot.child("text").value.toString()
                 var time = dataSnapshot.child("time").value.toString()
                 val date = dataSnapshot.child("date").value.toString()
                 val createBy = dataSnapshot.child("createByUser").value.toString()
-                if (date != date_user) {
+                if (date != dateUser) {
                     time = date.substring(0, 5)
                 }
                 if (createBy != currentUserId) {
-                    Chat_check_read(chatID, key, time, last_chat)
+                    chatCheckRead(chatID, key, time, lastChat)
                 } else {
-                    startNode(key, dataSnapshot.key, last_chat, time, 0)
+                    startNode(key, dataSnapshot.key, lastChat, time, 0)
                 }
-                /*if(resultMatches.size() == count || resultMatches.size() == count+1) {
-                    if (createBy.equals(key)) {
-                        chk_notification = true;
-                    }
-                }*/
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
@@ -498,35 +499,32 @@ class MatchesActivity : Fragment() {
         })
     }
 
-    private var count_read = 0
+    private var countRead = 0
     private var mDatabaseChat: DatabaseReference? = null
-    private fun Chat_check_read(ChatId: String?, key: String?, time: String?, last_chat: String?) {
+    private fun chatCheckRead(ChatId: String?, key: String?, time: String?, last_chat: String?) {
         mDatabaseChat = FirebaseDatabase.getInstance().reference.child("Chat").child(ChatId.toString())
         val dd = mDatabaseChat!!.orderByChild("read").equalTo("Unread")
         dd.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val count_read = dataSnapshot.childrenCount.toInt()
-                startNode(key, dataSnapshot.key, last_chat, time, count_read)
+                val countRead = dataSnapshot.childrenCount.toInt()
+                startNode(key, dataSnapshot.key, last_chat, time, countRead)
             }
-
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
 
-    private var gi = 0
-    private var Check_hi = false
-    private var first_hi = true
+    private var checkHi = false
+    private var firstHi = true
     private var local = 0
-    private fun last_chat_Hi(key: String?, ChatId: String?) {
-        val chatdb = FirebaseDatabase.getInstance().reference.child("Chat")
-        val lastNode = chatdb.child(ChatId.toString()).orderByKey().limitToLast(1)
+    private fun lastChatHi(key: String?, ChatId: String?) {
+        val chatDb = FirebaseDatabase.getInstance().reference.child("Chat")
+        val lastNode = chatDb.child(ChatId.toString()).orderByKey().limitToLast(1)
         lastNode.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                val last_chat = dataSnapshot.child("text").value.toString()
+                val lastChat = dataSnapshot.child("text").value.toString()
                 val time = dataSnapshot.child("time").value.toString()
-                check_sentBack(key, last_chat, time, ChatId)
+                checkSentBack(key, lastChat, time, ChatId)
             }
-
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
             override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
@@ -534,56 +532,51 @@ class MatchesActivity : Fragment() {
         })
     }
 
-    private fun check_sentBack(key: String?, lastChat: String?, time: String?, ChatId: String?) {
-        val chatdb = FirebaseDatabase.getInstance().reference.child("Chat").child(ChatId.toString())
-        val ww = chatdb.orderByChild("createByUser").equalTo(currentUserId)
+    private fun checkSentBack(key: String?, lastChat: String?, time: String?, ChatId: String?) {
+        val chatDb = FirebaseDatabase.getInstance().reference.child("Chat").child(ChatId.toString())
+        val ww = chatDb.orderByChild("createByUser").equalTo(currentUserId)
         ww.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    val MatchHiDb = FirebaseDatabase.getInstance().reference.child("Users").child(key.toString()).child("connection").child("matches").child(currentUserId.toString())
-                    MatchHiDb.child("ChatId").setValue(ChatId)
-                    val MatchHiDbMatch = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(key.toString())
-                    MatchHiDbMatch.child("ChatId").setValue(ChatId)
-                    val datadelete = FirebaseDatabase.getInstance().reference.child("Users")
-                    datadelete.child(currentUserId.toString()).child("connection").child("chatna").child(key.toString()).removeValue()
-                    first_hi = false
-                    Check_hi = true
-                    FecthHi(key, lastChat, time, ChatId)
+                    val matchHiDb = FirebaseDatabase.getInstance().reference.child("Users").child(key.toString()).child("connection").child("matches").child(currentUserId.toString())
+                    matchHiDb.child("ChatId").setValue(ChatId)
+                    val matchHiDbMatch = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(key.toString())
+                    matchHiDbMatch.child("ChatId").setValue(ChatId)
+                    val dataDelete = FirebaseDatabase.getInstance().reference.child("Users")
+                    dataDelete.child(currentUserId.toString()).child("connection").child("chatna").child(key.toString()).removeValue()
+                    firstHi = false
+                    checkHi = true
+                    fetchHi(key, lastChat, time, ChatId)
                 } else {
-                    FecthHi(key, lastChat, time, ChatId)
+                    fetchHi(key, lastChat, time, ChatId)
                 }
             }
-
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
 
-    private var Inception = false
-    private fun FecthHi(key: String?, lastChat: String?, time: String?, ChatId: String?) {
+    private var inception = false
+    private fun fetchHi(key: String?, lastChat: String?, time: String?, ChatId: String?) {
         val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(key.toString())
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
-                    var profileImageUrl = ""
+                    val profileImageUrl:String?
                     profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
                     val userId = dataSnapshot.key
                     val name = dataSnapshot.child("name").value.toString()
                     val gender = dataSnapshot.child("sex").value.toString()
-                    if (!first_hi) {
-                        Inception = false
-                        var j = resultHi!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
-                        //for (j in 0 until resultHi!!.size-1) {
-                        //if (resultHi[j]!!.userId == key) {
+                    if (!firstHi) {
+                        inception = false
+                        val j = resultHi!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
                         if (resultHi.size == 1) {
                             mHiRecyclerView.visibility = (View.GONE)
-                            text_empty.visibility = (View.VISIBLE)
+                            textEmpty.visibility = (View.VISIBLE)
                         }
                         resultHi.removeAt(j)
                         mHiAdapter.notifyItemRemoved(j)
                         mHiAdapter.notifyItemRangeChanged(j, resultHi.size)
-                        //}
-                        //}
-                        Chat_check_read(ChatId, key, time, lastChat)
+                        chatCheckRead(ChatId, key, time, lastChat)
                     } else {
                         val obj2 = HiObject(userId, profileImageUrl, name, gender)
                         resultHi!!.add(obj2)
@@ -591,17 +584,16 @@ class MatchesActivity : Fragment() {
                     }
                 }
                 if (resultHi!!.size == 0) {
-                    text_empty.visibility = View.VISIBLE
+                    textEmpty.visibility = View.VISIBLE
                     mHiRecyclerView.visibility = View.GONE
                 }
             }
-
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
 
     private val bitmap: Bitmap? = null
-    private fun FecthMatchformation(key: String?, last_chat: String?, time: String?, count_unread: Int) {
+    private fun fetchMatchFormation(key: String?, last_chat: String?, time: String?, count_unread: Int) {
         val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(key.toString())
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -610,7 +602,6 @@ class MatchesActivity : Fragment() {
                     var name = ""
                     var profileImageUrl = ""
                     var status = ""
-                    var gender: String? = "null"
                     if (dataSnapshot.child("name").value != null) {
                         name = dataSnapshot.child("name").value.toString()
                     }
@@ -620,34 +611,32 @@ class MatchesActivity : Fragment() {
                     if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
                         profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
                     }
-                    gender = dataSnapshot.child("sex").value.toString()
-                    var obj: MatchesObject? = null
-                    if (count_read != 0) {
-                        obj = MatchesObject(userId, name, profileImageUrl, status, last_chat, time, count_read, bitmap)
-                        val MyUnread = mContext?.getSharedPreferences("NotificationMessage", Context.MODE_PRIVATE)
-                        val editorRead = MyUnread?.edit()
-                        editorRead?.putInt(key, count_read)
+                    val obj: MatchesObject?
+                    if (countRead != 0) {
+                        obj = MatchesObject(userId, name, profileImageUrl, status, last_chat, time, countRead, bitmap)
+                        val myUnread = mContext?.getSharedPreferences("NotificationMessage", Context.MODE_PRIVATE)
+                        val editorRead = myUnread?.edit()
+                        editorRead?.putInt(key, countRead)
                         editorRead?.apply()
-                        count_read = 0
+                        countRead = 0
                     } else {
                         obj = MatchesObject(userId, name, profileImageUrl, status, last_chat, time, count_unread, bitmap)
                     }
                     resultMatches?.add(obj)
                     mMatchesAdapter.notifyDataSetChanged()
-                    if (Check_hi) {
-                        mRecyclerView.visibility = View.VISIBLE;
-                        chat_empty.visibility = View.GONE;
+                    if (checkHi) {
+                        mRecyclerView.visibility = View.VISIBLE
+                        chatEmpty.visibility = View.GONE
                     }
-                    if (resultMatches?.size == count) {
-                        mRecyclerView.visibility = View.VISIBLE;
+                    if (resultMatches?.size == userMatchCount) {
+                        mRecyclerView.visibility = View.VISIBLE
                         p1?.hide()
                     }
                     //Toast.makeText(mContext,resultMatches!!.elementAt(resultMatches.size - 1)!!.getUserId(),Toast.LENGTH_SHORT).show()
-                    if (resultMatches!!.size > count) {    //ลูปเช็ค list ซ้ำ
-
+                    if (resultMatches!!.size > userMatchCount) {    //ลูปเช็ค list ซ้ำ
                         for (j in 0 until (resultMatches.size-1)) {
                             //var index = resultMatches!!.map { T -> T!!.userId.equals(S1)  }.indexOf(element = true)
-                            //Log.d("count_indexsomethings","$index , $S1")
+                            //Log.d("countIndexSomethings","$index , $S1")
                             Log.d("loop1","$j ${resultMatches.elementAt(j)!!.userId} , ${resultMatches.size} , $count")
                             if (resultMatches.elementAt(j)?.userId == key) {
                                 resultMatches.elementAt(j)?.late = last_chat
@@ -663,10 +652,10 @@ class MatchesActivity : Fragment() {
                                     --count
                                     Log.d("loop1","นับ $count")
                                 }
-                                Inception = true
+                                inception = true
                             }
                         }
-                        if (!Inception) {
+                        if (!inception) {
                             if (resultMatches.size > 1) {
                                 for (b in resultMatches.size - 1 downTo 1) {
                                     Collections.swap(resultMatches, b, b - 1)
@@ -687,8 +676,8 @@ class MatchesActivity : Fragment() {
                         resultMatches.sortWith(Comparator { o1, o2 ->
                             var b1 = false
                             var b2 = false
-                            var chk_b1 = 0
-                            var chk_b2 = 0
+                            var checkB1 = 0
+                            var checkB2 = 0
                             if (o1!!.time!! == "-1") {
                                 b1 = true
                             }
@@ -696,18 +685,18 @@ class MatchesActivity : Fragment() {
                                 b2 = true
                             }
                             if (b1) {
-                                chk_b1 = 1
+                                checkB1 = 1
                             }
                             if (b2) {
-                                chk_b2 = 1
+                                checkB2 = 1
                             }
-                            chk_b2 - chk_b1
+                            checkB2 - checkB1
                         })
                         resultMatches.subList(local, resultMatches.size).sortWith(Comparator { o1, o2 ->
                             var b1 = false
                             var b2 = false
-                            var chk_b1 = 0
-                            var chk_b2 = 0
+                            var checkB1 = 0
+                            var checkB2 = 0
                             if (o1!!.time!!.substring(2, 3) == ":") {
                                 b1 = true
                             }
@@ -715,12 +704,12 @@ class MatchesActivity : Fragment() {
                                 b2 = true
                             }
                             if (b1) {
-                                chk_b1 = 1
+                                checkB1 = 1
                             }
                             if (b2) {
-                                chk_b2 = 1
+                                checkB2 = 1
                             }
-                            chk_b2 - chk_b1
+                            checkB2 - checkB1
                         })
                         resultMatches.sortWith(Comparator { o1, o2 ->
                             try {
@@ -828,26 +817,26 @@ class MatchesActivity : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val MyUnread = mContext!!.getSharedPreferences("NotificationActive", Context.MODE_PRIVATE)
-        val S1 = MyUnread.getString("ID", "null")
-        if (S1 != "null") {
-            var index = resultMatches!!.map { T -> T!!.userId.equals(S1) }.indexOf(element = true)
-            Log.d("count_indexsomethings", "$index , $S1")
-            if (resultMatches!!.size > 0) {
+        val myUnread = mContext!!.getSharedPreferences("NotificationActive", Context.MODE_PRIVATE)
+        val s1 = myUnread.getString("ID", "null")
+        if (s1 != "null") {
+            val index = resultMatches!!.map { T -> T!!.userId.equals(s1) }.indexOf(element = true)
+            Log.d("countIndexSomethings", "$index , $s1")
+            if (resultMatches.size > 0) {
                 resultMatches.elementAt(index)?.count_unread = 0
                 mMatchesAdapter.notifyDataSetChanged()
             } else {
                 resultMatches.elementAt(0)?.count_unread = 0
                 mMatchesAdapter.notifyDataSetChanged()
             }
-            MyUnread.edit().clear().apply()
+            myUnread.edit().clear().apply()
         }
-        val MyDelete = mContext!!.getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
-        val S2 = MyDelete.getString("ID", "null")
-        if (S2 != "null") {
-            var index = resultMatches!!.map { T -> T!!.userId.equals(S2) }.indexOf(element = true)
-            Log.d("count_indexsomethings", "$index , $S2")
-            if (resultMatches!!.size > 0) {
+        val myDelete = mContext!!.getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
+        val s2 = myDelete.getString("ID", "null")
+        if (s2 != "null") {
+            val index = resultMatches!!.map { T -> T!!.userId.equals(s2) }.indexOf(element = true)
+            Log.d("countIndexSomethings", "$index , $s2")
+            if (resultMatches.size > 0) {
                 resultMatches.elementAt(index)?.late = ""
                 resultMatches.elementAt(index)?.time = "-1"
                 mMatchesAdapter.notifyDataSetChanged()
@@ -856,7 +845,7 @@ class MatchesActivity : Fragment() {
                 resultMatches.elementAt(0)?.time = "-1"
                 mMatchesAdapter.notifyDataSetChanged()
             }
-            MyDelete.edit().clear().apply()
+            myDelete.edit().clear().apply()
         }
     }
 
@@ -868,7 +857,7 @@ class MatchesActivity : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        count_read = 0
+        countRead = 0
 
     }
 }
