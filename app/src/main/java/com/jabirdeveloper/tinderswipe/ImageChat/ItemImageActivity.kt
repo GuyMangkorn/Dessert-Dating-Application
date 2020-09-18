@@ -23,16 +23,16 @@ class ItemImageActivity : AppCompatActivity() {
     private lateinit var adapter: RecyclerView.Adapter<*>
     private var countImg = 0
     private var count = 0
-    private var count_real: Int? = 0
+    private var countReal: Int? = 0
     private lateinit var mLinearView: LinearLayout
     private lateinit var mLinearRe: LinearLayout
     private lateinit var screenAdapterImage: ScreenAdapterImage
     private lateinit var Nest: NestedScrollView
-    private var chk_1time = false
-    private lateinit var All_image_click: Button
-    private lateinit var mCount_img: TextView
-    private lateinit var set_date: TextView
-    private lateinit var name_sender: TextView
+    private var chk1time = false
+    private lateinit var allImageClick: Button
+    private lateinit var mCountImg: TextView
+    private lateinit var setDate: TextView
+    private lateinit var nameSender: TextView
     private var findImage: DatabaseReference? = null
     private var mDatabaseName: DatabaseReference? = null
     private var currentUid: String? = null
@@ -40,57 +40,57 @@ class ItemImageActivity : AppCompatActivity() {
     private var url: String? = null
     private var nameUser: String? = ""
     private var nameMatch: String? = null
-    private var MatchIdReal: String? = null
+    private var matchIdReal: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_image)
         matchId = intent.extras?.getString("matchId")
-        MatchIdReal = intent.extras?.getString("matchIdReal")
-        val count_st = intent.extras!!.getString("ChkImage")
-        val count_st2 = intent.extras!!.getString("ChkImage2")
-        count = Integer.valueOf(count_st.toString())
-        All_image_click = findViewById(R.id.button_all_image)
-        count_real = Integer.valueOf(count_st2.toString())
-        name_sender = findViewById(R.id.name_sender_image)
+        matchIdReal = intent.extras?.getString("matchIdReal")
+        val countSt = intent.extras!!.getString("ChkImage")
+        val countSt2 = intent.extras!!.getString("ChkImage2")
+        count = Integer.valueOf(countSt.toString())
+        allImageClick = findViewById(R.id.button_all_image)
+        countReal = Integer.valueOf(countSt2.toString())
+        nameSender = findViewById(R.id.name_sender_image)
         currentUid = FirebaseAuth.getInstance().uid
         viewPager = findViewById(R.id.page_image_all)
         screenAdapterImage = ScreenAdapterImage(this@ItemImageActivity, getDataSetImage())
         mDatabaseName = FirebaseDatabase.getInstance().reference.child("Users")
         findImage = FirebaseDatabase.getInstance().reference.child("Chat").child(matchId.toString())
-        mCount_img = findViewById(R.id.count_image)
-        set_date = findViewById(R.id.image_date_front)
+        mCountImg = findViewById(R.id.count_image)
+        setDate = findViewById(R.id.image_date_front)
         Nest = findViewById(R.id.nest_scroll)
         mLinearView = findViewById(R.id.linear_viewpager)
         mLinearRe = findViewById(R.id.linear_recycler_image)
-        mCount_img.text = ("$count_real/$count")
+        mCountImg.text = ("$countReal/$count")
         mRecyclerview = findViewById(R.id.recyclerView_image)
         mRecyclerview.isNestedScrollingEnabled = false
         mRecyclerview.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this)
         mRecyclerview.layoutManager = layoutManager
         adapter = ImageAllAdapter(getDataSetImage(), this)
-        All_image_click.setOnClickListener(View.OnClickListener {
-            All_image_click.visibility = View.GONE
+        allImageClick.setOnClickListener(View.OnClickListener {
+            allImageClick.visibility = View.GONE
             mLinearView.visibility = View.GONE
-            mCount_img.visibility = View.GONE
-            name_sender.visibility = View.GONE
-            set_date.visibility = View.GONE
+            mCountImg.visibility = View.GONE
+            nameSender.visibility = View.GONE
+            setDate.visibility = View.GONE
             mLinearRe.visibility = View.VISIBLE
             mRecyclerview.adapter = adapter
             Nest.post(Runnable { Nest.fullScroll(View.FOCUS_DOWN) })
         })
         getName()
-        chk_1time = true
+        chk1time = true
         viewPager!!.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                if (position == 0 && chk_1time) {
-                    chk_1time = if (resultImage!![position]!!.create) {
-                        name_sender.text = nameUser
-                        set_date.text = (resultImage[position]!!.date + " " + resultImage[position]!!.time)
+                if (position == 0 && chk1time) {
+                    chk1time = if (resultImage!![position]!!.create) {
+                        nameSender.text = nameUser
+                        setDate.text = (resultImage[position]!!.date + " " + resultImage[position]!!.time)
                         false
                     } else {
-                        name_sender.text = nameMatch
-                        set_date.text = (resultImage[position]!!.date + " " + resultImage[position]!!.time)
+                        nameSender.text = nameMatch
+                        setDate.text = (resultImage[position]!!.date + " " + resultImage[position]!!.time)
                         false
                     }
                 }
@@ -98,12 +98,12 @@ class ItemImageActivity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
                 val dd = count.toString()
-                mCount_img.text = ((position + 1).toString() + "/" + dd)
-                set_date.hint = resultImage!![position]!!.date + " " + resultImage[position]!!.time
+                mCountImg.text = ((position + 1).toString() + "/" + dd)
+                setDate.hint = resultImage!![position]!!.date + " " + resultImage[position]!!.time
                 if (resultImage.elementAt(position)!!.create) {
-                    name_sender.text = nameUser
+                    nameSender.text = nameUser
                 } else {
-                    name_sender.text = nameMatch
+                    nameSender.text = nameMatch
                 }
             }
 
@@ -117,8 +117,8 @@ class ItemImageActivity : AppCompatActivity() {
                 if (dataSnapshot.hasChild(currentUid.toString())) {
                     nameUser = dataSnapshot.child(currentUid.toString()).child("name").value.toString()
                 }
-                if (dataSnapshot.hasChild(MatchIdReal.toString())) {
-                    nameMatch = dataSnapshot.child(MatchIdReal.toString()).child("name").value.toString()
+                if (dataSnapshot.hasChild(matchIdReal.toString())) {
+                    nameMatch = dataSnapshot.child(matchIdReal.toString()).child("name").value.toString()
                 }
                 findImage()
             }
@@ -135,11 +135,11 @@ class ItemImageActivity : AppCompatActivity() {
                     val date = dataSnapshot.child("date").value.toString()
                     val time = dataSnapshot.child("time").value.toString()
                     val create = dataSnapshot.child("createByUser").value.toString()
-                    var check_user = false
+                    var checkUser = false
                     if (create == currentUid) {
-                        check_user = true
+                        checkUser = true
                     }
-                    val dd = ScreenObject(url, date, time, check_user, matchId, MatchIdReal)
+                    val dd = ScreenObject(url, date, time, checkUser, matchId, matchIdReal)
                     resultImage!!.add(dd)
                     ++countImg
                 }
@@ -148,7 +148,7 @@ class ItemImageActivity : AppCompatActivity() {
                     screenAdapterImage.notifyDataSetChanged()
                     viewPager?.adapter = screenAdapterImage
                     mRecyclerview.scrollToPosition(count / 3 - 1)
-                    viewPager?.currentItem = count_real!! - 1
+                    viewPager?.currentItem = countReal!! - 1
                     viewPager?.visibility = View.VISIBLE
                 }
             }

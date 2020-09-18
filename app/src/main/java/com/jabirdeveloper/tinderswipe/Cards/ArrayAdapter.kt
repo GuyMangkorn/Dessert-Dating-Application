@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.ProfileUserOppositeActivity2
 import com.jabirdeveloper.tinderswipe.R
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
  * Created by manel on 9/5/2017.
  */
-class arrayAdapter(private var items: ArrayList<cards>, private val context: Context?, private val activity: MainActivity) : RecyclerView.Adapter<arrayAdapter.Holder?>() {
+class ArrayAdapter(private var items: ArrayList<Cards>, private val context: Context?, private val activity: MainActivity) : RecyclerView.Adapter<ArrayAdapter.Holder?>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
         return Holder(view)
@@ -43,9 +43,20 @@ class arrayAdapter(private var items: ArrayList<cards>, private val context: Con
         private val dis: TextView?
         private val myself: TextView?
         private val image: ImageView?
-        private val on_off: ImageView?
+        private val onOff: ImageView?
         private val currentUid: String?
         private val linearLayout: LinearLayout?
+
+        init {
+            currentUid = FirebaseAuth.getInstance().currentUser!!.uid
+            name = itemView.findViewById(R.id.cname)
+            age = itemView.findViewById(R.id.cage)
+            dis = itemView.findViewById(R.id.cdis)
+            image = itemView.findViewById(R.id.image)
+            onOff = itemView.findViewById(R.id.on_off)
+            myself = itemView.findViewById(R.id.myselfcard)
+            linearLayout = itemView.findViewById(R.id.layout_star)
+        }
 
         @SuppressLint("SetTextI18n")
         fun set(position: Int) {
@@ -56,13 +67,13 @@ class arrayAdapter(private var items: ArrayList<cards>, private val context: Con
             }
             name!!.text = items[position].name
             if (!items[position].off_status) {
-                on_off!!.visibility = View.VISIBLE
+                onOff!!.visibility = View.VISIBLE
                 if (items[position].status == "offline") {
-                    Glide.with(context!!).load(R.drawable.offline_user).into(on_off)
+                    Glide.with(context!!).load(R.drawable.offline_user).into(onOff)
                 } else {
-                    Glide.with(context!!).load(R.drawable.online_user).into(on_off)
+                    Glide.with(context!!).load(R.drawable.online_user).into(onOff)
                 }
-            } else on_off!!.visibility = View.GONE
+            } else onOff!!.visibility = View.GONE
             age!!.text = ",  " + items[position].age
             dis!!.text = items[position].city + ",  " + items[position].dis + " " + context!!.getString(R.string.kilometer)
             Glide.with(context).load(items[position].profileImageUrl).into(image!!)
@@ -71,19 +82,16 @@ class arrayAdapter(private var items: ArrayList<cards>, private val context: Con
                 myself.text = items[position].myself
             } else myself!!.visibility = View.GONE
             image.setOnClickListener(View.OnClickListener {
-                val CurrentUserConnectionDb = FirebaseDatabase.getInstance().reference
+                val currentUserConnectionDb = FirebaseDatabase.getInstance().reference
                         .child("Users")
-                        .child(items.get(position).userId!!)
+                        .child(items[position].userId!!)
                         .child("see_profile").child(currentUid!!)
-                val calendar = Calendar.getInstance()
-                val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                val time_user = currentTime.format(calendar.time)
-                val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                val date_user = currentDate.format(calendar.time)
+
                 val newDate = hashMapOf<String, Any>()
-                newDate["date"] = date_user
-                newDate["time"] = time_user
-                CurrentUserConnectionDb.updateChildren(newDate)
+                val d = DateTime
+                newDate["date"] = d.date()
+                newDate["time"] = d.time()
+                currentUserConnectionDb.updateChildren(newDate)
                 val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
                 intent.putExtra("User_opposite", items[position].userId)
                 intent.putExtra("form_main", "1")
@@ -91,16 +99,6 @@ class arrayAdapter(private var items: ArrayList<cards>, private val context: Con
             })
         }
 
-        init {
-            currentUid = FirebaseAuth.getInstance().currentUser!!.uid
-            name = itemView.findViewById(R.id.cname)
-            age = itemView.findViewById(R.id.cage)
-            dis = itemView.findViewById(R.id.cdis)
-            image = itemView.findViewById(R.id.image)
-            on_off = itemView.findViewById(R.id.on_off)
-            myself = itemView.findViewById(R.id.myselfcard)
-            linearLayout = itemView.findViewById(R.id.layout_star)
-        }
     }
 
 

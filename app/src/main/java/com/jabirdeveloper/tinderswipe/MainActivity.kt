@@ -43,8 +43,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
-import com.jabirdeveloper.tinderswipe.Cards.arrayAdapter
-import com.jabirdeveloper.tinderswipe.Cards.cards
+import com.jabirdeveloper.tinderswipe.Cards.ArrayAdapter
+import com.jabirdeveloper.tinderswipe.Cards.Cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.yuyakaido.android.cardstackview.*
@@ -66,7 +66,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private var dis: String? = null
     private var oppositeUserAgeMin = 0
     private var oppositeUserAgeMax = 0
-    private lateinit var arrayAdapter: arrayAdapter
+    private lateinit var arrayAdapter: ArrayAdapter
     private lateinit var usersDb: DatabaseReference
     private var distance = 0.0
     private var xUser = 0.0
@@ -85,8 +85,8 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private var maxadmob = 0
     private lateinit var dialog: Dialog
     private var statusVip = false
-    private lateinit var rowItem: ArrayList<cards>
-    private lateinit var po: cards
+    private lateinit var rowItem: ArrayList<Cards>
+    private lateinit var po: Cards
     private lateinit var currentUid: String
     private var timeSend: String? = null
     private lateinit var touchGps: ImageView
@@ -238,7 +238,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         manager.setCanScrollHorizontal(true)
         manager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
         manager.setOverlayInterpolator(LinearInterpolator())
-        arrayAdapter = arrayAdapter(rowItem, context, this)
+        arrayAdapter = ArrayAdapter(rowItem, context, this)
         cardStackView.layoutManager = manager
         cardStackView.adapter = arrayAdapter
         cardStackView.itemAnimator = DefaultItemAnimator()
@@ -572,7 +572,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     starS = true
             }
             dis = df2.format(user["distance_other"])
-            rowItem.add(cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
+            rowItem.add(Cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
 
         }
         if (type)
@@ -609,7 +609,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         builder.setTitle(R.string.GPS_Disabled)
         builder.setMessage(R.string.GPS_open)
         builder.setPositiveButton(R.string.open_gps) { _, _ -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { _, _ ->
-            val intent = Intent(context, show_gps_open::class.java)
+            val intent = Intent(context, ShowGpsOpen::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             requireActivity().finish()
             startActivity(intent)

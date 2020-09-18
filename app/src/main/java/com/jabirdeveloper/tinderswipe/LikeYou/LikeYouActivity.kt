@@ -1,18 +1,18 @@
 package com.jabirdeveloper.tinderswipe.LikeYou
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -30,7 +30,6 @@ import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,8 +63,8 @@ class LikeYouActivity : AppCompatActivity() {
         button.setOnClickListener(View.OnClickListener { openDialog() })
         blurView = findViewById(R.id.blurView)
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val langure = preferences.getString("My_Lang", "")
-        ff = if (langure == "th") {
+        val language = preferences.getString("My_Lang", "")
+        ff = if (language == "th") {
             Geocoder(this@LikeYouActivity)
         } else {
             Geocoder(this@LikeYouActivity, Locale.UK)
@@ -130,7 +129,20 @@ class LikeYouActivity : AppCompatActivity() {
             userDb.addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                     if (dataSnapshot.exists()) {
-                        time(dataSnapshot.key!!)
+                        var time = "วันนี้ 00:00"
+                        if (dataSnapshot.hasChild("date") && dataSnapshot.hasChild("time")) {
+                            val calendar = Calendar.getInstance()
+                            val currentDate = SimpleDateFormat("dd/MM/yyyy")
+                            val dateNow = currentDate.format(calendar.time)
+                            val timeUser = dataSnapshot.child("time").value.toString()
+                            val dateUser = dataSnapshot.child("date").value.toString()
+                            time = if (dateNow != dateUser) {
+                                dateUser
+                            } else {
+                                getString(R.string.today) + " " + timeUser
+                            }
+                        }
+                        fecthHi(dataSnapshot.key.toString(), time)
                     } else {
                         run {
                             empty.visibility = View.VISIBLE
@@ -149,7 +161,7 @@ class LikeYouActivity : AppCompatActivity() {
 
     }
 
-    fun openDialog() {
+    private fun openDialog() {
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.money, null)
         dialog = Dialog(this@LikeYouActivity)
@@ -164,7 +176,7 @@ class LikeYouActivity : AppCompatActivity() {
             b1.text = "฿20.00 / เดือน"
             b1.setOnClickListener {
                 dialog.dismiss()
-                buy_see()
+                buySee()
             }
         } else {
             imageView.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_love2))
@@ -172,7 +184,7 @@ class LikeYouActivity : AppCompatActivity() {
             textView2.text = "ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ"
             b1.setOnClickListener {
                 dialog.dismiss()
-                buy_like()
+                buyLike()
             }
         }
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -182,46 +194,19 @@ class LikeYouActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun time(key: String) {
-        val dd = userDb.child(key)
-        dd.addListenerForSingleValueEvent(object : ValueEventListener {
-            @SuppressLint("SimpleDateFormat")
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var time = "วันนี้ 00:00"
-                if (dataSnapshot.hasChild("date") && dataSnapshot.hasChild("time")) {
-                    val calendar = Calendar.getInstance()
-                    val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                    val date_now = currentDate.format(calendar.time)
-                    val time_user = dataSnapshot.child("time").value.toString()
-                    val date_user = dataSnapshot.child("date").value.toString()
-                    time = if (date_now != date_user) {
-                        Toast.makeText(this@LikeYouActivity, "$time_user , $date_user", Toast.LENGTH_SHORT).show()
-                        date_user
-                    } else {
-                        getString(R.string.today) + " " + time_user
-                    }
-                }
-                FecthHi(key, time)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    private fun FecthHi(key: String, time: String?) {
+    private fun fecthHi(key: String, time: String?) {
         val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(key)
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
                     var profileImageUrl = ""
                     profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
-
                     var city = ""
                     val userId = dataSnapshot.key
                     val name = dataSnapshot.child("name").value.toString()
                     val status = dataSnapshot.child("Status").child("status").value.toString()
                     var myself = ""
-                    val Age: String = dataSnapshot.child("Age").value.toString()
+                    val age: String = dataSnapshot.child("Age").value.toString()
                     val gender: String = dataSnapshot.child("sex").value.toString()
                     if (dataSnapshot.hasChild("myself")) {
                         myself = dataSnapshot.child("myself").value.toString()
@@ -231,9 +216,9 @@ class LikeYouActivity : AppCompatActivity() {
                     val distance = CalculateDistance.calculate(x_user, y_user, x, y)
                     val preferences = activity.getSharedPreferences("Settings", Context.MODE_PRIVATE)
                     val language = preferences.getString("My_Lang", "")
-                    city = City(language!!,this@LikeYouActivity,x,y).getCity().toString()
+                    city = City(language!!, this@LikeYouActivity, x, y).getCity().toString()
                     resultLike!!.add(LikeYouObject(
-                            userId, profileImageUrl, name, status, Age, gender, myself, distance, city, time))
+                            userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))
                 }
                 LikeYouAdapter.notifyDataSetChanged()
             }
@@ -258,7 +243,7 @@ class LikeYouActivity : AppCompatActivity() {
     }
 
 
-    private fun buy_see() {
+    private fun buySee() {
         val currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
         databaseReference.child("buy_see").setValue(true).addOnSuccessListener {
@@ -269,7 +254,7 @@ class LikeYouActivity : AppCompatActivity() {
         }
     }
 
-    private fun buy_like() {
+    private fun buyLike() {
         val currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         val databaseReference = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
         databaseReference.child("buy_like").setValue(true).addOnSuccessListener {

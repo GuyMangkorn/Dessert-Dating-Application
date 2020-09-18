@@ -16,31 +16,6 @@ class ScreenAdapter(private val ctx: Context, private val length: Int, m0: Strin
 
     private val m: Array<String?> = arrayOfNulls<String?>(6)
     private val Items: ArrayList<Int> = ArrayList()
-    override fun getCount(): Int {
-        return length
-    }
-
-    override fun isViewFromObject(view: View, `object`: Any): Boolean {
-        return view === `object`
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val layoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val item_view = layoutInflater.inflate(R.layout.item_image_slide, container, false)
-        val imageView = item_view.findViewById<View?>(R.id.slide_1) as ImageView
-        Glide.with(ctx).load(m[Items[position]]).placeholder(R.drawable.tran).into(imageView)
-        if (ic != 0) {
-            Glide.with(ctx).load(ic).placeholder(R.drawable.tran).into(imageView)
-            Log.d("111", "2")
-        }
-        container.addView(item_view)
-        return item_view
-    }
-
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        //container.removeView((View) object);
-    }
 
     init {
         m[0] = m0
@@ -53,4 +28,32 @@ class ScreenAdapter(private val ctx: Context, private val length: Int, m0: Strin
             if (m[p] !== "null") Items.add(p)
         }
     }
+
+    override fun getCount(): Int {
+        return length
+    }
+
+    override fun isViewFromObject(view: View, `object`: Any): Boolean {
+        return view === `object`
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val layoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val itemView = layoutInflater.inflate(R.layout.item_image_slide, container, false)
+        val imageView = itemView.findViewById<View?>(R.id.slide_1) as ImageView
+        Glide.with(ctx).load(m[Items[position]]).placeholder(R.drawable.tran).into(imageView)
+        if (ic != 0) {
+            Glide.with(ctx).load(ic).placeholder(R.drawable.tran).into(imageView)
+            Log.d("111", "2")
+        }
+        container.addView(itemView)
+        return itemView
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        //container.removeView((View) object);
+    }
+
+
 }

@@ -104,8 +104,8 @@ class SwitchpageActivity : AppCompatActivity() {
                             id = R.id.item1
                         }
                         R.id.item2 -> {
-                            if(R.id.item2 < id)
-                            supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page2).commit()
+                            if (R.id.item2 < id)
+                                supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page2).commit()
                             else
                                 supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page2).commit()
                             activeFragment = page2
@@ -113,7 +113,7 @@ class SwitchpageActivity : AppCompatActivity() {
 
                         }
                         R.id.item3 -> {
-                            if(R.id.item3 < id)
+                            if (R.id.item3 < id)
                                 supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page3).commit()
                             else
                                 supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page3).commit()
@@ -136,7 +136,7 @@ class SwitchpageActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                             .setNegativeButton("ปิด app") { _, _ ->
-                                val intent = Intent(this@SwitchpageActivity, show_gps_open::class.java)
+                                val intent = Intent(this@SwitchpageActivity, ShowGpsOpen::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 finish()
                                 startActivity(intent)

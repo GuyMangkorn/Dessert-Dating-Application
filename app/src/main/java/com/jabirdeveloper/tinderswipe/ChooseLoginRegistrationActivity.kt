@@ -4,8 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,17 +19,20 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.*
-import com.hanks.htextview.fade.FadeTextView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.jabirdeveloper.tinderswipe.Functions.LoadingDialog
 import com.jabirdeveloper.tinderswipe.Register.PhoneActivity
 import com.jabirdeveloper.tinderswipe.Register.Regis_name_Activity
 import com.jabirdeveloper.tinderswipe.Register.RegistrationActivity
@@ -40,14 +41,9 @@ import java.util.*
 class ChooseLoginRegistrationActivity : AppCompatActivity() {
     private lateinit var mLogin: Button
     private lateinit var mRegister: Button
-    private lateinit var test: Button
-    private lateinit var nameFace: TextView
     private lateinit var mCallbackManager: CallbackManager
     private lateinit var firebaseAuthStateListener: AuthStateListener
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var usersDb: DatabaseReference
-    private lateinit var textView: FadeTextView
-    private lateinit var loginButton: LoginButton
     private lateinit var googleSignInClientg: GoogleSignInClient
     private val RC_SIGN_IN = 0
     private lateinit var thai: TextView
@@ -61,7 +57,6 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_choose_login_registration)
-
         findViewById<TextView>(R.id.clickToTest).setOnClickListener { findViewById<LinearLayout>(R.id.testlogin).visibility = View.VISIBLE; findViewById<TextView>(R.id.clickToTest).visibility = View.GONE }
         mAuth = FirebaseAuth.getInstance()
         thai = findViewById(R.id.thai_lang)
@@ -71,17 +66,10 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         mPhone = findViewById(R.id.button7)
         face = findViewById(R.id.face)
         google = findViewById(R.id.google)
-        val inflater = layoutInflater
-        val view = inflater.inflate(R.layout.progress_dialog, null)
-        dialog = Dialog(this@ChooseLoginRegistrationActivity)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setContentView(view)
-        dialog.setCancelable(false)
-        val width = (resources.displayMetrics.widthPixels * 0.80).toInt()
-        dialog.window?.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+        dialog = LoadingDialog(this).dialog()
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val langure = preferences.getString("My_Lang", "")
-        if (langure == "th") {
+        val language = preferences.getString("My_Lang", "")
+        if (language == "th") {
             thai.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4))
             eng.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4tran))
         } else {
@@ -91,8 +79,8 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         firebaseAuthStateListener = AuthStateListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
-                val userdb = FirebaseDatabase.getInstance().reference
-                userdb.addListenerForSingleValueEvent(object : ValueEventListener {
+                val userDb = FirebaseDatabase.getInstance().reference
+                userDb.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         when {
                             dataSnapshot.child("BlackList").hasChild(user.uid) -> {
@@ -132,12 +120,11 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
             LoginManager.getInstance().registerCallback(mCallbackManager, object : FacebookCallback<LoginResult?> {
                 override fun onSuccess(loginResult: LoginResult?) {
                     handleFacebookToken(loginResult?.accessToken)
-                    //Toast.makeText(getApplicationContext(),"ไปต่อ", Toast.LENGTH_SHORT).show();
                 }
 
                 override fun onCancel() {}
                 override fun onError(exception: FacebookException?) {
-                    Log.d("TAG", "facebook:onError", exception)
+                    Snackbar.make(face, exception.toString(), Snackbar.LENGTH_SHORT).show();
                 }
             })
         })
@@ -146,22 +133,20 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                 .requestEmail()
                 .build()
         googleSignInClientg = GoogleSignIn.getClient(this, gso)
-        google.setOnClickListener(View.OnClickListener { signIn() })
-        mLogin.setOnClickListener(View.OnClickListener {
+        google.setOnClickListener { signIn() }
+        mLogin.setOnClickListener {
             val intent = Intent(this@ChooseLoginRegistrationActivity, LoginActivity::class.java)
             startActivity(intent)
-            return@OnClickListener
-        })
-        mRegister.setOnClickListener(View.OnClickListener {
+
+        }
+        mRegister.setOnClickListener {
             val intent = Intent(this@ChooseLoginRegistrationActivity, RegistrationActivity::class.java)
             startActivity(intent)
-            return@OnClickListener
-        })
-        mPhone.setOnClickListener(View.OnClickListener {
+        }
+        mPhone.setOnClickListener {
             val intent = Intent(this@ChooseLoginRegistrationActivity, PhoneActivity::class.java)
             startActivity(intent)
-            return@OnClickListener
-        })
+        }
         thai.setOnClickListener(View.OnClickListener {
             setLocal("th")
             finish()
@@ -179,7 +164,7 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
-        val signInIntent = googleSignInClientg.getSignInIntent()
+        val signInIntent = googleSignInClientg.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
@@ -187,10 +172,8 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         dialog.show()
         val credential = FacebookAuthProvider.getCredential(token!!.token)
         mAuth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                // Log.d("suc","สำเร็จซะที");
-                //Toast.makeText(getApplicationContext(),"สวยยย", Toast.LENGTH_SHORT).show();
-            } else { //Log.d("suc","vbspy';t"); Toast.makeText(getApplicationContext(),"ชิบหายยยยยยยย", Toast.LENGTH_SHORT).show();
+            if (!task.isSuccessful) {
+                Snackbar.make(face, "Please try again later", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -200,16 +183,9 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
                     dialog.show()
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d("TAG", "signInWithCredential:success")
-                        //FirebaseUser user = mAuth.getCurrentUser();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.d("TAG", "signInWithCredential:failure", task.exception)
+                    if (!task.isSuccessful) {
+                        Snackbar.make(google, "Please try again later", Snackbar.LENGTH_SHORT).show();
                     }
-
-                    // ...
                 }
     }
 
@@ -223,9 +199,8 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                 Log.d("TAG", "firebaseAuthWithGoogle:" + account?.id)
                 firebaseAuthWithGoogle(account?.idToken)
             } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
+                Snackbar.make(google, "Google sign in failed", Snackbar.LENGTH_SHORT).show();
                 Log.d("TAG", "Google sign in failed", e)
-                // ...
             }
         }
         if (requestCode == 1150) {
@@ -257,9 +232,11 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
     }
 
     fun loadLocal() {
+
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val langure = preferences.getString("My_Lang", "")
         Log.d("My2", langure)
         setLocal(langure)
+
     }
 }

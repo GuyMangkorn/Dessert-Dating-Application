@@ -49,12 +49,12 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var editcareer: CustomEdittext
     private lateinit var editstudy: CustomEdittext
     private lateinit var editmy: CustomEdittext
-    private lateinit var Image1: ImageView
-    private lateinit var Image2: ImageView
-    private lateinit var Image3: ImageView
-    private lateinit var Image4: ImageView
-    private lateinit var Image5: ImageView
-    private lateinit var Image6: ImageView
+    private lateinit var image1: ImageView
+    private lateinit var image2: ImageView
+    private lateinit var image3: ImageView
+    private lateinit var image4: ImageView
+    private lateinit var image5: ImageView
+    private lateinit var image6: ImageView
     private lateinit var add1: ImageView
     private lateinit var add2: ImageView
     private lateinit var add3: ImageView
@@ -86,6 +86,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     private var list: ArrayList<Int> = ArrayList()
     private var mUserItems: ArrayList<Int?> = ArrayList()
     private var mUserItems2: ArrayList<Int?> = ArrayList()
+    private lateinit var map: MutableMap<*, *>
     var i = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,14 +116,14 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         add4 = findViewById(R.id.add4)
         add5 = findViewById(R.id.add5)
         add6 = findViewById(R.id.add6)
-        Image1 = findViewById(R.id.Image1)
-        Image2 = findViewById(R.id.Image2)
-        Image3 = findViewById(R.id.Image3)
-        Image4 = findViewById(R.id.Image4)
-        Image5 = findViewById(R.id.Image5)
-        Image6 = findViewById(R.id.Image6)
-        val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, Image1.measuredWidth.toFloat(), resources.displayMetrics).toInt()
-        Log.d("12", Image1.width.toString())
+        image1 = findViewById(R.id.Image1)
+        image2 = findViewById(R.id.Image2)
+        image3 = findViewById(R.id.Image3)
+        image4 = findViewById(R.id.Image4)
+        image5 = findViewById(R.id.Image5)
+        image6 = findViewById(R.id.Image6)
+        val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, image1.measuredWidth.toFloat(), resources.displayMetrics).toInt()
+        Log.d("12", image1.width.toString())
         findViewById<View>(R.id.Image1).setOnClickListener(this)
         findViewById<View>(R.id.Image2).setOnClickListener(this)
         findViewById<View>(R.id.Image3).setOnClickListener(this)
@@ -142,8 +143,8 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         flexLayout = findViewById(R.id.Grid)
         flexLayout.flexDirection = FlexDirection.ROW
         params = GridLayout.LayoutParams()
-        language.setOnClickListener(View.OnClickListener { Dialog(language, getString(R.string.language), listItems2, checkedItems2, mUserItems2) })
-        religion.setOnClickListener(View.OnClickListener { Dialog2(religion, getString(R.string.religion), listItems3) })
+        language.setOnClickListener(View.OnClickListener { dialog(language, getString(R.string.language), listItems2, checkedItems2, mUserItems2) })
+        religion.setOnClickListener(View.OnClickListener { dialog2(religion, getString(R.string.religion), listItems3) })
         editname.setOnEditTextImeBackListener(object : EditTextImeBackListener {
             override fun onImeBack(ctrl: CustomEdittext?, text: String?) {
                 editname.clearFocus()
@@ -197,7 +198,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    private fun Dialog(textView: TextView?, TitleName: String?, order: Array<String?>?, checkedItem: BooleanArray?, mUserItem: ArrayList<Int?>?) {
+    private fun dialog(textView: TextView?, TitleName: String?, order: Array<String?>?, checkedItem: BooleanArray?, mUserItem: ArrayList<Int?>?) {
         val mBuilder = AlertDialog.Builder(this@SettingActivity)
         mBuilder.setTitle(TitleName)
         mBuilder.setMultiChoiceItems(order, checkedItem) { _, position, isChecked ->
@@ -225,7 +226,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         mDialog.show()
     }
 
-    private fun Dialog2(textView: TextView?, TitleName: String?, order: Array<String?>?) {
+    private fun dialog2(textView: TextView?, TitleName: String?, order: Array<String?>?) {
         val mBuilder = AlertDialog.Builder(this@SettingActivity)
         mBuilder.setTitle(TitleName)
         mBuilder.setSingleChoiceItems(order, selectedPosition) { _, which ->
@@ -266,35 +267,6 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun DeleteImage(imageDelete: ImageView?, str: String?, add: ImageView?) {
-        /* Alerter.create(SettingActivity.this)
-                .setTitle("Delete")
-                .setText("คุณต้องการลบรูปภาพใช่หรือไม่")
-
-                .addButton("Okay", R.style.AlertButton, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(mUserDatabase.child("ProfileImage").child(str) != null){
-                            StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profileImages").child(userId).child(str);
-                            filepath.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    mUserDatabase.child("ProfileImage").child(str).removeValue();
-                                    imageDelete.setBackgroundResource(R.drawable.border3);
-                                    imageDelete.setImageResource(R.drawable.ic_add_black_24dp);
-                                }
-                            });
-
-                        }
-                        Alerter.hide();
-                    }
-                })
-                .addButton("No", R.style.AlertButton, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Alerter.hide();
-                    }
-                })
-                .show();*/
         val mBuilder = AlertDialog.Builder(this@SettingActivity)
         mBuilder.setTitle(R.string.delete_image)
         mBuilder.setMessage(R.string.delete_image_confirm)
@@ -324,7 +296,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         mUserDatabase.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.childrenCount > 0) {
-                    val map = dataSnapshot.value as MutableMap<*, *>
+                    map = dataSnapshot.value as MutableMap<*, *>
                     if (map.containsKey("myself")) {
                         editmy.setText(map.get("myself").toString())
                     }
@@ -372,63 +344,63 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                     val map2 = dataSnapshot.child("ProfileImage").value as MutableMap<*, *>?
                     if (dataSnapshot.child("ProfileImage").exists()) {
                         if (map2!!.containsKey("profileImageUrl0")) {
-                            profile = map2.get("profileImageUrl0").toString()
-                            add1.setVisibility(View.GONE)
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(Image1)
+                            profile = map2["profileImageUrl0"].toString()
+                            add1.visibility = View.GONE
+                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image1)
                         } else {
                             list.add(1)
                             Toast.makeText(this@SettingActivity, R.string.primary_profile_alert, Toast.LENGTH_LONG).show()
                         }
-                        if (map2.containsKey("profileImageUrl1")!!) {
+                        if (map2.containsKey("profileImageUrl1")) {
                             profile = map2.get("profileImageUrl1").toString()
-                            add2.setVisibility(View.GONE)
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(Image2)
+                            add2.visibility = View.GONE
+                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image2)
                         } else list.add(2)
                         if (map2.containsKey("profileImageUrl2")) {
                             profile = map2.get("profileImageUrl2").toString()
-                            add3.setVisibility(View.GONE)
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(Image3)
+                            add3.visibility = View.GONE
+                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image3)
                         } else list.add(3)
                         if (map2.containsKey("profileImageUrl3")) {
                             profile = map2.get("profileImageUrl3").toString()
-                            add4.setVisibility(View.GONE)
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(Image4)
+                            add4.visibility = View.GONE
+                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image4)
                         } else list.add(4)
                         if (map2.containsKey("profileImageUrl4")) {
                             profile = map2.get("profileImageUrl4").toString()
-                            add5.setVisibility(View.GONE)
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(Image5)
+                            add5.visibility = View.GONE
+                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image5)
                         } else list.add(5)
                         if (map2.containsKey("profileImageUrl5")) {
                             profile = map2.get("profileImageUrl5").toString()
-                            add6.setVisibility(View.GONE)
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(Image6)
+                            add6.visibility = View.GONE
+                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image6)
                         } else list.add(6)
                     } else {
-                        Snackbar.make(Image1, R.string.primary_profile_alert, Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(image1, R.string.primary_profile_alert, Snackbar.LENGTH_LONG).show()
                     }
                     if (intent.hasExtra("setImage")) {
                         var h = 1
                         if (list.size > 0) {
-                            h = list.min()!!
+                            h = list.minOrNull()!!
                         }
                         if (h == 1) {
-                            setImage(1, Image1, add1)
+                            setImage(1, image1, add1)
                         }
                         if (h == 2) {
-                            setImage(2, Image2, add2)
+                            setImage(2, image2, add2)
                         }
                         if (h == 3) {
-                            setImage(3, Image3, add3)
+                            setImage(3, image3, add3)
                         }
                         if (h == 4) {
-                            setImage(4, Image4, add4)
+                            setImage(4, image4, add4)
                         }
                         if (h == 5) {
-                            setImage(5, Image5, add5)
+                            setImage(5, image5, add5)
                         }
                         if (h == 6) {
-                            setImage(6, Image6, add6)
+                            setImage(6, image6, add6)
                         }
                     }
                 }
@@ -440,13 +412,13 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun saveUserinFormation() {
         val userInfo = hashMapOf<String, Any?>()
-        val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+        val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
         if (editmy.text.toString().trim { it <= ' ' }.isNotEmpty())
             userInfo["myself"] = editmy.text.toString()
         else userInfo["myself"] = null
 
         if (editname.text.toString().trim { it <= ' ' }.isNotEmpty()) {
-            MyUser.putString("name", editname.text.toString())
+            myUser.putString("name", editname.text.toString())
             userInfo["name"] = editname.text.toString()
         } else userInfo["name"] = null
 
@@ -469,7 +441,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         val userInfo2: MutableMap<String, Any> = HashMap()
         for (u in mUserItems.indices) userInfo2["hobby$u"] = mUserItems[u]!!.toInt()
         mUserDatabase.child("hobby").setValue(userInfo2)
-        MyUser.apply()
+        myUser.apply()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -479,15 +451,15 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
             if (resultCode == Activity.RESULT_OK) {
                 resulturi = result.uri
                 when (i) {
-                    1 -> Image1.setBackgroundColor(Color.WHITE)
-                    2 -> Image2.setBackgroundColor(Color.WHITE)
-                    3 -> Image3.setBackgroundColor(Color.WHITE)
-                    4 -> Image4.setBackgroundColor(Color.WHITE)
-                    5 -> Image5.setBackgroundColor(Color.WHITE)
-                    6 -> Image6.setBackgroundColor(Color.WHITE)
+                    1 -> image1.setBackgroundColor(Color.WHITE)
+                    2 -> image2.setBackgroundColor(Color.WHITE)
+                    3 -> image3.setBackgroundColor(Color.WHITE)
+                    4 -> image4.setBackgroundColor(Color.WHITE)
+                    5 -> image5.setBackgroundColor(Color.WHITE)
+                    6 -> image6.setBackgroundColor(Color.WHITE)
                 }
                 dialog.show()
-                Save(resulturi)
+                save(resulturi)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 val error = result.error
             }
@@ -498,35 +470,35 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
             val handler = Handler()
             handler.postDelayed({
                 if (h == 1) {
-                    setImage(1, Image1, add1)
+                    setImage(1, image1, add1)
                 }
                 if (h == 2) {
-                    setImage(2, Image2, add2)
+                    setImage(2, image2, add2)
                 }
                 if (h == 3) {
-                    setImage(3, Image3, add3)
+                    setImage(3, image3, add3)
                 }
                 if (h == 4) {
-                    setImage(4, Image4, add4)
+                    setImage(4, image4, add4)
                 }
                 if (h == 5) {
-                    setImage(5, Image5, add5)
+                    setImage(5, image5, add5)
                 }
                 if (h == 6) {
-                    setImage(6, Image6, add6)
+                    setImage(6, image6, add6)
                 }
             }, 400)
         }
     }
 
-    private fun InputImage() {
+    private fun inputImage() {
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(3, 4)
                 .start(this)
     }
 
-    private fun Save(resulturi: Uri?) {
+    private fun save(resulturi: Uri?) {
 
         Y = (i - 1).toString()
         var bitmap: Bitmap? = null
@@ -546,13 +518,13 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         val highAccuracyOpts = FirebaseVisionFaceDetectorOptions.Builder().build()
         val detector = FirebaseVision.getInstance().getVisionFaceDetector(highAccuracyOpts)
         val finalBitmap = bitmap
-        val result = detector.detectInImage(image)
+        detector.detectInImage(image)
                 .addOnSuccessListener { faces ->
                     if (faces.isNotEmpty()) {
                         NSFWDetector.isNSFW(bitmap) { isNSFW, confidence, image ->
                             if (isNSFW) {
                                 Toast.makeText(this, "โรคจิต", Toast.LENGTH_SHORT).show()
-                                gh()
+                                backgroundAdd()
                                 dialog.dismiss()
                             } else {
                                 val baos = ByteArrayOutputStream()
@@ -569,30 +541,30 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                                         mUserDatabase.child("ProfileImage").updateChildren(userInfo)
                                         when (i) {
                                             1 -> {
-                                                Glide.with(application).load(resulturi).into(Image1)
+                                                Glide.with(application).load(resulturi).into(image1)
                                                 val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
                                                 MyUser.putString("image", resulturi.toString())
                                                 MyUser.apply()
                                                 add1.visibility = View.GONE
                                             }
                                             2 -> {
-                                                Glide.with(application).load(resulturi).into(Image2)
+                                                Glide.with(application).load(resulturi).into(image2)
                                                 add2.visibility = View.GONE
                                             }
                                             3 -> {
-                                                Glide.with(application).load(resulturi).into(Image3)
+                                                Glide.with(application).load(resulturi).into(image3)
                                                 add3.visibility = View.GONE
                                             }
                                             4 -> {
-                                                Glide.with(application).load(resulturi).into(Image4)
+                                                Glide.with(application).load(resulturi).into(image4)
                                                 add4.visibility = View.GONE
                                             }
                                             5 -> {
-                                                Glide.with(application).load(resulturi).into(Image5)
+                                                Glide.with(application).load(resulturi).into(image5)
                                                 add5.visibility = View.GONE
                                             }
                                             6 -> {
-                                                Glide.with(application).load(resulturi).into(Image6)
+                                                Glide.with(application).load(resulturi).into(image6)
                                                 add6.visibility = View.GONE
                                             }
                                         }
@@ -610,7 +582,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                     } else {
-                        gh()
+                        backgroundAdd()
                         Toast.makeText(this@SettingActivity, "ไม่ใช่หน้าอีดอก", Toast.LENGTH_LONG).show()
                     }
                 }
@@ -618,33 +590,33 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    fun gh() {
+    private fun backgroundAdd() {
         dialog.dismiss()
         var imageDelete: ImageView? = null
         var add: ImageView? = null
         when (i) {
             1 -> {
-                imageDelete = Image1
+                imageDelete = image1
                 add = add1
             }
             2 -> {
-                imageDelete = Image2
+                imageDelete = image2
                 add = add2
             }
             3 -> {
-                imageDelete = Image3
+                imageDelete = image3
                 add = add3
             }
             4 -> {
-                imageDelete = Image4
+                imageDelete = image4
                 add = add4
             }
             5 -> {
-                imageDelete = Image5
+                imageDelete = image5
                 add = add5
             }
             6 -> {
-                imageDelete = Image6
+                imageDelete = image6
                 add = add6
             }
         }
@@ -659,24 +631,21 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onBackPressed() {
-        saveUserinFormation()
-        val drawable = Image1.getDrawable()
+        if (this::map.isInitialized) {
+            saveUserinFormation()
+        }
+        val drawable = image1.drawable
         val hasImage = drawable != null
         if (hasImage && drawable is BitmapDrawable) {
             setResult(123)
             super.onBackPressed()
         } else {
-            /* Alerter.create(SettingActivity.this)
-                    .setTitle("รูปโปรไฟล์")
-                    .setText("คุณต้องการมีรูปโปรไฟล์หลัก")
-                    .setBackgroundColorRes(R.color.c2)
-                    .show();*/
             val mBuilder = AlertDialog.Builder(this@SettingActivity)
             mBuilder.setTitle(R.string.profile_image)
             mBuilder.setMessage(R.string.primary_profile_alert)
             mBuilder.setCancelable(true)
             mBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                setResult(123)
+                setResult(1233)
                 super@SettingActivity.onBackPressed()
             }
             mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
@@ -686,7 +655,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun setLocal(lang: String?) {
+    private fun setLocal(lang: String?) {
         val locale = Locale(lang)
         Locale.setDefault(locale)
         val configuration = Configuration()
@@ -698,7 +667,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         Log.d("My", lang)
     }
 
-    fun loadLocal() {
+    private fun loadLocal() {
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val langure = preferences.getString("My_Lang", "")
         Log.d("My2", langure)
@@ -717,22 +686,22 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.Image1) {
-            setImage(1, Image1, add1)
+            setImage(1, image1, add1)
         }
         if (v?.id == R.id.Image2) {
-            setImage(2, Image2, add2)
+            setImage(2, image2, add2)
         }
         if (v?.id == R.id.Image3) {
-            setImage(3, Image3, add3)
+            setImage(3, image3, add3)
         }
         if (v?.id == R.id.Image4) {
-            setImage(4, Image4, add4)
+            setImage(4, image4, add4)
         }
         if (v?.id == R.id.Image5) {
-            setImage(5, Image5, add5)
+            setImage(5, image5, add5)
         }
         if (v?.id == R.id.Image6) {
-            setImage(6, Image6, add6)
+            setImage(6, image6, add6)
         }
     }
 
@@ -742,6 +711,6 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         val hasImage = drawable != null
         if (hasImage && drawable is BitmapDrawable) {
             DeleteImage(image, "profileImageUrl" + (u - 1), add)
-        } else InputImage()
+        } else inputImage()
     }
 }

@@ -36,64 +36,64 @@ class ImageAllAdapter(private val image_all: MutableList<ScreenObject?>?, privat
         private val m1: ImageView? = ItemView.findViewById(R.id.all_image_1)
         private val m2: ImageView? = ItemView.findViewById(R.id.all_image_2)
         private val m3: ImageView? = ItemView.findViewById(R.id.all_image_3)
-        private var MatchId: TextView = ItemView.findViewById(R.id.chatId_image)
-        private var Chatid: TextView = ItemView.findViewById(R.id.matchId_image)
+        private var matchId: TextView = ItemView.findViewById(R.id.chatId_image)
+        private var chatid: TextView = ItemView.findViewById(R.id.matchId_image)
         fun set(position: Int) {
-            Chatid.text = (image_all!![position]!!.ChatID)
-            MatchId.text = (image_all[position]!!.MatchId)
+            chatid.text = (image_all!![position]!!.ChatID)
+            matchId.text = (image_all[position]!!.MatchId)
             val check = image_all.size - 1
-            val position_real = (position + 1) * 3 - 1
-            val position_real2 = position_real - 3
-            if (position_real2 + 1 <= check) {
-                if (position_real2 + 1 == check) {
-                    Glide.with(context).load(image_all[position_real2 + 1]?.Url).into(m1!!)
-                    Glide.with(context).load(image_all[position_real2 + 1]?.Url).into(m2!!)
-                    Glide.with(context).load(image_all[position_real2 + 1]?.Url).into(m3!!)
+            val positionReal = (position + 1) * 3 - 1
+            val positionReal2 = positionReal - 3
+            if (positionReal2 + 1 <= check) {
+                if (positionReal2 + 1 == check) {
+                    Glide.with(context).load(image_all[positionReal2 + 1]?.Url).into(m1!!)
+                    Glide.with(context).load(image_all[positionReal2 + 1]?.Url).into(m2!!)
+                    Glide.with(context).load(image_all[positionReal2 + 1]?.Url).into(m3!!)
                     m2.visibility = View.INVISIBLE
                     m3.visibility = View.INVISIBLE
                 } else {
-                    Glide.with(context).load(image_all[position_real2 + 1]?.Url).into(m1!!)
+                    Glide.with(context).load(image_all[positionReal2 + 1]?.Url).into(m1!!)
                 }
             }
-            if (position_real2 + 2 <= check) {
-                if (position_real2 + 2 == check) {
-                    Glide.with(context).load(image_all[position_real2 + 2]?.Url).into(m2!!)
-                    Glide.with(context).load(image_all[position_real2 + 2]?.Url).into(m3!!)
+            if (positionReal2 + 2 <= check) {
+                if (positionReal2 + 2 == check) {
+                    Glide.with(context).load(image_all[positionReal2 + 2]?.Url).into(m2!!)
+                    Glide.with(context).load(image_all[positionReal2 + 2]?.Url).into(m3!!)
                     m3.visibility = View.INVISIBLE
                 } else {
-                    Glide.with(context).load(image_all[position_real2 + 2]?.Url).into(m2!!)
+                    Glide.with(context).load(image_all[positionReal2 + 2]?.Url).into(m2!!)
                 }
             }
-            if (position_real2 + 3 <= check) {
-                Glide.with(context).load(image_all[position_real2 + 3]?.Url).into(m3!!)
+            if (positionReal2 + 3 <= check) {
+                Glide.with(context).load(image_all[positionReal2 + 3]?.Url).into(m3!!)
             }
-            m1?.setOnClickListener(View.OnClickListener {
+            m1?.setOnClickListener {
                 val intent = Intent(context, ItemImageActivity::class.java)
-                intent.putExtra("matchIdReal", MatchId.text.toString())
-                intent.putExtra("matchId", Chatid.text.toString())
-                intent.putExtra("ChkImage2", (position_real2 + 2).toString())
+                intent.putExtra("matchIdReal", matchId.text.toString())
+                intent.putExtra("matchId", chatid.text.toString())
+                intent.putExtra("ChkImage2", (positionReal2 + 2).toString())
                 intent.putExtra("ChkImage", image_all.size.toString())
                 (context as Activity?)!!.finish()
                 context.startActivity(intent)
-            })
-            m2?.setOnClickListener(View.OnClickListener {
+            }
+            m2?.setOnClickListener {
                 val intent = Intent(context, ItemImageActivity::class.java)
-                intent.putExtra("matchIdReal", MatchId.text.toString())
-                intent.putExtra("matchId", Chatid.text.toString())
-                intent.putExtra("ChkImage2", (position_real2 + 3).toString())
+                intent.putExtra("matchIdReal", matchId.text.toString())
+                intent.putExtra("matchId", chatid.text.toString())
+                intent.putExtra("ChkImage2", (positionReal2 + 3).toString())
                 intent.putExtra("ChkImage", image_all.size.toString())
                 (context as Activity?)!!.finish()
                 context.startActivity(intent)
-            })
-            m3?.setOnClickListener(View.OnClickListener {
+            }
+            m3?.setOnClickListener {
                 val intent = Intent(context, ItemImageActivity::class.java)
-                intent.putExtra("matchIdReal", MatchId.text.toString())
-                intent.putExtra("matchId", Chatid.text.toString())
-                intent.putExtra("ChkImage2", (position_real2 + 4).toString())
+                intent.putExtra("matchIdReal", matchId.text.toString())
+                intent.putExtra("matchId", chatid.text.toString())
+                intent.putExtra("ChkImage2", (positionReal2 + 4).toString())
                 intent.putExtra("ChkImage", image_all.size.toString())
                 (context as Activity?)!!.finish()
                 context.startActivity(intent)
-            })
+            }
         }
 
     }

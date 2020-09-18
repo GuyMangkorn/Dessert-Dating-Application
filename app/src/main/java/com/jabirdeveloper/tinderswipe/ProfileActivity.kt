@@ -279,11 +279,12 @@ class ProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 123) {
             if (resultCode == 123) {
-                //recreate();
                 finish()
                 overridePendingTransition(0, 0)
                 startActivity(intent)
                 overridePendingTransition(0, 0)
+            } else if (resultCode == 1233) {
+                onBackPressed()
             }
         }
     }
