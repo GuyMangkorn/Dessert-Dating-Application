@@ -133,22 +133,20 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                 .requestEmail()
                 .build()
         googleSignInClientg = GoogleSignIn.getClient(this, gso)
-        google.setOnClickListener(View.OnClickListener { signIn() })
-        mLogin.setOnClickListener(View.OnClickListener {
+        google.setOnClickListener { signIn() }
+        mLogin.setOnClickListener {
             val intent = Intent(this@ChooseLoginRegistrationActivity, LoginActivity::class.java)
             startActivity(intent)
-            return@OnClickListener
-        })
-        mRegister.setOnClickListener(View.OnClickListener {
+
+        }
+        mRegister.setOnClickListener {
             val intent = Intent(this@ChooseLoginRegistrationActivity, RegistrationActivity::class.java)
             startActivity(intent)
-            return@OnClickListener
-        })
-        mPhone.setOnClickListener(View.OnClickListener {
+        }
+        mPhone.setOnClickListener {
             val intent = Intent(this@ChooseLoginRegistrationActivity, PhoneActivity::class.java)
             startActivity(intent)
-            return@OnClickListener
-        })
+        }
         thai.setOnClickListener(View.OnClickListener {
             setLocal("th")
             finish()

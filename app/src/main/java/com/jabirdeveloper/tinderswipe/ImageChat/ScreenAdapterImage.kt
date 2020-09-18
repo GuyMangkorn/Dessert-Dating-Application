@@ -26,11 +26,11 @@ class ScreenAdapterImage(private val ctx: Context?, private val ImageList: Mutab
     @RequiresApi(api = Build.VERSION_CODES.M)
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val layoutInflater = ctx!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val item_view = layoutInflater.inflate(R.layout.item_image_slide, container, false)
-        val imageView = item_view.findViewById<ImageView>(R.id.slide_1)
+        val itemView = layoutInflater.inflate(R.layout.item_image_slide, container, false)
+        val imageView = itemView.findViewById<ImageView>(R.id.slide_1)
         Glide.with(ctx).load(ImageList!![position]!!.Url).into(imageView)
-        container.addView(item_view)
-        return item_view
+        container.addView(itemView)
+        return itemView
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {

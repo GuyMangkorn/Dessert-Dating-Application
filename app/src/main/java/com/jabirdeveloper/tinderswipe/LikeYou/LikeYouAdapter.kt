@@ -25,7 +25,6 @@ class LikeYouAdapter(private val Like: MutableList<LikeYouObject?>, private val 
         private val status: ImageView = itemView.findViewById(R.id.on_off_matches)
         private val name: TextView = itemView.findViewById(R.id.Matches_name)
         private val tag: TextView = itemView.findViewById(R.id.tagkm)
-        private val myself: TextView? = itemView.findViewById(R.id.myself)
         private val city: TextView = itemView.findViewById(R.id.status_time)
         private var time: TextView = itemView.findViewById(R.id.time_text_likeYou)
         private val userID: String = FirebaseAuth.getInstance().currentUser!!.uid
