@@ -1,8 +1,8 @@
 package com.jabirdeveloper.tinderswipe.Chat
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
@@ -19,10 +18,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -36,6 +33,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.jabirdeveloper.tinderswipe.*
+import com.jabirdeveloper.tinderswipe.Functions.DateTime
+import com.jabirdeveloper.tinderswipe.Functions.LoadingDialog
+import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import com.jabirdeveloper.tinderswipe.R
 import com.tapadoo.alerter.Alerter
 import java.io.ByteArrayOutputStream
@@ -48,24 +48,23 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mChatAdapter: RecyclerView.Adapter<*>
     private lateinit var mChatLayoutManager: RecyclerView.LayoutManager
-    private lateinit var linearLayout_oval_send: LinearLayout
+    private lateinit var linearLayoutOvalSend: LinearLayout
     private lateinit var menu: LinearLayout
-    private lateinit var LinearRecord: LinearLayout
+    private lateinit var linearRecord: LinearLayout
     private lateinit var toolbar: Toolbar
-    private lateinit var img_send: ImageView
-    private lateinit var mSend_image: ImageView
-    private lateinit var mCamera_open: ImageView
-    private lateinit var menubar: ImageView
+    private lateinit var imgSend: ImageView
+    private lateinit var mSendImage: ImageView
+    private lateinit var mCameraOpen: ImageView
+    private lateinit var menuBar: ImageView
     private lateinit var profile: ImageView
     private lateinit var back: ImageView
     private lateinit var mRecord: ImageView
-    private lateinit var mRecord_real: ImageView
-    private lateinit var mName_chat: TextView
+    private lateinit var mRecordReal: ImageView
+    private lateinit var mNameChat: TextView
     private lateinit var mRecordStatus: TextView
     private lateinit var mSendButton: Button
-    private lateinit var Open_menu: Button
+    private lateinit var openMenu: Button
     private var chk = 0
-    private val count = 0
     private var chk2 = 0
     private var time_count = 0
     private var currentUserId: String? = null
@@ -74,10 +73,7 @@ class ChatActivity : AppCompatActivity() {
     private var UrlImage: String? = null
     private var name_chat: String? = null
     private var time_chk: String? = null
-    private val chatna: String? = null
-    private val first_chat: String? = null
     private var fileName: String? = null
-
     private var file_uri: Uri? = null
     private var uri_camera: Uri? = null
     private var mSendEditText: CustomEdittext? = null
@@ -88,68 +84,60 @@ class ChatActivity : AppCompatActivity() {
     private var active = true
     private var T: Timer? = null
     private var i = 0
-    private var return_d = 0
     private var dialog: Dialog? = null
     var mDatabaseUser: DatabaseReference? = null
     var mDatabaseChat: DatabaseReference? = null
     var mDatabaseImage: DatabaseReference? = null
-    var user_database: DatabaseReference? = null
+    var userDatabase: DatabaseReference? = null
     var usersDb: DatabaseReference? = null
     private val MY_PERMISSIONS_REQUEST_READ_MEDIA = 0
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         val permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf<String?>(Manifest.permission.WRITE_EXTERNAL_STORAGE), MY_PERMISSIONS_REQUEST_READ_MEDIA)
-        } else {
         }
-        //toolbar = findViewById(R.id.my_tools)
-        mRecord = findViewById<View?>(R.id.record_audio) as ImageView
+
+        mRecord = findViewById(R.id.record_audio)
         profile = findViewById(R.id.pre_Image_porfile)
         back = findViewById(R.id.imageView5)
-        img_send = findViewById<View?>(R.id.img_send) as ImageView
-        mCamera_open = findViewById<View?>(R.id.camera_open) as ImageView
-        proAudio = findViewById<View?>(R.id.progressBar_audio) as ProgressBar
-        pro = findViewById<View?>(R.id.progressBar_Chat) as ProgressBar
+        imgSend = findViewById(R.id.img_send)
+        mCameraOpen = findViewById(R.id.camera_open)
+        proAudio = findViewById(R.id.progressBar_audio)
+        pro = findViewById(R.id.progressBar_Chat)
         matchId = intent.extras!!.getString("matchId")
-        var unread_count = intent!!.extras!!.getString("unread")
-        if (unread_count == "-1") {
-            val MyUnread = getSharedPreferences("NotificationMessage", Context.MODE_PRIVATE)
-            val dd2 = MyUnread.getInt(matchId, 0)
+        var unreadCount = intent!!.extras!!.getString("unread")
+        if (unreadCount == "-1") {
+            val myUnread = getSharedPreferences("NotificationMessage", Context.MODE_PRIVATE)
+            val dd2 = myUnread.getInt(matchId, 0)
             //Toast.makeText(ChatActivity.this, "MatchId " + matchId + " , "+(dd2), Toast.LENGTH_SHORT).show();
-            val RemoveNotification = getSharedPreferences("NotificationActive", Context.MODE_PRIVATE)
-            val editorRead = RemoveNotification.edit()
+            val removeNotification = getSharedPreferences("NotificationActive", Context.MODE_PRIVATE)
+            val editorRead = removeNotification.edit()
             editorRead.putString("ID", matchId)
             editorRead.apply()
-            unread_count = dd2.toString()
+            unreadCount = dd2.toString()
         }
-        ///////////////// loading..
-        val inflater = layoutInflater
-        val view = inflater.inflate(R.layout.progress_dialog, null)
-        dialog = Dialog(this)
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog!!.setContentView(view)
-        dialog!!.setCancelable(false)
-        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-        dialog!!.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-        ///////////////// loading..
+        dialog = LoadingDialog(this).dialog()
+
         val mySharedPreferences = getSharedPreferences("SentRead", Context.MODE_PRIVATE)
         val editor = mySharedPreferences.edit()
-        editor.putInt("Read", Integer.valueOf(unread_count!!.toInt()))
+        editor.putInt("Read", Integer.valueOf(unreadCount!!.toInt()))
         editor.apply()
         name_chat = intent!!.extras!!.getString("nameMatch")
         time_chk = intent!!.extras!!.getString("time_chk")
-        mRecord_real = findViewById<View?>(R.id.record_real) as ImageView
-        Open_menu = findViewById(R.id.menu_button)
+        mRecordReal = findViewById(R.id.record_real)
+        openMenu = findViewById(R.id.menu_button)
         mSendEditText = findViewById(R.id.message)
         menu = findViewById(R.id.menu_app)
-        mRecordStatus = findViewById<View?>(R.id.record_status) as TextView
-        LinearRecord = findViewById<View?>(R.id.Linear_record) as LinearLayout
-        menubar = findViewById(R.id.menubar)
-        linearLayout_oval_send = findViewById<View?>(R.id.oval_send) as LinearLayout
-        mName_chat = findViewById<View?>(R.id.name_chat) as TextView
-        mSend_image = findViewById(R.id.send_image)
+        mRecordStatus = findViewById(R.id.record_status)
+        linearRecord = findViewById(R.id.Linear_record)
+        menuBar = findViewById(R.id.menubar)
+        linearLayoutOvalSend = findViewById(R.id.oval_send)
+        mNameChat = findViewById(R.id.name_chat)
+        mSendImage = findViewById(R.id.send_image)
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         usersDb = FirebaseDatabase.getInstance().reference.child("Users")
         mDatabaseUser = if (intent.hasExtra("Hi")) {
@@ -164,13 +152,13 @@ class ChatActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this@ChatActivity, arrayOf<String?>(
                         Manifest.permission.RECORD_AUDIO), 72)
             } else {
-                if (LinearRecord.visibility == View.GONE) {
+                if (linearRecord.visibility == View.GONE) {
                     proAudio!!.visibility = View.GONE
-                    LinearRecord.visibility = View.VISIBLE
-                    mRecord_real.visibility = View.VISIBLE
+                    linearRecord.visibility = View.VISIBLE
+                    mRecordReal.visibility = View.VISIBLE
                     mRecordStatus.text = "Press to Record"
                 } else {
-                    LinearRecord.visibility = View.GONE
+                    linearRecord.visibility = View.GONE
                 }
                 /*if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         startRecording();
@@ -181,13 +169,13 @@ class ChatActivity : AppCompatActivity() {
                     }*/
             }
         })
-        mRecord_real.setOnTouchListener(OnTouchListener { v, event ->
+        mRecordReal.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
-                //Toast.makeText(ChatActivity.this,"chk",Toast.LENGTH_SHORT).show();
                 mRecordStatus.text = ("00:00")
                 T = Timer()
                 T!!.scheduleAtFixedRate(object : TimerTask() {
+
                     override fun run() {
                         runOnUiThread {
                             ++time_count
@@ -200,131 +188,98 @@ class ChatActivity : AppCompatActivity() {
             } else if (event.action == MotionEvent.ACTION_UP) {
                 T!!.cancel()
                 stopRecording()
-                mRecord_real.visibility = (View.GONE)
+                mRecordReal.visibility = (View.GONE)
                 proAudio!!.visibility = (View.VISIBLE)
                 mRecordStatus.text = ("Uploading.....")
             }
             true
-        })
+        }
         back.setOnClickListener(View.OnClickListener { onBackPressed() })
-        menubar.setOnClickListener(View.OnClickListener { v ->
+        menuBar.setOnClickListener(View.OnClickListener { v ->
             val dd = PopupMenu(this@ChatActivity, v)
             dd.menuInflater.inflate(R.menu.menu_bar, dd.menu)
             dd.gravity = Gravity.END
             dd.setOnMenuItemClickListener { item ->
-                if (item.itemId == R.id.menu_unmatch) {
-                    Alerter.create(this@ChatActivity)
-                            .setTitle(getString(R.string.cancel_match2))
-                            .setText(getString(R.string.cancel_match_confirm))
-                            .setIconColorFilter(Color.parseColor("#FFFFFF"))
-                            .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                            .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
-                            .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
-                            .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
-                                Alerter.hide()
-                                deletechild()
-                            })
-                            .show()
-                } else if (item.itemId == R.id.menu_delete) {
-                    val choice_text = resources.getStringArray(R.array.report_item)
-                    val checked_item = BooleanArray(choice_text.size)
-                    val builder = AlertDialog.Builder(this@ChatActivity)
-                    builder.setTitle(R.string.dialog_reportUser)
-                    builder.setMultiChoiceItems(R.array.report_item, checked_item) { dialog, which, isChecked ->
-                        checked_item[which] = isChecked
-                        val item = choice_text[which]
+                when (item.itemId) {
+                    R.id.menu_unmatch -> {
+                        Alerter.create(this@ChatActivity)
+                                .setTitle(getString(R.string.cancel_match2))
+                                .setText(getString(R.string.cancel_match_confirm))
+                                .setIconColorFilter(Color.parseColor("#FFFFFF"))
+                                .setBackgroundColorInt(Color.parseColor("#FF5050"))
+                                .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
+                                .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
+                                .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
+                                    Alerter.hide()
+                                    deletechild()
+                                })
+                                .show()
                     }
-                    builder.setPositiveButton(getString(R.string.dialog_report)) { dialog, which ->
-                        return_d = 0
-                        i = 0
-                        while (i < choice_text.size) {
-                            val checked = checked_item[i]
-                            if (checked) {
-                                update(i.toString())
-                            }
-                            i++
-                        }
-                        UpdateDate()
+                    R.id.menu_delete -> {
+                        val mDialog = ReportUser(this@ChatActivity, matchId!!).reportDialog()
+                        mDialog.show()
                     }
-                    builder.setNegativeButton(R.string.cancle) { dialog, which -> dialog.dismiss() }
-                    val mDialog = builder.create()
-                    mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@ChatActivity, R.drawable.myrect2))
-                    mDialog.show()
-                } else if (item.itemId == R.id.delete_chat) {
-                    Alerter.create(this@ChatActivity)
-                            .setTitle(getString(R.string.delete_message_all))
-                            .setText(getString(R.string.delete_message_all_confirm))
-                            .setIconColorFilter(Color.parseColor("#FFFFFF"))
-                            .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                            .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
-                            .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
-                            .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
-                                Alerter.hide()
-                                val GetStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
-                                GetStart.setValue(FetchId!!.get(FetchId!!.size - 1))
-                                val prefs1 = getSharedPreferences(chatId, Context.MODE_PRIVATE)
-                                val allPrefs = prefs1.all
-                                val set = allPrefs.keys
-                                for (s in set) {
-                                    Log.d("Id1", s)
-                                    getSharedPreferences(s, Context.MODE_PRIVATE).edit().clear().apply()
-                                }
-                                getSharedPreferences(chatId, Context.MODE_PRIVATE).edit().clear().apply()
-                                FetchId.clear()
-                                start = "null"
-                                sizePre = 0
-                                resultChat!!.clear()
-                                mChatAdapter.notifyDataSetChanged()
-                                val RemoveNotification = getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
-                                val editorRead = RemoveNotification.edit()
-                                editorRead.putString("ID", matchId)
-                                editorRead.apply()
-                            })
-                            .show()
-                } else {
-                    Toast.makeText(this@ChatActivity, "" + item, Toast.LENGTH_SHORT).show()
+                    R.id.delete_chat -> {
+                        Alerter.create(this@ChatActivity)
+                                .setTitle(getString(R.string.delete_message_all))
+                                .setText(getString(R.string.delete_message_all_confirm))
+                                .setIconColorFilter(Color.parseColor("#FFFFFF"))
+                                .setBackgroundColorInt(Color.parseColor("#FF5050"))
+                                .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
+                                .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
+                                .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
+                                    Alerter.hide()
+                                    val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
+                                    getStart.setValue(FetchId!![FetchId!!.size - 1])
+                                    val prefs1 = getSharedPreferences(chatId, Context.MODE_PRIVATE)
+                                    val allPrefs = prefs1.all
+                                    val set = allPrefs.keys
+                                    for (s in set) {
+                                        Log.d("Id1", s)
+                                        getSharedPreferences(s, Context.MODE_PRIVATE).edit().clear().apply()
+                                    }
+                                    getSharedPreferences(chatId, Context.MODE_PRIVATE).edit().clear().apply()
+                                    FetchId.clear()
+                                    start = "null"
+                                    sizePre = 0
+                                    resultChat!!.clear()
+                                    mChatAdapter.notifyDataSetChanged()
+                                    val removeNotification = getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
+                                    val editorRead = removeNotification.edit()
+                                    editorRead.putString("ID", matchId)
+                                    editorRead.apply()
+                                })
+                                .show()
+                    }
+                    else -> {
+                        Toast.makeText(this@ChatActivity, "" + item, Toast.LENGTH_SHORT).show()
+                    }
                 }
                 true
             }
             dd.setOnDismissListener { }
             dd.show()
         })
-        profile.setOnClickListener(View.OnClickListener {
+        profile.setOnClickListener {
             val intent = Intent(applicationContext, ProfileUserOppositeActivity2::class.java)
             intent.putExtra("madoo", "1")
             intent.putExtra("User_opposite", matchId)
             startActivity(intent)
-        })
-        /* setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("555");
-        getSupportActionBar().setIcon(R.drawable.maicar);
-        int imageHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
-        Glide.with(this).asDrawable().load(R.drawable.maicar).apply(new RequestOptions().circleCrop()).override(imageHeight, imageHeight).into(new CustomTarget<Drawable>() {
-            @Override
-            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                getSupportActionBar().setIcon(resource);
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-            }
-        });*/
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Open_menu.setOnClickListener(View.OnClickListener {
+        }
+        openMenu.setOnClickListener {
             if (menu.visibility == View.GONE) {
-                Open_menu.visibility = View.GONE
+                openMenu.visibility = View.GONE
                 menu.visibility = View.VISIBLE
             }
-        })
+        }
         getImageProfile()
-        mName_chat.text = name_chat
+        mNameChat.text = name_chat
         mRecyclerView = findViewById<View?>(R.id.recyclerView_2) as RecyclerView
         val mChatLayoutManager = LinearLayoutManager(this@ChatActivity)
         mRecyclerView.layoutManager = mChatLayoutManager
         mChatAdapter = ChatAdapter(getDataSetChat(), this@ChatActivity)
         mSendButton = findViewById(R.id.send)
-        mSend_image.setOnClickListener(View.OnClickListener {
+        mSendImage.setOnClickListener(View.OnClickListener {
             val intent = Intent()
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.type = "image/*"
@@ -334,7 +289,7 @@ class ChatActivity : AppCompatActivity() {
         mSendEditText!!.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.toString().length > 0) {
+                if (s.toString().isNotEmpty()) {
                     mSendButton.background = ContextCompat.getDrawable(this@ChatActivity, R.drawable.chat_after)
                     mSendButton.rotation = 0f
                 } else {
@@ -349,22 +304,22 @@ class ChatActivity : AppCompatActivity() {
             override fun onImeBack(ctrl: CustomEdittext?, text: String?) {
                 menu.visibility = View.VISIBLE
                 mSendEditText!!.clearFocus()
-                Open_menu.visibility = View.GONE
+                openMenu.visibility = View.GONE
             }
         })
         mSendEditText!!.setOnFocusChangeListener { view, b ->
             if (b) {
-                LinearRecord.visibility = View.GONE
+                linearRecord.visibility = View.GONE
                 menu.visibility = View.GONE
-                Open_menu.visibility = View.VISIBLE
+                openMenu.visibility = View.VISIBLE
             } else {
                 menu.visibility = View.VISIBLE
-                Open_menu.visibility = View.GONE
+                openMenu.visibility = View.GONE
             }
         }
         mSendButton.setOnClickListener(View.OnClickListener { sendMessage() })
-        linearLayout_oval_send.setOnClickListener(View.OnClickListener { sendMessage() })
-        mCamera_open.setOnClickListener(View.OnClickListener {
+        linearLayoutOvalSend.setOnClickListener(View.OnClickListener { sendMessage() })
+        mCameraOpen.setOnClickListener(View.OnClickListener {
             if (ActivityCompat.checkSelfPermission(this@ChatActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@ChatActivity, arrayOf<String?>(
                         Manifest.permission.CAMERA), 2)
@@ -377,15 +332,6 @@ class ChatActivity : AppCompatActivity() {
             }
         })
     }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == MY_PERMISSIONS_REQUEST_READ_MEDIA) {
-            if (grantResults.size > 0 && grantResults!!.get(0) == PackageManager.PERMISSION_GRANTED) {
-            }
-        }
-    }
-
 
     private fun getImageProfile() {
         mDatabaseImage!!.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -404,19 +350,15 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
-        val sendMessageText = mSendEditText!!.getText().toString()
+        val sendMessageText = mSendEditText!!.text.toString()
         if (!sendMessageText.isEmpty()) {
-            val calendar = Calendar.getInstance()
-            val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-            val time_user = currentTime.format(calendar.time)
-            val currentDate = SimpleDateFormat("dd/MM/yyyy")
-            val date_user = currentDate.format(calendar.time)
+            val d = DateTime
             val newMessageDb = mDatabaseChat!!.push()
             val newMessage = hashMapOf(
                     "createByUser" to currentUserId,
                     "text" to sendMessageText,
-                    "time" to time_user,
-                    "date" to date_user,
+                    "time" to d.time(),
+                    "date" to d.date(),
                     "read" to "Unread")
             newMessageDb.setValue(newMessage)
         }
@@ -429,7 +371,7 @@ class ChatActivity : AppCompatActivity() {
                 if (dataSnapshot.exists()) {
                     chatId = dataSnapshot.value.toString()
                     mDatabaseChat = mDatabaseChat!!.child(chatId.toString())
-                    user_database = FirebaseDatabase.getInstance().reference.child("Chat").child(chatId.toString())
+                    userDatabase = FirebaseDatabase.getInstance().reference.child("Chat").child(chatId.toString())
                     fetch_sharedPreference()
                     //getCount()
                 }
@@ -523,7 +465,7 @@ class ChatActivity : AppCompatActivity() {
         }
         for (s in set) {
             Log.d("Id2", "" + prefs.getInt(s, 0))
-            FetchId!!.set(prefs.getInt(s, 0) - 1, s)
+            FetchId!![prefs.getInt(s, 0) - 1] = s
         }
         sizePre = FetchId!!.size
         SetMessage()
@@ -535,34 +477,33 @@ class ChatActivity : AppCompatActivity() {
             var message: String
             var createdByUser: String
             var time: String
-            var url_send = "default"
+            var urlSend = "default"
             var audio: String
             var read: String
-            var audio_length: String
-            val MyInNode = getSharedPreferences(FetchId.elementAt(i), Context.MODE_PRIVATE)
-            message = MyInNode.getString("text", "null")!!
-            read = MyInNode.getString("read", "null")!!
-            createdByUser = MyInNode.getString("createByUser", "null")!!
-            time = MyInNode.getString("time", "null")!!
-            val Check = MyInNode.getString("image", "null")
+            var audioLength: String
+            val myInNode = getSharedPreferences(FetchId.elementAt(i), Context.MODE_PRIVATE)
+            message = myInNode.getString("text", "null")!!
+            read = myInNode.getString("read", "null")!!
+            createdByUser = myInNode.getString("createByUser", "null")!!
+            time = myInNode.getString("time", "null")!!
+            val check = myInNode.getString("image", "null")
             Log.d("text_chat", message)
-            if (Check != "default" && Check != "null") {
+            if (check != "default" && check != "null") {
                 ++chk2
-                url_send = MyInNode.getString("image", "null")!!
+                urlSend = myInNode.getString("image", "null")!!
             }
-            audio = MyInNode.getString("audio", "null")!!
-            audio_length = MyInNode.getString("audio_length", "null")!!
-            if (createdByUser != null && time != null) {
-                var currentUserBoolean = false
-                if (createdByUser == currentUserId) {
-                    currentUserBoolean = true
-                } else if (c == FetchId.size) {
-                    if (createdByUser != currentUserId)
-                        Chat_check_read()
-                }
-                val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, url_send, chk2, matchId, audio, audio_length, currentUserId)
-                resultChat!!.add(newMessage)
-                ++chk
+            audio = myInNode.getString("audio", "null")!!
+            audioLength = myInNode.getString("audio_length", "null")!!
+            var currentUserBoolean = false
+            if (createdByUser == currentUserId) {
+                currentUserBoolean = true
+            } else if (c == FetchId.size) {
+                if (createdByUser != currentUserId)
+                    Chat_check_read()
+            }
+            val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
+            resultChat!!.add(newMessage)
+            ++chk
                 if (FetchId.size == chk) {
                     mChatAdapter.notifyDataSetChanged()
                     mRecyclerView.adapter = mChatAdapter
@@ -570,21 +511,21 @@ class ChatActivity : AppCompatActivity() {
                     pro!!.visibility = View.INVISIBLE
                     count_node_d = FetchId.size
                 }
-            }
+
         }
         getFirstNode()
     }
 
     private fun getChatMessages() {
-        var ChatDatabase: Query? = mDatabaseChat
+        var chatDatabase: Query? = mDatabaseChat
         if (FetchId!!.size > 0) {
             Toast.makeText(this@ChatActivity, "Size > 1 :" + FetchId.elementAt(FetchId.size - 1), Toast.LENGTH_SHORT).show()
-            ChatDatabase = mDatabaseChat!!.orderByKey().startAt(FetchId.elementAt(FetchId.size - 1))
+            chatDatabase = mDatabaseChat!!.orderByKey().startAt(FetchId.elementAt(FetchId.size - 1))
         } else if (start != "null" && FetchId.size == 0) {
             Toast.makeText(this@ChatActivity, "Size == 0 :$start", Toast.LENGTH_SHORT).show()
-            ChatDatabase = mDatabaseChat!!.orderByKey().startAt(start)
+            chatDatabase = mDatabaseChat!!.orderByKey().startAt(start)
         }
-        ChatDatabase!!.addChildEventListener(object : ChildEventListener {
+        chatDatabase!!.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 if (dataSnapshot.exists()) {
                     if (FetchId.size > 0) {
@@ -671,11 +612,11 @@ class ChatActivity : AppCompatActivity() {
                         var message: String? = null
                         var createdByUser: String? = null
                         var time: String? = null
-                        var url_send = "default"
+                        var urlSend = "default"
                         var audio = "null"
-                        var audio_length = "null"
+                        var audioLength = "null"
                         var read = "null"
-                        Log.d("unsave", dataSnapshot.key)
+                        Log.d("unsave", dataSnapshot.key.toString())
                         //Toast.makeText(this@ChatActivity,read,Toast.LENGTH_LONG).show()
                         if (dataSnapshot.child("read").value != null) {
                             read = dataSnapshot.child("read").value.toString()
@@ -690,29 +631,29 @@ class ChatActivity : AppCompatActivity() {
                             time = dataSnapshot.child("time").value.toString()
                         }
                         if (dataSnapshot.child("image").value != null) {
-                            url_send = dataSnapshot.child("image").value.toString()
+                            urlSend = dataSnapshot.child("image").value.toString()
                             ++chk2
                         }
                         if (dataSnapshot.child("audio").value != null) {
                             audio = dataSnapshot.child("audio").value.toString()
-                            audio_length = dataSnapshot.child("audio_length").value.toString()
+                            audioLength = dataSnapshot.child("audio_length").value.toString()
                         }
-                        val ChatMessageStored = getSharedPreferences(chatId, Context.MODE_PRIVATE)
-                        val editorRead = ChatMessageStored.edit()
+                        val chatMessageStored = getSharedPreferences(chatId, Context.MODE_PRIVATE)
+                        val editorRead = chatMessageStored.edit()
                         editorRead.putInt(dataSnapshot.key, ++sizePre)
                         //Toast.makeText(ChatActivity.this,"UnSave"+(sizePre),Toast.LENGTH_SHORT).show();
                         FetchId.add(dataSnapshot.key)
                         editorRead.apply()
-                        val NodeChatMessageStored = getSharedPreferences(dataSnapshot.key, Context.MODE_PRIVATE)
-                        val NodeEditorRead = NodeChatMessageStored.edit()
-                        NodeEditorRead.putString("text", message)
-                        NodeEditorRead.putString("time", time)
-                        NodeEditorRead.putString("createByUser", createdByUser)
-                        NodeEditorRead.putString("image", url_send)
-                        NodeEditorRead.putString("audio", audio)
-                        NodeEditorRead.putString("audio_length", audio_length)
-                        NodeEditorRead.putString("read", read)
-                        NodeEditorRead.apply()
+                        val nodeChatMessageStored = getSharedPreferences(dataSnapshot.key, Context.MODE_PRIVATE)
+                        val nodeEditorRead = nodeChatMessageStored.edit()
+                        nodeEditorRead.putString("text", message)
+                        nodeEditorRead.putString("time", time)
+                        nodeEditorRead.putString("createByUser", createdByUser)
+                        nodeEditorRead.putString("image", urlSend)
+                        nodeEditorRead.putString("audio", audio)
+                        nodeEditorRead.putString("audio_length", audioLength)
+                        nodeEditorRead.putString("read", read)
+                        nodeEditorRead.apply()
                         if (createdByUser != null && time != null) {
                             var currentUserBoolean = false
                             if (createdByUser == currentUserId) {
@@ -724,7 +665,7 @@ class ChatActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                            val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, url_send, chk2, matchId, audio, audio_length, currentUserId)
+                            val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
                             resultChat!!.add(newMessage)
                             mChatAdapter.notifyDataSetChanged()
                             ++chk
@@ -772,15 +713,11 @@ class ChatActivity : AppCompatActivity() {
                 val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
                 filepath.downloadUrl.addOnSuccessListener { uri ->
                     val newMessageDb = mDatabaseChat!!.push()
-                    val calendar = Calendar.getInstance()
-                    val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                    val time_user = currentTime.format(calendar.time)
-                    val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                    val date_user = currentDate.format(calendar.time)
+                    val d = DateTime
                     val newMessage = hashMapOf(
                             "createByUser" to currentUserId,
-                            "time" to time_user,
-                            "date" to date_user,
+                            "time" to d.time(),
+                            "date" to d.date(),
                             "text" to "photo$currentUserId",
                             "read" to "Unread",
                             "image" to uri.toString())
@@ -812,15 +749,11 @@ class ChatActivity : AppCompatActivity() {
                 val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
                 filepath.downloadUrl.addOnSuccessListener { uri ->
                     val newMessageDb = mDatabaseChat!!.push()
-                    val calendar = Calendar.getInstance()
-                    val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-                    val time_user = currentTime.format(calendar.time)
-                    val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                    val date_user = currentDate.format(calendar.time)
+                    val d = DateTime
                     val newMessage = hashMapOf(
                             "createByUser" to currentUserId,
-                            "time" to time_user,
-                            "date" to date_user,
+                            "time" to d.time(),
+                            "date" to d.date(),
                             "text" to "photo$currentUserId",
                             "read" to "Unread",
                             "image" to uri.toString())
@@ -861,7 +794,7 @@ class ChatActivity : AppCompatActivity() {
         ss2.putFile(uri).addOnSuccessListener {
             ss2.downloadUrl.addOnSuccessListener { uri ->
                 Toast.makeText(this@ChatActivity, "Success", Toast.LENGTH_SHORT).show()
-                LinearRecord.visibility = View.GONE
+                linearRecord.visibility = View.GONE
                 val downloadUrl = uri
                 val newMessageDb = mDatabaseChat!!.push()
                 val calendar = Calendar.getInstance()
@@ -885,8 +818,8 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         mSendEditText!!.clearFocus()
-        if (LinearRecord.visibility == View.VISIBLE) {
-            LinearRecord.visibility = View.GONE
+        if (linearRecord.visibility == View.VISIBLE) {
+            linearRecord.visibility = View.GONE
         } else {
             super.onBackPressed()
             if (intent.hasExtra("chat_na")) {
@@ -933,85 +866,6 @@ class ChatActivity : AppCompatActivity() {
         })
     }
 
-    private fun update(Child: String?) {
-        usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val date_user: String
-                val date_user_before: String
-                var date_before = 0
-                var date_after = 0
-                val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                val calendar = Calendar.getInstance()
-                date_user = currentDate.format(calendar.time)
-                val after = date_user.substring(0, 2)
-                date_after = Integer.valueOf(after)
-                if (dataSnapshot.child(currentUserId.toString()).child("PutReportId").hasChild(matchId.toString())) {
-                    date_user_before = dataSnapshot.child(currentUserId.toString()).child("PutReportId").child(matchId.toString()).child("date").value.toString()
-                    val before = date_user_before.substring(0, 2)
-                    date_before = Integer.valueOf(before)
-                } else {
-                    date_before = -1
-                }
-                if (date_before != date_after || date_before == -1) {
-                    if (return_d == 0) {
-                        return_d = -1
-                        Alerter.create(this@ChatActivity)
-                                .setTitle(getString(R.string.report_suc))
-                                .setText(getString(R.string.report_suc2))
-                                .setBackgroundColorInt(Color.parseColor("#7AFFCF"))
-                                .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_check)!!)
-                                .show()
-                    }
-                    if (!dataSnapshot.child(matchId.toString()).hasChild("Report")) {
-                        val jj = hashMapOf(
-                                Child to "1")
-                        usersDb!!.child(matchId.toString()).child("Report").updateChildren(jj as Map<String, Any>)
-                    } else if (dataSnapshot.child(matchId.toString()).hasChild("Report")) {
-                        if (dataSnapshot.child(matchId.toString()).child("Report").hasChild(Child.toString())) {
-                            val count_rep = Integer.valueOf(dataSnapshot.child(matchId.toString()).child("Report").child(Child.toString()).value.toString()) + 1
-                            val input_count = count_rep.toString()
-                            val jj = hashMapOf(
-                                    Child to input_count)
-                            usersDb!!.child(matchId.toString()).child("Report").updateChildren(jj as Map<String, Any>)
-                        } else {
-                            val jj = hashMapOf(
-                                    Child to "1")
-                            usersDb!!.child(matchId.toString()).child("Report").updateChildren(jj as Map<String, Any>)
-                        }
-                    }
-                } else {
-                    if (return_d == 0) {
-                        return_d = -1
-                        Alerter.create(this@ChatActivity)
-                                .setTitle(getString(R.string.report_failed))
-                                .setText(getString(R.string.report_fail))
-                                .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                                .setIcon(ContextCompat.getDrawable(applicationContext, R.drawable.ic_do_not_disturb_black_24dp)!!)
-                                .show()
-                        val builder = AlertDialog.Builder(this@ChatActivity)
-                        val view = LayoutInflater.from(this@ChatActivity).inflate(R.layout.alert_dialog, null)
-                        val title = view.findViewById<View?>(R.id.title_alert) as TextView
-                        val li = view.findViewById<View?>(R.id.linear_alert) as LinearLayout
-                        val icon = view.findViewById<View?>(R.id.icon_alert) as ImageView
-                        val message = view.findViewById<View?>(R.id.message_alert) as TextView
-                        val dis = view.findViewById<View?>(R.id.dis_alert) as TextView
-                        val yes = view.findViewById<View?>(R.id.yes_alert) as TextView
-                        yes.setText(R.string.report_close)
-                        li.gravity = Gravity.CENTER
-                        dis.visibility = View.GONE
-                        title.setText(R.string.report_alert)
-                        message.setText(R.string.report_reset)
-                        icon.background = ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)
-                        builder.setView(view)
-                        val mDialog = builder.show()
-                        yes.setOnClickListener { mDialog.dismiss() }
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
 
     private fun UpdateDate() {
         val date_user: String
