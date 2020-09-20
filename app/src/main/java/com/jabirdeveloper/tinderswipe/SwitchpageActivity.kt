@@ -57,6 +57,7 @@ class SwitchpageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_switch_page)
         j1.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             getMyUser()
+            getUnreadFunction()
         }
         //questionCalculate()
         bar = findViewById(R.id.bar2)
@@ -152,7 +153,27 @@ class SwitchpageActivity : AppCompatActivity() {
             }
         })
     }
-
+    fun getUnreadFunction(): Task<HttpsCallableResult> {
+        val data = hashMapOf(
+                "uid" to "test"
+        )
+        return functions
+                .getHttpsCallable("getUnreadChat")
+                .call(data)
+                .addOnSuccessListener { task ->
+                    val data = task.data as Map<*, *>
+                    Log.d("testGetUnreadFunction", data.toString())
+                    val count = data["resultSum"].toString()
+                    val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                    val editorRead = myUnread2.edit()
+                    editorRead.putInt("total",count.toInt() )
+                    editorRead.apply()
+                    setCurrentIndex(count.toInt())
+                }
+                .addOnFailureListener {
+                    Log.d("testGetUnreadFunction", "error")
+                }
+    }
     fun questionCalculate(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
