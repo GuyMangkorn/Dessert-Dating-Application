@@ -20,6 +20,10 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import hearsilent.discreteslider.DiscreteSlider
 import hearsilent.discreteslider.DiscreteSlider.OnValueChangedListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -58,6 +62,9 @@ class Setting2Activity : AppCompatActivity() {
     private var valCh = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CoroutineScope(Job()).launch(Dispatchers.IO) {
+            getdisAge()
+        }
         setContentView(R.layout.activity_setting2)
         change = findViewById(R.id.change_Language)
         loadLocal()
@@ -78,9 +85,8 @@ class Setting2Activity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         currentUid = mAuth.uid.toString()
         text_seekAge = findViewById(R.id.seek_age_text)
-        getdisAge()
         change.setOnClickListener(View.OnClickListener {
-            val mBuilder = AlertDialog.Builder(this@Setting2Activity, R.style.CustomDialog)
+            val mBuilder = AlertDialog.Builder(this@Setting2Activity)
             mBuilder.setTitle(R.string.language)
             mBuilder.setSingleChoiceItems(order, check_item) { _, which -> //item2 = order[which];
                 selectedPosition = which
@@ -257,14 +263,12 @@ class Setting2Activity : AppCompatActivity() {
         }
 
 
-
-
     }
 
 
     private fun getdisAge() {
-        Getdistance = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
-        Getdistance.addListenerForSingleValueEvent(object : ValueEventListener {
+
+        FirebaseDatabase.getInstance().reference.child("Users").child(FirebaseAuth.getInstance().uid!!).addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 map = HashMap<String, Any>()
@@ -399,7 +403,7 @@ class Setting2Activity : AppCompatActivity() {
             "1"
         } else null
         val currentUserDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
-        val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+        val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
         val userInfo = hashMapOf(
                 "Distance" to value,
                 "off_status" to on_off,
@@ -409,10 +413,10 @@ class Setting2Activity : AppCompatActivity() {
                 "off_card" to card,
                 "off_list" to list
         )
-        MyUser.putInt("OppositeUserAgeMin", minV)
-        MyUser.putInt("OppositeUserAgeMax", maxV)
-        MyUser.putString("OppositeUserSex", gender)
-        MyUser.putString("Distance", value)
+        myUser.putInt("OppositeUserAgeMin", minV)
+        myUser.putInt("OppositeUserAgeMax", maxV)
+        myUser.putString("OppositeUserSex", gender)
+        myUser.putString("Distance", value)
         currentUserDb.updateChildren(userInfo as Map<String, Any>)
         val editor = getSharedPreferences("notification_match", Context.MODE_PRIVATE).edit()
         editor.putString("noti", noti_match)

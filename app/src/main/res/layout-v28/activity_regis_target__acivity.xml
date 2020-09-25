@@ -26,7 +26,7 @@
             android:background="@color/background_white"
             android:theme="@style/AppTheme2"
             app:subtitleTextColor="@color/c2"
-            app:titleTextColor="@color/c2">
+            app:titleTextColor="@color/c4">
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -68,8 +68,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginLeft="60dp"
-            android:layout_marginRight="60dp"
+            android:layout_marginLeft="90dp"
+            android:layout_marginRight="90dp"
             android:elevation="10dp"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -110,14 +110,10 @@
         <Button
             android:id="@+id/button6"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="60dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="60dp"
-            android:background="@drawable/roundlike"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
             android:text="@string/finish"
             android:textColor="@color/cpb_white"
             android:textSize="16dp"

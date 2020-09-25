@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.jabirdeveloper.tinderswipe.R
-import com.jabirdeveloper.tinderswipe.Register.Regis_Sex_Activity
 import com.tapadoo.alerter.Alerter
 
 class Regis_Sex_Activity : AppCompatActivity() {
@@ -28,7 +27,7 @@ class Regis_Sex_Activity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        b3 = findViewById(R.id.button9)
+        b3 = findViewById(R.id.button_name)
         imageView.setOnClickListener(View.OnClickListener {
             imageView.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.male2))
             imageView2.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.female1))

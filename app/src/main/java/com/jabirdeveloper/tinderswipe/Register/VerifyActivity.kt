@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.jabirdeveloper.tinderswipe.Functions.LoadingDialog
 import com.jabirdeveloper.tinderswipe.R
 import com.jabirdeveloper.tinderswipe.SwitchpageActivity
 import com.tapadoo.alerter.Alerter
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit
 class VerifyActivity : AppCompatActivity() {
     private var verificationCodeBysystem: String? = ""
     private lateinit var b1: Button
-    private lateinit var progressBar: ProgressBar
+
     private lateinit var mAuth: FirebaseAuth
     private lateinit var firebaseAuthStateListener: AuthStateListener
     private lateinit var pinGroup: PinView
@@ -51,17 +52,11 @@ class VerifyActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         mAuth = FirebaseAuth.getInstance()
         b1 = findViewById(R.id.button8)
-        progressBar = findViewById(R.id.progressBar)
-        progressBar.visibility = View.GONE
         pinGroup = findViewById(R.id.secondPinView)
         commend = findViewById(R.id.commend)
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.progress_dialog, null)
-        dialog = Dialog(this)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setContentView(view)
-        val width = (resources.displayMetrics.widthPixels * 0.80).toInt()
-        dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+        dialog = LoadingDialog(this).dialog()
         firebaseAuthStateListener = AuthStateListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
@@ -98,7 +93,7 @@ class VerifyActivity : AppCompatActivity() {
                 pinGroup.requestFocus()
                 return@OnClickListener
             }
-            progressBar.visibility = View.VISIBLE
+            dialog.show()
             verifyCode(code)
         })
     }
@@ -127,7 +122,7 @@ class VerifyActivity : AppCompatActivity() {
                         .setText(getString(R.string.logging))
                         .setBackgroundColorRes(R.color.c2)
                         .show()
-                progressBar.visibility = View.VISIBLE
+                dialog.show()
             }
         }
 
@@ -150,42 +145,13 @@ class VerifyActivity : AppCompatActivity() {
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken
         ) {
-            progressBar.visibility = View.VISIBLE
+            dialog.show()
             verificationCodeBysystem = verificationId
 
         }
     }
 
-    private val mCallbacks: OnVerificationStateChangedCallbacks = object : OnVerificationStateChangedCallbacks() {
-        override fun onCodeSent(s: String, forceResendingToken: ForceResendingToken) {
-            super.onCodeSent(s, forceResendingToken)
-            progressBar.visibility = View.VISIBLE
-            verificationCodeBysystem = s
-        }
 
-        override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-            android.util.Log.d("afg", "1")
-            if (verificationCodeBysystem != "") {
-                android.util.Log.d("afg", "2")
-                val code = phoneAuthCredential.smsCode
-                verifyCode(code)
-            } else {
-                android.util.Log.d("afg", "3")
-                singInTheUserByCredentials(phoneAuthCredential)
-                Alerter.create(this@VerifyActivity)
-                        .setTitle(getString(R.string.Sign))
-                        .setText(getString(R.string.logging))
-                        .setBackgroundColorRes(R.color.c2)
-                        .show()
-                progressBar.visibility = View.VISIBLE
-            }
-        }
-
-        override fun onVerificationFailed(e: FirebaseException) {
-            Toast.makeText(this@VerifyActivity, "ชิบหายย", Toast.LENGTH_SHORT).show()
-
-        }
-    }
 
     private fun verifyCode(codeByUser: String?) {
         val credential = PhoneAuthProvider.getCredential(verificationCodeBysystem!!, codeByUser!!)
@@ -196,7 +162,6 @@ class VerifyActivity : AppCompatActivity() {
     private fun singInTheUserByCredentials(credential: PhoneAuthCredential?) {
         mAuth.signInWithCredential(credential!!).addOnCompleteListener(this@VerifyActivity) { task ->
             if (task.isSuccessful) {
-                progressBar.visibility = View.GONE
                 dialog.show()
             } else {
                 Toast.makeText(this@VerifyActivity, "ชิบหายยยยยยยย", Toast.LENGTH_SHORT).show()

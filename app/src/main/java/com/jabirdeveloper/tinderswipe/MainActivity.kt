@@ -71,9 +71,9 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private var distance = 0.0
     private var xUser = 0.0
     private var yUser = 0.0
-    private lateinit var like: FloatingActionButton
-    private lateinit var dislike: FloatingActionButton
-    private lateinit var star: FloatingActionButton
+    private lateinit var like: Button
+    private lateinit var dislike: Button
+    private lateinit var star: Button
     private lateinit var layout_gps: ConstraintLayout
     private lateinit var anime1: ImageView
     private lateinit var anime2: ImageView
@@ -591,12 +591,14 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             rowItem.add(Cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
 
         }
-
-        if (type)
-            arrayAdapter.notifyDataSetChanged()
-        else {
-            arrayAdapter.notifyItemRangeChanged(count, rowItem.size)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            if (type)
+                arrayAdapter.notifyDataSetChanged()
+            else {
+                arrayAdapter.notifyItemRangeChanged(count, rowItem.size)
+            }
         }
+
     }
 
 

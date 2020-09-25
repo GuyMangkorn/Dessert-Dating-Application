@@ -7,6 +7,8 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -54,6 +56,9 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
     private lateinit var dialog: Dialog
     private lateinit var dialog2: Dialog
     override fun onCreate(savedInstanceState: Bundle?) {
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_choose_login_registration)

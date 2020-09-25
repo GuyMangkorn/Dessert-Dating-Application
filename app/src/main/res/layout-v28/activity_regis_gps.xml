@@ -24,7 +24,7 @@
             android:background="@color/background_white"
             android:theme="@style/AppTheme2"
             app:subtitleTextColor="@color/c2"
-            app:titleTextColor="@color/c2">
+            app:titleTextColor="@color/c4">
 
         </androidx.appcompat.widget.Toolbar>
 

@@ -30,7 +30,9 @@ import com.google.android.flexbox.FlexboxLayout
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
@@ -92,6 +94,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_setting)
+        getUserinfo()
         editname = findViewById(R.id.name)
         editcareer = findViewById(R.id.career)
         editstudy = findViewById(R.id.study)
@@ -133,7 +136,6 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         mAuth = FirebaseAuth.getInstance()
         userId = mAuth.currentUser!!.uid
         mUserDatabase = FirebaseDatabase.getInstance().reference.child("Users").child(userId)
-        getUserinfo()
         listItems = resources.getStringArray(R.array.shopping_item)
         checkedItems = BooleanArray(listItems.size)
         listItems2 = resources.getStringArray(R.array.pasa_item)
@@ -293,7 +295,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getUserinfo() {
-        mUserDatabase.addListenerForSingleValueEvent(object : ValueEventListener {
+        FirebaseDatabase.getInstance().reference.child("Users").child(Firebase.auth.uid!!).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.childrenCount > 0) {
                     map = dataSnapshot.value as MutableMap<*, *>

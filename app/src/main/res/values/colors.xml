@@ -12,10 +12,10 @@
     <color name="text_black_gray">#292929</color>
     <color name="background_gray">#F1F1F1</color>
     <color name="background_white">#FFFDFA</color>
-    <color name="pink">#D941FF</color>
+    <color name="pink">#FFCA28</color>
     <color name="white_tran">#80FFFFFF</color>
     <color name="red">#FF004E</color>
-
+    <color name="white">#FFFFFF</color>
     <integer-array name="google_glyph_colors">
         <item>@color/text_black_gray</item>
     </integer-array>

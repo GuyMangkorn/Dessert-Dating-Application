@@ -89,9 +89,9 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private var yUser = 0.0
     private var xOpposite = 0.0
     private var yOpposite = 0.0
-    private lateinit var like: FloatingActionButton
-    private lateinit var dislike: FloatingActionButton
-    private lateinit var star: FloatingActionButton
+    private lateinit var like: Button
+    private lateinit var dislike: Button
+    private lateinit var star: Button
     private var i = 0
     private var chk = 11
     private lateinit var viewPager: WrapContentHeightViewPager

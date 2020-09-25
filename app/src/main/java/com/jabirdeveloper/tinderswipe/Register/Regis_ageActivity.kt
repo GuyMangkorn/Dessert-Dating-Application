@@ -12,7 +12,6 @@ import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.jabirdeveloper.tinderswipe.R
-import com.jabirdeveloper.tinderswipe.Register.Regis_ageActivity
 import com.tapadoo.alerter.Alerter
 import java.time.LocalDate
 import java.time.Period
@@ -36,7 +35,7 @@ class Regis_ageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         loadLocal()
         setContentView(R.layout.activity_regis_age)
-        button = findViewById(R.id.button11)
+        button = findViewById(R.id.button_name)
         toolbar = findViewById(R.id.my_tools)
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)

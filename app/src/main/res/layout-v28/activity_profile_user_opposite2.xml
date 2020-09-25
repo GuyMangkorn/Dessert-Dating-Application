@@ -481,51 +481,63 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/dislike_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/cpb_white"
-            android:clickable="true"
-            android:outlineSpotShadowColor="@color/text_gray"
-            android:elevation="4dp"
-            app:borderWidth="0dp"
-            app:maxImageSize="22dp"
-            app:rippleColor="@color/text_gray"
-            app:srcCompat="@drawable/ic_close2" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="30dp"
+            app:iconTint="@null"
+            app:icon="@drawable/ic_close2"
+            app:iconSize="24dp"
+            app:iconGravity="textStart"
+            android:padding="0dp"
+            app:iconPadding="0dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:backgroundTint="#FFFFFF"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/star_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/cpb_white"
-            android:outlineSpotShadowColor="@color/text_gray"
-            android:elevation="4dp"
-            android:clickable="true"
-            app:borderWidth="0dp"
-            app:rippleColor="#80FF3774"
-            app:maxImageSize="26dp"
-            app:srcCompat="@drawable/ic_star" />
+            android:layout_marginBottom="8dp"
+            app:iconTint="@null"
+            app:icon="@drawable/ic_star"
+            app:iconSize="24dp"
+            app:iconGravity="textStart"
+            android:padding="0dp"
+            app:iconPadding="0dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:backgroundTint="#FFFFFF"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/like_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/cpb_white"
-            android:clickable="true"
-            app:borderWidth="0dp"
-            android:outlineSpotShadowColor="@color/text_gray"
-            android:elevation="4dp"
-            app:rippleColor="#80FFB700"
-            app:maxImageSize="26dp"
-            app:srcCompat="@drawable/ic_heart" />
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="8dp"
+            app:iconTint="@null"
+            app:icon="@drawable/ic_heart"
+            app:iconSize="24dp"
+            app:iconGravity="textStart"
+            android:padding="0dp"
+            app:iconPadding="0dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:backgroundTint="#FFFFFF"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle" />
     </LinearLayout>
 
 
