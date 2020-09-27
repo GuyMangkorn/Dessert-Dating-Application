@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:background="@drawable/a1"
+        android:background="@drawable/a88"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -36,26 +36,22 @@
             android:layout_height="wrap_content"
             android:text="Dessert"
             android:textSize="40dp"
-            android:shadowColor="#7F000000"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            android:letterSpacing="0.05"
-            android:textColor="#FFFFFF"
+
+            android:letterSpacing="0.085"
+            android:textColor="@color/text_black_gray"
             android:layout_marginTop="10dp"
 
             />
         <TextView
+
             android:id="@+id/clickToTest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Click to testLogin"
-            android:shadowColor="#7F000000"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            android:textColor="#FFFFFF"
+
+            android:textColor="@color/text_black_gray"
             android:textSize="18dp"
+
             android:layout_marginTop="20dp"
             />
         <LinearLayout
@@ -113,7 +109,7 @@
                 android:layout_width="20dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#80FFFFFF"
+                android:background="#80000000"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -122,18 +118,16 @@
                 android:textSize="18dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:shadowColor="#7F000000"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
-                android:textColor="#FFFFFF"
+
+
+                android:textColor="@color/text_black_gray"
 
                 />
             <View
                 android:layout_width="20dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#80FFFFFF"
+                android:background="#80000000"
                 />
         </LinearLayout>
 

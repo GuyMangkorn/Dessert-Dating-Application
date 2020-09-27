@@ -90,15 +90,6 @@
         </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/progress_bar_pre_pro"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:indicatorColor="#E3FAFF"
-        app:indicatorName="PacmanIndicator"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        />
 
 
 </RelativeLayout>

@@ -33,7 +33,6 @@ class MatchesActivity : Fragment() {
     private var currentUserId: String? = null
     private var dateUser: String? = ""
     private var count = 0
-    private var p1: AVLoadingIndicatorView? = null
     private lateinit var textEmpty: TextView
     private lateinit var chatEmpty: TextView
 
@@ -52,7 +51,6 @@ class MatchesActivity : Fragment() {
         mRecyclerView.layoutManager = mMatchesLayoutManager
         mMatchesAdapter = MatchesAdapter(getDataSetMatches(), context, currentUserId)
         mRecyclerView.adapter = mMatchesAdapter
-        p1 = view.findViewById(R.id.progress_bar_pre_pro)
         mHiRecyclerView = view?.findViewById(R.id.recyclerView2)!!
         mHiRecyclerView.isNestedScrollingEnabled = false
         mHiRecyclerView.setHasFixedSize(true)
@@ -209,7 +207,6 @@ class MatchesActivity : Fragment() {
                 } else {
                     Log.d("test_check_matches", "matches_reject")
                     getUserMarchId()
-                    p1!!.hide()
                     chatEmpty.visibility = View.VISIBLE
                     mRecyclerView.visibility = View.GONE
                 }
@@ -632,7 +629,7 @@ class MatchesActivity : Fragment() {
                     }
                     if (resultMatches?.size == userMatchCount) {
                         mRecyclerView.visibility = View.VISIBLE
-                        p1?.hide()
+
                     }
                     Log.d("chatNotificationTest"," ${resultMatches!!.size} > $userMatchCount")
                     if (resultMatches!!.size > userMatchCount) {

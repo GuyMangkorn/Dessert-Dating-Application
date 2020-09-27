@@ -39,8 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/corner15"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -170,9 +170,9 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        android:paddingLeft="12dp"
+                        android:paddingLeft="20dp"
                         android:paddingTop="10dp"
-                        android:paddingRight="10dp"
+                        android:paddingRight="20dp"
                         android:paddingBottom="10dp"
                         app:ds_count="190"
                         app:ds_inactiveTrackColor="#4D9A9A9A"
@@ -243,7 +243,7 @@
                         android:focusable="true"
                         android:paddingLeft="20dp"
                         android:paddingTop="10dp"
-                        android:paddingRight="10dp"
+                        android:paddingRight="20dp"
                         app:ds_count="53"
                         app:ds_inactiveTrackColor="#4D9A9A9A"
                         app:ds_mode="range"

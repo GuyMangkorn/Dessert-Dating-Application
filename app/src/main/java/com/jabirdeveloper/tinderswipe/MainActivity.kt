@@ -37,7 +37,6 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
@@ -74,15 +73,15 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private lateinit var like: Button
     private lateinit var dislike: Button
     private lateinit var star: Button
-    private lateinit var layout_gps: ConstraintLayout
+    private lateinit var layoutGps: ConstraintLayout
     private lateinit var anime1: ImageView
     private lateinit var anime2: ImageView
     private lateinit var textgps: TextView
     private lateinit var textGps2: TextView
     private lateinit var handler: Handler
-    private var maxlike = 0
-    private var maxstar = 0
-    private var maxadmob = 0
+    private var maxLike = 0
+    private var maxStar = 0
+    private var maxAdmob = 0
     private lateinit var dialog: Dialog
     private var statusVip = false
     private lateinit var rowItem: ArrayList<Cards>
@@ -138,7 +137,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             startActivity(intent)
         }
 
-        layout_gps = view.findViewById(R.id.layout_in)
+        layoutGps = view.findViewById(R.id.layout_in)
         textgps = view.findViewById(R.id.textView8)
         textGps2 = view.findViewById(R.id.textView9)
         touchGps = view.findViewById(R.id.imageView3)
@@ -163,13 +162,13 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 val dateUser = d.date()
 
                 if (direction == Direction.Right) {
-                    if (maxlike > 0 || statusVip) {
+                    if (maxLike > 0 || statusVip) {
                         val datetime = hashMapOf<String, Any>()
                         datetime["date"] = dateUser
                         datetime["time"] = timeUser
                         usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
-                        maxlike--
-                        usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
+                        maxLike--
+                        usersDb.child(currentUid).child("MaxLike").setValue(maxLike)
                         isConnectionMatches(userId)
                     } else {
                         handler.postDelayed(Runnable { cardStackView.rewind() }, 200)
@@ -180,15 +179,15 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     usersDb.child(userId).child("connection").child("nope").child(currentUid).setValue(true)
                 }
                 if (direction == Direction.Top) {
-                    if (maxstar > 0 || statusVip) {
+                    if (maxStar > 0 || statusVip) {
                         val datetime = hashMapOf<String, Any>()
                         datetime["date"] = dateUser
                         datetime["time"] = timeUser
                         datetime["super"] = true
                         usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                         usersDb.child(currentUid).child("star_s").child(userId).setValue(true)
-                        maxstar--
-                        usersDb.child(currentUid).child("MaxStar").setValue(maxstar)
+                        maxStar--
+                        usersDb.child(currentUid).child("MaxStar").setValue(maxStar)
                         isConnectionMatches(userId)
                     } else {
                         handler.postDelayed(Runnable { cardStackView.rewind() }, 200)
@@ -218,7 +217,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
                 }
                 if (arrayAdapter.itemCount >= 1) {
-                    layout_gps.visibility = View.GONE
+                    layoutGps.visibility = View.GONE
                 }
             }
 
@@ -228,7 +227,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 {
                     Log.d("ggg2", "$countEmpty $empty")
                     if(countEmpty == empty-1)
-                        layout_gps.visibility = View.VISIBLE
+                        layoutGps.visibility = View.VISIBLE
                     countEmpty++
                 }
                 countLimit2++
@@ -304,7 +303,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         val b1 = view.findViewById<Button>(R.id.buy)
         val b2 = view.findViewById<Button>(R.id.admob)
         val text = view.findViewById<TextView>(R.id.test_de)
-        if (maxadmob <= 0) {
+        if (maxAdmob <= 0) {
             text.text = "โฆษณาที่คุณสามารถดูได้ในวันนี้หมดแล้ว \n สมัคร Dessert VIP เพื่อรับสิทธิพิเศษ"
             b2.visibility = View.GONE
         }
@@ -332,17 +331,17 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     }
 
                     override fun onUserEarnedReward(@NonNull reward: RewardItem) {
-                        Log.d("TAG", maxlike.toString())
-                        maxlike += 1
-                        maxadmob -= 1
-                        if (maxlike >= 10)
+                        Log.d("TAG", maxLike.toString())
+                        maxLike += 1
+                        maxAdmob -= 1
+                        if (maxLike >= 10)
                             dialog.dismiss()
-                        else if (maxadmob <= 0) {
+                        else if (maxAdmob <= 0) {
                             b2.visibility = View.GONE
                         }
 
-                        usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
-                        usersDb.child(currentUid).child("MaxAdmob").setValue(maxadmob)
+                        usersDb.child(currentUid).child("MaxLike").setValue(maxLike)
+                        usersDb.child(currentUid).child("MaxAdmob").setValue(maxAdmob)
                     }
 
                     override fun onRewardedAdFailedToShow(errorCode: Int) {
@@ -473,9 +472,9 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
         xUser = preferences.getString("X", "").toString().toDouble()
         yUser = preferences.getString("Y", "").toString().toDouble()
-        maxlike = preferences.getInt("MaxLike", 0)
-        maxadmob = preferences.getInt("MaxAdmob", 0)
-        maxstar = preferences.getInt("MaxStar", 0)
+        maxLike = preferences.getInt("MaxLike", 0)
+        maxAdmob = preferences.getInt("MaxAdmob", 0)
+        maxStar = preferences.getInt("MaxStar", 0)
         statusVip = preferences.getBoolean("Vip", false)
         distance = when (preferences.getString("Distance", "Untitled")) {
             "true" -> {
@@ -495,107 +494,112 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     }
 
     private fun callFunctions(limit: Int, type: Boolean, count: Int) {
-        val preferences2 = requireActivity().getSharedPreferences("notification_match", Context.MODE_PRIVATE)
-        notificationMatch = preferences2.getString("noti", "1")
-        var pre = 0
-        if (!type) pre = 0
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val preferences2 = requireActivity().getSharedPreferences("notification_match", Context.MODE_PRIVATE)
+            notificationMatch = preferences2.getString("noti", "1")
+            var pre = 0
+            if (!type) pre = 0
 
-        val data = hashMapOf(
-                "sex" to oppositeUserSex,
-                "min" to oppositeUserAgeMin,
-                "max" to oppositeUserAgeMax,
-                "x_user" to xUser,
-                "y_user" to yUser,
-                "distance" to distance,
-                "limit" to pre + limit,
-                "prelimit" to pre
-        )
-        Log.d("tagkl", data.toString())
+            val data = hashMapOf(
+                    "sex" to oppositeUserSex,
+                    "min" to oppositeUserAgeMin,
+                    "max" to oppositeUserAgeMax,
+                    "x_user" to xUser,
+                    "y_user" to yUser,
+                    "distance" to distance,
+                    "limit" to pre + limit,
+                    "prelimit" to pre
+            )
+            Log.d("tagkl", data.toString())
 
-        functions.getHttpsCallable("get2222")
-                .call(data)
-                .addOnFailureListener { Log.d("ghj", "failed") }
-                .addOnSuccessListener { task ->
-                    // This continuation runs on either success or failure, but if the task
-                    // has failed then result will throw an Exception which will be
-                    // propagated down.
-                    val result1 = task.data as Map<*, *>
-                    resultlimit = result1["o"] as ArrayList<*>
-                    if (resultlimit.isNotEmpty())
-                        getUser(resultlimit, type, count, 10)
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
-                        getUser(resultlimit, type, count, 10)
+            functions.getHttpsCallable("get2222")
+                    .call(data)
+                    .addOnFailureListener { Log.d("ghj", "failed") }
+                    .addOnSuccessListener { task ->
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then result will throw an Exception which will be
+                        // propagated down.
+                        val result1 = task.data as Map<*, *>
+                        resultlimit = result1["o"] as ArrayList<*>
+                        if (resultlimit.isNotEmpty())
+                            getUser(resultlimit, type, count, 10)
+
+
                     }
+        }
 
-                }
     }
 
     private fun getUser(result2: ArrayList<*>, type: Boolean, count: Int, limit: Int) {
-        val preferences = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val language = preferences.getString("My_Lang", "")
-        val ff: Geocoder
-        var addresses: MutableList<Address>
-        ff = if (language == "th") {
-            Geocoder(context)
-        } else {
-            Geocoder(context, Locale.UK)
-        }
-        Log.d("iop", "")
-        var a = countLimit + limit
-        if (result2.size < countLimit + limit)
-            {
-                a = result2.size
-                checkEmpty=true
-                this.empty=result2.size
-            }
-        for (x in countLimit until a) {
-            countLimit++
-            Log.d("iop", "$countLimit ${result2.size}")
-            val user = result2[x] as Map<*, *>
-            Log.d("ghj", user["name"].toString() + " , " + user["distance_other"].toString())
-            var myself = ""
-            var citysend: String? = ""
-            var offStatus = false
-            var vip = false
-            var starS = false
-            val location = user["Location"] as Map<*, *>
-            try {
-                addresses = ff.getFromLocation(location["X"].toString().toDouble(), location["Y"].toString().toDouble(), 1)
-                val city = addresses[0].adminArea
-                citysend = city
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            if (user["myself"] != null) {
-                myself = user["myself"].toString()
-            }
-            if (user["off_status"] != null) {
-                offStatus = true
-            }
-            (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
-            val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default){
+            withContext(Dispatchers.Default){
+                    val preferences = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
+                    val language = preferences.getString("My_Lang", "")
+                    val ff: Geocoder
+                    var addresses: MutableList<Address>
+                    ff = if (language == "th") {
+                        Geocoder(context)
+                    } else {
+                        Geocoder(context, Locale.UK)
+                    }
+                    Log.d("iop", "")
+                    var a = countLimit + limit
+                    if (result2.size < countLimit + limit)
+                    {
+                        a = result2.size
+                        checkEmpty=true
+                        empty=result2.size
+                    }
+                    for (x in countLimit until a) {
+                        countLimit++
+                        Log.d("iop", "$countLimit ${result2.size}")
+                        val user = result2[x] as Map<*, *>
+                        Log.d("ghj", user["name"].toString() + " , " + user["distance_other"].toString())
+                        var myself = ""
+                        var citysend: String? = ""
+                        var offStatus = false
+                        var vip = false
+                        var starS = false
+                        val location = user["Location"] as Map<*, *>
+                        try {
+                            addresses = ff.getFromLocation(location["X"].toString().toDouble(), location["Y"].toString().toDouble(), 1)
+                            val city = addresses[0].adminArea
+                            citysend = city
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                        if (user["myself"] != null) {
+                            myself = user["myself"].toString()
+                        }
+                        if (user["off_status"] != null) {
+                            offStatus = true
+                        }
+                        (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
+                        val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
 
-            var status = "offline"
-            if (user["status"] == 1) {
-                status = "online"
-            }
-            if (user["Vip"] == 1) {
-                vip = true
-            }
+                        var status = "offline"
+                        if (user["status"] == 1) {
+                            status = "online"
+                        }
+                        if (user["Vip"] == 1) {
+                            vip = true
+                        }
 
-            if (user["star_s"] != null) {
-                if ((user["star_s"] as Map<*, *>)[currentUid] != null)
-                    starS = true
-            }
-            dis = df2.format(user["distance_other"])
-            rowItem.add(Cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
+                        if (user["star_s"] != null) {
+                            if ((user["star_s"] as Map<*, *>)[currentUid] != null)
+                                starS = true
+                        }
+                        dis = df2.format(user["distance_other"])
+                        rowItem.add(Cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
 
-        }
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            if (type)
-                arrayAdapter.notifyDataSetChanged()
-            else {
-                arrayAdapter.notifyItemRangeChanged(count, rowItem.size)
+                    }
+                }
+            withContext(Dispatchers.Main){
+                if (type)
+                    arrayAdapter.notifyDataSetChanged()
+                else {
+                    arrayAdapter.notifyItemRangeChanged(count, rowItem.size)
+                }
             }
         }
 

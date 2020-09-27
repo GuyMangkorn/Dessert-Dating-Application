@@ -26,6 +26,7 @@ import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 
 
@@ -71,9 +72,7 @@ class ListCardActivity : Fragment() {
         mRecyclerView.adapter = mMatchesAdapter
         anime1 = view.findViewById(R.id.anime1)
         anime2 = view.findViewById(R.id.anime2)
-
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
-
             percentage()
         }
 
@@ -92,9 +91,10 @@ class ListCardActivity : Fragment() {
                 totalItem = mMatchesLayoutManager.itemCount
                 scrollOutItem = (mMatchesLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-                if (isScroll && currentItem + scrollOutItem == totalItem) {
+                if (isScroll && currentItem + scrollOutItem == totalItem && totalItem >= 20) {
                     isScroll = false
                     if (startNode < countLimit) {
+                        Log.d("ffgh", "$startNode,$countLimit,$currentItem,$totalItem,$scrollOutItem")
                         getUser(resultLimit, startNode, false, resultMatches.size - 1)
                         startNode += 20
                     }
@@ -140,8 +140,8 @@ class ListCardActivity : Fragment() {
     }
 
     private fun getStartAt() {
-        val userdb = FirebaseDatabase.getInstance().reference.child("Users")
-        userdb.addListenerForSingleValueEvent(object : ValueEventListener {
+        val userDB = FirebaseDatabase.getInstance().reference.child("Users")
+        userDB.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
                     getUsergender()
@@ -211,18 +211,14 @@ class ListCardActivity : Fragment() {
                     "limit" to count + limit,
                     "prelimit" to count
             )
-            //FecthMatchformation()
+
             functions.getHttpsCallable("getUserList")
                     .call(data)
                     .addOnFailureListener { Log.d("ghu", "failed") }
                     .addOnSuccessListener { task ->
-                        // This continuation runs on either success or failure, but if the task
-                        // has failed then result will throw an Exception which will be
-                        // propagated down.
+
                         val result1 = task.data as Map<*, *>
-
                         Log.d("ghu", result1.toString())
-
                         resultLimit = result1["o"] as ArrayList<*>
                         if (resultLimit.isNotEmpty())
                             if (type)
@@ -236,64 +232,66 @@ class ListCardActivity : Fragment() {
     }
 
     private fun getUser(result2: ArrayList<*>, start: Int, type: Boolean, startNoti: Int) {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
-            var max = start + 20
-            var typeTime = ""
-            var time = ""
-            Log.d("max", (start + 20).toString() + " " + result2.size)
-            if (result2.size < start + 20) {
-                max = result2.size
-            }
-            for (x in start until max) {
-                val user = result2[x] as Map<*, *>
-                var myself = ""
-                var offStatus = false
-                Log.d("ghu", user["name"].toString() + " , " + user["distance_other"].toString())
+        viewLifecycleOwner.lifecycleScope.launch {
+            withContext(Dispatchers.Default){
+                var max = start + 20
+                var typeTime = ""
+                var time = ""
+                Log.d("max", (start + 20).toString() + " " + result2.size)
+                if (result2.size < start + 20) {
+                    max = result2.size
+                }
+                for (x in start until max) {
+                    val user = result2[x] as Map<*, *>
+                    var myself = ""
+                    var offStatus = false
+                    Log.d("ghu", user["name"].toString() + " , " + user["distance_other"].toString())
 
-                if (user["typeTime"] != null) {
-                    typeTime = user["typeTime"].toString()
-                    Log.d("type55", "0")
-                }
-                if (user["time"] != null) {
-                    time = user["time"].toString()
-                }
-                if (user["myself"] != null) {
-                    myself = user["myself"].toString()
-                }
-                if (user["off_status"] != null) {
-                    offStatus = true
-                }
-                (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
-                val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
-
-                var status = "offline"
-                if (user["status"] == 1) {
-                    status = "online"
-                }
-                val df2 = DecimalFormat("#.#")
-                val dis = df2.format(user["distance_other"])
-                var percentAdd: String? = "0"
-                if (percentageMath!![user["key"].toString()] != null) {
-                    percentAdd = percentageMath!![user["key"].toString()].toString()
-                    //percentAdd = percentAdd.toString()
-                    //Log.d("testDatatatat", percentAdd)
-                }
-                //Log.d("testDatatatat", percentageMath!!.get(user["key"].toString()).toString())
-                val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time, percentAdd)
-
-                resultMatches.add(obj)
-                if (resultMatches.size > 0) {
-                    launch(Dispatchers.Main) {
-                        pro.visibility = View.GONE
+                    if (user["typeTime"] != null) {
+                        typeTime = user["typeTime"].toString()
+                        Log.d("type55", "0")
                     }
-                    // search.visibility = View.GONE
-                    // handler.removeCallbacks(runnable)
+                    if (user["time"] != null) {
+                        time = user["time"].toString()
+                    }
+                    if (user["myself"] != null) {
+                        myself = user["myself"].toString()
+                    }
+                    if (user["off_status"] != null) {
+                        offStatus = true
+                    }
+                    (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
+                    val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
+
+                    var status = "offline"
+                    if (user["status"] == 1) {
+                        status = "online"
+                    }
+                    val df2 = DecimalFormat("#.#")
+                    val dis = df2.format(user["distance_other"])
+                    var percentAdd: String? = "0"
+                    if (percentageMath!![user["key"].toString()] != null) {
+                        percentAdd = percentageMath!![user["key"].toString()].toString()
+                    }
+                    val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time, percentAdd)
+                    resultMatches.add(obj)
+
                 }
             }
-            Log.d("sss", "$startNoti " + resultMatches.size)
-            if (type) {
-                mMatchesAdapter.notifyDataSetChanged()
-            } else mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
+            withContext(Dispatchers.Main){
+                if (resultMatches.size > 0) {
+                        pro.visibility = View.GONE
+                }
+                Log.d("sss", "$startNoti " + resultMatches.size)
+                if (type) {
+                    mMatchesAdapter.notifyDataSetChanged()
+                    mRecyclerView.scheduleLayoutAnimation()
+                } else {
+                    mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
+                    mRecyclerView.scheduleLayoutAnimation()
+                }
+            }
+
         }
     }
 
