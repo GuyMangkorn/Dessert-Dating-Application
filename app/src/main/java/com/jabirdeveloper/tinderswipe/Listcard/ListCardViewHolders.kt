@@ -9,7 +9,9 @@ import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -49,9 +51,10 @@ class ListCardViewHolders(itemView: View, private val context: Context) : Recycl
             newDate["time"] = d.time()
             seeDB!!.updateChildren(newDate)
             val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
+            //val activityOptions: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(context as Activity,mMatchImage, ViewCompat.getTransitionName(mMatchImage).toString())
             intent.putExtra("User_opposite", mMatchId.text.toString())
             intent.putExtra("form_list", mMatchId.text.toString())
-            context.startActivity(intent)
+            context.startActivity(intent,/*activityOptions.toBundle()*/)
         })
     }
 
