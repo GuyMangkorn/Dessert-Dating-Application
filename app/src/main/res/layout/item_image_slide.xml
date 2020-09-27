@@ -9,6 +9,7 @@
             android:id="@+id/slide_1"
             android:adjustViewBounds="true"
             android:src="@drawable/tran"
+            android:transitionName="ProfileTransition"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
