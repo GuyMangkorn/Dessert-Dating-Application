@@ -68,132 +68,6 @@ class MatchesActivity : Fragment() {
     }
     private var checkFirstRemove: String? = "null"
     private var userMatchCount = 0
-    /*private fun checkNode(code:String) {
-        val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
-        matchDbCheck.orderByKey().equalTo(code).addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(error: DatabaseError) {}
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    if (snapshot.key.equals("connection")) {
-                        //Checkconnection()
-                        CheckNodeMatch()
-                        Log.d("test_check_matches", "connection_accept")
-                    } else if(check_first_connection){
-                        check_first_connection = false
-                        Log.d("test_check_matches", "connection_reject ")
-                        p1!!.hide()
-                        chat_empty.visibility = View.VISIBLE
-                        mRecyclerView.visibility = View.GONE
-                    }
-                }
-
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                if (snapshot.key.toString() == "connection") {
-                    check_first_connection = true
-                }
-                Log.d("test_check_matches", snapshot.key)
-            }
-
-
-        })
-    }
-
-    private fun checkConnection(){
-        val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString());
-        matchDbCheck.addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {}
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.hasChild("connection")) {
-                    /*CheckNodeMatch()*/
-                    checkNode("connection")
-                    Log.d("test_check_matches", "connection_accept")
-                } else {
-                    Log.d("test_check_matches", "connection_reject")
-                    p1!!.hide()
-                    chat_empty.visibility = View.VISIBLE
-                    mRecyclerView.visibility = View.GONE
-                }
-            }
-        })
-    }
-    private fun CheckNodeMatch() {
-        val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection");
-        matchDbCheck.orderByPriority().equalTo("matches").addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    if (snapshot.key.toString() == ("matches")) {
-                        check_first_matches = false
-                        getUserMarchId()
-                        Log.d("test_check_matches", "matches_accept" + snapshot.key)
-                        chat_empty.visibility = View.GONE
-                        //CheckNodeMatch2()
-                    } else if(check_first_matches){
-                        check_first_matches = false
-                        Log.d("test_check_matches", "matches_reject" + snapshot.key)
-                        p1!!.hide()
-                        chat_empty.visibility = View.VISIBLE
-                        mRecyclerView.visibility = View.GONE
-                    }
-                }
-
-
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                if (snapshot.key.toString() == "matches") {
-                    check_first_matches = true
-                }
-                Log.d("test_check_matches", snapshot.key)
-            }
-        })
-    }*/
-
-    /*private fun CheckNodeMatch2(){
-        val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection");
-        matchDbCheck.orderByKey().equalTo("matches").addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {}
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()){
-                    getUserMarchId()
-                    Log.d("test_check_matches","matches_accept")
-                }else{
-                    Log.d("test_check_matches","matches_reject")
-                    p1!!.hide()
-                    chat_empty.visibility = View.VISIBLE
-                    mRecyclerView.visibility = View.GONE
-                }
-            }
-        })
-    }*/
-
-    /*
-    }*/
-    /*private fun getUserMarchId_Check() {
-        val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection")
-        matchDb.orderByKey().equalTo("matches").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-
-
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        Log.d("test_check_matches","accept")
-                        getUserMarchId()
-                    } else {
-                        Log.d("test_check_matches","reject")
-                        p1!!.hide()
-                        chat_empty.visibility = View.VISIBLE
-                        mRecyclerView.visibility = View.GONE
-                    }
-            }
-        });
-    }*/
 
     private fun checkFirst(){
         val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches")
@@ -221,7 +95,6 @@ class MatchesActivity : Fragment() {
                 if(userMatchCount == 1) chatEmpty.visibility = View.GONE
                 Log.d("test_check_matches", "onChildAdd : ${dataSnapshot.key}")
                 val chatID = dataSnapshot.child("ChatId").value.toString()
-                //Check_data(dataSnapshot.key, chatID)
                 testChatNode(chatID, dataSnapshot.key.toString())
             }
 
@@ -273,113 +146,6 @@ class MatchesActivity : Fragment() {
         mMatchesAdapter.notifyItemRemoved(index)
         mMatchesAdapter.notifyItemRangeChanged(index, resultMatches.size)
     }
-
-    private var userChatNaCount = 0
-    private var checkFirstRemoveChatNa: String? = "null"
-    private var firstSystem2 = true
-    private fun chatNaCheck() {
-        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
-        dBChatNa.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (firstSystem2) {
-                    firstSystem2 = false
-                    if (dataSnapshot.exists()) {
-                        chatNa()
-                    } else {
-                        textEmpty.visibility = View.VISIBLE
-                        mHiRecyclerView.visibility = View.GONE
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    private fun chatNa() {
-        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
-        dBChatNa.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                ++userChatNaCount
-                val chatId = dataSnapshot.value.toString()
-                lastChatHi(dataSnapshot.key, chatId)
-            }
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                if (checkFirstRemoveChatNa == "null") {
-                    --userChatNaCount
-                    if (userChatNaCount == 0) {
-                        textEmpty.visibility = View.VISIBLE
-                        mHiRecyclerView.visibility = View.GONE
-                    }
-                    checkFirstRemoveChatNa = dataSnapshot.key
-                    deleteChatNA(dataSnapshot.key)
-                } else if (checkFirstRemoveChatNa != dataSnapshot.key) {
-                    --userChatNaCount
-                    if (userChatNaCount == 0) {
-                        textEmpty.visibility = View.VISIBLE
-                        mHiRecyclerView.visibility = View.GONE
-                    }
-                    checkFirstRemoveChatNa = dataSnapshot.key
-                    deleteChatNA(dataSnapshot.key)
-                }
-            }
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    private fun deleteChatNA(uIdChatNa: String?) {
-        for (i in resultHi!!.indices) {
-            if (resultHi[i]!!.userId == uIdChatNa) {
-                resultHi.removeAt(i)
-                mHiAdapter.notifyItemRemoved(i)
-                mHiAdapter.notifyItemRangeChanged(i, resultHi.size)
-            }
-        }
-    }
-
-    /*private fun checkData(key: String?, chatID: String?) {
-        val check = FirebaseDatabase.getInstance().reference
-        check.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.child("Users").hasChild(key.toString())) {
-                    ++count
-                    if (dataSnapshot.hasChild("Chat")) {
-                        if (dataSnapshot.child("Chat").hasChild(chatID.toString())) {
-                            latestChat(key, chatID)
-                        } else {
-                            val lastChat = ""
-                            val time = "-1"
-                            val count = -1
-                            fetchMatchFormation(key, lastChat, time, count)
-                            get_node(key, chatID)
-                        }
-                    } else {
-                        Log.d("test_check_matches", "dataChange $key")
-                        checkNodeFirst(key, chatID)
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-
-    /*private fun Node_first(key: String?, ChatID: String?) {
-        val chatdb = FirebaseDatabase.getInstance().reference
-        chatdb.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                checkNodeFirst(key, ChatID)
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
     private fun testChatNode(chatId:String,uid:String){
         val check = FirebaseDatabase.getInstance().reference.child("Chat").child(chatId)
         check.addListenerForSingleValueEvent(object : ValueEventListener{
@@ -399,57 +165,6 @@ class MatchesActivity : Fragment() {
 
         })
     }
-    /*private fun checkNodeFirst(key: String?, ChatID: String?) {
-        val check = FirebaseDatabase.getInstance().reference
-        check.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.hasChild("Chat")) {
-                    latestChat(key, ChatID)
-                } else {
-                    val lastChat = ""
-                    val time = "-1"
-                    val count = -1
-                    //Log.d("test_check_matches",key)
-                    fetchMatchFormation(key, lastChat, time, count)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-
-    /*private fun get_node(key: String?, chatID: String?) {
-        val chatdb = FirebaseDatabase.getInstance().reference.child("Chat")
-        val cc = chatdb.orderByKey().equalTo(chatID)
-        cc.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                checkGetNode(key, chatID, dataSnapshot.key)
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {}
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-
-    /*private fun checkGetNode(key: String?, chatID: String?, key_chatId: String?) {
-        val check = FirebaseDatabase.getInstance().reference.child("Chat")
-        check.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (chatID == key_chatId) {
-                    latestChat(key, chatID)
-                } else {
-                    val last_chat = ""
-                    val time = "-1"
-                    val count = -1
-                    fetchMatchFormation(key, last_chat, time, count)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
 
     private fun startNode(key: String?, keyNode: String?, lastChat: String?, time: String?, count: Int) {
         val startDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(key.toString()).child("Start")
@@ -511,9 +226,76 @@ class MatchesActivity : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+    private var userChatNaCount = 0
+    private var checkFirstRemoveChatNa: String? = "null"
+    private fun chatNaCheck() {
+        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
+        dBChatNa.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        chatNa()
+                    } else {
+                        chatNa()
+                        textEmpty.visibility = View.VISIBLE
+                        mHiRecyclerView.visibility = View.GONE
+                    }
+            }
 
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+
+    private fun chatNa() {
+        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
+        dBChatNa.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                ++userChatNaCount
+                //Log.d("ChatNaFixedBug","FirstChatHi : ${dataSnapshot.key}")
+                val chatId = dataSnapshot.value.toString()
+                lastChatHi(dataSnapshot.key, chatId)
+            }
+            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                if (checkFirstRemoveChatNa == "null") {
+                    --userChatNaCount
+                    if (userChatNaCount == 0) {
+                        textEmpty.visibility = View.VISIBLE
+                        mHiRecyclerView.visibility = View.GONE
+                    }
+                    checkFirstRemoveChatNa = dataSnapshot.key
+                    deleteChatNA(dataSnapshot.key)
+                } else if (checkFirstRemoveChatNa != dataSnapshot.key) {
+                    --userChatNaCount
+                    if (userChatNaCount == 0) {
+                        textEmpty.visibility = View.VISIBLE
+                        mHiRecyclerView.visibility = View.GONE
+                    }
+                    checkFirstRemoveChatNa = dataSnapshot.key
+                    deleteChatNA(dataSnapshot.key)
+                }
+            }
+
+            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+
+    private fun deleteChatNA(uIdChatNa: String?) {
+        for (i in resultHi!!.indices) {
+            //Log.d("ChatNaFixedBug","removeSize ${resultHi.size}")
+            if (resultHi[i]!!.userId == uIdChatNa) {
+                if (resultHi.size == 1) {
+                    mHiRecyclerView.visibility = (View.GONE)
+                    textEmpty.visibility = (View.VISIBLE)
+                }
+                resultHi.removeAt(i)
+                mHiAdapter.notifyItemRemoved(i)
+                mHiAdapter.notifyItemRangeChanged(i, resultHi.size)
+            }
+        }
+    }
     private var checkHi = false
-    private var firstHi = true
+    private var sentBack = false
     private var local = 0
     private fun lastChatHi(key: String?, ChatId: String?) {
         val chatDb = FirebaseDatabase.getInstance().reference.child("Chat")
@@ -533,8 +315,8 @@ class MatchesActivity : Fragment() {
 
     private fun checkSentBack(key: String?, lastChat: String?, time: String?, ChatId: String?) {
         val chatDb = FirebaseDatabase.getInstance().reference.child("Chat").child(ChatId.toString())
-        val ww = chatDb.orderByChild("createByUser").equalTo(currentUserId)
-        ww.addValueEventListener(object : ValueEventListener {
+        val ww = chatDb.orderByChild("createByUser").equalTo(currentUserId).limitToLast(1)
+        ww.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val matchHiDb = FirebaseDatabase.getInstance().reference.child("Users").child(key.toString()).child("connection").child("matches").child(currentUserId.toString())
@@ -543,7 +325,7 @@ class MatchesActivity : Fragment() {
                     matchHiDbMatch.child("ChatId").setValue(ChatId)
                     val dataDelete = FirebaseDatabase.getInstance().reference.child("Users")
                     dataDelete.child(currentUserId.toString()).child("connection").child("chatna").child(key.toString()).removeValue()
-                    firstHi = false
+                    sentBack = true
                     checkHi = true
                     fetchHi(key, lastChat, time, ChatId)
                 } else {
@@ -565,26 +347,20 @@ class MatchesActivity : Fragment() {
                     val userId = dataSnapshot.key
                     val name = dataSnapshot.child("name").value.toString()
                     val gender = dataSnapshot.child("sex").value.toString()
-                    if (!firstHi) {
+                    if (sentBack) {
                         inception = false
-                        val j = resultHi!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
-                        if (resultHi.size == 1) {
-                            mHiRecyclerView.visibility = (View.GONE)
-                            textEmpty.visibility = (View.VISIBLE)
-                        }
-                        resultHi.removeAt(j)
-                        mHiAdapter.notifyItemRemoved(j)
-                        mHiAdapter.notifyItemRangeChanged(j, resultHi.size)
-                        chatCheckRead(ChatId, key, time, lastChat)
+                        sentBack =false
+                        startNode(key, ChatId, lastChat, time, 0)
                     } else {
                         val obj2 = HiObject(userId, profileImageUrl, name, gender)
                         resultHi!!.add(obj2)
+                        if(resultHi.size > 0) {
+                            mHiRecyclerView.visibility = (View.VISIBLE)
+                            textEmpty.visibility = (View.GONE)
+                        }
+                        Log.d("ChatNaFixedBug","size ${resultHi.size}")
                         mHiAdapter.notifyDataSetChanged()
                     }
-                }
-                if (resultHi!!.size == 0) {
-                    textEmpty.visibility = View.VISIBLE
-                    mHiRecyclerView.visibility = View.GONE
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -632,11 +408,9 @@ class MatchesActivity : Fragment() {
 
                     }
                     Log.d("chatNotificationTest"," ${resultMatches!!.size} > $userMatchCount")
-                    if (resultMatches!!.size > userMatchCount) {
+                    if (resultMatches.size > userMatchCount) {
                         Log.d("chatNotificationTest","+1 $createByBoolean")
                         for (j in 0 until (resultMatches.size-1)) {
-                            //var index = resultMatches!!.map { T -> T!!.userId.equals(S1)  }.indexOf(element = true)
-                            //Log.d("countIndexSomethings","$index , $S1")a
                             Log.d("loop1","$j ${resultMatches.elementAt(j)!!.userId} , ${resultMatches.size} , $count")
                             if (resultMatches.elementAt(j)?.userId == key) {
                                 resultMatches.elementAt(j)?.late = last_chat
@@ -725,75 +499,6 @@ class MatchesActivity : Fragment() {
                                 return@Comparator 0
                             }
                         })
-                        /*if (compare2 != "-1") {
-                            if (resultMatches.size == count) {
-                                val jj = resultMatches.size - local
-                                for (be in jj downTo 1) {
-                                    for (i in resultMatches.size downTo local + 1) {
-                                        val compare_hr_mn1 = resultMatches.elementAt(i - 1)?.time?.substring(2, 3)
-                                        if (resultMatches.elementAt(i - 2)?.time?.substring(0, 2) != "-1") {
-                                            val compare_hr_mn2 = resultMatches.elementAt(i - 2)?.time?.substring(2, 3)
-                                            if (compare_hr_mn2 == "/" && compare_hr_mn1 == ":") {
-                                                Collections.swap(resultMatches, i - 2, i - 1)
-                                            }
-                                        }
-                                    }
-                                }
-                                for (i in resultMatches.size - 1 downTo local) {
-                                    val check_sign = resultMatches.elementAt(i)!!.time?.substring(2, 3)
-                                    if (check_sign == "/") {
-                                        ++gi
-                                    }
-                                }
-                                if (gi > 1) {
-                                    for (be in gi downTo 1) {
-                                        for (h in resultMatches.size downTo resultMatches.size - gi + 1 + 1) {
-                                            val compare2_minute_in = Integer.valueOf(resultMatches.elementAt(h - 1)?.time!!.substring(0, 2))
-                                            if (resultMatches.elementAt(h - 2)?.time!!.substring(0, 2) != "-1") {
-                                                val compare1_minute_in = Integer.valueOf(resultMatches.elementAt(h - 2)?.time!!.substring(0, 2))
-                                                if (compare2_minute_in > compare1_minute_in) {
-                                                    Collections.swap(resultMatches, h - 1, h - 2)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    for (be in gi downTo 1) {
-                                        for (h in resultMatches.size downTo resultMatches.size - gi + 1 + 1) {
-                                            val compare2_minute_in = Integer.valueOf(resultMatches.elementAt(h - 1)?.time!!.substring(3, 5))
-                                            if (resultMatches.elementAt(h - 2)?.time!!.substring(0, 2) != "-1") {
-                                                val compare1_minute_in = Integer.valueOf(resultMatches.elementAt(h - 2)?.time!!.substring(3, 5))
-                                                if (compare2_minute_in > compare1_minute_in) {
-                                                    Collections.swap(resultMatches, h - 1, h - 2)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                val check_stop = resultMatches.size - gi
-                                for (be in jj downTo 1) {
-                                    for (h in check_stop downTo local + 1) {
-                                        val compare2_minute_in = Integer.valueOf(resultMatches.elementAt(h - 1)?.time!!.substring(3, 5))
-                                        if (resultMatches.elementAt(h - 2)?.time!!.substring(0, 2) != "-1") {
-                                            val compare1_minute_in = Integer.valueOf(resultMatches.elementAt(h - 2)?.time!!.substring(3, 5))
-                                            if (compare2_minute_in > compare1_minute_in) {
-                                                Collections.swap(resultMatches, h - 1, h - 2)
-                                            }
-                                        }
-                                    }
-                                }
-                                for (be in jj downTo 1) {
-                                    for (h in check_stop downTo local + 1) {
-                                        val compare2_hr_in = Integer.valueOf(resultMatches.elementAt(h - 1)?.time!!.substring(0, 2))
-                                        val compare1_hr_in = Integer.valueOf(resultMatches.elementAt(h - 2)?.time!!.substring(0, 2))
-                                        if (compare1_hr_in != -1) {
-                                            if (compare2_hr_in > compare1_hr_in) {
-                                                Collections.swap(resultMatches, h - 1, h - 2)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }*/
                     }
                 }
             }
