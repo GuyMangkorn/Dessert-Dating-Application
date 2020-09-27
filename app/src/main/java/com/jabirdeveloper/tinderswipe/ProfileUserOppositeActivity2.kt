@@ -299,7 +299,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         like = findViewById(R.id.like_button)
         dislike = findViewById(R.id.dislike_button)
         star = findViewById(R.id.star_button)
-
         like.setOnClickListener(View.OnClickListener {
             if (!intent.hasExtra("form_like")) {
                 setResult(1)

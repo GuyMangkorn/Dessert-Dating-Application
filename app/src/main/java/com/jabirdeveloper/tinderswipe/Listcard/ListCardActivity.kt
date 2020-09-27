@@ -113,7 +113,6 @@ class ListCardActivity : Fragment() {
             override fun onChildViewAttachedToWindow(view: View) {
                 pro.visibility = View.GONE
             }
-
             override fun onChildViewDetachedFromWindow(view: View) {}
         })
 
@@ -189,8 +188,9 @@ class ListCardActivity : Fragment() {
                         val datau = task.data as Map<*, *>
                         Log.d("testDatatatat", datau.toString())
                         percentageMath = datau["dictionary"] as Map<*, *>
-
-                        getStartAt()
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                            getStartAt()
+                        }
                     }
                     .addOnFailureListener {
                         Log.d("testDatatatat", "error")
@@ -199,7 +199,6 @@ class ListCardActivity : Fragment() {
 
 
     private fun callFunction(limit: Int, type: Boolean, count: Int) {
-        var pre = count
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             val data = hashMapOf(
                     "sex" to oppositeUserSex,
@@ -216,16 +215,16 @@ class ListCardActivity : Fragment() {
                     .call(data)
                     .addOnFailureListener { Log.d("ghu", "failed") }
                     .addOnSuccessListener { task ->
-
-                        val result1 = task.data as Map<*, *>
-                        Log.d("ghu", result1.toString())
-                        resultLimit = result1["o"] as ArrayList<*>
-                        if (resultLimit.isNotEmpty())
-                            if (type)
-                                getUser(resultLimit, 0, type, 0)
-                            else
-                                getUser(resultLimit, 0, type, resultMatches.size - 1)
-
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+                            val result1 = task.data as Map<*, *>
+                            Log.d("ghu", result1.toString())
+                            resultLimit = result1["o"] as ArrayList<*>
+                            if (resultLimit.isNotEmpty())
+                                if (type)
+                                    getUser(resultLimit, 0, type, 0)
+                                else
+                                    getUser(resultLimit, 0, type, resultMatches.size - 1)
+                        }
 
                     }
         }
@@ -278,7 +277,7 @@ class ListCardActivity : Fragment() {
 
                 }
             }
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Unconfined){
                 if (resultMatches.size > 0) {
                         pro.visibility = View.GONE
                 }
@@ -288,7 +287,7 @@ class ListCardActivity : Fragment() {
                     mRecyclerView.scheduleLayoutAnimation()
                 } else {
                     mMatchesAdapter.notifyItemRangeChanged(startNoti, resultMatches.size)
-                    mRecyclerView.scheduleLayoutAnimation()
+                   // mRecyclerView.scheduleLayoutAnimation()
                 }
             }
 
