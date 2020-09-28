@@ -50,6 +50,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var mChatLayoutManager: RecyclerView.LayoutManager
     private lateinit var linearLayoutOvalSend: LinearLayout
     private lateinit var menu: LinearLayout
+    private val plus: SwitchpageActivity? = SwitchpageActivity()
     private lateinit var linearRecord: LinearLayout
     private lateinit var toolbar: Toolbar
     private lateinit var imgSend: ImageView
@@ -384,7 +385,16 @@ class ChatActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (loop in dataSnapshot.children) {
                     readAlready(loop.key)
-                    Log.d("chatNotificationTest","-1")
+                    val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                    var dd2 = myUnread.getInt("total", 0)
+                    val count = dd2-1
+                    Log.d("chatNotificationTest","$dd2-1")
+                    plus!!.setCurrentIndex(count)
+                    val myUnread2 =    getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                    val editorRead = myUnread2.edit()
+                    editorRead.putInt("total", count)
+                    editorRead.apply()
+                    readAlready(loop.key)
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}

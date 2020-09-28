@@ -404,8 +404,16 @@ class MatchesActivity : Fragment() {
                         mRecyclerView.visibility = View.VISIBLE
 
                     }
-                    //Log.d("chatNotificationTest"," ${resultMatches!!.size} > $userMatchCount")
                     if (resultMatches!!.size > userMatchCount) {
+                        val myUnread = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                        var dd2 = myUnread.getInt("total", 0)
+                        ++dd2
+                        (activity as SwitchpageActivity).setCurrentIndex(dd2)
+                        val myUnread2 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                        val editorRead = myUnread2.edit()
+                        editorRead.putInt("total", dd2)
+                        editorRead.apply()
+
                         Log.d("chatNotificationTest","+1 $createByBoolean")
                         for (j in 0 until (resultMatches.size-1)) {
                             Log.d("loop1","$j ${resultMatches.elementAt(j)!!.userId} , ${resultMatches.size} , $count")
@@ -518,7 +526,6 @@ class MatchesActivity : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         val myUnread = mContext!!.getSharedPreferences("NotificationActive", Context.MODE_PRIVATE)
         val s1 = myUnread.getString("ID", "null")
         if (s1 != "null") {
