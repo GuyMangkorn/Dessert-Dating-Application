@@ -93,11 +93,9 @@ class MatchesActivity : Fragment() {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 ++userMatchCount
                 if(userMatchCount == 1) chatEmpty.visibility = View.GONE
-                //Log.d("test_check_matches", "onChildAdd : ${dataSnapshot.key}")
                 val chatID = dataSnapshot.child("ChatId").value.toString()
                 testChatNode(chatID, dataSnapshot.key.toString())
             }
-
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 if (checkFirstRemove == "null") {
@@ -118,7 +116,6 @@ class MatchesActivity : Fragment() {
                     unMatch(dataSnapshot.key)
                 }
             }
-
             override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onCancelled(databaseError: DatabaseError) {}
         })
@@ -200,6 +197,7 @@ class MatchesActivity : Fragment() {
                 }
                 createByBoolean = dataSnapshot.child("createByUser").value.toString() != (currentUserId)
                 if (createBy != currentUserId) {
+                    Log.d("ReadAlready","+1")
                     chatCheckRead(chatID, key, time, lastChat)
                 } else {
                     startNode(key, dataSnapshot.key, lastChat, time, 0)
@@ -250,7 +248,6 @@ class MatchesActivity : Fragment() {
         dBChatNa.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 ++userChatNaCount
-                //Log.d("ChatNaFixedBug","FirstChatHi : ${dataSnapshot.key}")
                 val chatId = dataSnapshot.value.toString()
                 lastChatHi(dataSnapshot.key, chatId)
             }
@@ -407,8 +404,8 @@ class MatchesActivity : Fragment() {
                         mRecyclerView.visibility = View.VISIBLE
 
                     }
-                    Log.d("chatNotificationTest"," ${resultMatches!!.size} > $userMatchCount")
-                    if (resultMatches.size > userMatchCount) {
+                    //Log.d("chatNotificationTest"," ${resultMatches!!.size} > $userMatchCount")
+                    if (resultMatches!!.size > userMatchCount) {
                         Log.d("chatNotificationTest","+1 $createByBoolean")
                         for (j in 0 until (resultMatches.size-1)) {
                             Log.d("loop1","$j ${resultMatches.elementAt(j)!!.userId} , ${resultMatches.size} , $count")
