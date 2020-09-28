@@ -93,7 +93,7 @@ class MatchesActivity : Fragment() {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 ++userMatchCount
                 if(userMatchCount == 1) chatEmpty.visibility = View.GONE
-                Log.d("test_check_matches", "onChildAdd : ${dataSnapshot.key}")
+                //Log.d("test_check_matches", "onChildAdd : ${dataSnapshot.key}")
                 val chatID = dataSnapshot.child("ChatId").value.toString()
                 testChatNode(chatID, dataSnapshot.key.toString())
             }
@@ -126,7 +126,7 @@ class MatchesActivity : Fragment() {
 
     private fun unMatch(key: String?) {
         val index = resultMatches!!.map { T -> T!!.userId.equals(key) }.indexOf(element = true)
-        Log.d("countIndexSomethings", "$key ,index: $index")
+        //Log.d("countIndexSomethings", "$key ,index: $index")
         val matchIDStored = mContext!!.getSharedPreferences(currentUserId + "Match_first", Context.MODE_PRIVATE)
         val editor2 = matchIDStored.edit()
         editor2.remove(key).apply()
