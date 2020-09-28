@@ -56,7 +56,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Suppress("NAME_SHADOWING")
-class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHandler {
+class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHandler,View.OnClickListener {
 
     private lateinit var mLocationManager: LocationManager
     private lateinit var mAuth: FirebaseAuth
@@ -106,28 +106,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("ghj", "สร้างละ")
         val view = inflater.inflate(R.layout.activity_main, container, false)
-        mLocationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf<String?>(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.INTERNET
-            ), 1)
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0f, this)
-            viewLifecycleOwner.lifecycleScope.launch { // launch a new coroutine in background and continue
-
-                withContext(Dispatchers.Default) { // background thread
-                    getdis()
-                }
-                withContext(Dispatchers.IO) { // background thread
-                    callFunctions(countDataSet, true, 0)
-                }
-
-            }
-
-        }
+        checkStart()
         bp = BillingProcessor(requireContext(), Id.Id, this)
         bp.initialize()
         mAuth = FirebaseAuth.getInstance()
@@ -136,7 +115,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-
         layoutGps = view.findViewById(R.id.layout_in)
         textgps = view.findViewById(R.id.textView8)
         textGps2 = view.findViewById(R.id.textView9)
@@ -151,7 +129,21 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         rowItem = ArrayList()
         currentUid = mAuth.currentUser!!.uid
         usersDb = FirebaseDatabase.getInstance().reference.child("Users")
+        cardStack()
         cardStackView = view.findViewById(R.id.frame)
+        arrayAdapter = ArrayAdapter(rowItem, context, this)
+        cardStackView.layoutManager = manager
+        cardStackView.adapter = arrayAdapter
+        cardStackView.itemAnimator = DefaultItemAnimator()
+        like.setOnClickListener(this)
+        dislike.setOnClickListener(this)
+        touchGps.setOnClickListener(this)
+        star.setOnClickListener(this)
+        handler = Handler()
+        runnable!!.run()
+        return view
+    }
+    private fun cardStack(){
         manager = CardStackLayoutManager(context, object : CardStackListener {
             override fun onCardDragging(direction: Direction?, ratio: Float) {}
             override fun onCardSwiped(direction: Direction?) {
@@ -194,8 +186,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                         openDialog()
                     }
                 }
-
-
             }
 
             override fun onCardRewound() {}
@@ -244,41 +234,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         manager.setCanScrollHorizontal(true)
         manager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
         manager.setOverlayInterpolator(LinearInterpolator())
-        arrayAdapter = ArrayAdapter(rowItem, context, this)
-        cardStackView.layoutManager = manager
-        cardStackView.adapter = arrayAdapter
-        cardStackView.itemAnimator = DefaultItemAnimator()
-        like.setOnClickListener(View.OnClickListener {
-            val setting = SwipeAnimationSetting.Builder()
-                    .setDirection(Direction.Right)
-                    .setDuration(Duration.Normal.duration)
-                    .setInterpolator(AccelerateInterpolator())
-                    .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
-        })
-        dislike.setOnClickListener(View.OnClickListener {
-            val setting = SwipeAnimationSetting.Builder()
-                    .setDirection(Direction.Left)
-                    .setDuration(Duration.Normal.duration)
-                    .setInterpolator(AccelerateInterpolator())
-                    .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
-        })
-        touchGps.setOnClickListener(View.OnClickListener { startActivityForResult(Intent(context, Setting2Activity::class.java), 1112) })
-        star.setOnClickListener(View.OnClickListener {
-            val setting = SwipeAnimationSetting.Builder()
-                    .setDirection(Direction.Top)
-                    .setDuration(Duration.Normal.duration)
-                    .setInterpolator(AccelerateInterpolator())
-                    .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
-        })
-        handler = Handler()
-        runnable!!.run()
-        return view
     }
 
     fun createAndLoadRewardedAd(): RewardedAd {
@@ -464,7 +419,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         })
     }
 
-    fun getdis() {
+    private fun getDis() {
         val preferences = requireContext().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
         oppositeUserSex = preferences.getString("OppositeUserSex", "All").toString()
         oppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
@@ -487,10 +442,6 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 preferences.getString("Distance", "Untitled").toString().toDouble()
             }
         }
-
-
-
-
     }
 
     private fun callFunctions(limit: Int, type: Boolean, count: Int) {
@@ -660,9 +611,9 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         }
         if (requestCode == 115) {
             when (resultCode) {
-                1 -> like()
-                2 -> disLike()
-                3 -> star()
+                1 -> likeDelay()
+                2 -> disLikeDelay()
+                3 -> starDelay()
             }
         }
 
@@ -673,7 +624,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
             if (grantResults.isNotEmpty()
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 requireActivity().recreate()
-                getdis()
+                getDis()
             }
         }
     }
@@ -692,45 +643,57 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         mLocationManager.removeUpdates(this)
     }
 
-    private fun like() {
+    private fun likeDelay() {
         val handler = Handler()
         handler.postDelayed({
-            val setting = SwipeAnimationSetting.Builder()
-                    .setDirection(Direction.Right)
-                    .setDuration(Duration.Normal.duration)
-                    .setInterpolator(AccelerateInterpolator())
-                    .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
+           like()
         }, 300)
 
+    }
+    private fun like() {
+        val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Right)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(AccelerateInterpolator())
+                .build()
+        manager.setSwipeAnimationSetting(setting)
+        cardStackView.swipe()
+    }
 
+    private fun disLikeDelay() {
+        val handler = Handler()
+        handler.postDelayed({
+            disLike()
+        }, 300)
     }
 
     private fun disLike() {
+        val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Left)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(AccelerateInterpolator())
+                .build()
+        manager.setSwipeAnimationSetting(setting)
+        cardStackView.swipe()
+    }
+
+
+    private fun starDelay() {
         val handler = Handler()
         handler.postDelayed({
-            val setting = SwipeAnimationSetting.Builder()
-                    .setDirection(Direction.Left)
-                    .setDuration(Duration.Normal.duration)
-                    .setInterpolator(AccelerateInterpolator())
-                    .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
+            star()
         }, 300)
+
     }
 
     private fun star() {
-        val handler = Handler()
-        handler.postDelayed({
-            val setting = SwipeAnimationSetting.Builder()
-                    .setDirection(Direction.Top)
-                    .setDuration(Duration.Normal.duration)
-                    .setInterpolator(AccelerateInterpolator())
-                    .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
-        }, 300)
+        val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Top)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(AccelerateInterpolator())
+                .build()
+        manager.setSwipeAnimationSetting(setting)
+        cardStackView.swipe()
     }
 
     override fun onBillingInitialized() {
@@ -752,6 +715,46 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     override fun onDestroy() {
         bp.release()
         super.onDestroy()
+    }
+
+    fun checkStart(){
+        mLocationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf<String?>(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.INTERNET
+            ), 1)
+        } else {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0f, this)
+            viewLifecycleOwner.lifecycleScope.launch { // launch a new coroutine in background and continue
+
+                withContext(Dispatchers.Default) { // background thread
+                    getDis()
+                }
+                withContext(Dispatchers.IO) { // background thread
+                    callFunctions(countDataSet, true, 0)
+                }
+
+            }
+
+        }
+    }
+
+    override fun onClick(v: View?) {
+        if(v == touchGps){
+            startActivityForResult(Intent(context, Setting2Activity::class.java), 1112)
+        }
+        if(v == like){
+            like()
+        }
+        if(v == dislike){
+            disLike()
+        }
+        if(v == star){
+            star()
+        }
     }
 
 }
