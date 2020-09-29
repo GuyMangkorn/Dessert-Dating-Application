@@ -19,7 +19,7 @@
         android:id="@+id/like_you_recycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
+        android:layoutAnimation="@anim/layout_animation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -56,6 +56,7 @@
         />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/buttonsee"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

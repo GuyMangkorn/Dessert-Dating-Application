@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,10 +28,7 @@ import com.jabirdeveloper.tinderswipe.Functions.City
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,6 +50,7 @@ class LikeYouActivity : AppCompatActivity() {
     private var activity = this
     var toolbar: Toolbar? = null
     private var functions = Firebase.functions
+    private lateinit var language:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_like_you)
@@ -61,15 +60,17 @@ class LikeYouActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.my_tools)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        button.setOnClickListener(View.OnClickListener { openDialog() })
+        button.setOnClickListener { openDialog() }
         blurView = findViewById(R.id.blurView)
+
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val language = preferences.getString("My_Lang", "")
+        language = preferences.getString("My_Lang", "").toString()
         ff = if (language == "th") {
             Geocoder(this@LikeYouActivity)
         } else {
             Geocoder(this@LikeYouActivity, Locale.UK)
         }
+
         val radius = 10f
         val decorView = window.decorView
         val windowBackground = decorView.background
@@ -78,14 +79,8 @@ class LikeYouActivity : AppCompatActivity() {
                 .setBlurAlgorithm(RenderScriptBlur(this))
                 .setBlurRadius(radius)
                 .setHasFixedTransformationMatrix(true)
+
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
-        LikeYouRecycleview = findViewById(R.id.like_you_recycle)
-        LikeYouRecycleview.isNestedScrollingEnabled = false
-        LikeYouRecycleview.setHasFixedSize(true)
-        LikeYouLayoutManager = LinearLayoutManager(this@LikeYouActivity)
-        LikeYouRecycleview.layoutManager = LikeYouLayoutManager
-        LikeYouAdapter = LikeYouAdapter(getDataSetMatches()!!, this@LikeYouActivity)
-        LikeYouRecycleview.adapter = LikeYouAdapter
         userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("yep")
         if (intent.hasExtra("See")) {
             intent.extras!!.remove("See")
@@ -98,67 +93,71 @@ class LikeYouActivity : AppCompatActivity() {
             empty.setText(R.string.like_empty)
             supportActionBar!!.setTitle(R.string.People_like_you)
         }
-        CoroutineScope(Job() + Dispatchers.IO).launch { // launch a new coroutine in background and continue
-            val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId)
-            userdb.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.child("Vip").value == 1) {
-                        blurView.visibility = View.GONE
-                        button.visibility = View.GONE
+        CoroutineScope(Job()).launch {
+            withContext(Dispatchers.Default){
+                val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+                if(!myUser.getBoolean("Vip", false)){
+                    blurView.visibility = View.VISIBLE
+                    button.visibility = View.VISIBLE
+                }
+                if (intent.hasExtra("See")) {
+                    if(myUser.getBoolean("buy_like", false)){
+                        blurView.visibility = View.VISIBLE
+                        button.visibility = View.VISIBLE
                     }
-                    if (intent.hasExtra("See")) {
-                        if (dataSnapshot.hasChild("buy_see")) {
-                            blurView.visibility = View.GONE
-                            button.visibility = View.GONE
-                        }
-                    } else {
-                        if (dataSnapshot.hasChild("buy_like")) {
-                            blurView.visibility = View.GONE
-                            button.visibility = View.GONE
-                        }
-                    }
-                    if (dataSnapshot.hasChild("Location")) {
-                        val x: String = dataSnapshot.child("Location").child("X").value.toString()
-                        val y: String = dataSnapshot.child("Location").child("Y").value.toString()
-                        x_user = java.lang.Double.valueOf(x)
-                        y_user = java.lang.Double.valueOf(y)
+                } else {
+                    if(myUser.getBoolean("buy_see", false)){
+                        blurView.visibility = View.VISIBLE
+                        button.visibility = View.VISIBLE
                     }
                 }
-
-                override fun onCancelled(databaseError: DatabaseError) {}
-            })
-            userDb.addChildEventListener(object : ChildEventListener {
-                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                    if (dataSnapshot.exists()) {
-                        var time = "วันนี้ 00:00"
-                        if (dataSnapshot.hasChild("date") && dataSnapshot.hasChild("time")) {
-                            val calendar = Calendar.getInstance()
-                            val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                            val dateNow = currentDate.format(calendar.time)
-                            val timeUser = dataSnapshot.child("time").value.toString()
-                            val dateUser = dataSnapshot.child("date").value.toString()
-                            time = if (dateNow != dateUser) {
-                                dateUser
-                            } else {
-                                getString(R.string.today) + " " + timeUser
+                x_user = myUser.getString("X", "").toString().toDouble()
+                y_user  = myUser.getString("Y", "").toString().toDouble()
+            }
+            withContext(Dispatchers.IO){
+                userDb.addChildEventListener(object : ChildEventListener {
+                    override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                        if (dataSnapshot.exists()) {
+                            var time = "วันนี้ 00:00"
+                            if (dataSnapshot.hasChild("date") && dataSnapshot.hasChild("time")) {
+                                val calendar = Calendar.getInstance()
+                                val currentDate = SimpleDateFormat("dd/MM/yyyy")
+                                val dateNow = currentDate.format(calendar.time)
+                                val timeUser = dataSnapshot.child("time").value.toString()
+                                val dateUser = dataSnapshot.child("date").value.toString()
+                                time = if (dateNow != dateUser) {
+                                    dateUser
+                                } else {
+                                    getString(R.string.today) + " " + timeUser
+                                }
                             }
-                        }
-                        fecthHi(dataSnapshot.key.toString(), time)
-                    } else {
-                        run {
+                            fecthHi(dataSnapshot.key.toString(), time)
+                        } else {
                             empty.visibility = View.VISIBLE
                             button.visibility = View.GONE
                         }
                     }
-                }
 
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
-                override fun onChildRemoved(snapshot: DataSnapshot) {}
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-                override fun onCancelled(error: DatabaseError) {}
-            })
+                    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+                    override fun onChildRemoved(snapshot: DataSnapshot) {}
+                    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
+
+
+
 
         }
+        LikeYouRecycleview = findViewById(R.id.like_you_recycle)
+        LikeYouRecycleview.isNestedScrollingEnabled = false
+        LikeYouRecycleview.setHasFixedSize(true)
+        LikeYouLayoutManager = LinearLayoutManager(this@LikeYouActivity)
+        LikeYouRecycleview.layoutManager = LikeYouLayoutManager
+        LikeYouAdapter = LikeYouAdapter(getDataSetMatches()!!, this@LikeYouActivity)
+        LikeYouRecycleview.adapter = LikeYouAdapter
+
+
 
     }
 
@@ -203,10 +202,10 @@ class LikeYouActivity : AppCompatActivity() {
                     var profileImageUrl = ""
                     profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
                     var city = ""
+                    var myself = ""
                     val userId = dataSnapshot.key
                     val name = dataSnapshot.child("name").value.toString()
                     val status = dataSnapshot.child("Status").child("status").value.toString()
-                    var myself = ""
                     val age: String = dataSnapshot.child("Age").value.toString()
                     val gender: String = dataSnapshot.child("sex").value.toString()
                     if (dataSnapshot.hasChild("myself")) {
@@ -215,13 +214,13 @@ class LikeYouActivity : AppCompatActivity() {
                     val x: Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
                     val y: Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                     val distance = CalculateDistance.calculate(x_user, y_user, x, y)
-                    val preferences = activity.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                    val language = preferences.getString("My_Lang", "")
-                    city = City(language!!, this@LikeYouActivity, x, y).getCity().toString()
+
+                    city = City(language, this@LikeYouActivity, x, y).getCity().toString()
                     resultLike!!.add(LikeYouObject(
                             userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))
                 }
                 LikeYouAdapter.notifyDataSetChanged()
+                LikeYouRecycleview.scheduleLayoutAnimation()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}

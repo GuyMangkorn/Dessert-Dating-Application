@@ -231,8 +231,22 @@ class SwitchpageActivity : AppCompatActivity() {
                 if (dataSnapshot.child("connection").hasChild("yep")) {
                     myUser.putInt("c", dataSnapshot.child("connection").child("yep").childrenCount.toInt())
                 }
+                else{myUser.putInt("c", 0)}
                 if (dataSnapshot.hasChild("see_profile")) {
                     myUser.putInt("s", dataSnapshot.child("see_profile").childrenCount.toInt())
+                }
+                else{myUser.putInt("s", 0)}
+                if(dataSnapshot.hasChild("buy_like")){
+                    myUser.putBoolean("buy_like", true)
+                }
+                else{
+                    myUser.putBoolean("buy_like", false)
+                }
+                if(dataSnapshot.hasChild("buy_see")){
+                    myUser.putBoolean("buy_like", true)
+                }
+                else{
+                    myUser.putBoolean("buy_like", false)
                 }
                 myUser.putString("name", dataSnapshot.child("name").value.toString())
                 myUser.putInt("Age", dataSnapshot.child("Age").value.toString().toInt())
