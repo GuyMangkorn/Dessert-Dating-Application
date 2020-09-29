@@ -49,10 +49,13 @@ class RegisGpsActivity : AppCompatActivity(), LocationListener {
                     Manifest.permission.INTERNET
             ), 1)
         } else {
-            var location =
+            val location =
                     mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            getLocation(location);
-            //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0f, this)
+            if(location != null) {
+                getLocation(location)
+            }else {
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
+            }
         }
     }
 
@@ -68,10 +71,8 @@ class RegisGpsActivity : AppCompatActivity(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
-        /*val latitude = location.latitude
+        val latitude = location.latitude
         val longitude = location.longitude
-        // val value1 = latitude.toString()
-        // val value2 = longitude.toString()
         if (chk == 0) {
             chk = -1
             val intent = Intent(this@RegisGpsActivity, Regis_Sex_Activity::class.java)
@@ -82,7 +83,7 @@ class RegisGpsActivity : AppCompatActivity(), LocationListener {
             intent.putExtra("email", getIntent().getStringExtra("email"))
             intent.putExtra("password", getIntent().getStringExtra("password"))
             startActivity(intent)
-        }*/
+        }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
@@ -97,7 +98,7 @@ class RegisGpsActivity : AppCompatActivity(), LocationListener {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(R.string.GPS_Disabled)
         builder.setMessage(R.string.GPS_open)
-        builder.setPositiveButton(R.string.open_gps) { dialog, which -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { dialog, which -> }
+        builder.setPositiveButton(R.string.open_gps) { _, _ -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { _, _ -> }
         mGPSDialog = builder.create()
         mGPSDialog.show()
     }
