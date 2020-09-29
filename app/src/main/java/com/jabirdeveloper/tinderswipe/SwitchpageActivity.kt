@@ -66,8 +66,8 @@ class SwitchpageActivity : AppCompatActivity() {
             var nameAndValue = ""
             val name = intent.getStringArrayListExtra("warning")
             val value = intent.getIntegerArrayListExtra("warning_value")
-            for (i in name.indices) {
-                nameAndValue += "${i + 1}.${choice[Integer.valueOf(name[i])]}${getString(R.string.count_report)}	${value[i]} ${getString(R.string.times)}"
+            for (i in name!!.indices) {
+                nameAndValue += "${i + 1}.${choice[Integer.valueOf(name[i])]}${getString(R.string.count_report)}	${value!![i]} ${getString(R.string.times)}"
             }
             val inflater = layoutInflater
             val view = inflater.inflate(R.layout.warning_dialog, null)
@@ -153,7 +153,7 @@ class SwitchpageActivity : AppCompatActivity() {
             }
         })
     }
-    fun getUnreadFunction(): Task<HttpsCallableResult> {
+    private fun getUnreadFunction(): Task<HttpsCallableResult> {
         val data = hashMapOf(
                 "uid" to "test"
         )
@@ -279,7 +279,7 @@ class SwitchpageActivity : AppCompatActivity() {
 
     private var resultFetchQA: ArrayList<QAObject> = ArrayList()
     private var text: String = ""
-    private fun getDataOncall(): Task<HttpsCallableResult> {
+    private fun getDataOnCall(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
                 "questions" to text
@@ -347,7 +347,7 @@ class SwitchpageActivity : AppCompatActivity() {
         return false
     }
 
-    var doubleBackToExitPressedOnce = false
+    private var doubleBackToExitPressedOnce = false
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
