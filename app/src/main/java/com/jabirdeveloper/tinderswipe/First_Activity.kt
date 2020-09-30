@@ -58,9 +58,7 @@ class First_Activity : AppCompatActivity() {
                 usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.child(mAuth!!.currentUser!!.uid).child("sex").exists()) {
-                            checkReport()
                             pushToken()
-                            //getUnreadFunction()
                         } else {
                             mAuth!!.signOut()
                             val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
@@ -88,12 +86,10 @@ class First_Activity : AppCompatActivity() {
                     Manifest.permission.INTERNET
             ), 1)
         } else mAuth!!.addAuthStateListener(firebaseAuthStateListener!!)
-        hTextView = findViewById(R.id.textview)
+        /*hTextView = findViewById(R.id.textview)
         hTextView!!.setAnimationListener(SimpleAnimationListener(this@First_Activity))
-        hTextView!!.animateText("Welcome to my world")
+        hTextView!!.animateText("Welcome to my world")*/
     }
-
-
 
     private fun pushToken() {
         FirebaseInstanceId.getInstance().instanceId
@@ -103,10 +99,13 @@ class First_Activity : AppCompatActivity() {
                     }
                     val token = task.result?.token
                     FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
+                    val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 })
     }
 
-    fun getUnreadFunction(): Task<HttpsCallableResult> {
+    /*fun getUnreadFunction(): Task<HttpsCallableResult> {
         val data = hashMapOf(
                 "uid" to "test"
         )
@@ -120,7 +119,7 @@ class First_Activity : AppCompatActivity() {
                 .addOnFailureListener {
                     Log.d("testGetUnreadFunction", "error")
                 }
-    }
+    }*/
     private fun showGPSDisabledDialog() {
         val builder = AlertDialog.Builder(this@First_Activity)
         builder.setTitle(R.string.GPS_Disabled)
@@ -136,125 +135,15 @@ class First_Activity : AppCompatActivity() {
         mGPSDialog.show()
     }
     private var countNumberChat: Int? = 0
-    private var chk = 0
-    private var chktotalhavechat = 0
-    private var chkcountchat = 0
-    private var chk_node = 0
-    private var start = 0
-    /*private fun getUserMarchId() {
-        val matchDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("connection").child("matches")
-        matchDb.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                ++chk_node
-                ++start
-                val chatID = dataSnapshot.child("ChatId").value.toString()
-                val matchIDStored = getSharedPreferences(mAuth!!.currentUser!!.uid + "Match_first", Context.MODE_PRIVATE)
-                val editorMatch = matchIDStored.edit()
-                editorMatch.putInt(dataSnapshot.key, start)
-                editorMatch.apply()
-                Log.d("count_unread",dataSnapshot.key);
-                getMatchUnread(dataSnapshot.key, chatID)
-            }
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                --chk_node
-                val matchIDStored = getSharedPreferences("Match_First", Context.MODE_PRIVATE)
-                val editorMatch = matchIDStored.edit()
-                editorMatch.putInt(mAuth!!.currentUser!!.uid, --start)
-                editorMatch.apply()
-            }
 
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-
-    /*private var bkk = true
-    private fun getMatchUnread(MatchId: String?, ChatId: String?) {
-        val chatDB = FirebaseDatabase.getInstance().reference.child("Chat")
-        val dd1 = chatDB.child(ChatId.toString()).orderByKey().limitToLast(1)
-        dd1.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                ++chk
-                if (dataSnapshot.exists()) {
-                    for (dd in dataSnapshot.children) {
-                        if (dataSnapshot.child(dd.key.toString()).child("createByUser").value.toString() == MatchId) {
-                            if (!first) {
-                                if (chk > sumReported) {
-                                    if (dataSnapshot.child(dd.key.toString()).child("read").value.toString() != "Read") {
-                                        val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val dd2 = myUnread.getInt("total", 0)
-                                        countNumberChat = dd2 + 1
-                                        Log.d("count_unread", "chat : $countNumberChat text : ${dataSnapshot.child(dd.key.toString()).child("text").value.toString()}")
-                                        val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val editorRead = myUnread2.edit()
-                                        editorRead.putInt("total", countNumberChat!!)
-                                        editorRead.apply()
-                                        plus?.setCurrentIndex(countNumberChat!!)
-                                    } else {
-                                        val mySharedPreferences = getSharedPreferences("SentRead", Context.MODE_PRIVATE)
-                                        val read = mySharedPreferences.getInt("Read", 0)
-                                        val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val dd2 = myUnread.getInt("total", 0)
-                                        countNumberChat = dd2 - read
-                                        if (countNumberChat!! < 0) {
-                                            countNumberChat = 0
-                                        }
-                                        val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                                        val editorRead = myUnread2.edit()
-                                        editorRead.putInt("total", countNumberChat!!)
-                                        editorRead.apply()
-                                        plus!!.setCurrentIndex(countNumberChat!!)
-                                    }
-                                }
-                            } else {
-                                bkk = false
-                                ++chktotalhavechat;
-                                getLastCheck(ChatId)
-                            }
-                        } else if (chk == chk_node) {
-                            if (bkk) {
-                                checkReport()
-                            }
-                        }
-                    }
-                } else {
-                    if (chk == chk_node) {
-                        if (bkk) {
-                            checkReport()
-                        }
-                    }
-                }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-    /*private fun getLastCheck(ChatId: String?) {
-        val chatDB = FirebaseDatabase.getInstance().reference.child("Chat").child(ChatId.toString())
-        val dd = chatDB.orderByChild("read").equalTo("Unread")
-        dd.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (first) {
-                    ++chkcountchat;
-                    val count = dataSnapshot.childrenCount.toInt()
-                    countNumberChat = count + countNumberChat!!
-                    Log.d("count_unread", "$count total $countNumberChat")
-                    if (chkcountchat == chktotalhavechat) {
-                        checkReport()
-                    }
-                }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-    var nameCaution: MutableList<String?>? = ArrayList()
+    /*var nameCaution: MutableList<String?>? = ArrayList()
     var valueCaution: MutableList<Int?>? = ArrayList()
     private var sumReported = 0
     private fun checkReport() {
         val reportDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("Report")
         reportDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    sumReported = chk_node
+
                     val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
                     val editorRead = myUnread.edit()
                     editorRead.putInt("total", countNumberChat!!.toInt())
@@ -282,92 +171,7 @@ class First_Activity : AppCompatActivity() {
                 }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-    }
-
-    /*private fun getDatabaseUser(Uid: String?) {
-        val InfoDB = FirebaseDatabase.getInstance().reference.child("Users").child(Uid.toString()).child("name")
-        InfoDB.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != null) {
-                    NameMatch?.add(dataSnapshot.value.toString())
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
     }*/
-
-    /*private val IDNotification: MutableList<String?>? = ArrayList()
-    private val IndexNotification: MutableList<Int?>? = ArrayList()
-    private var id_plus = 0
-    private fun Notification_chat(lastChat: String?, time: String?, ID: String?) {
-        var icon: Bitmap? = null
-        var Name: String? = "null"
-        for (i in UidMatch_Image!!.indices) {
-            if (ID == UidMatch?.get(i)) {
-                icon = UidMatch_Image?.get(i)
-                Name = NameMatch?.get(i)
-                break
-            }
-        }
-        val intent = Intent(this@First_Activity, ChatActivity::class.java)
-        val b = Bundle()
-        val random = Random()
-        var TwoItems = false
-        var id = 0
-        if (IDNotification!!.size == 0) {
-            id = ++id_plus
-            IDNotification?.add(ID)
-            IndexNotification?.add(id)
-        } else {
-            for (i in IDNotification.indices) {
-                if (IDNotification?.get(i) == ID) {
-                    TwoItems = true
-                    id = IndexNotification?.get(i)!!
-                }
-            }
-            if (!TwoItems) {
-                id = ++id_plus
-                Toast.makeText(this@First_Activity, "id :$id", Toast.LENGTH_SHORT).show()
-                IDNotification.add(ID)
-                IndexNotification!!.add(id)
-            }
-        }
-        b.putString("time_chk", time)
-        b.putString("matchId", ID)
-        b.putString("nameMatch", Name)
-        b.putString("unread", "-1")
-        intent.putExtras(b)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        val pendingIntent = PendingIntent.getActivity(this@First_Activity, 1, intent, PendingIntent.FLAG_ONE_SHOT)
-        val notification = NotificationCompat.Builder(this@First_Activity, App.Companion.CHANNEL_ID!!)
-                .setSmallIcon(R.drawable.ic_love)
-                .setContentTitle(Name)
-                .setGroup("Chat")
-                .setContentText(lastChat)
-                .setLargeIcon(icon)
-                .setColor(0xFFCC00)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build()
-        val Sum = NotificationCompat.Builder(this@First_Activity, App.Companion.CHANNEL_ID!!)
-                .setSmallIcon(R.drawable.ic_love)
-                .setStyle(NotificationCompat.InboxStyle().setBigContentTitle(getString(R.string.New_message)).setSummaryText(getString(R.string.You_have_new_message)))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setGroup("Chat")
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                .setAutoCancel(true)
-                .setGroupSummary(true)
-                .build()
-        notificationManager = NotificationManagerCompat.from(this@First_Activity)
-        if (id == 2) {
-            notificationManager!!.notify(id + random.nextInt(9999 - 1000) + 1000, Sum)
-        }
-        notificationManager!!.notify(id, notification)
-    }*/
-
 
     override fun onStop() {
         super.onStop()
@@ -399,11 +203,6 @@ class First_Activity : AppCompatActivity() {
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        ///////////////////////////////// เอา mAuth.start ออก
-    }
 
     private inner class SimpleAnimationListener(private val context: Context?) : AnimationListener {
         override fun onAnimationEnd(hTextView: HTextView?) {

@@ -56,7 +56,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Suppress("NAME_SHADOWING")
-class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHandler,View.OnClickListener {
+class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickListener {
 
     private lateinit var mLocationManager: LocationManager
     private lateinit var mAuth: FirebaseAuth
@@ -560,7 +560,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
     private val df2: DecimalFormat = DecimalFormat("#.#")
 
 
-    override fun onLocationChanged(location: Location) {
+    /*override fun onLocationChanged(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
         val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid).child("Location")
@@ -591,16 +591,10 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         mGPSDialog = builder.create()
         mGPSDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.myrect2))
         mGPSDialog.show()
-    }
+    }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0) {
-            requireActivity().recreate()
-            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                showGPSDisabledDialog()
-            } else mLocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        }
         if (requestCode == 1112) {
             handler.postDelayed(Runnable {
                 requireActivity().finish()
@@ -619,7 +613,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == 1) {
             if (grantResults.isNotEmpty()
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -627,7 +621,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                 getDis()
             }
         }
-    }
+    }*/
 
     override fun onStart() {
         super.onStart()
@@ -639,8 +633,7 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
 
     override fun onPause() {
         super.onPause()
-
-        mLocationManager.removeUpdates(this)
+        //mLocationManager.removeUpdates(this)
     }
 
     private fun likeDelay() {
@@ -717,8 +710,8 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
         super.onDestroy()
     }
 
-    fun checkStart(){
-        mLocationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun checkStart(){
+        /*mLocationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf<String?>(
@@ -727,19 +720,17 @@ class MainActivity : Fragment(), LocationListener, BillingProcessor.IBillingHand
                     Manifest.permission.INTERNET
             ), 1)
         } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0f, this)
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0f, this)*/
             viewLifecycleOwner.lifecycleScope.launch { // launch a new coroutine in background and continue
-
                 withContext(Dispatchers.Default) { // background thread
                     getDis()
                 }
                 withContext(Dispatchers.IO) { // background thread
                     callFunctions(countDataSet, true, 0)
                 }
-
             }
 
-        }
+        //}
     }
 
     override fun onClick(v: View?) {
