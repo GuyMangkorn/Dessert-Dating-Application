@@ -79,7 +79,7 @@ class LikeYouActivity : AppCompatActivity() {
                 .setBlurAlgorithm(RenderScriptBlur(this))
                 .setBlurRadius(radius)
                 .setHasFixedTransformationMatrix(true)
-
+        blurView.visibility = View.GONE
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("yep")
         if (intent.hasExtra("See")) {

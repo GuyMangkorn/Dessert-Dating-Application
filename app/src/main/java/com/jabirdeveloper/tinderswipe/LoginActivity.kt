@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
          mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
          mInterstitialAd.loadAd(AdRequest.Builder().build())
          mInterstitialAd.show()*/
-        rewardedAd = RewardedAd(this,
+       /* rewardedAd = RewardedAd(this,
                 "ca-app-pub-3940256099942544/5224354917")
         val adLoadCallback = object : RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
                         // used here to specify individual options settings.
                         .build())
                 .build()
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
+        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)*/
         mAuth = FirebaseAuth.getInstance()
         mLogin = findViewById(R.id.BLogin)
         mEmail = findViewById(R.id.Edit_L_email)
@@ -84,7 +84,7 @@ class LoginActivity : AppCompatActivity() {
              } else {
                  Log.d("TAG", "The interstitial wasn't loaded yet.")
              }*/
-            if (rewardedAd.isLoaded) {
+          /*  if (rewardedAd.isLoaded) {
                 val activityContext: Activity = this@LoginActivity
                 val adCallback = object : RewardedAdCallback() {
                     override fun onRewardedAdOpened() {
@@ -106,9 +106,9 @@ class LoginActivity : AppCompatActivity() {
                 rewardedAd.show(activityContext, adCallback)
             } else {
                 Log.d("TAG", "The rewarded ad wasn't loaded yet.")
-            }
-            val email = mEmail.getText().toString()
-            val password = mPassword.getText().toString()
+            }*/
+            val email = mEmail.text.toString()
+            val password = mPassword.text.toString()
             if (email.trim { it <= ' ' } != "" && password.trim { it <= ' ' } != "") {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this@LoginActivity) { task ->
                     if (!task.isSuccessful) {
