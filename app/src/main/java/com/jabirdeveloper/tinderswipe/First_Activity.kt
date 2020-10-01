@@ -35,11 +35,9 @@ class First_Activity : AppCompatActivity() {
     private var firebaseAuthStateListener: AuthStateListener? = null
     private var mAuth: FirebaseAuth? = null
     private var usersDb: DatabaseReference? = null
-    private var first = true
     private val plus: SwitchpageActivity? = SwitchpageActivity()
-    private var hTextView: LineTextView? = null
     private var mContext: Context? = null
-    private var functions = Firebase.functions
+    //private var functions = Firebase.functions
     private var mLocationManager: LocationManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
