@@ -175,7 +175,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
             if(location != null) {
                 lastLocation(location)
             }else {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0f, this)
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0f, this)
             }
         }
     }
@@ -438,7 +438,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         locationData.updateChildren(location)
     }
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
-    override fun onProviderEnabled(p0: String?) {}
+    override fun onProviderEnabled(p0: String?) {permissionCheck()}
     override fun onProviderDisabled(p0: String?) {
         if (p0 == LocationManager.GPS_PROVIDER) {
             showGPSDisabledDialog()
