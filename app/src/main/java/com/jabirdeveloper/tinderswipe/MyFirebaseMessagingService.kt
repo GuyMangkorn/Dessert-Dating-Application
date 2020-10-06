@@ -40,7 +40,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Log.d("NotificationMessage",message3)
         //Notification_match(p0.data.get("name_user"))
         when (datatype) {
-            "direct_message" -> notificationChat(p0.data["message"], p0.data["time"], p0.data["createBy"], p0.data["name_user"], p0.data["url"])
+            "direct_message" -> {
+                val createBy:String = p0.data["createBy"].toString()
+                var compare:String =p0.data["message"].toString()
+                val name:String = p0.data["name_user"].toString()
+                Log.d("messageBackground","$compare : $createBy : $name")
+                when(compare){
+                    "audio$createBy" -> compare = "$name ${this.getString(R.string.receive_audio)}"
+                    "photo$createBy" -> compare = "$name ${this.getString(R.string.receive_picture)}"
+                    else -> Log.d("messageBackground","NormalText")
+                }
+                notificationChat(compare, p0.data["time"], p0.data["createBy"], p0.data["name_user"], p0.data["url"])}
             else -> {
                 notificationMatch(p0.data["name_user"])
             }
@@ -114,7 +124,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private val indexNotification: MutableList<Int?>? = ArrayList()
     private fun notificationChat(lastChat: String?, time: String?, ID: String?, Names: String?, Url: String?) {
         var icon: Bitmap? = null
-        val name: String
         val intent = Intent(this, ChatActivity::class.java)
         val b = Bundle()
         val random = Random()
@@ -155,7 +164,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 bitMapTest!!.add(icon)
             }
         }
-        name = Names.toString()
+        val name: String = Names.toString()
         b.putString("time_chk", time)
         b.putString("matchId", ID)
         b.putString("nameMatch", name)

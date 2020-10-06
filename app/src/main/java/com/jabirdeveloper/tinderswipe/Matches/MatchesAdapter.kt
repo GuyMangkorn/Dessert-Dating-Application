@@ -46,18 +46,25 @@ class MatchesAdapter(private val matchesList: MutableList<MatchesObject?>?, priv
             holder.m_read?.text = "" + matchesList!!.get(position)!!.count_unread
         }
         holder.mLate?.visibility = View.VISIBLE
-        if (matchesList[position]?.late == "audio$currentUid") {
-            holder.mLate?.hint = context?.getString(R.string.send_audio)
-        } else if (matchesList[position]?.late == "audio" + matchesList[position]?.userId) {
-            holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_audio)
-        } else if (matchesList[position]?.late == "photo$currentUid") {
-            holder.mLate?.hint = context?.getString(R.string.send_picture)
-        } else if (matchesList[position]?.late == "photo" + matchesList[position]?.userId) {
-            holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_picture)
-        } else if (matchesList[position]?.late != "") {
-            holder.mLate?.hint = matchesList[position]?.late
-        } else {
-            holder.mLate?.hint = context?.getString(R.string.let_start_chat)
+        when {
+            matchesList[position]?.late == "audio$currentUid" -> {
+                holder.mLate?.hint = context?.getString(R.string.send_audio)
+            }
+            matchesList[position]?.late == "audio" + matchesList[position]?.userId -> {
+                holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_audio)
+            }
+            matchesList[position]?.late == "photo$currentUid" -> {
+                holder.mLate?.hint = context?.getString(R.string.send_picture)
+            }
+            matchesList[position]?.late == "photo" + matchesList[position]?.userId -> {
+                holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_picture)
+            }
+            matchesList[position]?.late != "" -> {
+                holder.mLate?.hint = matchesList[position]?.late
+            }
+            else -> {
+                holder.mLate?.hint = context?.getString(R.string.let_start_chat)
+            }
         }
         holder.mMatchId?.text = matchesList[position]!!.userId
         holder.mMatchName?.text = matchesList[position]!!.name
