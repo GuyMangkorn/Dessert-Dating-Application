@@ -9,10 +9,14 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.*
@@ -44,7 +48,7 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
     var mImage_sent: ImageView
     var stop_Animate: ImageView? = null
     var progressBarAudio: ProgressBar
-
+    private var play:Boolean = false
     //var mRecycler: RecyclerView?
     var mChk: TextView
     var mChk_2: TextView
@@ -59,7 +63,31 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
     var card: CardView?
     private var check = true
     var alert_dialog: AlertDialog? = null
-
+    fun getBitmap(drawable: Drawable):Bitmap {
+        val result:Bitmap
+        if (drawable is BitmapDrawable)
+        {
+            result = (drawable as BitmapDrawable).bitmap
+        }
+        else
+        {
+            var width = drawable.intrinsicWidth
+            var height = drawable.intrinsicHeight
+            if (width <= 0)
+            {
+                width = 1
+            }
+            if (height <= 0)
+            {
+                height = 1
+            }
+            result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(result)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+        }
+        return result
+    }
     init {
         card = itemView.findViewById(R.id.card)
         CD = itemView.findViewById(R.id.play_pause_animate)
@@ -86,7 +114,94 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
         val builder = AlertDialog.Builder(context)
         myClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         button_audio.setOnClickListener(View.OnClickListener {
-            if (button_audio.background.constantState === ContextCompat.getDrawable(context!!, R.drawable.ic_play_circle_outline_black_24dp)!!.constantState) {
+            if(!play){
+                play =true
+                CD!!.startAnim()
+                if (check) {
+                    val minute = Integer.valueOf(mMessage.text.toString().substring(0, 2))
+                    val second = Integer.valueOf(mMessage.text.toString().substring(3, 5))
+                    total_length = second + minute * 60
+                    check = false
+                }
+                button_audio.visibility = View.GONE
+                progressBarAudio.visibility = View.VISIBLE
+                val minute = Integer.valueOf(mMessage.text.toString().substring(0, 2))
+                val second = Integer.valueOf(mMessage.text.toString().substring(3, 5))
+                val minute_sub = Integer.valueOf(begin_audio.text.toString().substring(0, 2))
+                val second_sub = Integer.valueOf(begin_audio.text.toString().substring(3, 5))
+                val counter_sub = second_sub + minute_sub * 60
+                val counter = second + minute * 60 - counter_sub
+                mediaPlayer = MediaPlayer()
+                try {
+                    mediaPlayer!!.setDataSource(audio_url.text.toString())
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                try {
+                    mediaPlayer!!.prepare()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                if (length == 0) {
+                    mediaPlayer!!.start()
+                } else {
+                    mediaPlayer!!.seekTo(length)
+                    mediaPlayer!!.start()
+                }
+                if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1)!!.constantState) {
+                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1_selected)
+                } else {
+                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2_selected)
+                }
+                progressBarAudio.visibility = View.GONE
+                button_audio.visibility = View.VISIBLE
+                button_audio.background = ContextCompat.getDrawable(context, R.drawable.ic_pause_circle_outline_black_24dp)
+                countDownTimer = object : CountDownTimer(((counter + 1) * 1000).toLong(), 1000) {
+                    var total = counter
+                    override fun onTick(millisUntilFinished: Long) {
+                        val aaa = millisUntilFinished.toInt()
+                        val all_second = total - aaa / 1000
+                        if (all_second < 60) {
+                            val second = String.format("%02d", all_second + second_sub)
+                            begin_audio.text = ("00:$second")
+                        } else {
+                            val check_minute = all_second / 60
+                            val check_second = all_second % 60
+                            val second_s = String.format("%02d", check_second + minute_sub)
+                            val minute = String.format("%02d", check_minute + second_sub)
+                            begin_audio.text = ("$minute:$second_s")
+                        }
+                    }
+
+                    override fun onFinish() {
+                        length = 0
+                        CD!!.stopAnim()
+                        button_audio.background = ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp)
+                        begin_audio.text = ("00:00")
+                        if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1_selected)!!.constantState) {
+                            mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)
+                        } else {
+                            mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
+                        }
+                    }
+                }.start()
+
+            }else{
+                play =false
+                Log.d("audioBackground","$play")
+                CD!!.stopAnim()
+                countDownTimer!!.cancel()
+                button_audio.background = ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp)
+                mediaPlayer!!.stop()
+                length = mediaPlayer!!.currentPosition
+                Log.d("audioBackground","$length")
+                if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1_selected)!!.constantState) {
+                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)
+                } else {
+                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
+                }
+            }
+            /*if (button_audio.background.constantState === ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp)!!.constantState) {
                 CD!!.startAnim()
                 if (check) {
                     val minute = Integer.valueOf(mMessage.text.toString().substring(0, 2))
@@ -167,7 +282,7 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
                 } else {
                     mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
                 }
-            }
+            }*/
         })
         mchk2.setOnLongClickListener(OnLongClickListener {
             if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_2)!!.constantState) {
