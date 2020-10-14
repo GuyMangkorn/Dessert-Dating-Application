@@ -14,8 +14,14 @@
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="extendedFloatingActionButtonStyle">@style/Widget.App.ExtendedFloatingActionButton</item>
         <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
-
-</style>
+    </style>
+    <style name="AppTheme.Launcher" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/c2</item>
+        <item name="colorPrimaryDark">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorAccent">@color/c3</item>
+        <item name="android:windowBackground">@drawable/tt</item>
+    </style>
     <style name="font" parent="AppTheme">
         <item name="fontFamily">@font/lemon</item>
     </style>

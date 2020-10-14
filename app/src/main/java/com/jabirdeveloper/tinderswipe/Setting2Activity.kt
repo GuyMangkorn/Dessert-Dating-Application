@@ -431,18 +431,21 @@ class Setting2Activity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val user = FirebaseAuth.getInstance().currentUser
-        if (map["Distance"] != seekBar_2.progress) valCh = true
-        if (map["noti"] != noti_1.isChecked) valCh = true
-        if (map["on_off"] != online.isChecked) valCh = true
-        if (map["off_card"] != on_off_card.isChecked) valCh = true
-        if (map["off_list"] != on_off_list.isChecked) valCh = true
-        if (minV != map["OppositeUserAgeMin"]) valCh = true
-        if (maxV != map["OppositeUserAgeMax"]) valCh = true
-        if (gender != map["gender"]) valCh = true
-        if (user != null && valCh) {
-            save()
+        if(this::map.isInitialized){
+            val user = FirebaseAuth.getInstance().currentUser
+            if (map["Distance"] != seekBar_2.progress) valCh = true
+            if (map["noti"] != noti_1.isChecked) valCh = true
+            if (map["on_off"] != online.isChecked) valCh = true
+            if (map["off_card"] != on_off_card.isChecked) valCh = true
+            if (map["off_list"] != on_off_list.isChecked) valCh = true
+            if (minV != map["OppositeUserAgeMin"]) valCh = true
+            if (maxV != map["OppositeUserAgeMax"]) valCh = true
+            if (gender != map["gender"]) valCh = true
+            if (user != null && valCh) {
+                save()
+            }
         }
+
 
 
     }

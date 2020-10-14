@@ -156,8 +156,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                 if (direction == Direction.Right) {
                     if (maxLike > 0 || statusVip) {
                         val datetime = hashMapOf<String, Any>()
-                        datetime["date"] = dateUser
-                        datetime["time"] = timeUser
+                        datetime["date"] = ServerValue.TIMESTAMP
+                        //datetime["time"] = timeUser
                         usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                         maxLike--
                         usersDb.child(currentUid).child("MaxLike").setValue(maxLike)
@@ -173,8 +173,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                 if (direction == Direction.Top) {
                     if (maxStar > 0 || statusVip) {
                         val datetime = hashMapOf<String, Any>()
-                        datetime["date"] = dateUser
-                        datetime["time"] = timeUser
+                        datetime["date"] = ServerValue.TIMESTAMP
+                        //datetime["time"] = timeUser
                         datetime["super"] = true
                         usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                         usersDb.child(currentUid).child("star_s").child(userId).setValue(true)

@@ -8,82 +8,94 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.database.*
-import com.google.firebase.functions.HttpsCallableResult
-import com.google.firebase.functions.ktx.functions
 import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.ktx.Firebase
 import com.hanks.htextview.base.AnimationListener
 import com.hanks.htextview.base.HTextView
-import com.hanks.htextview.line.LineTextView
 import com.jaredrummler.android.widget.AnimatedSvgView
-import java.util.*
+import kotlinx.android.synthetic.main.activity_first_.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.coroutineContext
 
 class First_Activity : AppCompatActivity() {
     private var firebaseAuthStateListener: AuthStateListener? = null
     private var mAuth: FirebaseAuth? = null
     private var usersDb: DatabaseReference? = null
-    private val plus: SwitchpageActivity? = SwitchpageActivity()
+    //private val plus: SwitchpageActivity? = SwitchpageActivity() เอาไว้ทำไมวะ
     private var mContext: Context? = null
     //private var functions = Firebase.functions
+    private lateinit var aniFade: Animation
+    private lateinit var aniFade2: Animation
     private var mLocationManager: LocationManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        //this.window.setBackgroundDrawableResource(R.drawable.tt)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_first_)
-        MobileAds.initialize(this) {}
+        setAnimation()
         mContext = applicationContext
         mAuth = FirebaseAuth.getInstance()
-        firebaseAuthStateListener = AuthStateListener {
-            val user = FirebaseAuth.getInstance().currentUser
-            if (user != null) {
-                val svgView: AnimatedSvgView = findViewById(R.id.animated_svg_view)
-                svgView.start()
-                usersDb = FirebaseDatabase.getInstance().reference.child("Users")
-                usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if (dataSnapshot.child(mAuth!!.currentUser!!.uid).child("sex").exists()) {
-                            pushToken()
-                        } else {
-                            mAuth!!.signOut()
-                            val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
-                            startActivity(intent)
-                        }
-                    }
 
-                    override fun onCancelled(databaseError: DatabaseError) {}
-                })
-            } else {
-                val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
-                startActivity(intent)
-                finish()
-                return@AuthStateListener
+        CoroutineScope(Job()).launch(Dispatchers.IO) {
+            firebaseAuthStateListener = AuthStateListener {
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user != null) {
+                    // val svgView: AnimatedSvgView = findViewById(R.id.animated_svg_view)
+                    //  svgView.start()
+
+                    logo.startAnimation(aniFade)
+                    usersDb = FirebaseDatabase.getInstance().reference.child("Users")
+                    usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if (dataSnapshot.child(mAuth!!.currentUser!!.uid).child("sex").exists()) {
+                                pushToken()
+                            } else {
+                                mAuth!!.signOut()
+                                val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
+                                startActivity(intent)
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {}
+                    })
+                } else {
+                    val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    return@AuthStateListener
+                }
             }
+            mLocationManager = this@First_Activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if (!mLocationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                showGPSDisabledDialog()
+            } else if (ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@First_Activity, arrayOf<String?>(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.INTERNET
+                ), 1)
+            } else mAuth!!.addAuthStateListener(firebaseAuthStateListener!!)
+
         }
-        mLocationManager = this@First_Activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (!mLocationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showGPSDisabledDialog()
-        } else if (ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this@First_Activity, arrayOf<String?>(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.INTERNET
-            ), 1)
-        } else mAuth!!.addAuthStateListener(firebaseAuthStateListener!!)
+
+
         /*hTextView = findViewById(R.id.textview)
         hTextView!!.setAnimationListener(SimpleAnimationListener(this@First_Activity))
         hTextView!!.animateText("Welcome to my world")*/
@@ -170,7 +182,36 @@ class First_Activity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }*/
+    fun setAnimation(){
+        aniFade= AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
+        aniFade2= AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
+        aniFade.setAnimationListener(object: Animation.AnimationListener{
+            override fun onAnimationStart(animation: Animation?) {
 
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                logo.startAnimation(aniFade2)
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+
+            }
+        })
+        aniFade2.setAnimationListener(object: Animation.AnimationListener{
+            override fun onAnimationStart(animation: Animation?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                logo.startAnimation(aniFade)
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+
+            }
+        })
+    }
     override fun onStop() {
         super.onStop()
         mAuth!!.removeAuthStateListener(firebaseAuthStateListener!!)
@@ -209,3 +250,16 @@ class First_Activity : AppCompatActivity() {
 
     }
 }
+//<com.jaredrummler.android.widget.AnimatedSvgView
+//android:id="@+id/animated_svg_view"
+//android:layout_width="180dp"
+//android:layout_height="190dp"
+//android:layout_gravity="center"
+//app:animatedSvgFillColors="@array/candy_color"
+//app:animatedSvgFillStart="1200"
+//app:animatedSvgFillTime="1000"
+//app:animatedSvgGlyphStrings="@array/candy"
+//app:animatedSvgImageSizeX="512"
+//app:animatedSvgImageSizeY="512"
+//app:animatedSvgTraceTime="2000"
+//app:animatedSvgTraceTimePerGlyph="1000" />
