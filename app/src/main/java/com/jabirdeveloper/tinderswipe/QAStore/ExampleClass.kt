@@ -48,7 +48,7 @@ class ExampleClass : AppCompatDialogFragment() {
     }
 
     fun setData(Choice: ArrayList<QAObject>) {
-        this.Choice = Choice;
+        this.Choice = Choice
     }
 
     override fun onAttach(context: Context) {

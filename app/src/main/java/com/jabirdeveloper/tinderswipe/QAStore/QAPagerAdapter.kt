@@ -34,7 +34,7 @@ class QAPagerAdapter(val context: Context, val choice: ArrayList<QAObject>, val 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val inflater = (context as Activity).layoutInflater
-        return Holder(inflater!!.inflate(R.layout.question_dialog, parent, false))
+        return Holder(inflater.inflate(R.layout.question_dialog, parent, false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -85,7 +85,7 @@ class QAPagerAdapter(val context: Context, val choice: ArrayList<QAObject>, val 
                     R.id.radioButton_QAWeight5 -> answerWeight = 250
                 }
                 val inputMap = mapOf("question" to answerQA, "weight" to answerWeight)
-                hashMapQA.put("question${position + 1}", inputMap as Map<*, *>)
+                hashMapQA[choice[position].questionId] = inputMap as Map<*, *>
                 Log.d("Check_IsCheck", hashMapQA.toString())
                 viewpager.setCurrentItem(++viewpager.currentItem, false)
                 if (position == itemCount - 1) {

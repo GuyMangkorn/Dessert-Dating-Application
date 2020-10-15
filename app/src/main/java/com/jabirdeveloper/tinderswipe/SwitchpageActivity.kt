@@ -70,6 +70,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
             getMyUser()
             getUnreadFunction()
         }
+        getDataOnCall()
         //questionCalculate()
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
@@ -319,15 +320,6 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     }
     private var resultFetchQA: ArrayList<QAObject> = ArrayList()
     private var text: String = ""
-    private fun getRequest() {
-        val okHttpClient = OkHttpClient()
-        val builder: Request.Builder = Request.Builder()
-        val request: Request = builder.url("https://us-central1-tinder-3ac12.cloudfunctions.net/addQuestionProgramically/").build()
-        val response: Response = okHttpClient.newCall(request).execute()
-        if (response.isSuccessful) {
-            Log.d("onRequest", "Success Request")
-        }
-    }
     private fun getDataOnCall(): Task<HttpsCallableResult> {
         val data = hashMapOf(
                 "questions" to text
@@ -338,21 +330,24 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                 .addOnSuccessListener { task ->
                     val data: Map<*, *> = task.data as Map<*, *>
                     val questions = data["questions"] as Map<*, *>
-                    Log.d("testDatatatat", questions.toString())
+                    Log.d("testGetQuestionData", questions.toString())
                     val keys = questions.keys
-                    val set = questions["Set1"] as Map<*, *>
-                    for (entry2 in set.keys) {
-                        val value: String = entry2.toString()
-                        val key = set[value] as Map<*, *>
-                        val keyString = key.keys.toString().replace("[", "").replace("]", "")
-                        Log.d("testDatatatat", keyString)
-                        val on = QAObject(keyString, key[keyString] as ArrayList<String>)
-                        resultFetchQA.add(on)
+                    for (entry in questions.keys){
+                        val questionId = entry.toString()
+                        Log.d("testGetQuestionData", questionId)
+                        val questionSet = questions[questionId] as Map<*,*>
+                        //Log.d("testGetQuestionData",questionSet["question"].toString())
+                        val arr:ArrayList<String> = ArrayList()
+                        arr.add(questionSet["0"].toString())
+                        arr.add(questionSet["1"].toString())
+                        Log.d("testGetQuestionData",arr.toString())
+                        val ob = QAObject(questionId,questionSet["question"].toString(),arr)
+                        resultFetchQA.add(ob)
                     }
                     openDialog(resultFetchQA)
                 }
                 .addOnFailureListener {
-                    Log.d("testDatatatat", "error")
+                    Log.d("testGetQuestionData", "error")
                 }
     }
     private fun openDialog(ListChoice: ArrayList<QAObject>) {
