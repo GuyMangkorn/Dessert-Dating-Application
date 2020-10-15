@@ -70,7 +70,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
             getMyUser()
             getUnreadFunction()
         }
-        getDataOnCall()
+        //getDataOnCall()
         //questionCalculate()
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
