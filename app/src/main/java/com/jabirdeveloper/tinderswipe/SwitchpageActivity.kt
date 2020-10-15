@@ -39,6 +39,10 @@ import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
 import kotlinx.coroutines.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -192,7 +196,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                     val count = data["resultSum"].toString()
                     val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
                     val editorRead = myUnread2.edit()
-                    editorRead.putInt("total",count.toInt() )
+                    editorRead.putInt("total", count.toInt())
                     editorRead.apply()
                     setCurrentIndex(count.toInt())
                 }
@@ -232,6 +236,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                     Log.d("TAG112", "not connected")
                 }
             }
+
             override fun onCancelled(error: DatabaseError) {
                 Log.w("TAG112", "Listener was cancelled")
             }
@@ -252,22 +257,22 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                 } else myUser.putBoolean("Vip", false)
                 if (dataSnapshot.child("connection").hasChild("yep")) {
                     myUser.putInt("c", dataSnapshot.child("connection").child("yep").childrenCount.toInt())
+                } else {
+                    myUser.putInt("c", 0)
                 }
-                else{myUser.putInt("c", 0)}
                 if (dataSnapshot.hasChild("see_profile")) {
                     myUser.putInt("s", dataSnapshot.child("see_profile").childrenCount.toInt())
+                } else {
+                    myUser.putInt("s", 0)
                 }
-                else{myUser.putInt("s", 0)}
-                if(dataSnapshot.hasChild("buy_like")){
+                if (dataSnapshot.hasChild("buy_like")) {
                     myUser.putBoolean("buy_like", true)
-                }
-                else{
+                } else {
                     myUser.putBoolean("buy_like", false)
                 }
-                if(dataSnapshot.hasChild("buy_see")){
+                if (dataSnapshot.hasChild("buy_see")) {
                     myUser.putBoolean("buy_like", true)
-                }
-                else{
+                } else {
                     myUser.putBoolean("buy_like", false)
                 }
                 myUser.putString("name", dataSnapshot.child("name").value.toString())
@@ -314,8 +319,16 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     }
     private var resultFetchQA: ArrayList<QAObject> = ArrayList()
     private var text: String = ""
+    private fun getRequest() {
+        val okHttpClient = OkHttpClient()
+        val builder: Request.Builder = Request.Builder()
+        val request: Request = builder.url("https://us-central1-tinder-3ac12.cloudfunctions.net/addQuestionProgramically/").build()
+        val response: Response = okHttpClient.newCall(request).execute()
+        if (response.isSuccessful) {
+            Log.d("onRequest", "Success Request")
+        }
+    }
     private fun getDataOnCall(): Task<HttpsCallableResult> {
-        // Create the arguments to the callable function.
         val data = hashMapOf(
                 "questions" to text
         )
@@ -421,7 +434,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         super.onPause()
         j1.cancel()
     }
-     private fun lastLocation(location:Location){
+     private fun lastLocation(location: Location){
          val lon = location.longitude
          val lat = location.latitude
          val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(uid).child("Location")
