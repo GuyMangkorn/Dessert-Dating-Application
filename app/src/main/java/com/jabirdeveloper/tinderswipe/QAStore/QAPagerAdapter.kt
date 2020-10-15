@@ -84,7 +84,7 @@ class QAPagerAdapter(val context: Context, val choice: ArrayList<QAObject>, val 
                     R.id.radioButton_QAWeight4 -> answerWeight = 150
                     R.id.radioButton_QAWeight5 -> answerWeight = 250
                 }
-                val inputMap = mapOf("question" to answerQA, "weight" to answerWeight)
+                val inputMap = mapOf("id" to choice[position].questionId, "question" to answerQA, "weight" to answerWeight)
                 hashMapQA[choice[position].questionId] = inputMap as Map<*, *>
                 Log.d("Check_IsCheck", hashMapQA.toString())
                 viewpager.setCurrentItem(++viewpager.currentItem, false)
