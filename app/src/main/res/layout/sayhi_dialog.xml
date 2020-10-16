@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="15dp"
+
     >
     <ImageView
         android:id="@+id/close"
@@ -20,7 +21,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="20dp"
+    android:padding="24dp"
     >
     <ImageView
         android:visibility="gone"
@@ -30,7 +31,7 @@
         android:src="@drawable/ic_hand"
         />
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
         android:textSize="20dp"
         />
     <EditText
+        android:visibility="gone"
         android:id="@+id/text_send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,9 +51,24 @@
         android:textSize="16dp"
         android:includeFontPadding="false"
         />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlinedTextField"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/Send_a_message_to"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
     <Button
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:id="@+id/buy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
