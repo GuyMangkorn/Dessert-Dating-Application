@@ -1,5 +1,6 @@
 package com.jabirdeveloper.tinderswipe.Matches
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -18,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
+import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import com.jabirdeveloper.tinderswipe.R
 import com.tapadoo.alerter.Alerter
 
+@SuppressLint("CutPasteId")
 class MatchesViewHolders(itemView: View, private val context: Context?, private val matchesList: MutableList<MatchesObject?>?) : RecyclerView.ViewHolder(itemView) {
     var mMatchId: TextView?
     var mMatchName: TextView?
@@ -83,28 +86,8 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
                         })
                         .show()
             } else if (item.toString() == context?.getString(R.string.dialog_report)) {
-                val choice_text: Array<out String> = context.resources.getStringArray(R.array.report_item)
-                val checked_item = BooleanArray(choice_text.size)
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle(R.string.dialog_reportUser)
-                builder.setMultiChoiceItems(R.array.report_item, checked_item) { dialog, which, isChecked ->
-                    checked_item[which] = isChecked
-                    val item = choice_text[which]
-                }
-                builder.setPositiveButton(context.getString(R.string.dialog_report)) { dialog, which ->
-                    return_d = 0
-                    i = 0
-                    while (i < choice_text.size) {
-                        val checked = checked_item[i]
-                        if (checked) {
-                            update(i.toString())
-                        }
-                        i++
-                    }
-                    //UpdateDate()
-                }
-                builder.setNegativeButton(R.string.cancle) { dialog, which -> dialog.dismiss() }
-                builder.show()
+                val mDialog = ReportUser(context as Activity, mMatchId!!.text.toString()).reportDialog()
+                mDialog.show()
             } else {
                 Toast.makeText(context, "" + item, Toast.LENGTH_SHORT).show()
             }
@@ -134,78 +117,10 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         })
     }
 
-    private fun update(Child_2: String?) {
-        mDataReport!!.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val MatchId = mMatchId!!.text.toString()
-                var date_before: Boolean = true
-                if (dataSnapshot.child(userID.toString()).child("PutReportId").hasChild(MatchId)) {
-                    date_before = false
-                } else {
-                    mDataReport.child(userID.toString())
-                            .child("PutReportId")
-                            .child(mMatchId!!.text.toString())
-                            .setValue("true")
-                }
-                if (date_before) {
-                    if (return_d == 0) {
-                        return_d = -1
-                        Alerter.create(context as Activity?)
-                                .setTitle(context!!.getString(R.string.report_suc))
-                                .setText(context!!.getString(R.string.report_suc2))
-                                .setBackgroundColorInt(Color.parseColor("#7AFFCF"))
-                                .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_check)!!)
-                                .show()
-                    }
-                    if (!dataSnapshot.child(MatchId).hasChild("Report")) {
-                        val jj = hashMapOf(
-                                Child_2 to "1")
-                        mDataReport?.child(MatchId)?.child("Report")?.updateChildren(jj as Map<String, Any>)
-                    } else if (dataSnapshot.child(MatchId).hasChild("Report")) {
-                        if (dataSnapshot.child(MatchId).child("Report").hasChild(Child_2.toString())) {
-                            val count_rep = Integer.valueOf(dataSnapshot.child(MatchId).child("Report").child(Child_2.toString()).value.toString()) + 1
-                            val input_count = count_rep.toString()
-                            val jj = hashMapOf(
-                                    Child_2 to input_count)
-                            mDataReport?.child(MatchId)?.child("Report")?.updateChildren(jj as Map<String, Any>)
-                        } else {
-                            val jj = hashMapOf(
-                                    Child_2 to "1")
-                            mDataReport?.child(MatchId)?.child("Report")?.updateChildren(jj as Map<String, Any>)
-                        }
-                    }
-                } else {
-                    if (return_d == 0) {
-                        return_d = -1
-                        Alerter.create(context as Activity?)
-                                .setTitle(context!!.getString(R.string.report_failed))
-                                .setText(context!!.getString(R.string.report_fail))
-                                .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                                .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_do_not_disturb_black_24dp)!!)
-                                .show()
-                        val builder = AlertDialog.Builder(context)
-                        val view = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
-                        val title = view.findViewById<View?>(R.id.title_alert) as TextView
-                        val icon = view.findViewById<View?>(R.id.icon_alert) as ImageView
-                        val li = view.findViewById<View?>(R.id.linear_alert) as LinearLayout
-                        val dis = view.findViewById<View?>(R.id.dis_alert) as TextView
-                        val yes = view.findViewById<View?>(R.id.yes_alert) as TextView
-                        yes.setText(R.string.report_close)
-                        dis.visibility = View.GONE
-                        li.gravity = Gravity.CENTER
-                        val message = view.findViewById<View?>(R.id.message_alert) as TextView
-                        title.setText(R.string.report_alert)
-                        message.setText(R.string.report_reset)
-                        icon.background = ContextCompat.getDrawable(context, R.drawable.ic_warning_black_24dp)
-                        builder.setView(view)
-                        mDialog = builder.show()
-                        yes.setOnClickListener { (mDialog as AlertDialog?)?.dismiss() }
-                    }
-                }
-            }
+    private fun update(Child_2: String) {
+        val mDialog = ReportUser(context as Activity, mMatchId!!.text.toString()).reportDialog()
+        mDialog.show()
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
     }
 
     init {
