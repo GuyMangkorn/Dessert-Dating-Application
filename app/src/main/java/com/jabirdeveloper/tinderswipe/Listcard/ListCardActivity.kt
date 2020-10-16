@@ -178,23 +178,24 @@ class ListCardActivity : Fragment() {
     }
 
     private fun percentage(){
-            val data = hashMapOf(
-                    "question" to "Questions"
-            )
-            functions
-                    .getHttpsCallable("getPercentageMatching")
-                    .call(data)
-                    .addOnSuccessListener { task ->
-                        val datau = task.data as Map<*, *>
-                        Log.d("testDatatatat", datau.toString())
-                        percentageMath = datau["dictionary"] as Map<*, *>
-                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                            getStartAt()
-                        }
-                    }
-                    .addOnFailureListener {
-                        Log.d("testDatatatat", "error")
-                    }
+//            val data = hashMapOf(
+//                    "question" to "Questions"
+//            )
+//            functions
+//                    .getHttpsCallable("getPercentageMatching")
+//                    .call(data)
+//                    .addOnSuccessListener { task ->
+//                        val datau = task.data as Map<*, *>
+//                        Log.d("testDatatatat", datau.toString())
+//                        percentageMath = datau["dictionary"] as Map<*, *>
+//                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+//                            getStartAt()
+//                        }
+//                    }
+//                    .addOnFailureListener {
+//                        Log.d("testDatatatat", "error")
+//                    }
+        getStartAt()
     }
 
 
