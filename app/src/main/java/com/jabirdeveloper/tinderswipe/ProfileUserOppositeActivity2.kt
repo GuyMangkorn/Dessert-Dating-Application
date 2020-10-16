@@ -14,6 +14,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +39,7 @@ import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.jabirdeveloper.tinderswipe.Functions.ReportUser
+import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
 import kotlinx.coroutines.*
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
@@ -295,7 +298,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 }
             }
         }
-
         like = findViewById(R.id.like_button)
         dislike = findViewById(R.id.dislike_button)
         star = findViewById(R.id.star_button)
@@ -518,7 +520,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     var addresses: MutableList<Address?>? = null
                     try {
                         addresses = ff.getFromLocation(xOpposite, yOpposite, 1)
-                        val city = addresses[0]!!.getAdminArea()
+                        val city = addresses[0]!!.adminArea
                         city1.text = "$city ,  $distance1 ${getString(R.string.kilometer)}"
                     } catch (e: IOException) {
                         e.printStackTrace()
@@ -595,7 +597,11 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                             addT(listItems[position])
                         }
                     }
+                    val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileUserOppositeActivity2, R.anim.fade_in2)
+                    information.visibility = View.VISIBLE
+                    information.startAnimation(logoMoveAnimation)
                 }
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}

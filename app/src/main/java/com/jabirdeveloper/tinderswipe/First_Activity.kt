@@ -12,7 +12,6 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -24,20 +23,20 @@ import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceId
 import com.hanks.htextview.base.AnimationListener
 import com.hanks.htextview.base.HTextView
-import com.jaredrummler.android.widget.AnimatedSvgView
 import kotlinx.android.synthetic.main.activity_first_.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 class First_Activity : AppCompatActivity() {
     private var firebaseAuthStateListener: AuthStateListener? = null
     private var mAuth: FirebaseAuth? = null
     private var usersDb: DatabaseReference? = null
+
     //private val plus: SwitchpageActivity? = SwitchpageActivity() เอาไว้ทำไมวะ
     private var mContext: Context? = null
+
     //private var functions = Firebase.functions
     private lateinit var aniFade: Animation
     private lateinit var aniFade2: Animation
@@ -45,7 +44,7 @@ class First_Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        //this.window.setBackgroundDrawableResource(R.drawable.tt)
+        usersDb = FirebaseDatabase.getInstance().reference.child("Users")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_first_)
         setAnimation()
@@ -60,10 +59,9 @@ class First_Activity : AppCompatActivity() {
                     //  svgView.start()
 
                     logo.startAnimation(aniFade)
-                    usersDb = FirebaseDatabase.getInstance().reference.child("Users")
                     usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            if (dataSnapshot.child(mAuth!!.currentUser!!.uid).child("sex").exists()) {
+                            if (dataSnapshot.hasChild(mAuth!!.currentUser!!.uid)) {
                                 pushToken()
                             } else {
                                 mAuth!!.signOut()
@@ -80,6 +78,8 @@ class First_Activity : AppCompatActivity() {
                     finish()
                     return@AuthStateListener
                 }
+
+
             }
             mLocationManager = this@First_Activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             if (!mLocationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -95,10 +95,6 @@ class First_Activity : AppCompatActivity() {
 
         }
 
-
-        /*hTextView = findViewById(R.id.textview)
-        hTextView!!.setAnimationListener(SimpleAnimationListener(this@First_Activity))
-        hTextView!!.animateText("Welcome to my world")*/
     }
 
     private fun pushToken() {
@@ -144,6 +140,7 @@ class First_Activity : AppCompatActivity() {
         mGPSDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@First_Activity, R.drawable.myrect2))
         mGPSDialog.show()
     }
+
     private var countNumberChat: Int? = 0
 
     /*var nameCaution: MutableList<String?>? = ArrayList()
@@ -182,10 +179,10 @@ class First_Activity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }*/
-    fun setAnimation(){
-        aniFade= AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
-        aniFade2= AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
-        aniFade.setAnimationListener(object: Animation.AnimationListener{
+    fun setAnimation() {
+        aniFade = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
+        aniFade2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
+        aniFade.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
 
             }
@@ -198,7 +195,7 @@ class First_Activity : AppCompatActivity() {
 
             }
         })
-        aniFade2.setAnimationListener(object: Animation.AnimationListener{
+        aniFade2.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
 
             }
@@ -212,6 +209,7 @@ class First_Activity : AppCompatActivity() {
             }
         })
     }
+
     override fun onStop() {
         super.onStop()
         mAuth!!.removeAuthStateListener(firebaseAuthStateListener!!)
@@ -243,12 +241,6 @@ class First_Activity : AppCompatActivity() {
     }
 
 
-    private inner class SimpleAnimationListener(private val context: Context?) : AnimationListener {
-        override fun onAnimationEnd(hTextView: HTextView?) {
-            hTextView!!.animateText("Welcome to my world")
-        }
-
-    }
 }
 //<com.jaredrummler.android.widget.AnimatedSvgView
 //android:id="@+id/animated_svg_view"
