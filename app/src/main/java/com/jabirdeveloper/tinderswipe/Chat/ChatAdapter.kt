@@ -45,7 +45,7 @@ class ChatAdapter(private val chatList: MutableList<ChatObject?>?, private val c
                     val paramsimg = holder.mchk3.layoutParams as RelativeLayout.LayoutParams
                     paramsimg.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
                     holder.mchk3.background = ContextCompat.getDrawable(context!!, R.drawable.chat_1_photo)!!
-                    Glide.with(context).load(chatList[position]!!.url).into(holder.mImage_sent)
+                    Glide.with(context).load(chatList[position]!!.url).thumbnail(0.1f).into(holder.mImage_sent)
                     holder.mchk2.visibility = View.GONE
                 }
                 chatList[position]!!.audio_Url != "null" -> {
@@ -107,8 +107,8 @@ class ChatAdapter(private val chatList: MutableList<ChatObject?>?, private val c
                     val paramsimg = holder.mchk3.layoutParams as RelativeLayout.LayoutParams
                     paramsimg.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
                     holder.imageOpposite.visibility = View.VISIBLE
-                    Glide.with(context!!).load(chatList[position]!!.profileImageUrl).into(holder.imageOpposite)
-                    Glide.with(context).load(chatList[position]!!.url).into(holder.mImage_sent)
+                    Glide.with(context!!).load(chatList[position]!!.profileImageUrl).thumbnail(0.1f).into(holder.imageOpposite)
+                    Glide.with(context).load(chatList[position]!!.url).thumbnail(0.1f).into(holder.mImage_sent)
                     holder.mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_2_photo)
                     holder.mchk2.visibility = View.GONE
                 }

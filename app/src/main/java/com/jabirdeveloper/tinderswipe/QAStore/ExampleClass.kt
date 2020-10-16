@@ -20,24 +20,24 @@ import com.jabirdeveloper.tinderswipe.R
 
 class ExampleClass : AppCompatDialogFragment() {
     var listener: ExampleClassListener? = null
-    var radio1: RadioButton? = null
+    /*var radio1: RadioButton? = null
     var radio2: RadioButton? = null
     var questionText: TextView? = null
     var confirmText: TextView? = null
     var dismissText: TextView? = null
     var radioGroup1: RadioGroup? = null
     var radioGroupWeight: RadioGroup? = null
-    var question: String = ""
-    var Choice: ArrayList<QAObject> = ArrayList()
-    private lateinit var functions: FirebaseFunctions
+    var question: String = ""*/
+    private var choice: ArrayList<QAObject> = ArrayList()
+    //private lateinit var functions: FirebaseFunctions
 
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = Dialog(activity!!)
-        var lay = getActivity()!!.getLayoutInflater()
+        val lay = activity!!.getLayoutInflater()
         val view: View = lay.inflate(R.layout.viewpager_questions, null)
-        var viewpager: ViewPager2 = view.findViewById(R.id.pagerTest)
-        val adapter: QAPagerAdapter = QAPagerAdapter(activity!!, Choice!!, builder, viewpager)
+        val viewpager: ViewPager2 = view.findViewById(R.id.pagerTest)
+        val adapter: QAPagerAdapter = QAPagerAdapter(activity!!, choice, builder, viewpager)
         viewpager.adapter = adapter
         viewpager.isUserInputEnabled = false
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -47,8 +47,8 @@ class ExampleClass : AppCompatDialogFragment() {
         return builder
     }
 
-    fun setData(Choice: ArrayList<QAObject>) {
-        this.Choice = Choice;
+    fun setData(choice: ArrayList<QAObject>) {
+        this.choice = choice
     }
 
     override fun onAttach(context: Context) {
