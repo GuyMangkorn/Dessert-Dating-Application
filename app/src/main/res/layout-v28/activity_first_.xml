@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/background_white"
     android:gravity="center"
-
     tools:context=".First_Activity">
 
     <ImageView
@@ -43,6 +42,7 @@
         >
 
         <com.jaredrummler.android.widget.AnimatedSvgView
+            android:visibility="gone"
             android:id="@+id/animated_svg_view"
             android:layout_width="180dp"
             android:layout_height="190dp"
@@ -55,7 +55,13 @@
             app:animatedSvgImageSizeY="512"
             app:animatedSvgTraceTime="2000"
             app:animatedSvgTraceTimePerGlyph="1000" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_candy"/>
         <TextView
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

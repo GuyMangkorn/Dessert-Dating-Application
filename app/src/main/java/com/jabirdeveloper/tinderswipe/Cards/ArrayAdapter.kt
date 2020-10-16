@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.jabirdeveloper.tinderswipe.MainActivity
 import com.jabirdeveloper.tinderswipe.ProfileUserOppositeActivity2
@@ -89,8 +90,8 @@ class ArrayAdapter(private var items: ArrayList<Cards>, private val context: Con
 
                 val newDate = hashMapOf<String, Any>()
                 val d = DateTime
-                newDate["date"] = d.date()
-                newDate["time"] = d.time()
+                newDate["date"] = ServerValue.TIMESTAMP
+                //newDate["time"] = d.time()
                 currentUserConnectionDb.updateChildren(newDate)
                 val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
                 intent.putExtra("User_opposite", items[position].userId)

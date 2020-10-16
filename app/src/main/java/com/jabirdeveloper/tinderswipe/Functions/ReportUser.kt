@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.jabirdeveloper.tinderswipe.R
 import com.tapadoo.alerter.Alerter
+import kotlinx.android.synthetic.main.alert_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,7 +31,7 @@ class ReportUser(private var context: Activity, private var matchId: String) {
 
         val choice = context.resources.getStringArray(R.array.report_item)
         val checkedItem = BooleanArray(choice.size)
-        val mBuilder = androidx.appcompat.app.AlertDialog.Builder(context)
+        val mBuilder = AlertDialog.Builder(context)
         mBuilder.setTitle(R.string.dialog_reportUser)
         mBuilder.setMultiChoiceItems(R.array.report_item, checkedItem) { _, position, isChecked ->
             checkedItem[position] = isChecked
@@ -107,22 +108,17 @@ class ReportUser(private var context: Activity, private var matchId: String) {
                             .show()
                     val builder = AlertDialog.Builder(context)
                     val view = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
-                    val title = view.findViewById<View?>(R.id.title_alert) as TextView
-                    val li = view.findViewById<View?>(R.id.linear_alert) as LinearLayout
-                    val icon = view.findViewById<View?>(R.id.icon_alert) as ImageView
-                    val message = view.findViewById<View?>(R.id.message_alert) as TextView
-                    val dis = view.findViewById<View?>(R.id.dis_alert) as TextView
-                    val yes = view.findViewById<View?>(R.id.yes_alert) as TextView
-                    yes.setText(R.string.report_close)
-                    li.gravity = Gravity.CENTER
-                    dis.visibility = View.GONE
-                    title.setText(R.string.report_alert)
-                    message.setText(R.string.report_reset)
-                    icon.background = ContextCompat.getDrawable(context, R.drawable.ic_warning_black_24dp)
-                    builder.setView(view)
-                    val mDialog = builder.show()
-                    yes.setOnClickListener { mDialog.dismiss() }
-
+                    view.apply {
+                        yes_alert.setText(R.string.report_close)
+                        linear_alert.gravity = Gravity.CENTER
+                        dis_alert.visibility = View.GONE
+                        title_alert.setText(R.string.report_alert)
+                        message_alert.setText(R.string.report_reset)
+                        icon_alert.background = ContextCompat.getDrawable(context, R.drawable.ic_warning_black_24dp)
+                        builder.setView(view)
+                        val mDialog = builder.show()
+                        yes_alert.setOnClickListener { mDialog.dismiss() }
+                    }
                 }
             }
 

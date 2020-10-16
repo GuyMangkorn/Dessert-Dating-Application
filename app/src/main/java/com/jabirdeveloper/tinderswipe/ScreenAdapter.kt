@@ -1,15 +1,23 @@
 package com.jabirdeveloper.tinderswipe
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
 import java.util.*
 
 class ScreenAdapter(private val ctx: Context, private val length: Int, m0: String?, m1: String?, m2: String?, m3: String?, m4: String?, m5: String?, private val ic: Int) : PagerAdapter() {
@@ -42,10 +50,11 @@ class ScreenAdapter(private val ctx: Context, private val length: Int, m0: Strin
         val layoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val itemView = layoutInflater.inflate(R.layout.item_image_slide, container, false)
         val imageView = itemView.findViewById<View?>(R.id.slide_1) as ImageView
+        val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(ctx, R.anim.fade_in2)
+        Log.d("rty", "0")
         Glide.with(ctx).load(m[Items[position]]).placeholder(R.drawable.tran).into(imageView)
         if (ic != 0) {
             Glide.with(ctx).load(ic).placeholder(R.drawable.tran).into(imageView)
-            Log.d("111", "2")
         }
         container.addView(itemView)
         return itemView

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -115,7 +116,7 @@ class LikeYouActivity : AppCompatActivity() {
                 y_user  = myUser.getString("Y", "").toString().toDouble()
             }
             withContext(Dispatchers.IO){
-                userDb.addChildEventListener(object : ChildEventListener {
+                userDb.orderByChild("date").addChildEventListener(object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                         if (dataSnapshot.exists()) {
                             var time = "วันนี้ 00:00"
@@ -214,7 +215,24 @@ class LikeYouActivity : AppCompatActivity() {
                     val x: Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
                     val y: Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                     val distance = CalculateDistance.calculate(x_user, y_user, x, y)
-
+//                    val data = hashMapOf(
+//                            "x_user" to x,
+//                            "y_user" to y,
+//                    )
+//                    Log.d("tagkl", data.toString())
+//
+//                    functions.getHttpsCallable("likeYou")
+//                            .call(data)
+//                            .addOnFailureListener { Log.d("ghj", "failed") }
+//                            .addOnSuccessListener { task ->
+//                                // This continuation runs on either success or failure, but if the task
+//                                // has failed then result will throw an Exception which will be
+//                                // propagated down.
+//                                val result1 = task.data as Map<*, *>
+//                                Log.d("ggg",result1.toString())
+//
+//
+//                            }
                     city = City(language, this@LikeYouActivity, x, y).getCity().toString()
                     resultLike!!.add(LikeYouObject(
                             userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))

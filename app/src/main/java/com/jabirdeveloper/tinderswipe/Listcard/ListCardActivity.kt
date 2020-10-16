@@ -178,23 +178,24 @@ class ListCardActivity : Fragment() {
     }
 
     private fun percentage(){
-            val data = hashMapOf(
-                    "question" to "Questions"
-            )
-            functions
-                    .getHttpsCallable("getPercentageMatching")
-                    .call(data)
-                    .addOnSuccessListener { task ->
-                        val datau = task.data as Map<*, *>
-                        Log.d("testDatatatat", datau.toString())
-                        percentageMath = datau["dictionary"] as Map<*, *>
-                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                            getStartAt()
-                        }
-                    }
-                    .addOnFailureListener {
-                        Log.d("testDatatatat", "error")
-                    }
+//            val data = hashMapOf(
+//                    "question" to "Questions"
+//            )
+//            functions
+//                    .getHttpsCallable("getPercentageMatching")
+//                    .call(data)
+//                    .addOnSuccessListener { task ->
+//                        val datau = task.data as Map<*, *>
+//                        Log.d("testDatatatat", datau.toString())
+//                        percentageMath = datau["dictionary"] as Map<*, *>
+//                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+//                            getStartAt()
+//                        }
+//                    }
+//                    .addOnFailureListener {
+//                        Log.d("testDatatatat", "error")
+//                    }
+        getStartAt()
     }
 
 
@@ -269,9 +270,9 @@ class ListCardActivity : Fragment() {
                     val df2 = DecimalFormat("#.#")
                     val dis = df2.format(user["distance_other"])
                     var percentAdd: String? = "0"
-                    if (percentageMath!![user["key"].toString()] != null) {
-                        percentAdd = percentageMath!![user["key"].toString()].toString()
-                    }
+//                    if (percentageMath!![user["key"].toString()] != null) {
+//                        percentAdd = percentageMath!![user["key"].toString()].toString()
+//                    }
                     val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time, percentAdd)
                     resultMatches.add(obj)
 

@@ -197,7 +197,6 @@ class MatchesActivity : Fragment() {
                 }
                 createByBoolean = dataSnapshot.child("createByUser").value.toString() != (currentUserId)
                 if (createBy != currentUserId) {
-                    Log.d("ReadAlready","+1")
                     chatCheckRead(chatID, key, time, lastChat)
                 } else {
                     startNode(key, dataSnapshot.key, lastChat, time, 0)
@@ -405,15 +404,17 @@ class MatchesActivity : Fragment() {
 
                     }
                     if (resultMatches!!.size > userMatchCount) {
-                        val myUnread = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                        var dd2 = myUnread.getInt("total", 0)
-                        ++dd2
-                        (activity as SwitchpageActivity).setCurrentIndex(dd2)
-                        val myUnread2 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                        val editorRead = myUnread2.edit()
-                        editorRead.putInt("total", dd2)
-                        editorRead.apply()
-
+                        if(createByBoolean) {
+                            Log.d("ReadAlready", "+1")
+                            val myUnread = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                            var dd2 = myUnread.getInt("total", 0)
+                            ++dd2
+                            (activity as SwitchpageActivity).setCurrentIndex(dd2)
+                            val myUnread2 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                            val editorRead = myUnread2.edit()
+                            editorRead.putInt("total", dd2)
+                            editorRead.apply()
+                        }
                         Log.d("chatNotificationTest","+1 $createByBoolean")
                         for (j in 0 until (resultMatches.size-1)) {
                             Log.d("loop1","$j ${resultMatches.elementAt(j)!!.userId} , ${resultMatches.size} , $count")

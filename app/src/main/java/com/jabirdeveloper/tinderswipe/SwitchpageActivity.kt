@@ -1,5 +1,6 @@
 package com.jabirdeveloper.tinderswipe
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
@@ -8,6 +9,9 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
@@ -19,6 +23,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Task
@@ -34,16 +39,21 @@ import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
 import kotlinx.coroutines.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class SwitchpageActivity : AppCompatActivity() {
-
+class SwitchpageActivity : AppCompatActivity() ,LocationListener {
+    private lateinit var mLocationManager: LocationManager
     private var id = R.id.item2
     private var language: String? = null
     private var first: String = ""
     private lateinit var dialog: Dialog
+    private var uid = FirebaseAuth.getInstance().currentUser!!.uid
     private val page1 = SettingMainActivity()
     private val page2 = MainActivity()
     private val page3 = ListCardActivity()
@@ -54,11 +64,13 @@ class SwitchpageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadLocal()
+        permissionCheck()
         setContentView(R.layout.activity_switch_page)
         j1.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             getMyUser()
             getUnreadFunction()
         }
+        //getDataOnCall()
         //questionCalculate()
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
@@ -81,7 +93,7 @@ class SwitchpageActivity : AppCompatActivity() {
             dialog.show()
         }
         if (intent.hasExtra("first")) {
-            first = intent.getStringExtra("first")
+            first = intent.getStringExtra("first")!!
             if (first != "0") {
                 bar!!.showBadge(R.id.item4, Integer.valueOf(first))
             }
@@ -96,7 +108,6 @@ class SwitchpageActivity : AppCompatActivity() {
             id = R.id.item1
             intent.removeExtra("back")
         }
-
         bar!!.setOnItemSelectedListener(object : ChipNavigationBar.OnItemSelectedListener {
             override fun onItemSelected(i: Int) {
                 Log.d("num", i.toString())
@@ -153,6 +164,26 @@ class SwitchpageActivity : AppCompatActivity() {
             }
         })
     }
+    private fun permissionCheck(){
+        mLocationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this, arrayOf<String?>(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.INTERNET
+            ), 1
+            )
+        } else {
+            val location=  mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if(location != null) {
+                lastLocation(location)
+            }else {
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0f, this)
+            }
+        }
+    }
     private fun getUnreadFunction(): Task<HttpsCallableResult> {
         val data = hashMapOf(
                 "uid" to "test"
@@ -166,7 +197,7 @@ class SwitchpageActivity : AppCompatActivity() {
                     val count = data["resultSum"].toString()
                     val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
                     val editorRead = myUnread2.edit()
-                    editorRead.putInt("total",count.toInt() )
+                    editorRead.putInt("total", count.toInt())
                     editorRead.apply()
                     setCurrentIndex(count.toInt())
                 }
@@ -174,7 +205,7 @@ class SwitchpageActivity : AppCompatActivity() {
                     Log.d("testGetUnreadFunction", "error")
                 }
     }
-    fun questionCalculate(): Task<HttpsCallableResult> {
+    private fun questionCalculate(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
                 "uid" to text
@@ -193,7 +224,6 @@ class SwitchpageActivity : AppCompatActivity() {
     }
 
     private fun getMyUser() {
-
         val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
         val connectedRef: DatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected")
         connectedRef.addValueEventListener(object : ValueEventListener {
@@ -212,8 +242,6 @@ class SwitchpageActivity : AppCompatActivity() {
                 Log.w("TAG112", "Listener was cancelled")
             }
         })
-
-
         userDb.onDisconnect().let {
             val statusUp2 = HashMap<String?, Any?>()
             statusUp2["date"] = ServerValue.TIMESTAMP
@@ -230,22 +258,22 @@ class SwitchpageActivity : AppCompatActivity() {
                 } else myUser.putBoolean("Vip", false)
                 if (dataSnapshot.child("connection").hasChild("yep")) {
                     myUser.putInt("c", dataSnapshot.child("connection").child("yep").childrenCount.toInt())
+                } else {
+                    myUser.putInt("c", 0)
                 }
-                else{myUser.putInt("c", 0)}
                 if (dataSnapshot.hasChild("see_profile")) {
                     myUser.putInt("s", dataSnapshot.child("see_profile").childrenCount.toInt())
+                } else {
+                    myUser.putInt("s", 0)
                 }
-                else{myUser.putInt("s", 0)}
-                if(dataSnapshot.hasChild("buy_like")){
+                if (dataSnapshot.hasChild("buy_like")) {
                     myUser.putBoolean("buy_like", true)
-                }
-                else{
+                } else {
                     myUser.putBoolean("buy_like", false)
                 }
-                if(dataSnapshot.hasChild("buy_see")){
+                if (dataSnapshot.hasChild("buy_see")) {
                     myUser.putBoolean("buy_like", true)
-                }
-                else{
+                } else {
                     myUser.putBoolean("buy_like", false)
                 }
                 myUser.putString("name", dataSnapshot.child("name").value.toString())
@@ -290,50 +318,43 @@ class SwitchpageActivity : AppCompatActivity() {
 
         })
     }
-
     private var resultFetchQA: ArrayList<QAObject> = ArrayList()
     private var text: String = ""
     private fun getDataOnCall(): Task<HttpsCallableResult> {
-        // Create the arguments to the callable function.
         val data = hashMapOf(
                 "questions" to text
         )
-
         return functions
                 .getHttpsCallable("addQuestions")
                 .call(data)
                 .addOnSuccessListener { task ->
                     val data: Map<*, *> = task.data as Map<*, *>
                     val questions = data["questions"] as Map<*, *>
-                    Log.d("testDatatatat", questions.toString())
+                    Log.d("testGetQuestionData", questions.toString())
                     val keys = questions.keys
-
-                    val set = questions["Set1"] as Map<*, *>
-
-
-                    for (entry2 in set.keys) {
-                        val value: String = entry2.toString()
-                        val key = set[value] as Map<*, *>
-                        val keyString = key.keys.toString().replace("[", "").replace("]", "")
-                        Log.d("testDatatatat", keyString)
-                        val on = QAObject(keyString, key[keyString] as ArrayList<String>)
-                        resultFetchQA.add(on)
-
+                    for (entry in questions.keys){
+                        val questionId = entry.toString()
+                        Log.d("testGetQuestionData", questionId)
+                        val questionSet = questions[questionId] as Map<*,*>
+                        //Log.d("testGetQuestionData",questionSet["question"].toString())
+                        val arr:ArrayList<String> = ArrayList()
+                        arr.add(questionSet["0"].toString())
+                        arr.add(questionSet["1"].toString())
+                        Log.d("testGetQuestionData",arr.toString())
+                        val ob = QAObject(questionId,questionSet["question"].toString(),arr)
+                        resultFetchQA.add(ob)
                     }
-
                     openDialog(resultFetchQA)
                 }
                 .addOnFailureListener {
-                    Log.d("testDatatatat", "error")
+                    Log.d("testGetQuestionData", "error")
                 }
     }
-
     private fun openDialog(ListChoice: ArrayList<QAObject>) {
         val exampleClass: ExampleClass = ExampleClass()
         exampleClass.setData(ListChoice)
         exampleClass.show(supportFragmentManager, "example Dialog")
     }
-
     fun setCurrentIndex(newValueFormCurrentIndex: Int) {
         if (newValueFormCurrentIndex > 0) {
             bar!!.showBadge(R.id.item4, newValueFormCurrentIndex)
@@ -341,15 +362,20 @@ class SwitchpageActivity : AppCompatActivity() {
             bar!!.dismissBadge(R.id.item4)
         }
     }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == 8) {
             if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this@SwitchpageActivity, "fail GPS", Toast.LENGTH_SHORT).show()
             }
         }
+        if(requestCode == 1){
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                permissionCheck()
+            }else{
+                showGPSDisabledDialog()
+            }
+        }
     }
-
     fun isOnline(context: Context): Boolean {
         val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -402,5 +428,43 @@ class SwitchpageActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         j1.cancel()
+    }
+     private fun lastLocation(location: Location){
+         val lon = location.longitude
+         val lat = location.latitude
+         val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(uid).child("Location")
+         val location = hashMapOf<String, Any>()
+         location["X"] = lat
+         location["Y"] = lon
+         locationData.updateChildren(location)
+    }
+    override fun onLocationChanged(p0: Location) {
+        val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(uid).child("Location")
+        val location = hashMapOf<String, Any>()
+        location["X"] = p0.latitude
+        location["Y"] = p0.longitude
+        locationData.updateChildren(location)
+    }
+    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
+    override fun onProviderEnabled(p0: String?) {permissionCheck()}
+    override fun onProviderDisabled(p0: String?) {
+        if (p0 == LocationManager.GPS_PROVIDER) {
+            showGPSDisabledDialog()
+        }
+    }
+    private fun showGPSDisabledDialog() {
+        val mGPSDialog:Dialog
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(R.string.GPS_Disabled)
+        builder.setMessage(R.string.GPS_open)
+        builder.setPositiveButton(R.string.open_gps) { _, _ -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { _, _ ->
+            val intent = Intent(this, ShowGpsOpen::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            this.finish()
+            startActivity(intent)
+        }
+        mGPSDialog = builder.create()
+        mGPSDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.myrect2))
+        mGPSDialog.show()
     }
 }
