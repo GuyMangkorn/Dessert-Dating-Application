@@ -270,9 +270,9 @@ class ListCardActivity : Fragment() {
                     val df2 = DecimalFormat("#.#")
                     val dis = df2.format(user["distance_other"])
                     var percentAdd: String? = "0"
-                    if (percentageMath!![user["key"].toString()] != null) {
-                        percentAdd = percentageMath!![user["key"].toString()].toString()
-                    }
+//                    if (percentageMath!![user["key"].toString()] != null) {
+//                        percentAdd = percentageMath!![user["key"].toString()].toString()
+//                    }
                     val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time, percentAdd)
                     resultMatches.add(obj)
 

@@ -73,7 +73,6 @@ class ChatActivity : AppCompatActivity() {
     private var chatId: String? = null
     private var UrlImage: String? = null
     private var name_chat: String? = null
-    private var time_chk: String? = null
     private var fileName: String? = null
     private var file_uri: Uri? = null
     private var uri_camera: Uri? = null
@@ -125,7 +124,6 @@ class ChatActivity : AppCompatActivity() {
         editor.putInt("Read", Integer.valueOf(unreadCount!!.toInt()))
         editor.apply()
         name_chat = intent!!.extras!!.getString("nameMatch")
-        time_chk = intent!!.extras!!.getString("time_chk")
         mRecordReal = findViewById(R.id.record_real)
         openMenu = findViewById(R.id.menu_button)
         mSendEditText = findViewById(R.id.message)
@@ -275,7 +273,7 @@ class ChatActivity : AppCompatActivity() {
         mRecyclerView = findViewById<View?>(R.id.recyclerView_2) as RecyclerView
         val mChatLayoutManager = LinearLayoutManager(this@ChatActivity)
         mRecyclerView.layoutManager = mChatLayoutManager
-        mChatAdapter = ChatAdapter(getDataSetChat(), this@ChatActivity)
+        mChatAdapter = ChatAdapter(getDataSetChat()!!, this@ChatActivity)
         mSendButton = findViewById(R.id.send)
         mSendImage.setOnClickListener{
             val intent = Intent()
@@ -881,8 +879,8 @@ class ChatActivity : AppCompatActivity() {
         usersDb!!.child(currentUserId.toString()).child("PutReportId").child(matchId.toString()).updateChildren(ff as Map<String, Any>)
     }
 
-    private val resultChat: ArrayList<ChatObject?>? = ArrayList()
-    private fun getDataSetChat(): MutableList<ChatObject?>? {
+    private val resultChat: ArrayList<ChatObject> = ArrayList()
+    private fun getDataSetChat(): ArrayList<ChatObject> {
         return resultChat
     }
 }

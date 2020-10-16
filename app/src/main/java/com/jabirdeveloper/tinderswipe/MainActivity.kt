@@ -52,6 +52,7 @@ import kotlinx.coroutines.withContext
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -115,6 +116,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
+        Log.d("date",getDate(1602860907341))
         layoutGps = view.findViewById(R.id.layout_in)
         textgps = view.findViewById(R.id.textView8)
         textGps2 = view.findViewById(R.id.textView9)
@@ -732,7 +734,13 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
 
         //}
     }
-
+    fun getDate(timestamp: Long) :String {
+        val calendar = Calendar.getInstance()
+        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
+        val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
+        val date = currentDate.format(timestamp)
+        return date
+    }
     override fun onClick(v: View?) {
         if(v == touchGps){
             startActivityForResult(Intent(context, Setting2Activity::class.java), 1112)
