@@ -1,5 +1,6 @@
 package com.jabirdeveloper.tinderswipe.Matches
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -15,87 +16,58 @@ import com.bumptech.glide.request.target.Target
 import com.jabirdeveloper.tinderswipe.R
 
 class MatchesAdapter(private val matchesList: MutableList<MatchesObject?>?, private val context: Context?, private val currentUid: String?) : RecyclerView.Adapter<MatchesViewHolders?>() {
+    @SuppressLint("InflateParams")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchesViewHolders {
-        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.item_matches, null, false)
-        val lp = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        layoutView.layoutParams = lp
-        return MatchesViewHolders(layoutView, context, matchesList)
-    }
-
+        val layoutView:View = LayoutInflater.from(parent.context).inflate(R.layout.item_matches, null, false)
+        layoutView.layoutParams =  RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        return MatchesViewHolders(layoutView, context, matchesList) }
     override fun onBindViewHolder(holder: MatchesViewHolders, position: Int) {
         holder.set(position)
         if (matchesList?.get(position)?.time != "-1") {
             holder.mLateView?.hint = matchesList!![position]!!.time
             holder.mLateView?.visibility = View.VISIBLE
         } else {
-            holder.mLateView?.visibility = View.INVISIBLE
-        }
-        /*Glide.with(context).asBitmap().load(matchesList.get(position).getProfileImageUrl()).apply(new RequestOptions().circleCrop()).into(new CustomTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                matchesList.get(position).setBitmap(resource);
-            }
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-            }
-        });*/if (matchesList[position]?.count_unread == -1 || matchesList.get(position)?.count_unread == 0) {
-            holder.mRead?.visibility = View.GONE
-        } else {
-            holder.mRead?.visibility = View.VISIBLE
-            holder.mRead?.text = "" + matchesList!!.get(position)!!.count_unread
-        }
+            holder.mLateView?.visibility = View.INVISIBLE }
+        if (matchesList[position]?.count_unread == -1 || matchesList[position]?.count_unread == 0) { holder.mRead?.visibility = View.GONE }
+        else { holder.mRead?.visibility = View.VISIBLE
+             holder.mRead?.text = matchesList[position]!!.count_unread.toString() }
         holder.mLate?.visibility = View.VISIBLE
         when {
             matchesList[position]?.late == "audio$currentUid" -> {
-                holder.mLate?.hint = context?.getString(R.string.send_audio)
-            }
+                holder.mLate?.hint = context?.getString(R.string.send_audio) }
             matchesList[position]?.late == "audio" + matchesList[position]?.userId -> {
-                holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_audio)
-            }
+                holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_audio) }
             matchesList[position]?.late == "photo$currentUid" -> {
-                holder.mLate?.hint = context?.getString(R.string.send_picture)
-            }
+                holder.mLate?.hint = context?.getString(R.string.send_picture) }
             matchesList[position]?.late == "photo" + matchesList[position]?.userId -> {
-                holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_picture)
-            }
+                holder.mLate?.hint = matchesList[position]?.name + " " + context?.getString(R.string.receive_picture) }
             matchesList[position]?.late != "" -> {
-                holder.mLate?.hint = matchesList[position]?.late
-            }
-            else -> {
-                holder.mLate?.hint = context?.getString(R.string.let_start_chat)
-            }
+                holder.mLate?.hint = matchesList[position]?.late }
+            else -> { holder.mLate?.hint = context?.getString(R.string.let_start_chat) }
         }
         holder.mMatchId?.text = matchesList[position]!!.userId
         holder.mMatchName?.text = matchesList[position]!!.name
         holder.mDistance?.visibility = View.GONE
         if (matchesList[position]?.status == "offline") {
             Glide.with(context!!).load(R.drawable.offline_user).into(holder.mStatus!!)
-        } else {
+        }
+        else {
             Glide.with(context!!).load(R.drawable.online_user).into(holder.mStatus!!)
         }
         if (matchesList[position]?.profileImageUrl != "") {
             Glide.with(context).load(matchesList[position]?.profileImageUrl).listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
-                    return false
-                }
-
+                    return false }
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                     holder.progressBar!!.visibility = View.GONE
-                    return false
-                }
+                    return false }
             }).apply(RequestOptions().override(100, 100)).into(holder.mMatchImage)
         } else {
-            val drawable: Int
-            /* drawable = if (matchesList?.get(position).getGender() == "Female") {
-                 R.drawable.ic_woman
-             } else R.drawable.ic_man*/
-            drawable = R.drawable.ic_man
+            val drawable: Int = R.drawable.ic_man
             Glide.with(context).load(drawable).listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
                     return false
                 }
-
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                     holder.progressBar!!.visibility = View.GONE
                     return false
@@ -103,9 +75,6 @@ class MatchesAdapter(private val matchesList: MutableList<MatchesObject?>?, priv
             }).apply(RequestOptions().override(100, 100)).into(holder.mMatchImage)
         }
     }
-
-    override fun getItemCount(): Int {
-        return matchesList!!.size
-    }
+    override fun getItemCount(): Int { return matchesList!!.size }
 
 }

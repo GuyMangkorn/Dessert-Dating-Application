@@ -3,15 +3,12 @@ package com.jabirdeveloper.tinderswipe.Matches
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +17,6 @@ import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import com.jabirdeveloper.tinderswipe.R
-import com.tapadoo.alerter.Alerter
 
 @SuppressLint("CutPasteId")
 class MatchesViewHolders(itemView: View, private val context: Context?, private val matchesList: MutableList<MatchesObject?>?) : RecyclerView.ViewHolder(itemView) {
@@ -35,12 +31,9 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
     var mStatus: ImageView?
     private var mLinear: LinearLayout?
     private val userID: String?
-    private var ChatId: String? = null
-    private var Show: String? = null
-    private val i_1: Intent?
-    private var i = 0
-    private var return_d: Int? = 0
-    private lateinit var mDialog: Dialog
+    private var chatId: String? = null
+    private var show: String? = null
+    private val intent: Intent?
     private var position: Int? = 0
     private val mDataReport: DatabaseReference?
     var progressBar: ProgressBar?
@@ -48,7 +41,7 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         this.position = position
     }
 
-    fun showdialog() {
+    private fun showDialog() {
         val dd = PopupMenu(context, mLate)
         dd.menuInflater.inflate(R.menu.popup_menu, dd.menu)
         dd.gravity = Gravity.END
@@ -56,39 +49,42 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
             dd.setForceShowIcon(true)
         }
         dd.setOnMenuItemClickListener { item ->
-            if (item.toString() == context?.getString(R.string.start_chat)) {
-                val intent = Intent(context, ChatActivity::class.java)
-                val b = Bundle()
-                b.putString("matchId", mMatchId?.text.toString())
-                b.putString("time_chk", mLateView?.text.toString())
-                b.putString("nameMatch", mMatchName?.text.toString())
-                b.putString("first_chat", last?.text.toString())
-                b.putString("unread", mRead?.text.toString())
-                //b.putString("gender", matchesList?.get(position!!)!!.getGender())
-                matchesList!!.elementAt(position!!)?.count_unread = 0
-                intent.putExtras(b)
-                context.startActivity(intent)
-                mRead?.visibility = View.GONE;
-                mRead?.text = "0"
-            } else if (item.toString() == context?.getString(R.string.cancel_match)) {
-                Show = mMatchId?.text.toString()
-                val mBuilder = AlertDialog.Builder(context)
-                mBuilder.setTitle(context.getString(R.string.cancel_match2))
-                mBuilder.setMessage(context.getString(R.string.cancel_match_confirm))
-                mBuilder.setCancelable(true)
-                mBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                    deletechild()
+            when {
+                item.toString() == context?.getString(R.string.start_chat) -> {
+                    val intent = Intent(context, ChatActivity::class.java)
+                    val b = Bundle()
+                    b.apply {
+                        putString("matchId", mMatchId?.text.toString())
+                        putString("time_chk", mLateView?.text.toString())
+                        putString("nameMatch", mMatchName?.text.toString())
+                        putString("first_chat", last?.text.toString())
+                        putString("unread", mRead?.text.toString())
+                    }
+                    matchesList!!.elementAt(position!!)?.count_unread = 0
+                    intent.putExtras(b)
+                    context.startActivity(intent)
+                    mRead?.apply {
+                        visibility = View.GONE
+                        text = "0"
+                    }
                 }
-                mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
-                val mDialog = mBuilder.create()
-                mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.myrect2))
-                mDialog.show()
-
-            } else if (item.toString() == context?.getString(R.string.dialog_report)) {
-                val mDialog = ReportUser(context as Activity, mMatchId!!.text.toString()).reportDialog()
-                mDialog.show()
-            } else {
-                Toast.makeText(context, "" + item, Toast.LENGTH_SHORT).show()
+                item.toString() == context?.getString(R.string.cancel_match) -> {
+                    show = mMatchId?.text.toString()
+                    val mBuilder = AlertDialog.Builder(context)
+                    mBuilder.setTitle(context.getString(R.string.cancel_match2))
+                    mBuilder.setMessage(context.getString(R.string.cancel_match_confirm))
+                    mBuilder.setCancelable(true)
+                    mBuilder.setPositiveButton(R.string.ok) { _, _ ->
+                        deleteChild()
+                    }
+                    mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
+                    val mDialog = mBuilder.create()
+                    mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.myrect2))
+                    mDialog.show() }
+                item.toString() == context?.getString(R.string.dialog_report) -> {
+                    val mDialog = ReportUser(context as Activity, mMatchId!!.text.toString()).reportDialog()
+                    mDialog.show() }
+                else -> { Toast.makeText(context, "" + item, Toast.LENGTH_SHORT).show() }
             }
             mLinear?.background = ContextCompat.getDrawable(context!!, R.drawable.background_click)
             true
@@ -97,27 +93,42 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         dd.show()
     }
 
-    private fun deletechild() {
-        val datadelete = FirebaseDatabase.getInstance().reference.child("Users")
-        val datachat = FirebaseDatabase.getInstance().reference
-        datachat.addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun deleteChild() {
+        val dataDelete = FirebaseDatabase.getInstance().reference.child("Users")
+        FirebaseDatabase.getInstance().reference
+                .addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                ChatId = dataSnapshot.child("Users").child(userID.toString()).child("connection").child("matches").child(Show.toString()).child("ChatId").value.toString()
-                if (dataSnapshot.child("Chat").hasChild(ChatId.toString())) {
-                    datachat.child("Chat").child(ChatId.toString()).removeValue()
+                chatId = dataSnapshot.child("Users")
+                        .child(userID.toString())
+                        .child("connection")
+                        .child("matches")
+                        .child(show.toString())
+                        .child("ChatId").value.toString()
+                if (dataSnapshot.child("Chat").hasChild(chatId.toString())) {
+                    FirebaseDatabase.getInstance().reference
+                            .child("Chat")
+                            .child(chatId.toString())
+                            .removeValue()
                 }
-                datadelete.child(userID.toString()).child("connection").child("matches").child(Show.toString()).removeValue()
-                datadelete.child(userID.toString()).child("connection").child("yep").child(Show.toString()).removeValue()
-                datadelete.child(Show.toString()).child("connection").child("matches").child(userID.toString()).removeValue()
-                datadelete.child(Show.toString()).child("connection").child("yep").child(userID.toString()).removeValue()
+                dataDelete.child(userID.toString()).child("connection")
+                        .child("matches")
+                        .child(show.toString()).removeValue()
+                dataDelete.child(userID.toString()).child("connection")
+                        .child("yep")
+                        .child(show.toString()).removeValue()
+                dataDelete.child(show.toString()).child("connection")
+                        .child("matches")
+                        .child(userID.toString()).removeValue()
+                dataDelete.child(show.toString()).child("connection")
+                        .child("yep")
+                        .child(userID.toString()).removeValue()
             }
-
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
 
     init {
-        i_1 = Intent(context, MatchesActivity::class.java)
+        intent = Intent(context, MatchesActivity::class.java)
         mDataReport = FirebaseDatabase.getInstance().reference.child("Users")
         mLateView = itemView.findViewById(R.id.Latest_time)
         mRead = itemView.findViewById(R.id.chat_unread)
@@ -131,25 +142,28 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         last = itemView.findViewById(R.id.Latest_chat)
         mLinear = itemView.findViewById(R.id.dd_22)
         progressBar = itemView.findViewById(R.id.progress_image)
-        mLinear?.setOnLongClickListener(OnLongClickListener {
+        mLinear?.setOnLongClickListener {
             mLinear?.background = ContextCompat.getDrawable(context!!, R.drawable.background_click_tran)
-            showdialog()
+            showDialog()
             true
-        })
-        mLinear?.setOnClickListener(View.OnClickListener {
+        }
+        mLinear?.setOnClickListener{
             val intent = Intent(context, ChatActivity::class.java)
             val b = Bundle()
-            b.putString("time_chk", mLateView?.hint.toString())
-            b.putString("matchId", mMatchId?.text.toString())
-            b.putString("nameMatch", mMatchName?.text.toString())
-            b.putString("first_chat", last?.text.toString())
-            b.putString("unread", mRead?.text.toString())
-            //b.putString("gender", matchesList?.get(position!!)!!.getGender())
+            b.apply {
+                putString("time_chk", mLateView?.hint.toString())
+                putString("matchId", mMatchId?.text.toString())
+                putString("nameMatch", mMatchName?.text.toString())
+                putString("first_chat", last?.text.toString())
+                putString("unread", mRead?.text.toString())
+            }
             matchesList?.get(position!!)?.count_unread = 0
             intent.putExtras(b)
             context?.startActivity(intent)
-            mRead?.visibility = View.GONE
-            mRead?.text = "0"
-        })
+            mRead?.apply {
+                visibility = View.GONE
+                text = "0"
+            }
+        }
     }
 }
