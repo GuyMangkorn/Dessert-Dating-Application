@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -27,7 +28,7 @@ class HiAdapter(private val Hilist: MutableList<HiObject?>?, private val context
         fun set(position: Int) {
             Glide.with(context).load(Hilist!![position]!!.profileImageUrl).placeholder(R.drawable.tran).into(imageView)
             name.text = Hilist[position]!!.name
-            imageView.setOnClickListener(View.OnClickListener {
+            imageView.setOnClickListener{
                 val intent = Intent(context, ChatActivity::class.java)
                 intent.putExtra("User_opposite", Hilist[position]!!.userId)
                 intent.putExtra("Hi", "open")
@@ -38,10 +39,10 @@ class HiAdapter(private val Hilist: MutableList<HiObject?>?, private val context
                 intent.putExtra("unread", "0")
                 intent.putExtra("chat_na", "1")
                 context.startActivity(intent)
-            })
-            imageView.setOnLongClickListener(OnLongClickListener {
-                val mBuilder = AlertDialog.Builder(context, R.style.AlertDialog2)
-                mBuilder.setTitle("ลบรูปภาพ")
+            }
+            imageView.setOnLongClickListener{
+                val mBuilder = AlertDialog.Builder(context)
+                mBuilder.setTitle("ออกไป")
                 mBuilder.setMessage("คุณต้องการลบ " + Hilist[position]!!.name + " ออกจากแชทใช่หรือไม่")
                 mBuilder.setCancelable(true)
                 mBuilder.setPositiveButton(R.string.ok) { _, _ ->
@@ -63,9 +64,10 @@ class HiAdapter(private val Hilist: MutableList<HiObject?>?, private val context
                 }
                 mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
                 val mDialog = mBuilder.create()
+                mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.myrect2))
                 mDialog.show()
                 false
-            })
+            }
         }
 
     }

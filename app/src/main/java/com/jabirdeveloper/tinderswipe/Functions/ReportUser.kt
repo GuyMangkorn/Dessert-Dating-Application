@@ -102,23 +102,11 @@ class ReportUser(private var context: Activity, private var matchId: String) {
 
                     Alerter.create(context)
                             .setTitle(context.getString(R.string.report_failed))
-                            .setText(context.getString(R.string.report_fail))
+                            .setText(context.getString(R.string.report_reset))
                             .setBackgroundColorInt(ContextCompat.getColor(context, R.color.c1))
                             .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_do_not_disturb_black_24dp)!!)
                             .show()
-                    val builder = AlertDialog.Builder(context)
-                    val view = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
-                    view.apply {
-                        yes_alert.setText(R.string.report_close)
-                        linear_alert.gravity = Gravity.CENTER
-                        dis_alert.visibility = View.GONE
-                        title_alert.setText(R.string.report_alert)
-                        message_alert.setText(R.string.report_reset)
-                        icon_alert.background = ContextCompat.getDrawable(context, R.drawable.ic_warning_black_24dp)
-                        builder.setView(view)
-                        val mDialog = builder.show()
-                        yes_alert.setOnClickListener { mDialog.dismiss() }
-                    }
+
                 }
             }
 

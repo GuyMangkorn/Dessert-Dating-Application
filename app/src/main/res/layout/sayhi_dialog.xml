@@ -23,12 +23,11 @@
     android:gravity="center"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="60dp"
-    android:paddingBottom="60dp"
+    android:paddingTop="50dp"
+    android:paddingBottom="50dp"
     >
 
     <TextView
-
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +38,6 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/outlinedTextField"
-        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"

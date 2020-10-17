@@ -25,10 +25,10 @@ class MatchesAdapter(private val matchesList: MutableList<MatchesObject?>?, priv
     override fun onBindViewHolder(holder: MatchesViewHolders, position: Int) {
         holder.set(position)
         if (matchesList?.get(position)?.time != "-1") {
-            holder.mLate_view?.hint = matchesList!![position]!!.time
-            holder.mLate_view?.visibility = View.VISIBLE
+            holder.mLateView?.hint = matchesList!![position]!!.time
+            holder.mLateView?.visibility = View.VISIBLE
         } else {
-            holder.mLate_view?.visibility = View.INVISIBLE
+            holder.mLateView?.visibility = View.INVISIBLE
         }
         /*Glide.with(context).asBitmap().load(matchesList.get(position).getProfileImageUrl()).apply(new RequestOptions().circleCrop()).into(new CustomTarget<Bitmap>() {
             @Override
@@ -40,10 +40,10 @@ class MatchesAdapter(private val matchesList: MutableList<MatchesObject?>?, priv
 
             }
         });*/if (matchesList[position]?.count_unread == -1 || matchesList.get(position)?.count_unread == 0) {
-            holder.m_read?.visibility = View.GONE
+            holder.mRead?.visibility = View.GONE
         } else {
-            holder.m_read?.visibility = View.VISIBLE
-            holder.m_read?.text = "" + matchesList!!.get(position)!!.count_unread
+            holder.mRead?.visibility = View.VISIBLE
+            holder.mRead?.text = "" + matchesList!!.get(position)!!.count_unread
         }
         holder.mLate?.visibility = View.VISIBLE
         when {
@@ -68,7 +68,7 @@ class MatchesAdapter(private val matchesList: MutableList<MatchesObject?>?, priv
         }
         holder.mMatchId?.text = matchesList[position]!!.userId
         holder.mMatchName?.text = matchesList[position]!!.name
-        holder.m_distance?.visibility = View.GONE
+        holder.mDistance?.visibility = View.GONE
         if (matchesList[position]?.status == "offline") {
             Glide.with(context!!).load(R.drawable.offline_user).into(holder.mStatus!!)
         } else {

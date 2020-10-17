@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.*
@@ -27,14 +26,14 @@ import com.tapadoo.alerter.Alerter
 class MatchesViewHolders(itemView: View, private val context: Context?, private val matchesList: MutableList<MatchesObject?>?) : RecyclerView.ViewHolder(itemView) {
     var mMatchId: TextView?
     var mMatchName: TextView?
-    var m_distance: TextView?
+    var mDistance: TextView?
     var mLate: TextView?
-    var mLate_view: TextView?
-    var m_read: TextView?
+    var mLateView: TextView?
+    var mRead: TextView?
     var last: TextView?
     var mMatchImage: ImageView
     var mStatus: ImageView?
-    var mLinear: LinearLayout?
+    private var mLinear: LinearLayout?
     private val userID: String?
     private var ChatId: String? = null
     private var Show: String? = null
@@ -61,30 +60,30 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
                 val intent = Intent(context, ChatActivity::class.java)
                 val b = Bundle()
                 b.putString("matchId", mMatchId?.text.toString())
-                b.putString("time_chk", mLate_view?.text.toString())
+                b.putString("time_chk", mLateView?.text.toString())
                 b.putString("nameMatch", mMatchName?.text.toString())
                 b.putString("first_chat", last?.text.toString())
-                b.putString("unread", m_read?.text.toString())
+                b.putString("unread", mRead?.text.toString())
                 //b.putString("gender", matchesList?.get(position!!)!!.getGender())
                 matchesList!!.elementAt(position!!)?.count_unread = 0
                 intent.putExtras(b)
                 context.startActivity(intent)
-                m_read?.visibility = View.GONE;
-                m_read?.text = "0"
+                mRead?.visibility = View.GONE;
+                mRead?.text = "0"
             } else if (item.toString() == context?.getString(R.string.cancel_match)) {
                 Show = mMatchId?.text.toString()
-                Alerter.create(context as Activity?)
-                        .setTitle(context.getString(R.string.cancel_match2))
-                        .setText(context.getString(R.string.cancel_match_confirm))
-                        .setIconColorFilter(Color.parseColor("#FFFFFF"))
-                        .setBackgroundColorInt(Color.parseColor("#FF5050"))
-                        .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_warning_black_24dp)!!)
-                        .addButton(context.getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
-                        .addButton(context.getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
-                            Alerter.hide()
-                            deletechild()
-                        })
-                        .show()
+                val mBuilder = AlertDialog.Builder(context)
+                mBuilder.setTitle(context.getString(R.string.cancel_match2))
+                mBuilder.setMessage(context.getString(R.string.cancel_match_confirm))
+                mBuilder.setCancelable(true)
+                mBuilder.setPositiveButton(R.string.ok) { _, _ ->
+                    deletechild()
+                }
+                mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
+                val mDialog = mBuilder.create()
+                mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.myrect2))
+                mDialog.show()
+
             } else if (item.toString() == context?.getString(R.string.dialog_report)) {
                 val mDialog = ReportUser(context as Activity, mMatchId!!.text.toString()).reportDialog()
                 mDialog.show()
@@ -117,18 +116,12 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         })
     }
 
-    private fun update(Child_2: String) {
-        val mDialog = ReportUser(context as Activity, mMatchId!!.text.toString()).reportDialog()
-        mDialog.show()
-
-    }
-
     init {
         i_1 = Intent(context, MatchesActivity::class.java)
         mDataReport = FirebaseDatabase.getInstance().reference.child("Users")
-        mLate_view = itemView.findViewById(R.id.Latest_time)
-        m_read = itemView.findViewById(R.id.chat_unread)
-        m_distance = itemView.findViewById(R.id.distance_text)
+        mLateView = itemView.findViewById(R.id.Latest_time)
+        mRead = itemView.findViewById(R.id.chat_unread)
+        mDistance = itemView.findViewById(R.id.distance_text)
         mStatus = itemView.findViewById(R.id.on_off_matches)
         mMatchId = itemView.findViewById(R.id.id)
         userID = FirebaseAuth.getInstance().uid
@@ -146,17 +139,17 @@ class MatchesViewHolders(itemView: View, private val context: Context?, private 
         mLinear?.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, ChatActivity::class.java)
             val b = Bundle()
-            b.putString("time_chk", mLate_view?.hint.toString())
+            b.putString("time_chk", mLateView?.hint.toString())
             b.putString("matchId", mMatchId?.text.toString())
             b.putString("nameMatch", mMatchName?.text.toString())
             b.putString("first_chat", last?.text.toString())
-            b.putString("unread", m_read?.text.toString())
+            b.putString("unread", mRead?.text.toString())
             //b.putString("gender", matchesList?.get(position!!)!!.getGender())
             matchesList?.get(position!!)?.count_unread = 0
             intent.putExtras(b)
             context?.startActivity(intent)
-            m_read?.visibility = View.GONE
-            m_read?.text = "0"
+            mRead?.visibility = View.GONE
+            mRead?.text = "0"
         })
     }
 }
