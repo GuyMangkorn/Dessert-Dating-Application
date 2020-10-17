@@ -73,8 +73,8 @@ class ListCardActivity : Fragment() {
         anime1 = view.findViewById(R.id.anime1)
         anime2 = view.findViewById(R.id.anime2)
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
-            //percentage()
-            getStartAt()
+            percentage()
+            //getStartAt()
         }
 
         mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -270,9 +270,9 @@ class ListCardActivity : Fragment() {
                     val df2 = DecimalFormat("#.#")
                     val dis = df2.format(user["distance_other"])
                     var percentAdd: String? = "0"
-                    /*if (percentageMath!![user["key"].toString()] != null) {
+                    if (percentageMath!![user["key"].toString()] != null) {
                         percentAdd = percentageMath!![user["key"].toString()].toString()
-                    }*/
+                    }
                     val obj = ListCardObject(user["key"].toString(), user["name"].toString(), profileImageUrl, dis, status, user["Age"].toString(), user["sex"].toString(), myself, offStatus, typeTime, time, percentAdd)
                     resultMatches.add(obj)
 
