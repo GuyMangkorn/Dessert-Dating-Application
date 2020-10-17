@@ -76,7 +76,6 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         }
         //getDataOnCall()
         //questionCalculate()
-        Log.d("tagLanguage",localizationDelegate.getLanguage(this).toLanguageTag())
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
             val choice = this.resources.getStringArray(R.array.report_item)
@@ -327,21 +326,19 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private var text: String = ""
     private fun getDataOnCall(): Task<HttpsCallableResult> {
         val data = hashMapOf(
-                "questions" to text
+                "language" to localizationDelegate.getLanguage(this).toLanguageTag()
         )
         return functions
                 .getHttpsCallable("addQuestions")
                 .call(data)
                 .addOnSuccessListener { task ->
                     val data: Map<*, *> = task.data as Map<*, *>
-                    val questions = data["questions"] as Map<*, *>
+                    val questions:Map<*,*> = data["questions"] as Map<*, *>
                     Log.d("testGetQuestionData", questions.toString())
-                    val keys = questions.keys
                     for (entry in questions.keys){
                         val questionId = entry.toString()
                         Log.d("testGetQuestionData", questionId)
                         val questionSet = questions[questionId] as Map<*,*>
-                        //Log.d("testGetQuestionData",questionSet["question"].toString())
                         val arr:ArrayList<String> = ArrayList()
                         arr.add(questionSet["0"].toString())
                         arr.add(questionSet["1"].toString())
