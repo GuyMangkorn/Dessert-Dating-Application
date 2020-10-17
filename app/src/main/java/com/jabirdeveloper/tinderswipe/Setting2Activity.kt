@@ -13,11 +13,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
+import com.akexorcist.localizationactivity.core.OnLocaleChangedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
 import hearsilent.discreteslider.DiscreteSlider
 import hearsilent.discreteslider.DiscreteSlider.OnValueChangedListener
 import kotlinx.coroutines.CoroutineScope
@@ -57,8 +60,10 @@ class Setting2Activity : AppCompatActivity() {
     private lateinit var on_off_list: Switch
     private var noti_match: String? = null
     private var on_off: String? = null
+    private val localizationDelegate = LocalizationActivityDelegate(this)
     private val order: Array<String?>? = arrayOf("ภาษาไทย", "English")
     private lateinit var map: HashMap<String, Any>
+    private val language: ChangLanguage = ChangLanguage(this)
     private var valCh = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +98,10 @@ class Setting2Activity : AppCompatActivity() {
             }
             mBuilder.setCancelable(true)
             mBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                if (selectedPosition == 0) setLocal("th") else setLocal("en")
+                if (selectedPosition == 0) localizationDelegate.setLanguage(this,"th")
+                else
+                    localizationDelegate.setLanguage(this,"en")
+                language.setLanguage()
                 save()
                 finish()
                 overridePendingTransition(0, 0)
@@ -340,29 +348,15 @@ class Setting2Activity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-
-    private fun setLocal(lang: String?) {
-        val locale = Locale(lang)
-        Locale.setDefault(locale)
-        val configuration = Configuration()
-        resources.configuration.setLocale(locale)
-        baseContext.resources.updateConfiguration(configuration, baseContext.resources.displayMetrics)
-        val editor = getSharedPreferences("Settings", Context.MODE_PRIVATE).edit()
-        editor.putString("My_Lang", lang)
-        editor.apply()
-    }
-
     private fun loadLocal() {
-        val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val langure = preferences.getString("My_Lang", "")
-        if (langure == "th") {
+        if (localizationDelegate.getLanguage(this).toString() == "th") {
             check_item = 0
             change.text = order!![check_item]
         } else {
             check_item = 1
             change.text = order!![check_item]
         }
-        setLocal(langure)
+        language.setLanguage()
     }
 
     /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
