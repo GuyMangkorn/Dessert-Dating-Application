@@ -2,6 +2,7 @@ package com.jabirdeveloper.tinderswipe
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -26,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -34,6 +36,7 @@ import com.google.firebase.functions.HttpsCallableResult
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
+import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
 import com.jabirdeveloper.tinderswipe.Listcard.ListCardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
@@ -50,7 +53,6 @@ import kotlin.collections.HashMap
 class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private lateinit var mLocationManager: LocationManager
     private var id = R.id.item2
-    private var language: String? = null
     private var first: String = ""
     private lateinit var dialog: Dialog
     private var uid = FirebaseAuth.getInstance().currentUser!!.uid
@@ -58,12 +60,14 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private val page2 = MainActivity()
     private val page3 = ListCardActivity()
     private val page4 = MatchesActivity()
+    private val localizationDelegate = LocalizationActivityDelegate(this)
     private var functions = Firebase.functions
     private var activeFragment: Fragment = MainActivity()
+    private val language:ChangLanguage = ChangLanguage(this)
     private val j1 = CoroutineScope(Job())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadLocal()
+        language.setLanguage()
         permissionCheck()
         setContentView(R.layout.activity_switch_page)
         j1.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
@@ -322,21 +326,19 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private var text: String = ""
     private fun getDataOnCall(): Task<HttpsCallableResult> {
         val data = hashMapOf(
-                "questions" to text
+                "language" to localizationDelegate.getLanguage(this).toLanguageTag()
         )
         return functions
                 .getHttpsCallable("addQuestions")
                 .call(data)
                 .addOnSuccessListener { task ->
                     val data: Map<*, *> = task.data as Map<*, *>
-                    val questions = data["questions"] as Map<*, *>
+                    val questions:Map<*,*> = data["questions"] as Map<*, *>
                     Log.d("testGetQuestionData", questions.toString())
-                    val keys = questions.keys
                     for (entry in questions.keys){
                         val questionId = entry.toString()
                         Log.d("testGetQuestionData", questionId)
                         val questionSet = questions[questionId] as Map<*,*>
-                        //Log.d("testGetQuestionData",questionSet["question"].toString())
                         val arr:ArrayList<String> = ArrayList()
                         arr.add(questionSet["0"].toString())
                         arr.add(questionSet["1"].toString())
@@ -397,27 +399,6 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
         Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 1000)
     }
-
-    private fun setLocal(lang: String) {
-        val locale = Locale(lang)
-        Locale.setDefault(locale)
-        val configuration = Configuration()
-        resources.configuration.setLocale(locale)
-        baseContext.resources.updateConfiguration(configuration, baseContext.resources.displayMetrics)
-        val editor = getSharedPreferences("Settings", Context.MODE_PRIVATE).edit()
-        editor.putString("My_Lang", lang)
-        editor.apply()
-        Log.d("My", lang)
-    }
-
-    private fun loadLocal() {
-        val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val language: String = preferences.getString("My_Lang", "")!!
-        this.language = language
-        Log.d("My2", language)
-        setLocal(language)
-    }
-
     companion object {
         var bar: ChipNavigationBar? = null
         fun hide() {
