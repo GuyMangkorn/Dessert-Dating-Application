@@ -1,5 +1,6 @@
 package com.jabirdeveloper.tinderswipe.Register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -13,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.jabirdeveloper.tinderswipe.R
 import com.tapadoo.alerter.Alerter
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneOffset
@@ -31,6 +34,7 @@ class Regis_ageActivity : AppCompatActivity() {
     private lateinit var datePicker: DatePicker
     private lateinit var date: LocalDate
     private lateinit var intent1: Intent
+    @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadLocal()
@@ -43,7 +47,6 @@ class Regis_ageActivity : AppCompatActivity() {
         datePicker = findViewById<DatePicker>(R.id.datePicker)
         intent1 = Intent(this@Regis_ageActivity, Regis_target_Acivity::class.java)
         calendar = Calendar.getInstance()
-
         datePicker.maxDate = calendar.timeInMillis
         calendar.timeInMillis = System.currentTimeMillis()
         y = calendar.get(Calendar.YEAR)
@@ -66,7 +69,9 @@ class Regis_ageActivity : AppCompatActivity() {
                     date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
                     intent1.putExtra("Birth", date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
                 } else {
-                    val date = Date(y, m, d)
+                    val str_date = "$d-$m-$y"
+                    val formatter: DateFormat = SimpleDateFormat("dd-MM-yyyy")
+                    val date = formatter.parse(str_date) as Date
                     intent1.putExtra("Birth", date.time)
                 }
                 intent1.putExtra("Sex", intent.getStringExtra("Sex"))
@@ -83,7 +88,7 @@ class Regis_ageActivity : AppCompatActivity() {
                 Alerter.create(this@Regis_ageActivity)
                         .setTitle(getString(R.string.Noti))
                         .setText(getString(R.string.up18))
-                        .setBackgroundColorRes(R.color.c2)
+                        .setBackgroundColorRes(R.color.c3)
                         .show()
             }
         })
@@ -113,14 +118,6 @@ class Regis_ageActivity : AppCompatActivity() {
                 LocalDate.of(year, month, dayOfMonth),
                 LocalDate.now()
         ).years;
-        /* val dob = Calendar.getInstance()
-         val today = Calendar.getInstance()
-         dob[year, month] = dayOfMonth
-         var age = today[Calendar.YEAR] - dob[Calendar.YEAR]
-         if (today[Calendar.DAY_OF_YEAR] < dob[Calendar.DAY_OF_YEAR]) {
-             age--
-         }
-         return age*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

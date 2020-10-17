@@ -169,31 +169,33 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         })
         flexLayout.setOnClickListener(View.OnClickListener {
             val mBuilder = AlertDialog.Builder(this@SettingActivity)
-            mBuilder.setTitle(R.string.dialog_title)
-            mBuilder.setMultiChoiceItems(listItems, checkedItems) { _, position, isChecked ->
-                if (isChecked) {
-                    mUserItems.add(position)
-                } else {
-                    mUserItems.remove(Integer.valueOf(position))
+            mBuilder.apply {
+                setTitle(R.string.dialog_title)
+                setMultiChoiceItems(listItems, checkedItems) { _, position, isChecked ->
+                    if (isChecked) {
+                        mUserItems.add(position)
+                    } else {
+                        mUserItems.remove(Integer.valueOf(position))
+                    }
                 }
-            }
-            mBuilder.setCancelable(true)
-            mBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                flexLayout.removeAllViews()
-                for (i in mUserItems.indices) {
-                    addT(mUserItems[i]?.let { it1 -> listItems[it1] })
-                }
-                buttonAdd()
-            }
-            mBuilder.setNeutralButton(R.string.clear_all_label) { _, _ ->
-                for (i in checkedItems.indices) {
-                    checkedItems[i] = false
-                    mUserItems.clear()
+                setCancelable(true)
+                setPositiveButton(R.string.ok) { _, _ ->
                     flexLayout.removeAllViews()
+                    for (i in mUserItems.indices) {
+                        addT(mUserItems[i]?.let { it1 -> listItems[it1] })
+                    }
+                    buttonAdd()
                 }
-                buttonAdd()
+                setNeutralButton(R.string.clear_all_label) { _, _ ->
+                    for (i in checkedItems.indices) {
+                        checkedItems[i] = false
+                        mUserItems.clear()
+                        flexLayout.removeAllViews()
+                    }
+                    buttonAdd()
+                }
+                setNegativeButton(R.string.cancle) { _, _ -> }
             }
-            mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
             val mDialog = mBuilder.create()
             mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@SettingActivity, R.drawable.myrect2))
             mDialog.show()
@@ -378,8 +380,6 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                             add6.visibility = View.GONE
                             Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image6)
                         } else list.add(6)
-                    } else {
-                        Snackbar.make(image1, R.string.primary_profile_alert, Snackbar.LENGTH_LONG).show()
                     }
                     if (intent.hasExtra("setImage")) {
                         var h = 1

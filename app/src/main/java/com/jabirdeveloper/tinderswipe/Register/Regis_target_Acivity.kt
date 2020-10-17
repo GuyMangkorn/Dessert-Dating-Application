@@ -30,6 +30,7 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.jabirdeveloper.tinderswipe.R
 import com.jabirdeveloper.tinderswipe.SwitchpageActivity
+import com.nipunru.nsfwdetector.NSFWDetector
 import com.tapadoo.alerter.Alerter
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -56,6 +57,7 @@ class Regis_target_Acivity : AppCompatActivity() {
     private lateinit var add: ImageView
     private lateinit var skip: TextView
     private lateinit var b1: Button
+    var bitmap: Bitmap? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regis_target__acivity)
@@ -71,7 +73,6 @@ class Regis_target_Acivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         x = intent.getDoubleExtra("X", x)
         y = intent.getDoubleExtra("Y", y)
-        Toast.makeText(this, "$x , $y", Toast.LENGTH_SHORT).show()
         Type = intent.getStringExtra("Type")
         email = intent.getStringExtra("email")
         pass = intent.getStringExtra("password")
@@ -86,9 +87,9 @@ class Regis_target_Acivity : AppCompatActivity() {
         dialog.setContentView(view)
         val width = (resources.displayMetrics.widthPixels * 0.80).toInt()
         dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-        imageView.setOnClickListener(View.OnClickListener { InputImage() })
-        b1.setOnClickListener(View.OnClickListener { createId(1) })
-        skip.setOnClickListener(View.OnClickListener { createId(2) })
+        imageView.setOnClickListener { InputImage() }
+        b1.setOnClickListener { createId(1) }
+        skip.setOnClickListener { createId(2) }
     }
 
     private fun createId(i: Int) {
@@ -134,49 +135,47 @@ class Regis_target_Acivity : AppCompatActivity() {
         )
         currentUserDb.child("Location").updateChildren(location as Map<String, Any>)
         if (i == 1) {
-            if (resultUri != null) {
+            if (bitmap != null) {
                 dialog.show()
-                var bitmap: Bitmap? = null
-                val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(UserId).child("profileImageUrl0")
-                try {
-                    bitmap = if (Build.VERSION.SDK_INT >= 29) {
-                        val source = ImageDecoder.createSource(this.contentResolver, resultUri!!)
-                        ImageDecoder.decodeBitmap(source)
-                    } else {
-                        MediaStore.Images.Media.getBitmap(application.contentResolver, resultUri)
-                    }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+                val filepath = FirebaseStorage.getInstance().reference
+                        .child("profileImages")
+                        .child(UserId)
+                        .child("profileImageUrl0")
+
                 val baos = ByteArrayOutputStream()
                 bitmap?.compress(Bitmap.CompressFormat.JPEG, 40, baos)
                 val data = baos.toByteArray()
                 val uploadTask = filepath.putBytes(data)
-                uploadTask.addOnFailureListener { finish() }
-                uploadTask.addOnSuccessListener {
-                    val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(UserId).child("profileImageUrl0")
-                    Log.d("TAG", "สำเร็จ")
-                    filepath.downloadUrl.addOnSuccessListener { uri ->
-                        dialog.dismiss()
-                        val userInfo = hashMapOf(
-                                "profileImageUrl0" to uri.toString()
-                        )
-                        currentUserDb.child("ProfileImage").updateChildren(userInfo as Map<String, Any>)
-                        val intent = Intent(this@Regis_target_Acivity, SwitchpageActivity::class.java)
-                        intent.putExtra("first", "0")
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
-                    }.addOnFailureListener(OnFailureListener {
-                        Log.d("TAG", "สวยยยยย")
-                        return@OnFailureListener
-                    })
+                uploadTask.apply {
+
+                    addOnFailureListener { finish() }
+                    addOnSuccessListener {
+
+                        Log.d("TAG", "สำเร็จ")
+                        filepath.downloadUrl.addOnSuccessListener { uri ->
+                            dialog.dismiss()
+                            val userInfo = hashMapOf(
+                                    "profileImageUrl0" to uri.toString()
+                            )
+                            currentUserDb.child("ProfileImage").updateChildren(userInfo as Map<String, Any>)
+
+                            val intent = Intent(this@Regis_target_Acivity, SwitchpageActivity::class.java)
+                            intent.putExtra("first", "0")
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        }.addOnFailureListener(OnFailureListener {
+                            Log.d("TAG", "สวยยยยย")
+                            return@OnFailureListener
+                        })
+                    }
                 }
+
             } else {
                 Alerter.create(this@Regis_target_Acivity)
                         .setTitle(R.string.profile_image)
                         .setText(getString(R.string.choose_photo))
-                        .setBackgroundColorRes(R.color.c2)
+                        .setBackgroundColorRes(R.color.c3)
                         .show()
             }
         } else {
@@ -194,22 +193,38 @@ class Regis_target_Acivity : AppCompatActivity() {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == Activity.RESULT_OK) {
-                resultUri = result.uri
                 var image: FirebaseVisionImage? = null
+                var bitmap: Bitmap? = null
                 try {
-                    image = FirebaseVisionImage.fromFilePath(this@Regis_target_Acivity, resultUri!!)
+                    image = FirebaseVisionImage.fromFilePath(this@Regis_target_Acivity, result.uri!!)
+                    bitmap = if (Build.VERSION.SDK_INT >= 29) {
+                        val source = ImageDecoder.createSource(this.contentResolver, result.uri)
+                        ImageDecoder.decodeBitmap(source)
+                    } else {
+                        MediaStore.Images.Media.getBitmap(application.contentResolver, result.uri)
+                    }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
+
                 dialog.show()
                 val highAccuracyOpts = FirebaseVisionFaceDetectorOptions.Builder().build()
                 val detector = FirebaseVision.getInstance().getVisionFaceDetector(highAccuracyOpts)
-                val result2 = detector.detectInImage(image!!)
+                detector.detectInImage(image!!)
                         .addOnSuccessListener { faces ->
                             dialog.dismiss()
                             if (faces.isNotEmpty()) {
-                                Glide.with(application).load(resultUri).placeholder(R.drawable.tran).into(imageView)
-                                add.visibility = View.GONE
+
+                                NSFWDetector.isNSFW(bitmap!!) { isNSFW, confidence, image ->
+                                    if (isNSFW) {
+                                        Snackbar.make(b1, "โรคจิต", Snackbar.LENGTH_LONG).show()
+                                        dialog.dismiss()
+                                    } else {
+                                        Glide.with(application).load(result.uri).placeholder(R.drawable.tran).into(imageView)
+                                        add.visibility = View.GONE
+                                        this.bitmap = bitmap
+                                    }
+                                }
                             } else {
                                 Snackbar.make(b1, "ไม่ใช่คน", Snackbar.LENGTH_LONG).show()
                             }

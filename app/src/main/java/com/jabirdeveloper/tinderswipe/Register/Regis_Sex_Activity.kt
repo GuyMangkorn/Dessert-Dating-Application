@@ -55,7 +55,7 @@ class Regis_Sex_Activity : AppCompatActivity() {
                 Alerter.create(this@Regis_Sex_Activity)
                         .setTitle(R.string.Noti)
                         .setText(getString(R.string.choose_gender))
-                        .setBackgroundColorRes(R.color.c2)
+                        .setBackgroundColorRes(R.color.c3)
                         .show()
             }
         })

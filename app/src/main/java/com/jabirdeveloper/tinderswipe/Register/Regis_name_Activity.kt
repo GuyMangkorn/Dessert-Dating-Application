@@ -28,23 +28,25 @@ class Regis_name_Activity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        b1.setOnClickListener(View.OnClickListener {
+        b1.setOnClickListener {
             if (!t1.text.toString().trim { it <= ' ' }.isEmpty()) {
                 Alerter.hide()
                 val intent = Intent(this@Regis_name_Activity, RegisGpsActivity::class.java)
-                intent.putExtra("Name", t1.text.toString())
-                intent.putExtra("Type", getIntent().getStringExtra("Type"))
-                intent.putExtra("email", getIntent().getStringExtra("email"))
-                intent.putExtra("password", getIntent().getStringExtra("password"))
+                intent.apply {
+                    putExtra("Name", t1.text.toString())
+                    putExtra("Type", getIntent().getStringExtra("Type"))
+                    putExtra("email", getIntent().getStringExtra("email"))
+                    putExtra("password", getIntent().getStringExtra("password"))
+                }
                 startActivity(intent)
             } else {
                 Alerter.create(this@Regis_name_Activity)
                         .setTitle(R.string.Noti)
                         .setText(getString(R.string.enter_name))
-                        .setBackgroundColorRes(R.color.c2)
+                        .setBackgroundColorRes(R.color.c3)
                         .show()
             }
-        })
+        }
     }
 
     override fun onBackPressed() {
@@ -56,7 +58,6 @@ class Regis_name_Activity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                // todo: goto back activity from here
                 onBackPressed()
                 true
             }

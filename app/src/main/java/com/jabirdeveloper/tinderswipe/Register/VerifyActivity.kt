@@ -31,6 +31,7 @@ import com.jabirdeveloper.tinderswipe.SwitchpageActivity
 import com.tapadoo.alerter.Alerter
 import java.util.concurrent.TimeUnit
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class VerifyActivity : AppCompatActivity() {
     private var verificationCodeBysystem: String? = ""
     private lateinit var b1: Button
@@ -42,7 +43,7 @@ class VerifyActivity : AppCompatActivity() {
     private lateinit var dialog: Dialog
     private lateinit var toolbar: Toolbar
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_verify_)
@@ -111,11 +112,9 @@ class VerifyActivity : AppCompatActivity() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
             if (verificationCodeBysystem != "") {
-                Log.d("afg", "2")
                 val code = credential.smsCode
                 verifyCode(code)
             } else {
-                Log.d("afg", "3")
                 singInTheUserByCredentials(credential)
                 Alerter.create(this@VerifyActivity)
                         .setTitle(getString(R.string.Sign))
@@ -132,9 +131,9 @@ class VerifyActivity : AppCompatActivity() {
             Log.w("TAG", "onVerificationFailed", e)
 
             if (e is FirebaseAuthInvalidCredentialsException) {
-                Log.d("afg", "อิหยัง")
+                Log.d("error", e.message)
             } else if (e is FirebaseTooManyRequestsException) {
-                Log.d("afg", "หมด")
+                Log.d("error", e.message)
             }
 
             // Show a message and update the UI
@@ -164,7 +163,7 @@ class VerifyActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 dialog.show()
             } else {
-                Toast.makeText(this@VerifyActivity, "ชิบหายยยยยยยย", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@VerifyActivity, "Try again later.", Toast.LENGTH_SHORT).show()
             }
         }
     }

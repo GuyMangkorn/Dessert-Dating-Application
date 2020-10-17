@@ -20,16 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/my_tools"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/background_white"
-            android:theme="@style/AppTheme2"
-            app:subtitleTextColor="@color/c2"
-            app:titleTextColor="@color/c4">
-
-        </androidx.appcompat.widget.Toolbar>
+        <include layout="@layout/toolsbar" />
 
         <ProgressBar
             android:id="@+id/progressBar2"
