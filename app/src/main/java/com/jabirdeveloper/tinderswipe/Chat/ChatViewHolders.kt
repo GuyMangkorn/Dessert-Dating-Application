@@ -1,6 +1,7 @@
 package com.jabirdeveloper.tinderswipe.Chat
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ClipData
@@ -9,10 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.os.Environment
@@ -23,35 +21,38 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.jabirdeveloper.tinderswipe.ImageChat.ItemImageActivity
 import com.jabirdeveloper.tinderswipe.R
 import com.ldoublem.loadingviewlib.LVCircularCD
+import kotlinx.android.synthetic.main.item_chat.view.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerView.ViewHolder(itemView) {
-    var mMessage: TextView
-    var timeSend: TextView
-    var mMatchId: TextView
-    var mMatchIdReal: TextView
-    var audioUrl: TextView
-    var beginAudio: TextView
-    var mContainer: LinearLayout
-    var buttonAudio: Button
-    var mchk: LinearLayout
-    var mchk2: LinearLayout
-    var mchk3: LinearLayout
-    var imageOpposite: ImageView
-    var mImage_sent: ImageView
+@Suppress("NAME_SHADOWING")
+class ChatViewHolders(itemView: View, private val context: Context) : RecyclerView.ViewHolder(itemView) {
+    var mMessage: TextView = itemView.chatmessage
+    var timeSend: TextView = itemView.time_chat_user
+    var mMatchId: TextView = itemView.match_id
+    var mMatchIdReal: TextView = itemView.match_id_real_image
+    var audioUrl: TextView = itemView.audio_url
+    var beginAudio: TextView = itemView.begin_audio
+    var mContainer: LinearLayout = itemView.container
+    var buttonAudio: Button = itemView.play_audio
+    var mchk: RelativeLayout = itemView.lilili
+    var mchk2: RelativeLayout = itemView.lili
+    var mchk3: RelativeLayout = itemView.li
+    var imageOpposite: ImageView = itemView.image_holder
+    var mImageSent: ImageView = itemView.img_sent
     //var stop_Animate: ImageView? = null
-    private var progressBarAudio: ProgressBar
+    private var progressBarAudio: ProgressBar = itemView.progressBar_playAudio
     private var play:Boolean = false
     //var mRecycler: RecyclerView?
-    var mChk: TextView
-    var mChk_2: TextView
+    var mChk: TextView = itemView.chk_image
+    var mChk_2: TextView = itemView.chk_image_2
     //private val loading: AVLoadingIndicatorView? = null
-    private val myClipboard: ClipboardManager?
+    private lateinit var myClipboard: ClipboardManager
     private var myClip: ClipData? = null
     private var mediaPlayer: MediaPlayer? = null
     var cd: LVCircularCD = itemView.findViewById(R.id.play_pause_animate)
@@ -61,28 +62,95 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
     //private var card: CardView = itemView.findViewById(R.id.card)
     private var check = true
     private lateinit var alertDialog: AlertDialog
+    
+    @SuppressLint("SetTextI18n")
+    fun start(chatList: ChatObject) {
 
-
-    init {
+        mMatchIdReal.text = chatList.createByUser
+        mMatchId.text = chatList.Match_id
+        mChk_2.text = "" + chatList.chk
+        mChk.text = "" + chatList.chk
+        timeSend.text = chatList.time
+        if (chatList.currentUser!!) {
+            when {
+                chatList.url !== "default" -> {
+                    a()
+                    mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_1_photo)!!
+                    Glide.with(context).load(chatList.url).thumbnail(0.1f).into(mImageSent)
+                    mchk2.visibility = View.GONE
+                }
+                chatList.audio_Url != "null" -> {
+                    buttonAudio.visibility = View.VISIBLE
+                    cd.visibility = View.VISIBLE
+                    beginAudio.visibility = View.VISIBLE
+                    if (Integer.valueOf(chatList.audio_length!!) < 60) {
+                        audioUrl.text = chatList.audio_Url
+                        val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!))
+                        mMessage.text = "00:$second"
+                    } else {
+                        val minute = String.format("%02d", Integer.valueOf(chatList.audio_length!!) / 60)
+                        val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!) % 60)
+                        mMessage.text = "$minute:$second"
+                    }
+                    beginAudio.setTextColor(Color.parseColor("#FFFFFF"))
+                    mMessage.setTextColor(Color.parseColor("#FFFFFF"))
+                    a1(1)
+                }
+                else -> {
+                    mMessage.text = chatList.message
+                    buttonAudio.visibility = View.GONE
+                    cd.visibility = View.GONE
+                    beginAudio.visibility = View.GONE
+                    beginAudio.setTextColor(Color.parseColor("#FFFFFF"))
+                    mMessage.setTextColor(Color.parseColor("#FFFFFF"))
+                    a1(1)
+                }
+            }
+        } else {
+            when {
+                chatList.url !== "default" -> {
+                    a()
+                    imageOpposite.visibility = View.VISIBLE
+                    Glide.with(context).load(chatList.profileImageUrl).thumbnail(0.1f).into(imageOpposite)
+                    Glide.with(context).load(chatList.url).thumbnail(0.1f).into(mImageSent)
+                    mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_2_photo)
+                    mchk2.visibility = View.GONE
+                }
+                chatList.audio_Url != "null" -> {
+                    buttonAudio.visibility = View.VISIBLE
+                    cd.visibility = View.VISIBLE
+                    beginAudio.visibility = View.VISIBLE
+                    if (Integer.valueOf(chatList.audio_length!!) < 60) {
+                        audioUrl.text = chatList.audio_Url
+                        val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!))
+                        mMessage.text = "00:$second"
+                    } else {
+                        val minute = String.format("%02d", Integer.valueOf(chatList.audio_length!!) / 60)
+                        val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!) % 60)
+                        mMessage.text = "$minute:$second"
+                    }
+                    beginAudio.setTextColor(Color.parseColor("#292929"))
+                    mMessage.setTextColor(Color.parseColor("#292929"))
+                    mchk3.visibility = View.GONE
+                    mchk.visibility = View.VISIBLE
+                    mchk2.visibility = View.VISIBLE
+                    a1(2)
+                }
+                else -> {
+                    mMessage.text = chatList.message
+                    buttonAudio.visibility = View.GONE
+                    cd.visibility = View.GONE
+                    beginAudio.visibility = View.GONE
+                    mMessage.setTextColor(Color.parseColor("#292929"))
+                    mchk3.visibility = View.GONE
+                    mchk.visibility = View.VISIBLE
+                    mchk2.visibility = View.VISIBLE
+                    a1(2)
+                }
+            }
+        }
         cd.setViewColor(Color.parseColor("#FFF064"))
-        progressBarAudio = itemView.findViewById(R.id.progressBar_playAudio)
-        buttonAudio = itemView.findViewById(R.id.play_audio)
-        audioUrl = itemView.findViewById(R.id.audio_url)
-        mChk = itemView.findViewById(R.id.chk_image)
-        mMatchId = itemView.findViewById(R.id.match_id)
-        mImage_sent = itemView.findViewById(R.id.img_sent)
-        //mRecycler = itemView.findViewById<View?>(R.id.recyclerView_2) as RecyclerView
-        mchk2 = itemView.findViewById(R.id.lili)
-        beginAudio = itemView.findViewById(R.id.begin_audio)
-        mchk3 = itemView.findViewById(R.id.li)
-        mchk = itemView.findViewById(R.id.lilili)
-        timeSend = itemView.findViewById(R.id.time_chat_user)
-        mMessage = itemView.findViewById(R.id.chatmessage)
-        mContainer = itemView.findViewById(R.id.container)
-        mMatchIdReal = itemView.findViewById(R.id.match_id_real_image)
-        imageOpposite = itemView.findViewById(R.id.image_holder)
-        mChk_2 = itemView.findViewById(R.id.chk_image_2)
-        val item = context!!.resources.getStringArray(R.array.chat_item)
+        val item = context.resources.getStringArray(R.array.chat_item)
         val itemImage = context.resources.getStringArray(R.array.chat_item_image)
         val builder = AlertDialog.Builder(context)
         myClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -289,7 +357,7 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
             }
             true
         })
-        mImage_sent.setOnClickListener{
+        mImageSent.setOnClickListener{
             val intent = Intent(context, ItemImageActivity::class.java)
             intent.putExtra("matchIdReal", mMatchIdReal.text.toString())
             intent.putExtra("matchId", mMatchId.text.toString())
@@ -297,7 +365,7 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
             intent.putExtra("ChkImage2", mChk_2.text.toString())
             context.startActivity(intent)
         }
-        mImage_sent.setOnLongClickListener(OnLongClickListener {
+        mImageSent.setOnLongClickListener(OnLongClickListener {
             if (mchk3.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1_photo)!!.constantState) {
                 mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_1_photo_selected)
                 builder.setItems(itemImage) { _, which ->
@@ -332,5 +400,32 @@ class ChatViewHolders(itemView: View, private val context: Context?) : RecyclerV
             }
             true
         })
+    }
+    fun a(){
+        mchk3.visibility = View.VISIBLE
+        mchk.visibility = View.VISIBLE
+        val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
+        params3.apply {
+            addRule(RelativeLayout.END_OF, 0)
+            addRule(RelativeLayout.START_OF, mchk3.id)
+            addRule(RelativeLayout.ALIGN_BOTTOM, mchk3.id)
+        }
+        val paramsimg = mchk3.layoutParams as RelativeLayout.LayoutParams
+        paramsimg.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
+    }
+    fun a1(type:Int){
+        mchk3.visibility = View.GONE
+        mchk.visibility = View.VISIBLE
+        mchk2.visibility = View.VISIBLE
+        val params2 = mchk2.layoutParams as RelativeLayout.LayoutParams
+        params2.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
+        val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
+        params3.addRule(RelativeLayout.END_OF, 0)
+        params3.addRule(RelativeLayout.START_OF, mchk2.id)
+        params3.addRule(RelativeLayout.ALIGN_BOTTOM, mchk2.id)
+        imageOpposite.visibility = View.GONE
+        if(type == 1)
+        mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)
+        else mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
     }
 }

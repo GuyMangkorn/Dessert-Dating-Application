@@ -139,9 +139,12 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         language = findViewById(R.id.language_profile)
         city1 = findViewById(R.id.city_profile)
         viewPager = findViewById(R.id.slide_main)
-        mLinear = findViewById<View?>(R.id.main) as LinearLayout
+        mLinear = findViewById(R.id.main)
         fab = findViewById(R.id.floatingActionButton)
         report = findViewById(R.id.report)
+        like = findViewById(R.id.like_button)
+        dislike = findViewById(R.id.dislike_button)
+        star = findViewById(R.id.star_button)
         dialog = Dialog(this@ProfileUserOppositeActivity2)
         listItems = resources.getStringArray(R.array.shopping_item)
         listItems2 = resources.getStringArray(R.array.pasa_item)
@@ -195,13 +198,11 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                             fab.isClickable = false
                             val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key!!
                             usersDb.child(matchId).child("connection").child("chatna").child(currentUid).setValue(key)
-                            val d = DateTime
                             val newMessageDb = mDatabaseChat.child(key).push()
                             val newMessage = hashMapOf<String, Any>()
                             newMessage["createByUser"] = currentUid
                             newMessage["text"] = text!!
-                            newMessage["time"] = d.time()
-                            newMessage["date"] = d.time()
+                            newMessage["date"] = ServerValue.TIMESTAMP
                             newMessage["read"] = "Unread"
                             newMessageDb.updateChildren(newMessage)
                             dialog.dismiss()
@@ -281,11 +282,13 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     dialog.setContentView(view)
                     val pagerModels: ArrayList<PagerModel?> = ArrayList()
-                    pagerModels.add(PagerModel("สมัคร Dessert VIP เพื่อทักทายแบบไม่จำกัดจำนวน", "จำนวนคำทักทายของคุณหมด", R.drawable.ic_hand))
-                    pagerModels.add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
-                    pagerModels.add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
-                    pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
-                    pagerModels.add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
+                    pagerModels.apply {
+                        add(PagerModel("สมัคร Dessert VIP เพื่อทักทายแบบไม่จำกัดจำนวน", "จำนวนคำทักทายของคุณหมด", R.drawable.ic_hand))
+                        add(PagerModel("ปัดขวาได้เต็มที่ ไม่ต้องรอเวลา", "ถูกใจได้ไม่จำกัด", R.drawable.ic_heart))
+                        add(PagerModel("คนที่คุณส่งดาวให้จะเห็นคุณก่อนใคร", "รับ 5 Star ฟรีทุกวัน", R.drawable.ic_starss))
+                        add(PagerModel("ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ", "ใครถูกใจคุณ", R.drawable.ic_love2))
+                        add(PagerModel("ดูว่าใครบ้างที่เข้าชมโปรไฟล์ของคุณ", "ใครเข้ามาดูโปรไฟล์คุณ", R.drawable.ic_vision))
+                    }
                     val adapter = VipSlide(this@ProfileUserOppositeActivity2, pagerModels)
                     val pager: AutoScrollViewPager = dialog.findViewById(R.id.viewpage)
                     pager.adapter = adapter
@@ -298,18 +301,13 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 }
             }
         }
-        like = findViewById(R.id.like_button)
-        dislike = findViewById(R.id.dislike_button)
-        star = findViewById(R.id.star_button)
         like.setOnClickListener(View.OnClickListener {
             if (!intent.hasExtra("form_like")) {
                 setResult(1)
 
             } else {
-                val d = DateTime
                 val dateTime = hashMapOf<String, Any>()
-                dateTime["date"] = d.date()
-                dateTime["time"] = d.time()
+                dateTime["date"] = ServerValue.TIMESTAMP
                 usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(dateTime)
                 maxlike--
                 usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
@@ -330,10 +328,9 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
             if (!intent.hasExtra("form_like")) {
                 setResult(3)
             } else {
-                val d = DateTime
+
                 val datetime = hashMapOf<String, Any>()
-                datetime["date"] = d.date()
-                datetime["time"] = d.time()
+                datetime["date"] = ServerValue.TIMESTAMP
                 datetime["super"] = true
                 usersDb.child(matchId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                 maxstar--
@@ -408,14 +405,12 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         val star = view.findViewById<ImageView>(R.id.star)
                         val textView = view.findViewById<TextView>(R.id.textmatch)
                         val textView2 = view.findViewById<TextView>(R.id.io)
-                        val textView3 = view.findViewById<TextView>(R.id.textBig)
                         val textView4 = view.findViewById<TextView>(R.id.textmatch2)
                         val button = view.findViewById<Button>(R.id.mess)
                         button.setOnClickListener {
                             dialog.dismiss()
                             val intent = Intent(this@ProfileUserOppositeActivity2, ChatActivity::class.java)
                             val b = Bundle()
-                            b.putString("time_chk", DateTime.time())
                             b.putString("matchId", matchId)
                             b.putString("nameMatch", name.text.toString())
                             b.putString("first_chat", "")
