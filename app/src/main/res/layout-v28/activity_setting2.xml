@@ -11,6 +11,8 @@
     <include layout="@layout/toolsbar" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/settingPage"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:paddingRight="10dp"
         android:paddingLeft="10dp"

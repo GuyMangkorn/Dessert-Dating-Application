@@ -6,6 +6,8 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.ProfileActivity
+import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
 import java.io.IOException
 import java.util.*
 
@@ -255,6 +258,9 @@ class ProfileActivity : AppCompatActivity() {
                             e.printStackTrace()
                         }
                     }
+                    val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileActivity, R.anim.fade_in2)
+                    information.visibility = View.VISIBLE
+                    information.startAnimation(logoMoveAnimation)
                 }
             }
 

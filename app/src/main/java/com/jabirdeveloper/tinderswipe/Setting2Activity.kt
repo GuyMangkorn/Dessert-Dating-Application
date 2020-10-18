@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
 import hearsilent.discreteslider.DiscreteSlider
 import hearsilent.discreteslider.DiscreteSlider.OnValueChangedListener
+import kotlinx.android.synthetic.main.activity_setting2.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,7 +34,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @Suppress("UNCHECKED_CAST", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class Setting2Activity : AppCompatActivity() {
+class  Setting2Activity : AppCompatActivity(),View.OnClickListener {
     private lateinit var radioGroup: RadioGroup
     private lateinit var toolbar: Toolbar
     private lateinit var textView: TextView
@@ -65,9 +68,10 @@ class Setting2Activity : AppCompatActivity() {
     private lateinit var map: HashMap<String, Any>
     private val language: ChangLanguage = ChangLanguage(this)
     private var valCh = false
+    private lateinit var job:Job
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        CoroutineScope(Job()).launch(Dispatchers.IO) {
+        job = CoroutineScope(Job()).launch(Dispatchers.IO) {
             getdisAge()
         }
         setContentView(R.layout.activity_setting2)
@@ -90,30 +94,7 @@ class Setting2Activity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         currentUid = mAuth.uid.toString()
         text_seekAge = findViewById(R.id.seek_age_text)
-        change.setOnClickListener(View.OnClickListener {
-            val mBuilder = AlertDialog.Builder(this@Setting2Activity)
-            mBuilder.setTitle(R.string.language)
-            mBuilder.setSingleChoiceItems(order, check_item) { _, which -> //item2 = order[which];
-                selectedPosition = which
-            }
-            mBuilder.setCancelable(true)
-            mBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                if (selectedPosition == 0) localizationDelegate.setLanguage(this,"th")
-                else
-                    localizationDelegate.setLanguage(this,"en")
-                language.setLanguage()
-                save()
-                finish()
-                overridePendingTransition(0, 0)
-                startActivity(Intent(this@Setting2Activity, SwitchpageActivity::class.java))
-                overridePendingTransition(0, 0)
-
-            }
-            mBuilder.setNegativeButton(R.string.cancle) { dialog, _ -> dialog.dismiss() }
-            val mDialog = mBuilder.create()
-            mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
-            mDialog.show()
-        })
+        change.setOnClickListener(this)
         mSlider.setValueChangedImmediately(true) // Default is false
         mSlider.setOnValueChangedListener(object : OnValueChangedListener() {
             override fun onValueChanged(progress: Int, fromUser: Boolean) {
@@ -149,58 +130,10 @@ class Setting2Activity : AppCompatActivity() {
 
             override fun onValueChanged(minProgress: Int, maxProgress: Int, fromUser: Boolean) {}
         })
-        logout.setOnClickListener(View.OnClickListener {
-            val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
-            val status_up2 = HashMap<String?, Any?>()
-            status_up2["date"] = ServerValue.TIMESTAMP
-            status_up2["status"] = 0
-            userDb.updateChildren(status_up2)
-            mAuth.signOut()
-            val intent = Intent(applicationContext, ChooseLoginRegistrationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-            return@OnClickListener
-        })
-        delete.setOnClickListener(View.OnClickListener {
-            val mBuilder = AlertDialog.Builder(this@Setting2Activity)
-            mBuilder.setTitle(R.string.Close_account)
-            mBuilder.setMessage(R.string.Close_account_confirm)
-            mBuilder.setCancelable(true)
-            mBuilder.setPositiveButton(R.string.ok) { _, _ -> delete() }
-            mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
-            val mDialog = mBuilder.create()
-            mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
-            mDialog.show()
-        })
-        on_off_card.setOnClickListener(View.OnClickListener {
-            if (!on_off_card.isChecked) {
-                val mBuilder = AlertDialog.Builder(this@Setting2Activity)
-                mBuilder.setTitle(R.string.Vision_closed)
-                mBuilder.setMessage(R.string.Vision_closed_match)
-                mBuilder.setCancelable(true)
-                mBuilder.setOnCancelListener { on_off_card.isChecked = true }
-                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_card.isChecked = false; }
-                mBuilder.setNegativeButton("ยกเลิก") { _, _ -> on_off_card.isChecked = true; }
-                val mDialog = mBuilder.create()
-                mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
-                mDialog.show()
-            }
-        })
-        on_off_list.setOnClickListener(View.OnClickListener {
-            if (!on_off_list.isChecked) {
-                val mBuilder = AlertDialog.Builder(this@Setting2Activity)
-                mBuilder.setTitle(R.string.Vision_closed)
-                mBuilder.setMessage(R.string.Vision_closed_nearby)
-                mBuilder.setCancelable(true)
-                mBuilder.setOnCancelListener { on_off_list.isChecked = true }
-                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_list.isChecked = false; }
-                mBuilder.setNegativeButton(R.string.cancle) { _, _ -> on_off_list.isChecked = true; }
-                val mDialog = mBuilder.create()
-                mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
-                mDialog.show()
-            }
-        })
+        logout.setOnClickListener(this)
+        delete.setOnClickListener(this)
+        on_off_card.setOnClickListener(this)
+        on_off_list.setOnClickListener(this)
     }
 
     private fun delete() {
@@ -343,6 +276,9 @@ class Setting2Activity : AppCompatActivity() {
                 noti_match = preferences2.getString("noti", "1")
                 noti_1.isChecked = noti_match == "1"
                 map["noti"] = noti_1.isChecked
+                val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@Setting2Activity, R.anim.fade_in2)
+                settingPage.visibility = View.VISIBLE
+                settingPage.startAnimation(logoMoveAnimation)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -442,5 +378,88 @@ class Setting2Activity : AppCompatActivity() {
 
 
 
+    }
+
+    override fun onClick(v: View?) {
+        if(v == change){
+            val mBuilder = AlertDialog.Builder(this@Setting2Activity)
+            mBuilder.setTitle(R.string.language)
+            mBuilder.setSingleChoiceItems(order, check_item) { _, which -> //item2 = order[which];
+                selectedPosition = which
+            }
+            mBuilder.setCancelable(true)
+            mBuilder.setPositiveButton(R.string.ok) { _, _ ->
+                if (selectedPosition == 0) localizationDelegate.setLanguage(this,"th")
+                else
+                    localizationDelegate.setLanguage(this,"en")
+                language.setLanguage()
+                save()
+                finish()
+                overridePendingTransition(0, 0)
+                startActivity(Intent(this@Setting2Activity, SwitchpageActivity::class.java))
+                overridePendingTransition(0, 0)
+
+            }
+            mBuilder.setNegativeButton(R.string.cancle) { dialog, _ -> dialog.dismiss() }
+            val mDialog = mBuilder.create()
+            mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
+            mDialog.show()
+        }
+        if(v == logout){
+            val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
+            val status_up2 = HashMap<String?, Any?>()
+            status_up2["date"] = ServerValue.TIMESTAMP
+            status_up2["status"] = 0
+            userDb.updateChildren(status_up2)
+            mAuth.signOut()
+            val intent = Intent(applicationContext, ChooseLoginRegistrationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
+        if(v == delete){
+            val mBuilder = AlertDialog.Builder(this@Setting2Activity)
+            mBuilder.setTitle(R.string.Close_account)
+            mBuilder.setMessage(R.string.Close_account_confirm)
+            mBuilder.setCancelable(true)
+            mBuilder.setPositiveButton(R.string.ok) { _, _ -> delete() }
+            mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
+            val mDialog = mBuilder.create()
+            mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
+            mDialog.show()
+        }
+        if(v == on_off_card){
+            if (!on_off_card.isChecked) {
+                val mBuilder = AlertDialog.Builder(this@Setting2Activity)
+                mBuilder.setTitle(R.string.Vision_closed)
+                mBuilder.setMessage(R.string.Vision_closed_match)
+                mBuilder.setCancelable(true)
+                mBuilder.setOnCancelListener { on_off_card.isChecked = true }
+                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_card.isChecked = false; }
+                mBuilder.setNegativeButton("ยกเลิก") { _, _ -> on_off_card.isChecked = true; }
+                val mDialog = mBuilder.create()
+                mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
+                mDialog.show()
+            }
+        }
+        if(v == on_off_list){
+            if (!on_off_list.isChecked) {
+                val mBuilder = AlertDialog.Builder(this@Setting2Activity)
+                mBuilder.setTitle(R.string.Vision_closed)
+                mBuilder.setMessage(R.string.Vision_closed_nearby)
+                mBuilder.setCancelable(true)
+                mBuilder.setOnCancelListener { on_off_list.isChecked = true }
+                mBuilder.setPositiveButton(R.string.ok) { _, _ -> on_off_list.isChecked = false; }
+                mBuilder.setNegativeButton(R.string.cancle) { _, _ -> on_off_list.isChecked = true; }
+                val mDialog = mBuilder.create()
+                mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
+                mDialog.show()
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        job.cancel()
     }
 }
