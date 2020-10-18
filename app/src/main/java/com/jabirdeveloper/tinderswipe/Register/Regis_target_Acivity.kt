@@ -44,7 +44,7 @@ class Regis_target_Acivity : AppCompatActivity() {
     private lateinit var name: String
     private lateinit var sex: String
     private var Age: Int = 18
-    private lateinit var Type: String
+    private lateinit var type: String
     private var x: Double = 0.0
     private var y: Double = 0.0
     private lateinit var mAuth: FirebaseAuth
@@ -71,15 +71,16 @@ class Regis_target_Acivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        x = intent.getDoubleExtra("X", x)
-        y = intent.getDoubleExtra("Y", y)
-        Type = intent.getStringExtra("Type")
-        email = intent.getStringExtra("email")
-        pass = intent.getStringExtra("password")
-        name = intent.getStringExtra("Name")
-        sex = intent.getStringExtra("Sex")
-        Age = intent.getIntExtra("Age", Age)
-
+        intent.apply {
+            x = getDoubleExtra("X", x)
+            y = getDoubleExtra("Y", y)
+            type = getStringExtra("Type")
+            email = getStringExtra("email")
+            pass = getStringExtra("password")
+            name = getStringExtra("Name")
+            sex = getStringExtra("Sex")
+            Age = getIntExtra("Age", Age)
+        }
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.progress_dialog, null)
         dialog = Dialog(this)
@@ -93,7 +94,7 @@ class Regis_target_Acivity : AppCompatActivity() {
     }
 
     private fun createId(i: Int) {
-        if (Type == "email") {
+        if (type == "email") {
             mAuth.createUserWithEmailAndPassword(email!!, pass!!).addOnCompleteListener(this@Regis_target_Acivity) { task -> if (!task.isSuccessful) Snackbar.make(b1, R.string.try_again, Snackbar.LENGTH_LONG).show() else CreateData_to_Firebase(i) }
         } else {
             CreateData_to_Firebase(i)

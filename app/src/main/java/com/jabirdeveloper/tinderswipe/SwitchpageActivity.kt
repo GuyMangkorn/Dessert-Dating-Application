@@ -326,6 +326,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private var text: String = ""
     private fun getDataOnCall(): Task<HttpsCallableResult> {
         val data = hashMapOf(
+                "type" to "Question",
                 "language" to localizationDelegate.getLanguage(this).toLanguageTag()
         )
         return functions

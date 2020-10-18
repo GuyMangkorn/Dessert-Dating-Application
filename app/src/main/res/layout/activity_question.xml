@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Register.QuestionActivity">
-
-</RelativeLayout>
+    <include layout="@layout/toolsbar" />
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:max="6"
+        android:progress="5"
+        android:progressTint="@color/c3" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPagerQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -45,7 +45,7 @@ class Regis_ageActivity : AppCompatActivity() {
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         datePicker = findViewById<DatePicker>(R.id.datePicker)
-        intent1 = Intent(this@Regis_ageActivity, Regis_target_Acivity::class.java)
+        intent1 = Intent(this@Regis_ageActivity, QuestionActivity::class.java)
         calendar = Calendar.getInstance()
         datePicker.maxDate = calendar.timeInMillis
         calendar.timeInMillis = System.currentTimeMillis()
