@@ -242,90 +242,8 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                     mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
                 }
             }
-            /*if (buttonAudio.background.constantState === ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp)!!.constantState) {
-                cd!!.startAnim()
-                if (check) {
-                    val minute = Integer.valueOf(mMessage.text.toString().substring(0, 2))
-                    val second = Integer.valueOf(mMessage.text.toString().substring(3, 5))
-                    totalLength = second + minute * 60
-                    check = false
-                }
-                buttonAudio.visibility = View.GONE
-                progressBarAudio.visibility = View.VISIBLE
-                val minute = Integer.valueOf(mMessage.text.toString().substring(0, 2))
-                val second = Integer.valueOf(mMessage.text.toString().substring(3, 5))
-                val minute_sub = Integer.valueOf(beginAudio.text.toString().substring(0, 2))
-                val second_sub = Integer.valueOf(beginAudio.text.toString().substring(3, 5))
-                val counter_sub = second_sub + minute_sub * 60
-                val counter = second + minute * 60 - counter_sub
-                mediaPlayer = MediaPlayer()
-                try {
-                    mediaPlayer!!.setDataSource(audioUrl.text.toString())
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                try {
-                    mediaPlayer!!.prepare()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                if (length == 0) {
-                    mediaPlayer!!.start()
-                } else {
-                    mediaPlayer!!.seekTo(length)
-                    mediaPlayer!!.start()
-                }
-                if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1)!!.constantState) {
-                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1_selected)
-                } else {
-                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2_selected)
-                }
-                progressBarAudio.visibility = View.GONE
-                buttonAudio.visibility = View.VISIBLE
-                buttonAudio.background = ContextCompat.getDrawable(context, R.drawable.ic_pause_circle_outline_black_24dp)
-                countDownTimer = object : CountDownTimer(((counter + 1) * 1000).toLong(), 1000) {
-                    var total = counter
-                    override fun onTick(millisUntilFinished: Long) {
-                        val aaa = millisUntilFinished.toInt()
-                        val all_second = total - aaa / 1000
-                        if (all_second < 60) {
-                            val second = String.format("%02d", all_second + second_sub)
-                            beginAudio.text = ("00:$second")
-                        } else {
-                            val check_minute = all_second / 60
-                            val check_second = all_second % 60
-                            val second_s = String.format("%02d", check_second + minute_sub)
-                            val minute = String.format("%02d", check_minute + second_sub)
-                            beginAudio.text = ("$minute:$second_s")
-                        }
-                    }
-
-                    override fun onFinish() {
-                        length = 0
-                        cd!!.stopAnim()
-                        buttonAudio.background = ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp)
-                        beginAudio.text = ("00:00")
-                        if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1_selected)!!.constantState) {
-                            mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)
-                        } else {
-                            mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
-                        }
-                    }
-                }.start()
-            } else {
-                cd!!.stopAnim()
-                countDownTimer!!.cancel()
-                buttonAudio.background = ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp)
-                mediaPlayer!!.stop()
-                length = mediaPlayer!!.currentPosition
-                if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1_selected)!!.constantState) {
-                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)
-                } else {
-                    mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
-                }
-            }*/
         }
-        mchk2.setOnLongClickListener(OnLongClickListener {
+        mchk2.setOnLongClickListener {
             if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_2)!!.constantState) {
                 mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2_selected)
                 builder.setItems(item) { _, which ->
@@ -356,7 +274,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                 alertDialog.window!!.setLayout(800, 390)
             }
             true
-        })
+        }
         mImageSent.setOnClickListener{
             val intent = Intent(context, ItemImageActivity::class.java)
             intent.putExtra("matchIdReal", mMatchIdReal.text.toString())
@@ -365,7 +283,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
             intent.putExtra("ChkImage2", mChk_2.text.toString())
             context.startActivity(intent)
         }
-        mImageSent.setOnLongClickListener(OnLongClickListener {
+        mImageSent.setOnLongClickListener {
             if (mchk3.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1_photo)!!.constantState) {
                 mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_1_photo_selected)
                 builder.setItems(itemImage) { _, which ->
@@ -399,9 +317,9 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                 alertDialog.window!!.setLayout(800, 245)
             }
             true
-        })
+        }
     }
-    fun a(){
+    private fun a(){
         mchk3.visibility = View.VISIBLE
         mchk.visibility = View.VISIBLE
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
@@ -410,19 +328,21 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
             addRule(RelativeLayout.START_OF, mchk3.id)
             addRule(RelativeLayout.ALIGN_BOTTOM, mchk3.id)
         }
-        val paramsimg = mchk3.layoutParams as RelativeLayout.LayoutParams
-        paramsimg.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
+        val params = mchk3.layoutParams as RelativeLayout.LayoutParams
+        params.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
     }
-    fun a1(type:Int){
+    private fun a1(type:Int){
         mchk3.visibility = View.GONE
         mchk.visibility = View.VISIBLE
         mchk2.visibility = View.VISIBLE
         val params2 = mchk2.layoutParams as RelativeLayout.LayoutParams
         params2.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
-        params3.addRule(RelativeLayout.END_OF, 0)
-        params3.addRule(RelativeLayout.START_OF, mchk2.id)
-        params3.addRule(RelativeLayout.ALIGN_BOTTOM, mchk2.id)
+        params3.apply {
+            addRule(RelativeLayout.END_OF, 0)
+            addRule(RelativeLayout.START_OF, mchk2.id)
+            addRule(RelativeLayout.ALIGN_BOTTOM, mchk2.id)
+        }
         imageOpposite.visibility = View.GONE
         if(type == 1)
         mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)

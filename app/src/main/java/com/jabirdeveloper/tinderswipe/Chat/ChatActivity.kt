@@ -47,12 +47,12 @@ import java.util.*
 class ChatActivity : AppCompatActivity() {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mChatAdapter: RecyclerView.Adapter<*>
-    private lateinit var mChatLayoutManager: RecyclerView.LayoutManager
+    //private lateinit var mChatLayoutManager: RecyclerView.LayoutManager
     private lateinit var linearLayoutOvalSend: LinearLayout
     private lateinit var menu: LinearLayout
     private val plus: SwitchpageActivity? = SwitchpageActivity()
     private lateinit var linearRecord: LinearLayout
-    private lateinit var toolbar: Toolbar
+    //private lateinit var toolbar: Toolbar
     private lateinit var imgSend: ImageView
     private lateinit var mSendImage: ImageView
     private lateinit var mCameraOpen: ImageView
@@ -143,7 +143,7 @@ class ChatActivity : AppCompatActivity() {
         }
         mDatabaseImage = FirebaseDatabase.getInstance().reference.child("Users").child(matchId.toString()).child("ProfileImage").child("profileImageUrl0")
         mDatabaseChat = FirebaseDatabase.getInstance().reference.child("Chat")
-        mRecord.setOnClickListener(View.OnClickListener {
+        mRecord.setOnClickListener{
             if (ActivityCompat.checkSelfPermission(this@ChatActivity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@ChatActivity, arrayOf<String?>(
                         Manifest.permission.RECORD_AUDIO), 72)
@@ -156,22 +156,14 @@ class ChatActivity : AppCompatActivity() {
                 } else {
                     linearRecord.visibility = View.GONE
                 }
-                /*if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        startRecording();
-                        Toast.makeText(ChatActivity.this,"Start",Toast.LENGTH_SHORT).show();
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        stopRecording();
-                        Toast.makeText(ChatActivity.this,"Stop",Toast.LENGTH_SHORT).show();
-                    }*/
             }
-        })
+        }
         mRecordReal.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
                 mRecordStatus.text = ("00:00")
                 T = Timer()
                 T!!.scheduleAtFixedRate(object : TimerTask() {
-
                     override fun run() {
                         runOnUiThread {
                             ++time_count
@@ -238,7 +230,7 @@ class ChatActivity : AppCompatActivity() {
                                     fetchId.clear()
                                     start = "null"
                                     sizePre = 0
-                                    resultChat!!.clear()
+                                    resultChat.clear()
                                     mChatAdapter.notifyDataSetChanged()
                                     val removeNotification = getSharedPreferences("DeleteChatActive", Context.MODE_PRIVATE)
                                     val editorRead = removeNotification.edit()
@@ -293,7 +285,6 @@ class ChatActivity : AppCompatActivity() {
                     mSendButton.rotation = 0f
                 }
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
         mSendEditText!!.setOnEditTextImeBackListener(object : EditTextImeBackListener {
@@ -427,17 +418,6 @@ class ChatActivity : AppCompatActivity() {
     }*/
 
     private var c = 0
-    private fun getcount(): Int {
-        mDatabaseChat!!.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                c = dataSnapshot.childrenCount.toInt()
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-        return c
-    }
-
     private var firstConnect = true
     private var start: String? = "null"
     private fun getFirstNode() {
@@ -539,14 +519,10 @@ class ChatActivity : AppCompatActivity() {
                             var message: String? = null
                             var createdByUser: String? = null
                             var time: String? = null
-                            var url_send = "default"
+                            var urlSend = "default"
                             var audio = "null"
-                            var audio_length = "null"
+                            var audioLength = "null"
                             var read = "null"
-                            //val MyNode = getSharedPreferences(chatId, Context.MODE_PRIVATE)
-                            //val S1 = MyNode.getInt(dataSnapshot.key, 0)
-                            //Log.d("unsave", dataSnapshot.key)
-                            //Toast.makeText(this@ChatActivity,read,Toast.LENGTH_LONG).show()
                             if (dataSnapshot.child("read").value != null) {
                                 read = dataSnapshot.child("read").value.toString()
                             }
@@ -560,12 +536,12 @@ class ChatActivity : AppCompatActivity() {
                                 time = dataSnapshot.child("time").value.toString()
                             }
                             if (dataSnapshot.child("image").value != null) {
-                                url_send = dataSnapshot.child("image").value.toString()
+                                urlSend = dataSnapshot.child("image").value.toString()
                                 ++chk2
                             }
                             if (dataSnapshot.child("audio").value != null) {
                                 audio = dataSnapshot.child("audio").value.toString()
-                                audio_length = dataSnapshot.child("audio_length").value.toString()
+                                audioLength = dataSnapshot.child("audio_length").value.toString()
                             }
                             val chatMessageStored = getSharedPreferences(chatId, Context.MODE_PRIVATE)
                             val editorRead = chatMessageStored.edit()
@@ -578,9 +554,9 @@ class ChatActivity : AppCompatActivity() {
                             nodeEditorRead.putString("text", message)
                             nodeEditorRead.putString("time", time)
                             nodeEditorRead.putString("createByUser", createdByUser)
-                            nodeEditorRead.putString("image", url_send)
+                            nodeEditorRead.putString("image", urlSend)
                             nodeEditorRead.putString("audio", audio)
-                            nodeEditorRead.putString("audio_length", audio_length)
+                            nodeEditorRead.putString("audio_length", audioLength)
                             nodeEditorRead.putString("read", read)
                             nodeEditorRead.apply()
                             if (createdByUser != null && time != null) {
@@ -595,7 +571,7 @@ class ChatActivity : AppCompatActivity() {
                                         }
                                     }
                                 }
-                                val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, url_send, chk2, matchId, audio, audio_length, currentUserId)
+                                val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
                                 resultChat!!.add(newMessage)
                                 mChatAdapter.notifyDataSetChanged()
                                 ++chk
@@ -610,8 +586,6 @@ class ChatActivity : AppCompatActivity() {
                             }
                         }
                     } else if (dataSnapshot.key != start) {
-                        Toast.makeText(this@ChatActivity, "First", Toast.LENGTH_LONG).show()
-
                         c++
                         var message: String? = null
                         var createdByUser: String? = null
@@ -621,7 +595,6 @@ class ChatActivity : AppCompatActivity() {
                         var audioLength = "null"
                         var read = "null"
                         Log.d("unsave", dataSnapshot.key.toString())
-                        //Toast.makeText(this@ChatActivity,read,Toast.LENGTH_LONG).show()
                         if (dataSnapshot.child("read").value != null) {
                             read = dataSnapshot.child("read").value.toString()
                         }
@@ -827,9 +800,17 @@ class ChatActivity : AppCompatActivity() {
             super.onBackPressed()
             if (intent.hasExtra("chat_na")) {
                 if (c > 1) {
-                    usersDb!!.child(matchId.toString()).child("connection").child("yep").child(currentUserId.toString()).setValue(true)
-                    usersDb!!.child(currentUserId.toString()).child("connection").child("yep").child(matchId.toString()).setValue(true)
-                    usersDb!!.child(currentUserId.toString()).child("connection").child("chatna").child(matchId.toString()).setValue(null)
+                    usersDb.apply {
+                        usersDb!!.child(matchId.toString()).child("connection")
+                                .child("yep")
+                                .child(currentUserId.toString()).setValue(true)
+                        usersDb!!.child(currentUserId.toString()).child("connection")
+                                .child("yep")
+                                .child(matchId.toString()).setValue(true)
+                        usersDb!!.child(currentUserId.toString()).child("connection")
+                                .child("chatna")
+                                .child(matchId.toString()).setValue(null)
+                    }
                 }
             }
             if (cHeck_back == 0) {
@@ -851,17 +832,32 @@ class ChatActivity : AppCompatActivity() {
 
     private fun deleteChild() {
         val dataDelete = FirebaseDatabase.getInstance().reference.child("Users")
-        val dataChat = FirebaseDatabase.getInstance().reference
-        dataChat.addListenerForSingleValueEvent(object : ValueEventListener {
+         FirebaseDatabase.getInstance().reference
+                 .addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val chatId = dataSnapshot.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("ChatId").value.toString()
+                val chatId = dataSnapshot.child("Users")
+                        .child(currentUserId.toString())
+                        .child("connection")
+                        .child("matches")
+                        .child(matchId.toString())
+                        .child("ChatId")
+                        .value.toString()
                 if (dataSnapshot.child("Chat").hasChild(chatId)) {
-                    dataChat.child("Chat").child(chatId).removeValue()
-                }
-                dataDelete.child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).removeValue()
-                dataDelete.child(currentUserId.toString()).child("connection").child("yep").child(matchId.toString()).removeValue()
-                dataDelete.child(matchId.toString()).child("connection").child("matches").child(currentUserId.toString()).removeValue()
-                dataDelete.child(matchId.toString()).child("connection").child("yep").child(currentUserId.toString()).removeValue()
+                    FirebaseDatabase.getInstance().reference
+                            .child("Chat")
+                            .child(chatId).removeValue() }
+                dataDelete.child(currentUserId.toString()).child("connection")
+                        .child("matches")
+                        .child(matchId.toString()).removeValue()
+                dataDelete.child(currentUserId.toString()).child("connection")
+                        .child("yep")
+                        .child(matchId.toString()).removeValue()
+                dataDelete.child(matchId.toString()).child("connection")
+                        .child("matches")
+                        .child(currentUserId.toString()).removeValue()
+                dataDelete.child(matchId.toString()).child("connection")
+                        .child("yep")
+                        .child(currentUserId.toString()).removeValue()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
