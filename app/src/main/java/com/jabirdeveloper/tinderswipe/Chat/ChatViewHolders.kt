@@ -109,7 +109,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
         } else {
             when {
                 chatList.url !== "default" -> {
-                    a()
+                    b()
                     imageOpposite.visibility = View.VISIBLE
                     Glide.with(context).load(chatList.profileImageUrl).thumbnail(0.1f).into(imageOpposite)
                     Glide.with(context).load(chatList.url).thumbnail(0.1f).into(mImageSent)
@@ -131,10 +131,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                     }
                     beginAudio.setTextColor(Color.parseColor("#292929"))
                     mMessage.setTextColor(Color.parseColor("#292929"))
-                    mchk3.visibility = View.GONE
-                    mchk.visibility = View.VISIBLE
-                    mchk2.visibility = View.VISIBLE
-                    a2()
+                   b1()
                 }
                 else -> {
                     mMessage.text = chatList.message
@@ -142,10 +139,11 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                     cd.visibility = View.GONE
                     beginAudio.visibility = View.GONE
                     mMessage.setTextColor(Color.parseColor("#292929"))
+                    Glide.with(context).load(chatList.profileImageUrl).into(imageOpposite)
                     mchk3.visibility = View.GONE
                     mchk.visibility = View.VISIBLE
                     mchk2.visibility = View.VISIBLE
-                    a2()
+                    b1()
                 }
             }
         }
@@ -322,6 +320,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
     private fun a(){
         mchk3.visibility = View.VISIBLE
         mchk.visibility = View.VISIBLE
+        mchk2.visibility = View.GONE
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
         params3.apply {
             addRule(RelativeLayout.END_OF, 0)
@@ -346,19 +345,34 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
         imageOpposite.visibility = View.GONE
         mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)
     }
-    private fun a2(){
+    private fun b(){
+        mchk3.visibility = View.VISIBLE
+        mchk.visibility = View.VISIBLE
+        mchk2.visibility = View.GONE
+        val params2 = mchk3.layoutParams as RelativeLayout.LayoutParams
+        params2.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+        val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
+        params3.apply {
+            addRule(RelativeLayout.START_OF, 0)
+            addRule(RelativeLayout.END_OF, mchk3.id)
+            addRule(RelativeLayout.ALIGN_BOTTOM, mchk3.id)
+        }
+        imageOpposite.visibility = View.VISIBLE
+        mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
+    }
+    private fun b1(){
         mchk3.visibility = View.GONE
         mchk.visibility = View.VISIBLE
         mchk2.visibility = View.VISIBLE
         val params2 = mchk2.layoutParams as RelativeLayout.LayoutParams
-        params2.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE)
+        params2.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
         params3.apply {
-            addRule(RelativeLayout.END_OF, 0)
-            addRule(RelativeLayout.START_OF, mchk2.id)
+            addRule(RelativeLayout.START_OF, 0)
+            addRule(RelativeLayout.END_OF, mchk2.id)
             addRule(RelativeLayout.ALIGN_BOTTOM, mchk2.id)
         }
-        imageOpposite.visibility = View.GONE
+        imageOpposite.visibility = View.VISIBLE
         mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
     }
 }
