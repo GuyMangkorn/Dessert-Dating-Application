@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
@@ -20,6 +21,8 @@ import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -28,7 +31,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -323,9 +330,19 @@ class ChatActivity : AppCompatActivity() {
     private fun getImageProfile() {
         mDatabaseImage!!.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ChatActivity, R.anim.fade_in2)
                 if (dataSnapshot.exists()) {
                     UrlImage = dataSnapshot.value.toString()
-                    Glide.with(applicationContext).load(UrlImage).apply(RequestOptions().override(100, 100)).into(profile)
+                    Glide.with(applicationContext).load(UrlImage).apply(RequestOptions().override(100, 100)).placeholder(R.color.background_gray).listener(object : RequestListener<Drawable?> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            profile.startAnimation(logoMoveAnimation)
+                            return false
+                        }
+                    }).into(profile)
                 } else {
                     if (intent.getStringExtra("gender") == "Female") Glide.with(applicationContext).load(R.drawable.ic_woman).apply(RequestOptions().override(100, 100)).into(profile) else Glide.with(applicationContext).load(R.drawable.ic_man).apply(RequestOptions().override(100, 100)).into(profile)
                 }

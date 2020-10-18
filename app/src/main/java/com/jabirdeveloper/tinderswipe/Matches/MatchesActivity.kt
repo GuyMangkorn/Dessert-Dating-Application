@@ -372,7 +372,7 @@ class MatchesActivity : Fragment() {
                             val myUnread = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
                             var dd2 = myUnread.getInt("total", 0)
                             ++dd2
-                            (activity as SwitchpageActivity).setCurrentIndex(dd2)
+                            (mContext as SwitchpageActivity).setCurrentIndex(dd2)
                             val myUnread2 = mContext!!.getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
                             val editorRead = myUnread2.edit()
                             editorRead.putInt("total", dd2)

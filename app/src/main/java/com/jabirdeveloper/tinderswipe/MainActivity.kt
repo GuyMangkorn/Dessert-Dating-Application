@@ -394,7 +394,6 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                             dialog.dismiss()
                             val intent = Intent(context, ChatActivity::class.java)
                             val b = Bundle()
-                            b.putString("time_chk", timeSend)
                             b.putString("matchId", po.userId)
                             b.putString("nameMatch", po.name)
                             b.putString("first_chat", "")
