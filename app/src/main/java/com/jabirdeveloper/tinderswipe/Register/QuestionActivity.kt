@@ -81,7 +81,7 @@ class QuestionActivity : AppCompatActivity() {
                         putExtra("email", intent.getStringExtra("email"))
                         putExtra("password", intent.getStringExtra("password"))
                         putExtra("Birth", intent.getLongExtra("Birth", 0))
-                        //startActivity(intent1)
+                        startActivity(intent1)
                     }
                 }
     }
