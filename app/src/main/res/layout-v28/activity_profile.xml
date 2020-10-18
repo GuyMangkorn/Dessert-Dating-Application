@@ -11,30 +11,30 @@
     tools:context=".ProfileActivity">
 
 
+    <ProgressBar
+        android:id="@+id/progress_reload"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"/>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
         <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/information"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+
                 android:layout_width="match_parent"
                 android:background="@color/background_white"
                 android:layout_height="wrap_content">
 
-                <ProgressBar
-                    android:id="@+id/progress_bar_pre_pro"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-
-                    app:layout_constraintBottom_toTopOf="@+id/main"
-                    app:layout_constraintEnd_toEndOf="@+id/slide_main"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/slide_main" />
                 <com.jabirdeveloper.tinderswipe.WrapContentHeightViewPager
                     android:id="@+id/slide_main"
                     android:layout_width="match_parent"
@@ -87,7 +87,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:text="Mai siravit"
+
                         android:textColor="@color/c2"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -96,7 +96,7 @@
                         android:id="@+id/age_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="21"
+
                         android:textColor="@color/c2"
                         android:textSize="20dp" />
 
@@ -136,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="ผู้ชาย"
+
 
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
@@ -178,7 +178,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="Microsoft"
+
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
 
@@ -217,7 +217,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="พระจอมเกล้าเพราะนครเหนือ"
+
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
 
@@ -257,7 +257,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="กรุงเทพมหานคร"
+
                         android:textColor="@color/text_black_gray"
                         android:textSize="16dp" />
 
@@ -296,7 +296,7 @@
                     android:paddingTop="5dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
-                    android:text="ไม่ใช่มะม่วงก็ร่วงได้"
+
                     android:textColor="@color/text_gray"
                     android:textSize="16dp" />
 
@@ -334,7 +334,7 @@
                     android:paddingTop="5dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
-                    android:text="ภาษาไทย"
+
                     android:textColor="@color/text_gray"
                     android:gravity="left"
                     android:textSize="16dp" />
@@ -373,7 +373,7 @@
                     android:paddingRight="10dp"
                     android:paddingBottom="10dp"
                     android:textColor="@color/text_gray"
-                    android:text="@string/religion"
+
                     android:textSize="16dp" />
 
 
@@ -418,6 +418,34 @@
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_white"
+                android:orientation="vertical"
+                android:paddingBottom="30dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_gray"
+                android:orientation="vertical"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp">
+
+                <TextView
+                    android:id="@+id/report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/background_white"
+                    android:gravity="center"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:text="รายงาน Maisiravit"
+                    android:textColor="@color/text_gray"
+                    android:textSize="18dp" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
