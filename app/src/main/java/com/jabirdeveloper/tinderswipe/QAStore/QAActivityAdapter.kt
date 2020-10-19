@@ -3,6 +3,7 @@ package com.jabirdeveloper.tinderswipe.QAStore
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.jabirdeveloper.tinderswipe.R
 
-class QAActivityAdapter(private val context:Context, private val result:ArrayList<QAObject>,private val viewPager: ViewPager2) : RecyclerView.Adapter<QAActivityAdapter.Holder>() {
+class QAActivityAdapter(private val context:Context, private val result:ArrayList<QAObject>,private val viewPager: ViewPager2,private val intent:Intent) : RecyclerView.Adapter<QAActivityAdapter.Holder>() {
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
          val question:TextView = itemView.findViewById(R.id.questionQARegister)
@@ -36,6 +37,7 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
                 holder.confirmButton.text = context.getString(R.string.next_QA)
                 holder.dismissButton.text = context.getString(R.string.dismiss_label)
                 holder.dismissButton.setOnClickListener {
+                    context.startActivity(intent)
                 }
             }
             itemCount - 1 -> {
@@ -45,7 +47,7 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
                     viewPager.setCurrentItem(--viewPager.currentItem, false)
                 }
                 holder.confirmButton.setOnClickListener {
-
+                    context.startActivity(intent)
                 }
             }
             else -> {

@@ -68,8 +68,6 @@ class QuestionActivity : AppCompatActivity() {
                         arrSetQuestion.add(ob)
                         Log.d("tagRegisterQuestion", questionSet["question"].toString())
                     }
-                    val pagerAdapter = QAActivityAdapter(this,arrSetQuestion,pager)
-                    pager.adapter = pagerAdapter
                     intent1 = Intent(this@QuestionActivity, Regis_target_Acivity::class.java)
                     intent1.apply {
                         putExtra("Sex", intent.getStringExtra("Sex"))
@@ -81,8 +79,10 @@ class QuestionActivity : AppCompatActivity() {
                         putExtra("email", intent.getStringExtra("email"))
                         putExtra("password", intent.getStringExtra("password"))
                         putExtra("Birth", intent.getLongExtra("Birth", 0))
-                        //startActivity(intent1)
                     }
+                    val pagerAdapter = QAActivityAdapter(this,arrSetQuestion,pager,intent1)
+                    pager.adapter = pagerAdapter
+                    //startActivity(intent1)
                 }
     }
 }
