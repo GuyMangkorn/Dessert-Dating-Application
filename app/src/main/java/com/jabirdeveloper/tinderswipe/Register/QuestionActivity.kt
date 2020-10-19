@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
 import com.google.android.gms.tasks.Task
 import com.google.firebase.functions.HttpsCallableResult
@@ -19,14 +20,13 @@ class QuestionActivity : AppCompatActivity() {
     private var x: Double = 0.0
     private var y: Double = 0.0
     private lateinit var type: String
-    private lateinit var pager:ViewPager
+    private lateinit var pager: ViewPager2
     private var email: String? = null
     private var pass: String? = null
     private var name: String? = null
     private var sex: String? = null
     private var age: Int = 18
     private lateinit var intent1: Intent
-    private lateinit var pagerAdapter: PagerAdapter
     private var functions = Firebase.functions
     private val localizationDelegate = LocalizationActivityDelegate(this)
     private var arrSetQuestion:ArrayList<QAObject> = ArrayList()
@@ -68,7 +68,7 @@ class QuestionActivity : AppCompatActivity() {
                         arrSetQuestion.add(ob)
                         Log.d("tagRegisterQuestion", questionSet["question"].toString())
                     }
-                    pagerAdapter = QAActivityAdapter(this,arrSetQuestion)
+                    val pagerAdapter = QAActivityAdapter(this,arrSetQuestion,pager)
                     pager.adapter = pagerAdapter
                     intent1 = Intent(this@QuestionActivity, Regis_target_Acivity::class.java)
                     intent1.apply {
@@ -81,7 +81,7 @@ class QuestionActivity : AppCompatActivity() {
                         putExtra("email", intent.getStringExtra("email"))
                         putExtra("password", intent.getStringExtra("password"))
                         putExtra("Birth", intent.getLongExtra("Birth", 0))
-                        startActivity(intent1)
+                        //startActivity(intent1)
                     }
                 }
     }
