@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -34,6 +35,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
 import com.jabirdeveloper.tinderswipe.Functions.LoadingDialog
 import com.jabirdeveloper.tinderswipe.Register.PhoneActivity
 import com.jabirdeveloper.tinderswipe.Register.Regis_name_Activity
@@ -47,6 +49,8 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
     private lateinit var firebaseAuthStateListener: AuthStateListener
     private lateinit var mAuth: FirebaseAuth
     private lateinit var googleSignInClientg: GoogleSignInClient
+    private val localizationDelegate = LocalizationActivityDelegate(this)
+    private val language: ChangLanguage = ChangLanguage(this)
     private val RC_SIGN_IN = 0
     private lateinit var thai: TextView
     private lateinit var eng: TextView
@@ -58,9 +62,8 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         super.onCreate(savedInstanceState)
-        loadLocal()
+        language.setLanguage()
         setContentView(R.layout.activity_choose_login_registration)
         findViewById<TextView>(R.id.clickToTest).setOnClickListener { findViewById<LinearLayout>(R.id.testlogin).visibility = View.VISIBLE; findViewById<TextView>(R.id.clickToTest).visibility = View.GONE }
         mAuth = FirebaseAuth.getInstance()
@@ -72,9 +75,7 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         face = findViewById(R.id.face)
         google = findViewById(R.id.google)
         dialog = LoadingDialog(this).dialog()
-        val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val language = preferences.getString("My_Lang", "")
-        if (language == "th") {
+        if (localizationDelegate.getLanguage(this).toLanguageTag() == "th") {
             thai.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4))
             eng.setTextColor(ContextCompat.getColor(applicationContext, R.color.c4tran))
         } else {
@@ -152,20 +153,22 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
             val intent = Intent(this@ChooseLoginRegistrationActivity, PhoneActivity::class.java)
             startActivity(intent)
         }
-        thai.setOnClickListener(View.OnClickListener {
-            setLocal("th")
+        thai.setOnClickListener{
+            localizationDelegate.setLanguage(this,"th")
+            language.setLanguage()
             finish()
             overridePendingTransition(0, 0)
             startActivity(intent)
             overridePendingTransition(0, 0)
-        })
-        eng.setOnClickListener(View.OnClickListener {
-            setLocal("en")
+        }
+        eng.setOnClickListener{
+            localizationDelegate.setLanguage(this,"en")
+            language.setLanguage()
             finish()
             overridePendingTransition(0, 0)
             startActivity(intent)
             overridePendingTransition(0, 0)
-        })
+        }
     }
 
     private fun signIn() {
@@ -224,24 +227,5 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
         mAuth.removeAuthStateListener(firebaseAuthStateListener)
     }
 
-    fun setLocal(lang: String?) {
-        val locale = Locale(lang)
-        Locale.setDefault(locale)
-        val configuration = Configuration()
-        resources.configuration.setLocale(locale)
-        baseContext.resources.updateConfiguration(configuration, baseContext.resources.displayMetrics)
-        val editor = getSharedPreferences("Settings", Context.MODE_PRIVATE).edit()
-        editor.putString("My_Lang", lang)
-        editor.apply()
-        Log.d("My", lang)
-    }
 
-    fun loadLocal() {
-
-        val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val langure = preferences.getString("My_Lang", "")
-        Log.d("My2", langure)
-        setLocal(langure)
-
-    }
 }

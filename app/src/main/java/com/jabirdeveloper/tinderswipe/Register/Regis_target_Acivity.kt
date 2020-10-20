@@ -44,9 +44,10 @@ class Regis_target_Acivity : AppCompatActivity() {
     private lateinit var name: String
     private lateinit var sex: String
     private var Age: Int = 18
-    private lateinit var type: String
+    private  var type: String? = null
     private var x: Double = 0.0
     private var y: Double = 0.0
+    private var hashMapQA:Map<*,*>? = null
     private lateinit var mAuth: FirebaseAuth
     private lateinit var imageView: ImageView
     private lateinit var UserId: String
@@ -71,16 +72,16 @@ class Regis_target_Acivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        intent.apply {
-            x = getDoubleExtra("X", x)
-            y = getDoubleExtra("Y", y)
-            type = getStringExtra("Type")
-            email = getStringExtra("email")
-            pass = getStringExtra("password")
-            name = getStringExtra("Name")
-            sex = getStringExtra("Sex")
-            Age = getIntExtra("Age", Age)
-        }
+        x = intent.getDoubleExtra("X", x)
+        y = intent.getDoubleExtra("Y", y)
+        type = intent.getStringExtra("Type")
+        Log.d("showItemList", type)
+        email = intent.getStringExtra("email")
+        pass = intent.getStringExtra("password")
+        name = intent.getStringExtra("Name")
+        sex = intent.getStringExtra("Sex")
+        Age = intent.getIntExtra("Age", Age)
+        hashMapQA = intent.getSerializableExtra("MapQA") as Map<*, *>
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.progress_dialog, null)
         dialog = Dialog(this)
@@ -94,9 +95,11 @@ class Regis_target_Acivity : AppCompatActivity() {
     }
 
     private fun createId(i: Int) {
+        Log.d("showItemList","$type , email")
         if (type == "email") {
             mAuth.createUserWithEmailAndPassword(email!!, pass!!).addOnCompleteListener(this@Regis_target_Acivity) { task -> if (!task.isSuccessful) Snackbar.make(b1, R.string.try_again, Snackbar.LENGTH_LONG).show() else CreateData_to_Firebase(i) }
         } else {
+            Log.d("showItemList","else")
             CreateData_to_Firebase(i)
         }
     }
@@ -134,6 +137,7 @@ class Regis_target_Acivity : AppCompatActivity() {
                 "X" to x,
                 "Y" to y
         )
+        currentUserDb.child("Questions").setValue(hashMapQA)
         currentUserDb.child("Location").updateChildren(location as Map<String, Any>)
         if (i == 1) {
             if (bitmap != null) {
