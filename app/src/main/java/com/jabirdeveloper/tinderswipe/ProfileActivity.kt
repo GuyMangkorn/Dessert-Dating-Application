@@ -260,7 +260,8 @@ class ProfileActivity : AppCompatActivity() {
                     }
                     val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileActivity, R.anim.fade_in2)
                     information.visibility = View.VISIBLE
-                    information.startAnimation(logoMoveAnimation)
+                    informationIn.visibility = View.VISIBLE
+                    informationIn.startAnimation(logoMoveAnimation)
                 }
             }
 

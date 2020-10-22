@@ -8,23 +8,23 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
-import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.gms.tasks.OnFailureListener
@@ -40,12 +40,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.nipunru.nsfwdetector.NSFWDetector
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import kotlinx.android.synthetic.main.activity_setting.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
 
-@Suppress("UNREACHABLE_CODE", "NAME_SHADOWING")
+@Suppress("UNREACHABLE_CODE", "NAME_SHADOWING", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 open class SettingActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var editname: CustomEdittext
     private lateinit var editcareer: CustomEdittext
@@ -125,14 +126,12 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         image4 = findViewById(R.id.Image4)
         image5 = findViewById(R.id.Image5)
         image6 = findViewById(R.id.Image6)
-        val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, image1.measuredWidth.toFloat(), resources.displayMetrics).toInt()
-        Log.d("12", image1.width.toString())
-        findViewById<View>(R.id.Image1).setOnClickListener(this)
-        findViewById<View>(R.id.Image2).setOnClickListener(this)
-        findViewById<View>(R.id.Image3).setOnClickListener(this)
-        findViewById<View>(R.id.Image4).setOnClickListener(this)
-        findViewById<View>(R.id.Image5).setOnClickListener(this)
-        findViewById<View>(R.id.Image6).setOnClickListener(this)
+        image1.setOnClickListener(this)
+        image2.setOnClickListener(this)
+        image3.setOnClickListener(this)
+        image4.setOnClickListener(this)
+        image5.setOnClickListener(this)
+        image6.setOnClickListener(this)
         mAuth = FirebaseAuth.getInstance()
         userId = mAuth.currentUser!!.uid
         mUserDatabase = FirebaseDatabase.getInstance().reference.child("Users").child(userId)
@@ -270,7 +269,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         flexLayout.addView(textView)
     }
 
-    private fun DeleteImage(imageDelete: ImageView?, str: String?, add: ImageView?) {
+    private fun DeleteImage(imageDelete: ImageView, str: String, add: ImageView?) {
         val mBuilder = AlertDialog.Builder(this@SettingActivity)
         mBuilder.setTitle(R.string.delete_image)
         mBuilder.setMessage(R.string.delete_image_confirm)
@@ -280,13 +279,13 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
             filepath.delete().addOnSuccessListener {
                 mUserDatabase.child("ProfileImage").child(str).removeValue()
                 if (str == "profileImageUrl0") {
-                    val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-                    MyUser.putString("image", "")
-                    MyUser.apply()
+                    val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+                    myUser.putString("image", "")
+                    myUser.apply()
                 }
-
-                imageDelete?.setBackgroundResource(R.drawable.border3)
-                imageDelete?.setImageResource(R.drawable.tran)
+                imageDelete.tag = null
+                imageDelete.setBackgroundResource(R.drawable.border3)
+                imageDelete.setImageResource(R.drawable.tran)
                 add?.visibility = View.VISIBLE
             }
         }
@@ -350,41 +349,44 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                         if (map2!!.containsKey("profileImageUrl0")) {
                             profile = map2["profileImageUrl0"].toString()
                             add1.visibility = View.GONE
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image1)
+                            glideGetImage(image1)
+                            Log.d("img", "1")
                         } else {
                             list.add(1)
-                            Toast.makeText(this@SettingActivity, R.string.primary_profile_alert, Toast.LENGTH_LONG).show()
                         }
                         if (map2.containsKey("profileImageUrl1")) {
                             profile = map2.get("profileImageUrl1").toString()
                             add2.visibility = View.GONE
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image2)
+                            glideGetImage(image2)
+                            Log.d("img", "2")
                         } else list.add(2)
                         if (map2.containsKey("profileImageUrl2")) {
                             profile = map2.get("profileImageUrl2").toString()
                             add3.visibility = View.GONE
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image3)
+                            glideGetImage(image3)
                         } else list.add(3)
                         if (map2.containsKey("profileImageUrl3")) {
                             profile = map2.get("profileImageUrl3").toString()
                             add4.visibility = View.GONE
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image4)
+                            glideGetImage(image4)
                         } else list.add(4)
                         if (map2.containsKey("profileImageUrl4")) {
                             profile = map2.get("profileImageUrl4").toString()
                             add5.visibility = View.GONE
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image5)
+                            glideGetImage(image5)
                         } else list.add(5)
                         if (map2.containsKey("profileImageUrl5")) {
                             profile = map2.get("profileImageUrl5").toString()
                             add6.visibility = View.GONE
-                            Glide.with(application).load(profile).placeholder(R.drawable.tran).into(image6)
+                            glideGetImage(image6)
+                            Log.d("img", "6")
                         } else list.add(6)
                     }
                     if (intent.hasExtra("setImage")) {
                         var h = 1
                         if (list.size > 0) {
                             h = list.minOrNull()!!
+                            Log.d("count", h.toString())
                         }
                         if (h == 1) {
                             setImage(1, image1, add1)
@@ -405,6 +407,9 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                             setImage(6, image6, add6)
                         }
                     }
+                    val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@SettingActivity, R.anim.fade_in2)
+                    pageSetting.visibility = View.VISIBLE
+                    pageSetting.startAnimation(logoMoveAnimation)
                 }
             }
 
@@ -463,34 +468,10 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                 dialog.show()
                 save(resulturi)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                val error = result.error
+                Log.e("error",result.error.localizedMessage)
             }
         }
-        if (requestCode == 258) {
-            Log.d("258", "1")
-            val h = Collections.min(list)
-            val handler = Handler()
-            handler.postDelayed({
-                if (h == 1) {
-                    setImage(1, image1, add1)
-                }
-                if (h == 2) {
-                    setImage(2, image2, add2)
-                }
-                if (h == 3) {
-                    setImage(3, image3, add3)
-                }
-                if (h == 4) {
-                    setImage(4, image4, add4)
-                }
-                if (h == 5) {
-                    setImage(5, image5, add5)
-                }
-                if (h == 6) {
-                    setImage(6, image6, add6)
-                }
-            }, 400)
-        }
+
     }
 
     private fun inputImage() {
@@ -525,7 +506,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                     if (faces.isNotEmpty()) {
                         NSFWDetector.isNSFW(bitmap) { isNSFW, confidence, image ->
                             if (isNSFW) {
-                                Toast.makeText(this, "โรคจิต", Toast.LENGTH_SHORT).show()
+                                Snackbar.make(image1, "โรคจิต", Snackbar.LENGTH_SHORT).show()
                                 backgroundAdd()
                                 dialog.dismiss()
                             } else {
@@ -543,30 +524,30 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                                         mUserDatabase.child("ProfileImage").updateChildren(userInfo)
                                         when (i) {
                                             1 -> {
-                                                Glide.with(application).load(resulturi).into(image1)
+                                                glide(image1)
                                                 val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
                                                 MyUser.putString("image", resulturi.toString())
                                                 MyUser.apply()
                                                 add1.visibility = View.GONE
                                             }
                                             2 -> {
-                                                Glide.with(application).load(resulturi).into(image2)
+                                                glide(image2)
                                                 add2.visibility = View.GONE
                                             }
                                             3 -> {
-                                                Glide.with(application).load(resulturi).into(image3)
+                                                glide(image3)
                                                 add3.visibility = View.GONE
                                             }
                                             4 -> {
-                                                Glide.with(application).load(resulturi).into(image4)
+                                                glide(image4)
                                                 add4.visibility = View.GONE
                                             }
                                             5 -> {
-                                                Glide.with(application).load(resulturi).into(image5)
+                                                glide(image5)
                                                 add5.visibility = View.GONE
                                             }
                                             6 -> {
-                                                Glide.with(application).load(resulturi).into(image6)
+                                                glide(image6)
                                                 add6.visibility = View.GONE
                                             }
                                         }
@@ -585,7 +566,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
                     } else {
                         backgroundAdd()
-                        Toast.makeText(this@SettingActivity, "ไม่ใช่หน้าอีดอก", Toast.LENGTH_LONG).show()
+                        Snackbar.make(image1, "ไม่ใช่หน้าอีดอก", Snackbar.LENGTH_SHORT).show()
                     }
                 }
                 .addOnFailureListener { }
@@ -627,6 +608,16 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         add?.visibility = View.VISIBLE
     }
 
+    private fun glide(img: ImageView){
+        Log.d("start", "1")
+        Glide.with(application).load(resulturi).transition(DrawableTransitionOptions.withCrossFade(100)).into(img)
+    }
+    private fun glideGetImage(img: ImageView){
+        Log.d("start", "2")
+        img.tag = 1
+        Glide.with(application).load(profile).placeholder(R.drawable.tran).transition(DrawableTransitionOptions.withCrossFade(100)).into(img)
+    }
+
     override fun onStop() {
         super.onStop()
         saveUserinFormation()
@@ -636,9 +627,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         if (this::map.isInitialized) {
             saveUserinFormation()
         }
-        val drawable = image1.drawable
-        val hasImage = drawable != null
-        if (hasImage && drawable is BitmapDrawable) {
+        if (image1.drawable != null) {
             setResult(123)
             super.onBackPressed()
         } else {
@@ -686,32 +675,32 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View?) {
-        if (v?.id == R.id.Image1) {
+    override fun onClick(v: View) {
+
+        Log.d("point", v.id.toString())
+        if (v == image1) {
             setImage(1, image1, add1)
         }
-        if (v?.id == R.id.Image2) {
+        if (v == image2) {
             setImage(2, image2, add2)
         }
-        if (v?.id == R.id.Image3) {
+        if (v == image3) {
             setImage(3, image3, add3)
         }
-        if (v?.id == R.id.Image4) {
+        if (v == image4) {
             setImage(4, image4, add4)
         }
-        if (v?.id == R.id.Image5) {
+        if (v == image5) {
             setImage(5, image5, add5)
         }
-        if (v?.id == R.id.Image6) {
+        if (v == image6) {
             setImage(6, image6, add6)
         }
     }
 
-    fun setImage(u: Int, image: ImageView?, add: ImageView?) {
+    fun setImage(u: Int, image: ImageView, add: ImageView) {
         i = u
-        val drawable = image?.drawable
-        val hasImage = drawable != null
-        if (hasImage && drawable is BitmapDrawable) {
+        if (image.tag == 1) {
             DeleteImage(image, "profileImageUrl" + (u - 1), add)
         } else inputImage()
     }

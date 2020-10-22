@@ -13,6 +13,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -33,11 +34,14 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.transition.platform.MaterialSharedAxis
+
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
-import com.jabirdeveloper.tinderswipe.Functions.DateTime
+
 import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
 import kotlinx.coroutines.*
@@ -113,6 +117,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_user_opposite2)
         mAuth = FirebaseAuth.getInstance()
@@ -594,7 +599,8 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     }
                     val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileUserOppositeActivity2, R.anim.fade_in2)
                     information.visibility = View.VISIBLE
-                    information.startAnimation(logoMoveAnimation)
+                    informationIn.visibility = View.VISIBLE
+                    informationIn.startAnimation(logoMoveAnimation)
                 }
 
             }

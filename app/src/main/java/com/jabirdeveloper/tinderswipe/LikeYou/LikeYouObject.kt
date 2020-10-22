@@ -9,4 +9,4 @@ class LikeYouObject(val userId: String?,
                     val myself: String?,
                     val distance: Double,
                     val city: String?,
-                    val time: String?)
+                    val time: Long)

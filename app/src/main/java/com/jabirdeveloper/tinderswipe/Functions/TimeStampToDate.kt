@@ -12,4 +12,7 @@ class TimeStampToDate(private val time:Long) {
     fun time(): String {
         return currentTime.format(time)
     }
+    fun getCurrentTime(): String {
+        return currentDate.format(Calendar.getInstance().time)
+    }
 }
