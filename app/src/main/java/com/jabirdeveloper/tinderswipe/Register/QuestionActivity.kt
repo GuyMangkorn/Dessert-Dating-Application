@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.functions.HttpsCallableResult
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
+import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
 import com.jabirdeveloper.tinderswipe.QAStore.QAActivityAdapter
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
 import com.jabirdeveloper.tinderswipe.R
@@ -28,6 +29,7 @@ class QuestionActivity : AppCompatActivity() {
     private var age: Int = 18
     private lateinit var intent1: Intent
     private var functions = Firebase.functions
+    private var language:ChangLanguage = ChangLanguage(this)
     private val localizationDelegate = LocalizationActivityDelegate(this)
     private var arrSetQuestion:ArrayList<QAObject> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +37,7 @@ class QuestionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_question)
         loadQuestion()
         pager = findViewById(R.id.viewPagerQuestion)
-        //
+        language.setLanguage()
         intent.apply {
             x = getDoubleExtra("X", x)
             y = getDoubleExtra("Y", y)
@@ -81,8 +83,9 @@ class QuestionActivity : AppCompatActivity() {
                         putExtra("Birth", intent.getLongExtra("Birth", 0))
                     }
                     val pagerAdapter = QAActivityAdapter(this,arrSetQuestion,pager,intent1)
+                    pager.offscreenPageLimit = arrSetQuestion.size
+                    pager.isUserInputEnabled = false
                     pager.adapter = pagerAdapter
-                    //startActivity(intent1)
                 }
     }
 }
