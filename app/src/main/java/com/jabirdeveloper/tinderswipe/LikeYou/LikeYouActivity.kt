@@ -209,7 +209,7 @@ class LikeYouActivity : AppCompatActivity() {
                     val x: Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
                     val y: Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                     val distance = CalculateDistance.calculate(x_user, y_user, x, y)
-                    city = City(language, this@LikeYouActivity, x, y).getCity().toString()
+                    city = City(language, this@LikeYouActivity, x, y).invoke()
                     resultLike.add(LikeYouObject(
                             userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))
                 }

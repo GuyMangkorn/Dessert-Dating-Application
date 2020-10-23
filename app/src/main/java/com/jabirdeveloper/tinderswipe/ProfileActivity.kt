@@ -19,7 +19,10 @@ import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.jabirdeveloper.tinderswipe.ProfileActivity
+import com.jabirdeveloper.tinderswipe.Functions.City
+import com.jabirdeveloper.tinderswipe.Functions.DRAWABLE_IS_NOT_NULL
+import com.jabirdeveloper.tinderswipe.Functions.DRAWABLE_IS_NULL
+import com.jabirdeveloper.tinderswipe.Functions.PROFILE_TO_SETTING
 import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
 import java.io.IOException
 import java.util.*
@@ -79,7 +82,7 @@ class ProfileActivity : AppCompatActivity() {
         language = findViewById(R.id.language_profile)
         viewPager = findViewById(R.id.slide_main)
         mcity = findViewById(R.id.city_profile)
-        mLinear = findViewById<View?>(R.id.main) as LinearLayout
+        mLinear = findViewById(R.id.main)
         listItems = resources.getStringArray(R.array.shopping_item)
         listItems2 = resources.getStringArray(R.array.pasa_item)
         listItems3 = resources.getStringArray(R.array.religion_item)
@@ -99,13 +102,13 @@ class ProfileActivity : AppCompatActivity() {
         fab.setOnClickListener {
             val intent = Intent(this@ProfileActivity, SettingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivityForResult(intent, 123)
+            startActivityForResult(intent, PROFILE_TO_SETTING)
         }
         viewPager.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 if (chk == 11) {
                     if (i > 1) {
-                        val dd = findViewById<View?>(position) as LinearLayout
+                        val dd:LinearLayout = findViewById(position)
                         dd.background = ContextCompat.getDrawable(this@ProfileActivity, R.drawable.image_selected)
                     }
                 }
@@ -116,10 +119,10 @@ class ProfileActivity : AppCompatActivity() {
                 val total = adapter.count
                 for (jk in total - 1 downTo 0) {
                     if (jk == position) {
-                        val dd = findViewById<View?>(position) as LinearLayout
+                        val dd:LinearLayout = findViewById(position)
                         dd.background = ContextCompat.getDrawable(this@ProfileActivity, R.drawable.image_selected)
                     } else {
-                        val dd = findViewById<View?>(jk) as LinearLayout
+                        val dd:LinearLayout = findViewById(jk)
                         dd.background = ContextCompat.getDrawable(this@ProfileActivity, R.drawable.image_notselector)
                     }
                 }
@@ -237,26 +240,11 @@ class ProfileActivity : AppCompatActivity() {
                         }
                     }
                     if (dataSnapshot.hasChild("Location")) {
-                        val lat = dataSnapshot.child("Location").child("X").value.toString()
-                        val lon = dataSnapshot.child("Location").child("Y").value.toString()
-                        val lat_double = java.lang.Double.valueOf(lat)
-                        val lon_double = java.lang.Double.valueOf(lon)
+                        val lat = dataSnapshot.child("Location").child("X").value.toString().toDouble()
+                        val lon = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
                         val langure = preferences.getString("My_Lang", "")
-                        val ff: Geocoder
-                        ff = if (langure == "th") {
-                            Geocoder(this@ProfileActivity)
-                        } else {
-                            Geocoder(this@ProfileActivity, Locale.UK)
-                        }
-                        var addresses: MutableList<Address?>? = null
-                        try {
-                            addresses = ff.getFromLocation(lat_double, lon_double, 1)
-                            val city = addresses[0]!!.adminArea
-                            mcity.text = city
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+                        mcity.text = City(langure!!,this@ProfileActivity,lat,lon).invoke()
                     }
                     val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileActivity, R.anim.fade_in2)
                     information.visibility = View.VISIBLE
@@ -284,13 +272,13 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 123) {
-            if (resultCode == 123) {
+        if (requestCode == PROFILE_TO_SETTING) {
+            if (resultCode == DRAWABLE_IS_NOT_NULL) {
                 finish()
                 overridePendingTransition(0, 0)
                 startActivity(intent)
                 overridePendingTransition(0, 0)
-            } else if (resultCode == 1233) {
+            } else if (resultCode == DRAWABLE_IS_NULL) {
                 onBackPressed()
             }
         }

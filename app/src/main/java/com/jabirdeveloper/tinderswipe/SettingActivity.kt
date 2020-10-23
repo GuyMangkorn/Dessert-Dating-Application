@@ -37,6 +37,8 @@ import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import com.google.firebase.storage.FirebaseStorage
+import com.jabirdeveloper.tinderswipe.Functions.DRAWABLE_IS_NOT_NULL
+import com.jabirdeveloper.tinderswipe.Functions.DRAWABLE_IS_NULL
 import com.nipunru.nsfwdetector.NSFWDetector
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -627,8 +629,8 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         if (this::map.isInitialized) {
             saveUserinFormation()
         }
-        if (image1.drawable != null) {
-            setResult(123)
+        if (image1.tag == 1) {
+            setResult(DRAWABLE_IS_NOT_NULL)
             super.onBackPressed()
         } else {
             val mBuilder = AlertDialog.Builder(this@SettingActivity)
@@ -636,7 +638,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
             mBuilder.setMessage(R.string.primary_profile_alert)
             mBuilder.setCancelable(true)
             mBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                setResult(1233)
+                setResult(DRAWABLE_IS_NULL)
                 super@SettingActivity.onBackPressed()
             }
             mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
