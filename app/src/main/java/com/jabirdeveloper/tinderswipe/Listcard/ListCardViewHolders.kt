@@ -31,6 +31,7 @@ class ListCardViewHolders(itemView: View, private val context: Context) : Recycl
     var myself: TextView = itemView.findViewById(R.id.myself)
     var mMatchImage: ImageView = itemView.findViewById(R.id.Match_Image)
     var onOffList: ImageView = itemView.findViewById(R.id.on_off_matches)
+    var container: LinearLayout = itemView.findViewById(R.id.dd_22)
     private var mLinear: LinearLayout = itemView.findViewById(R.id.dd_22)
     var viewOnline: LinearLayout = itemView.findViewById(R.id.view_online)
     private var seeDB: DatabaseReference? = null
@@ -45,10 +46,8 @@ class ListCardViewHolders(itemView: View, private val context: Context) : Recycl
         })
         mLinear.setOnClickListener(View.OnClickListener {
             seeDB = FirebaseDatabase.getInstance().reference.child("Users").child(mMatchId.text.toString()).child("see_profile").child(userID)
-            val d = DateTime
             val newDate: MutableMap<String?, Any?> = HashMap()
-            newDate["date"] = d.date()
-            newDate["time"] = d.time()
+            newDate["date"] =  ServerValue.TIMESTAMP
             seeDB!!.updateChildren(newDate)
             val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
             //val activityOptions: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(context as Activity,mMatchImage, ViewCompat.getTransitionName(mMatchImage).toString())

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -43,6 +44,7 @@ class ListCardAdapter(private val matchesList: ArrayList<ListCardObject?>, priva
                 return false
             }
         }).apply(RequestOptions().override(100, 100)).into(holder.mMatchImage)
+        holder.container.animation = AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down)
         if (!matchesList[position]!!.off_status) {
             holder.onOffList.visibility = View.VISIBLE
             if (matchesList[position]!!.status_opposite == "offline") {

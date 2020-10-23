@@ -80,13 +80,13 @@ class LikeYouActivity : AppCompatActivity() {
                 .setBlurAlgorithm(RenderScriptBlur(this))
                 .setBlurRadius(radius)
                 .setHasFixedTransformationMatrix(true)
-        blurView.visibility = View.GONE
+
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("yep")
         if (intent.hasExtra("See")) {
             intent.extras!!.remove("See")
             userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("see_profile")
-            button.setText(R.string.see_people)
+           // button.setText(R.string.see_people)
             empty.setText(R.string.see_empty)
             supportActionBar!!.setTitle(R.string.People_view)
         } else {
@@ -97,20 +97,13 @@ class LikeYouActivity : AppCompatActivity() {
         CoroutineScope(Job()).launch {
             withContext(Dispatchers.Default){
                 val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-                if(!myUser.getBoolean("Vip", false)){
-                    blurView.visibility = View.VISIBLE
-                    button.visibility = View.VISIBLE
-                }
-                if (intent.hasExtra("See")) {
-                    if(myUser.getBoolean("buy_like", false)){
+                if(!myUser.getBoolean("Vip", false))
+                if (!intent.hasExtra("See")){
+                    if(!myUser.getBoolean("buy_like", false)){
                         blurView.visibility = View.VISIBLE
                         button.visibility = View.VISIBLE
                     }
-                } else {
-                    if(myUser.getBoolean("buy_see", false)){
-                        blurView.visibility = View.VISIBLE
-                        button.visibility = View.VISIBLE
-                    }
+
                 }
                 x_user = myUser.getString("X", "").toString().toDouble()
                 y_user  = myUser.getString("Y", "").toString().toDouble()

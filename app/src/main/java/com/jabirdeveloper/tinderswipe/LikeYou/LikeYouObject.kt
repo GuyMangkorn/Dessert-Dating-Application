@@ -1,6 +1,6 @@
 package com.jabirdeveloper.tinderswipe.LikeYou
 
-class LikeYouObject(val userId: String?,
+data class LikeYouObject(val userId: String?,
                     val profileImageUrl: String?,
                     val name: String?,
                     val status: String?,

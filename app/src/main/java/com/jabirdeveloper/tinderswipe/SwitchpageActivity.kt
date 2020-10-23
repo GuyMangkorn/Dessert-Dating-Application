@@ -275,11 +275,6 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                 } else {
                     myUser.putBoolean("buy_like", false)
                 }
-                if (dataSnapshot.hasChild("buy_see")) {
-                    myUser.putBoolean("buy_like", true)
-                } else {
-                    myUser.putBoolean("buy_like", false)
-                }
                 myUser.putString("name", dataSnapshot.child("name").value.toString())
                 myUser.putInt("Age", dataSnapshot.child("Age").value.toString().toInt())
                 myUser.putInt("MaxLike", dataSnapshot.child("MaxLike").value.toString().toInt())

@@ -587,7 +587,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileUserOppositeActivity2, R.anim.fade_in2)
                     information.visibility = View.VISIBLE
                     informationIn.visibility = View.VISIBLE
-                    informationIn.startAnimation(logoMoveAnimation)
+                    informationIn.animation = logoMoveAnimation
                 }
 
             }
