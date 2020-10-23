@@ -15,6 +15,7 @@ import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
@@ -52,9 +53,9 @@ class ScreenAdapter(private val ctx: Context, private val length: Int, m0: Strin
         val imageView = itemView.findViewById<View?>(R.id.slide_1) as ImageView
         val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(ctx, R.anim.fade_in2)
         Log.d("rty", "0")
-        Glide.with(ctx).load(m[Items[position]]).placeholder(R.drawable.tran).into(imageView)
+        Glide.with(ctx).load(m[Items[position]]).placeholder(R.drawable.tran).transition(DrawableTransitionOptions.withCrossFade(100)).into(imageView)
         if (ic != 0) {
-            Glide.with(ctx).load(ic).placeholder(R.drawable.tran).into(imageView)
+            Glide.with(ctx).load(ic).placeholder(R.drawable.tran).transition(DrawableTransitionOptions.withCrossFade(100)).into(imageView)
         }
         container.addView(itemView)
         return itemView

@@ -13,6 +13,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -33,11 +34,15 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.transition.platform.MaterialSharedAxis
+
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
-import com.jabirdeveloper.tinderswipe.Functions.DateTime
+import com.jabirdeveloper.tinderswipe.Functions.City
+
 import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
 import kotlinx.coroutines.*
@@ -113,6 +118,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_user_opposite2)
         mAuth = FirebaseAuth.getInstance()
@@ -500,26 +506,12 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 viewPager.adapter = adapter
                 if (dataSnapshot.exists() && dataSnapshot.childrenCount > 0) {
                     val map = dataSnapshot.value as MutableMap<*, *>
-                    val x: String = dataSnapshot.child("Location").child("X").value.toString()
-                    val y: String = dataSnapshot.child("Location").child("Y").value.toString()
-                    xOpposite = java.lang.Double.valueOf(x)
-                    yOpposite = java.lang.Double.valueOf(y)
-                    val dss = MainActivity()
+                    xOpposite = dataSnapshot.child("Location").child("X").value.toString().toDouble()
+                    yOpposite = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                     val distance = CalculateDistance.calculate(xUser, yUser, xOpposite, yOpposite)
                     val distance1 = df2.format(distance)
-                    val ff: Geocoder = if (language2 == "th") {
-                        Geocoder(this@ProfileUserOppositeActivity2)
-                    } else {
-                        Geocoder(this@ProfileUserOppositeActivity2, Locale.UK)
-                    }
-                    var addresses: MutableList<Address?>? = null
-                    try {
-                        addresses = ff.getFromLocation(xOpposite, yOpposite, 1)
-                        val city = addresses[0]!!.adminArea
-                        city1.text = "$city ,  $distance1 ${getString(R.string.kilometer)}"
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
+                    val city = City(language2!!,this@ProfileUserOppositeActivity2,xOpposite,yOpposite).invoke()
+                    city1.text = "$city ,  $distance1 ${getString(R.string.kilometer)}"
                     maxlike = if (dataSnapshot.hasChild("MaxLike")) {
                         val a = dataSnapshot.child("MaxLike").value.toString()
                         a.toInt()
@@ -594,7 +586,8 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     }
                     val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileUserOppositeActivity2, R.anim.fade_in2)
                     information.visibility = View.VISIBLE
-                    information.startAnimation(logoMoveAnimation)
+                    informationIn.visibility = View.VISIBLE
+                    informationIn.startAnimation(logoMoveAnimation)
                 }
 
             }

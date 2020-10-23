@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +24,7 @@ import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.Functions.City
+import com.jabirdeveloper.tinderswipe.Functions.TimeStampToDate
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -52,6 +51,7 @@ class LikeYouActivity : AppCompatActivity() {
     var toolbar: Toolbar? = null
     private var functions = Firebase.functions
     private lateinit var language:String
+    private var countUser = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_like_you)
@@ -119,18 +119,11 @@ class LikeYouActivity : AppCompatActivity() {
                 userDb.orderByChild("date").addChildEventListener(object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                         if (dataSnapshot.exists()) {
-                            var time = "วันนี้ 00:00"
-                            if (dataSnapshot.hasChild("date") && dataSnapshot.hasChild("time")) {
-                                val calendar = Calendar.getInstance()
-                                val currentDate = SimpleDateFormat("dd/MM/yyyy")
-                                val dateNow = currentDate.format(calendar.time)
-                                val timeUser = dataSnapshot.child("time").value.toString()
-                                val dateUser = dataSnapshot.child("date").value.toString()
-                                time = if (dateNow != dateUser) {
-                                    dateUser
-                                } else {
-                                    getString(R.string.today) + " " + timeUser
-                                }
+                            countUser++
+                            var time:Long = 0
+                            if (dataSnapshot.hasChild("date")) {
+                                time = dataSnapshot.child("date").value.toString().toLong()
+
                             }
                             fecthHi(dataSnapshot.key.toString(), time)
                         } else {
@@ -155,7 +148,7 @@ class LikeYouActivity : AppCompatActivity() {
         LikeYouRecycleview.setHasFixedSize(true)
         LikeYouLayoutManager = LinearLayoutManager(this@LikeYouActivity)
         LikeYouRecycleview.layoutManager = LikeYouLayoutManager
-        LikeYouAdapter = LikeYouAdapter(getDataSetMatches()!!, this@LikeYouActivity)
+        LikeYouAdapter = LikeYouAdapter(getDataSetMatches(), this@LikeYouActivity)
         LikeYouRecycleview.adapter = LikeYouAdapter
 
 
@@ -195,11 +188,12 @@ class LikeYouActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun fecthHi(key: String, time: String?) {
+    private fun fecthHi(key: String, time: Long) {
         val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(key)
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
+                if (dataSnapshot.exists()) {
+
                     var profileImageUrl = ""
                     profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
                     var city = ""
@@ -215,38 +209,27 @@ class LikeYouActivity : AppCompatActivity() {
                     val x: Double = dataSnapshot.child("Location").child("X").value.toString().toDouble()
                     val y: Double = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
                     val distance = CalculateDistance.calculate(x_user, y_user, x, y)
-//                    val data = hashMapOf(
-//                            "x_user" to x,
-//                            "y_user" to y,
-//                    )
-//                    Log.d("tagkl", data.toString())
-//
-//                    functions.getHttpsCallable("likeYou")
-//                            .call(data)
-//                            .addOnFailureListener { Log.d("ghj", "failed") }
-//                            .addOnSuccessListener { task ->
-//                                // This continuation runs on either success or failure, but if the task
-//                                // has failed then result will throw an Exception which will be
-//                                // propagated down.
-//                                val result1 = task.data as Map<*, *>
-//                                Log.d("ggg",result1.toString())
-//
-//
-//                            }
-                    city = City(language, this@LikeYouActivity, x, y).getCity().toString()
-                    resultLike!!.add(LikeYouObject(
+                    city = City(language, this@LikeYouActivity, x, y).invoke()
+                    resultLike.add(LikeYouObject(
                             userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))
                 }
-                LikeYouAdapter.notifyDataSetChanged()
-                LikeYouRecycleview.scheduleLayoutAnimation()
+                if(resultLike.size == countUser){
+                    resultLike.sortWith{ t1,t2 ->
+                        (t2.time - t1.time).toInt()
+                    }.run {
+                        LikeYouAdapter.notifyDataSetChanged()
+                        LikeYouRecycleview.scheduleLayoutAnimation()
+                    }
+
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
 
-    private val resultLike: ArrayList<LikeYouObject?>? = ArrayList()
-    private fun getDataSetMatches(): MutableList<LikeYouObject?>? {
+    private val resultLike: ArrayList<LikeYouObject> = ArrayList()
+    private fun getDataSetMatches(): MutableList<LikeYouObject> {
         return resultLike
     }
 

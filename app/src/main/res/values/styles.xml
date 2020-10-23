@@ -14,6 +14,7 @@
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="extendedFloatingActionButtonStyle">@style/Widget.App.ExtendedFloatingActionButton</item>
         <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
+        <item  name="android:windowActivityTransitions">true</item>
     </style>
     <style name="AppTheme.Launcher" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/c2</item>

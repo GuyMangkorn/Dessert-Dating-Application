@@ -37,6 +37,7 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.material.transition.MaterialFadeThrough
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
@@ -104,6 +105,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
     private var checkEmpty = false
     private var empty = 0
     private var countEmpty = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("ghj", "สร้างละ")
         val view = inflater.inflate(R.layout.activity_main, container, false)
