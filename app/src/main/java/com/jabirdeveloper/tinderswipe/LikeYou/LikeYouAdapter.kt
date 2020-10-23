@@ -6,7 +6,9 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -30,6 +32,7 @@ class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val c
         private val tag: TextView = itemView.findViewById(R.id.tagkm)
         private val city: TextView = itemView.findViewById(R.id.status_time)
         private var time: TextView = itemView.findViewById(R.id.time_text_likeYou)
+        private var container: LinearLayout = itemView.findViewById(R.id.dd_22)
         private val userID: String = FirebaseAuth.getInstance().currentUser!!.uid
         private var seeDB: DatabaseReference? = null
 
@@ -46,6 +49,7 @@ class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val c
             }
 
             Glide.with(context).load(Like[position].profileImageUrl).apply(RequestOptions().override(100, 100)).into(imageView)
+            container.animation = AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down)
             name.text = Like[position].name
             if (Like[position].status == "offline") {
                 Glide.with(context).load(R.drawable.offline_user).into(status)
