@@ -5,26 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center">
-   <androidx.core.widget.NestedScrollView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
     <LinearLayout
-        android:layout_centerVertical="true"
+        android:background="@color/background_gray"
+        android:layout_marginTop="2dp"
         android:orientation="vertical"
         android:id="@+id/linear_buttonQA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:layout_marginTop="2dp"
+            android:background="@color/white"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="60dp">
         <TextView
-            android:id="@+id/questionQARegister"
             android:textStyle="bold"
+            android:id="@+id/questionQARegister"
+            android:textColor="@color/text_black_gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="Message"/>
         </LinearLayout>
         <RadioGroup
@@ -58,12 +59,18 @@
                 android:layout_height="match_parent"
                 android:text="label_4"/>
         </RadioGroup>
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <TextView
             android:textStyle="bold"
+            android:textColor="@color/text_black_gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="@string/QA_improtant"/>
+        </LinearLayout>
         <RadioGroup
             android:background="@color/background_gray"
             android:id="@+id/radioGroupRegisterQAAns"
@@ -104,6 +111,10 @@
                 android:layout_height="match_parent"
                 android:text="@string/QA_choice5"/>
         </RadioGroup>
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <TextView
             android:layout_gravity="bottom"
             android:id="@+id/countRegisterQA"
@@ -112,6 +123,7 @@
             android:text="0/0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_below="@+id/linear_buttonQA"
@@ -131,6 +143,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-   </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

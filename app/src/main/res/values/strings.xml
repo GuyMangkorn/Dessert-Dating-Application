@@ -169,6 +169,10 @@
     <string name="QA_choice3">Important</string>
     <string name="QA_choice4">Very Important</string>
     <string name="QA_choice5">Serious Important!</string>
+    <string name="questionActivityTitle">Questions</string>
+    <string name="questionActivitySubTitle">Answer the questions for better matching.</string>
+
+
 
     <string-array name="shopping_item">
         <item>จัดดอกไม้-ทำสวน</item>

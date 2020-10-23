@@ -15,8 +15,25 @@
         android:max="6"
         android:progress="5"
         android:progressTint="@color/c3" />
+    <TextView
+        android:textColor="@color/text_black_gray"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="@string/questionActivityTitle"/>
+    <TextView
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/questionActivitySubTitle"
+        android:textColor="@color/text_gray"/>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerQuestion"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

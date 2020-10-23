@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
@@ -27,6 +28,7 @@ class QuestionActivity : AppCompatActivity() {
     private var name: String? = null
     private var sex: String? = null
     private var age: Int = 18
+    private lateinit var toolbar: Toolbar
     private lateinit var intent1: Intent
     private var functions = Firebase.functions
     private var language:ChangLanguage = ChangLanguage(this)
@@ -35,6 +37,10 @@ class QuestionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
+        toolbar = findViewById(R.id.my_tools)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setTitle(R.string.registered)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         loadQuestion()
         pager = findViewById(R.id.viewPagerQuestion)
         language.setLanguage()
