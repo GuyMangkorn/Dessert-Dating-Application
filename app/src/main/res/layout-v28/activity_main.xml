@@ -27,6 +27,7 @@
 
     </com.yuyakaido.android.cardstackview.CardStackView>
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
         android:id="@+id/layout_in"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -57,6 +58,7 @@
             app:layout_constraintTop_toTopOf="@+id/linearLayout24" />
 
         <LinearLayout
+
             android:id="@+id/linearLayout24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

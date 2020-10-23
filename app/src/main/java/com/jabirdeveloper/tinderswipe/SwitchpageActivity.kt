@@ -65,11 +65,13 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private var activeFragment: Fragment = MainActivity()
     private val language:ChangLanguage = ChangLanguage(this)
     private val j1 = CoroutineScope(Job())
+    lateinit var load:LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         language.setLanguage()
         permissionCheck()
         setContentView(R.layout.activity_switch_page)
+        load = findViewById(R.id.candyCane)
         j1.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             getMyUser()
             getUnreadFunction()
@@ -112,6 +114,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
             id = R.id.item1
             intent.removeExtra("back")
         }
+
         bar!!.setOnItemSelectedListener(object : ChipNavigationBar.OnItemSelectedListener {
             override fun onItemSelected(i: Int) {
                 Log.d("num", i.toString())
@@ -306,7 +309,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                         add(R.id.fragment_container2, page4).hide(page4)
                     }.commit()
                 }
-                bar!!.setItemSelected(id, true).let { findViewById<LinearLayout>(R.id.candyCane).visibility = View.GONE }
+                bar!!.setItemSelected(id, true)//.let { load.visibility = View.GONE }
 
 
             }

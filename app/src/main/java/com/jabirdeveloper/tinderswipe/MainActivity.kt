@@ -1,30 +1,25 @@
 package com.jabirdeveloper.tinderswipe
 
-import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.location.*
+import android.location.Address
+import android.location.Geocoder
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.LinearInterpolator
+import android.view.animation.*
 import android.widget.*
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -37,7 +32,6 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
@@ -45,8 +39,8 @@ import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Cards.ArrayAdapter
 import com.jabirdeveloper.tinderswipe.Cards.Cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
-import com.jabirdeveloper.tinderswipe.Functions.DateTime
 import com.yuyakaido.android.cardstackview.*
+import kotlinx.android.synthetic.main.activity_first_.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -118,7 +112,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-        Log.d("date",getDate(1602860907341))
+        Log.d("date", getDate(1602860907341))
         layoutGps = view.findViewById(R.id.layout_in)
         textgps = view.findViewById(R.id.textView8)
         textGps2 = view.findViewById(R.id.textView9)
@@ -144,7 +138,6 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
         touchGps.setOnClickListener(this)
         star.setOnClickListener(this)
         handler = Handler()
-        runnable!!.run()
         return view
     }
     private fun cardStack(){
@@ -153,9 +146,6 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             override fun onCardSwiped(direction: Direction?) {
                 po = rowItem[manager.topPosition - 1]
                 val userId = po.userId!!
-                val d = DateTime
-                val timeUser = d.time()
-                val dateUser = d.date()
 
                 if (direction == Direction.Right) {
                     if (maxLike > 0 || statusVip) {
@@ -217,11 +207,12 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
 
             override fun onCardDisappeared(view: View?, position: Int) {
                 Log.d("ggg", "$position $countLimit $countLimit3 " + rowItem.size)
-                if(checkEmpty)
-                {
+                if (checkEmpty) {
                     Log.d("ggg2", "$countEmpty $empty")
-                    if(countEmpty == empty-1)
+                    if (countEmpty == empty - 1) {
+                        runnable!!.run()
                         layoutGps.visibility = View.VISIBLE
+                    }
                     countEmpty++
                 }
                 countLimit2++
@@ -475,8 +466,31 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         // propagated down.
                         val result1 = task.data as Map<*, *>
                         resultlimit = result1["o"] as ArrayList<*>
-                        if (resultlimit.isNotEmpty())
-                            getUser(resultlimit, type, count, 10)
+                        if (resultlimit.isNotEmpty()){
+                                Log.d("iii", resultlimit.size.toString())
+                                getUser(resultlimit, type, count, 10)
+                        }
+                        else{
+                            val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.fade_out2)
+                            val load = (activity as SwitchpageActivity).load
+                            logoMoveAnimation.setAnimationListener(object : Animation.AnimationListener {
+                                override fun onAnimationStart(animation: Animation?) {
+
+                                }
+
+                                override fun onAnimationEnd(animation: Animation?) {
+                                    load.visibility = View.GONE
+                                }
+
+                                override fun onAnimationRepeat(animation: Animation?) {
+
+                                }
+                            })
+                            load.startAnimation(logoMoveAnimation)
+                            layoutGps.visibility = View.VISIBLE
+                            runnable!!.run()
+                        }
+
 
 
                     }
@@ -549,8 +563,27 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                     }
                 }
             withContext(Dispatchers.Main){
-                if (type)
+                if (type) {
                     arrayAdapter.notifyDataSetChanged()
+                    val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.fade_out2)
+                    val load = (activity as SwitchpageActivity).load
+                    logoMoveAnimation.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation?) {
+
+                        }
+
+                        override fun onAnimationEnd(animation: Animation?) {
+                            load.visibility = View.GONE
+                        }
+
+                        override fun onAnimationRepeat(animation: Animation?) {
+
+                        }
+                    })
+                    load.startAnimation(logoMoveAnimation)
+
+
+                }
                 else {
                     arrayAdapter.notifyItemRangeChanged(count, rowItem.size)
                 }
@@ -642,7 +675,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
     private fun likeDelay() {
         val handler = Handler()
         handler.postDelayed({
-           like()
+            like()
         }, 300)
 
     }
