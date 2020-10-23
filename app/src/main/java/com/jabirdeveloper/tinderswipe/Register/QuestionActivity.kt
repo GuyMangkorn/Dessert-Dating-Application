@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -26,6 +28,7 @@ class QuestionActivity : AppCompatActivity() {
     private var email: String? = null
     private var pass: String? = null
     private var name: String? = null
+    private lateinit var progressBar: ProgressBar
     private var sex: String? = null
     private var age: Int = 18
     private lateinit var toolbar: Toolbar
@@ -38,6 +41,7 @@ class QuestionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
         toolbar = findViewById(R.id.my_tools)
+        progressBar = findViewById(R.id.progressQuestion)
         setSupportActionBar(toolbar)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -92,6 +96,7 @@ class QuestionActivity : AppCompatActivity() {
                     pager.offscreenPageLimit = arrSetQuestion.size
                     pager.isUserInputEnabled = false
                     pager.adapter = pagerAdapter
+                    progressBar.visibility = View.GONE
                 }
     }
 }
