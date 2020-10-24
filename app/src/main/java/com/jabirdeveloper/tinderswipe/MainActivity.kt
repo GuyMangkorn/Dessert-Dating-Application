@@ -457,7 +457,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             )
             Log.d("tagkl", data.toString())
 
-            functions.getHttpsCallable("get2222")
+            functions.getHttpsCallable("getUserCard")
                     .call(data)
                     .addOnFailureListener { Log.d("ghj", "failed") }
                     .addOnSuccessListener { task ->
