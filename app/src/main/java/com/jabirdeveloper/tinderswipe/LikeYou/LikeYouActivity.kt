@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.jabirdeveloper.tinderswipe.Functions.TimeStampToDate
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.activity_like_you.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,8 +42,6 @@ class LikeYouActivity : AppCompatActivity() {
     private lateinit var userDb: DatabaseReference
     private var x_user = 0.0
     private var y_user = 0.0
-    private var x_opposite = 0.0
-    private var y_opposite = 0.0
     private lateinit var blurView: BlurView
     private lateinit var button: Button
     private lateinit var empty: TextView
@@ -52,6 +52,9 @@ class LikeYouActivity : AppCompatActivity() {
     private var functions = Firebase.functions
     private lateinit var language:String
     private var countUser = 0
+    private var c = 0
+    private var s = 0
+    private var status = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_like_you)
@@ -63,6 +66,8 @@ class LikeYouActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         button.setOnClickListener { openDialog() }
         blurView = findViewById(R.id.blurView)
+        s = intent.getIntExtra("See",0)
+        c = intent.getIntExtra("Like",0)
 
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         language = preferences.getString("My_Lang", "").toString()
@@ -84,17 +89,18 @@ class LikeYouActivity : AppCompatActivity() {
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("yep")
         if (intent.hasExtra("See")) {
+            if(s > 0) status = true
             intent.extras!!.remove("See")
             userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("see_profile")
-           // button.setText(R.string.see_people)
             empty.setText(R.string.see_empty)
             supportActionBar!!.setTitle(R.string.People_view)
         } else {
+            if(c > 0) status = true
             button.setText(R.string.see_like)
             empty.setText(R.string.like_empty)
             supportActionBar!!.setTitle(R.string.People_like_you)
         }
-        CoroutineScope(Job()).launch {
+        GlobalScope.launch {
             withContext(Dispatchers.Default){
                 val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
                 if(!myUser.getBoolean("Vip", false))
@@ -102,13 +108,13 @@ class LikeYouActivity : AppCompatActivity() {
                     if(!myUser.getBoolean("buy_like", false)){
                         blurView.visibility = View.VISIBLE
                         button.visibility = View.VISIBLE
+                        progress_like.visibility = View.GONE
                     }
-
                 }
                 x_user = myUser.getString("X", "").toString().toDouble()
                 y_user  = myUser.getString("Y", "").toString().toDouble()
             }
-            withContext(Dispatchers.IO){
+            if(status)
                 userDb.orderByChild("date").addChildEventListener(object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                         if (dataSnapshot.exists()) {
@@ -123,6 +129,7 @@ class LikeYouActivity : AppCompatActivity() {
                             empty.visibility = View.VISIBLE
                             button.visibility = View.GONE
                         }
+                        Log.d("onc",dataSnapshot.childrenCount.toString())
                     }
 
                     override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
@@ -130,6 +137,10 @@ class LikeYouActivity : AppCompatActivity() {
                     override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
                     override fun onCancelled(error: DatabaseError) {}
                 })
+            else{
+                empty.visibility = View.VISIBLE
+                button.visibility = View.GONE
+                progress_like.visibility = View.GONE
             }
 
 
@@ -170,6 +181,11 @@ class LikeYouActivity : AppCompatActivity() {
             textView.text = "ใครถูกใจคุณ"
             textView2.text = "ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ"
             b1.setOnClickListener {
+                val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+                myUser.putBoolean("buy_like", true)
+                myUser.apply()
+                blurView.visibility = View.GONE
+                button.visibility = View.GONE
                 dialog.dismiss()
                 buyLike()
             }
@@ -210,6 +226,7 @@ class LikeYouActivity : AppCompatActivity() {
                     resultLike.sortWith{ t1,t2 ->
                         (t2.time - t1.time).toInt()
                     }.run {
+                        progress_like.visibility = View.GONE
                         LikeYouAdapter.notifyDataSetChanged()
                         LikeYouRecycleview.scheduleLayoutAnimation()
                     }

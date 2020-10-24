@@ -78,8 +78,8 @@ class ReportUser(private var context: Activity, private var matchId: String) {
                     Alerter.create(context)
                             .setTitle(context.getString(R.string.report_suc))
                             .setText(context.getString(R.string.report_suc2))
-                            .setBackgroundColorInt(ContextCompat.getColor(context, R.color.c2))
-                            .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_check)!!)
+                            .setBackgroundColorInt(ContextCompat.getColor(context, R.color.c3))
+                            .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_24)!!)
                             .show()
                     if (!dataSnapshot.child(matchId).hasChild("Report")) {
                         val jj = hashMapOf<String, Any>()

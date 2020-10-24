@@ -64,8 +64,6 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     private lateinit var dialog: Dialog
     private lateinit var dialog2: Dialog
     private lateinit var bp: BillingProcessor
-    private var s = 0
-    private var c = 0
     private lateinit var vvip: ImageView
     private var statusDialog = false
     private lateinit var setimage: ImageView
@@ -131,26 +129,26 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                 Log.d("TAG", "The rewarded ad wasn't loaded yet.")
             }
         }
-        likeYou.setOnClickListener(View.OnClickListener {
-            dialog2.show()
+        likeYou.setOnClickListener{
             val intent = Intent(context, LikeYouActivity::class.java)
+            intent.putExtra("Like", count.text.toString().toInt())
             startActivity(intent)
-        })
-        seeProfileYou.setOnClickListener(View.OnClickListener {
-            dialog2.show()
+        }
+        seeProfileYou.setOnClickListener{
+            
             val intent = Intent(context, LikeYouActivity::class.java)
-            intent.putExtra("See", "1")
+            intent.putExtra("See", see.text.toString().toInt())
             startActivity(intent)
-        })
-        setting2.setOnClickListener(View.OnClickListener {
+        }
+        setting2.setOnClickListener{
             val intent = Intent(context, Setting2Activity::class.java)
             startActivityForResult(intent, 15)
-        })
-        edit.setOnClickListener(View.OnClickListener {
+        }
+        edit.setOnClickListener{
             val intent = Intent(context, SettingActivity::class.java)
             startActivityForResult(intent, 14)
-        })
-        imageView.setOnClickListener(View.OnClickListener {
+        }
+        imageView.setOnClickListener{
             if (gotoProfile) {
                 val intent = Intent(context, ProfileActivity::class.java)
                 startActivity(intent)
@@ -158,12 +156,12 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                 val intent = Intent(context, SettingActivity::class.java)
                 startActivity(intent)
             }
-        })
-        setimage.setOnClickListener(View.OnClickListener {
+        }
+        setimage.setOnClickListener{
             val intent = Intent(context, SettingActivity::class.java)
             intent.putExtra("setImage", "1")
             startActivity(intent)
-        })
+        }
         view.findViewById<LinearLayout>(R.id.linearLayout22).setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse("mailto:")
