@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -12,9 +11,9 @@
     <LinearLayout
         android:id="@+id/dd_22"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="wrap_content"
         android:background="@color/background_white"
-        android:padding="3dp">
+        android:padding="4dp">
 
         <RelativeLayout
             android:layout_width="75dp"
@@ -37,11 +36,11 @@
                 app:civ_border_width="2dp" />
 
             <LinearLayout
-                android:visibility="gone"
+
                 android:id="@+id/view_online"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:paddingEnd="8dp"
                 android:paddingBottom="10dp">
@@ -58,11 +57,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical"
-            android:padding="2dp">
+            android:padding="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -81,10 +79,8 @@
                         android:layout_width="wrap_content"
                         android:maxEms="8"
                         android:layout_height="wrap_content"
-                        android:text="Matches's Name"
                         android:textColor="#EC407A"
-                        android:textSize="16dp"
-
+                        android:textSize="@dimen/Text16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -92,17 +88,14 @@
                     <TextView
                         android:visibility="visible"
                         android:id="@+id/tagkm"
-
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-
                         android:paddingLeft="4dp"
                         android:paddingRight="4dp"
-                        android:text="18"
                         android:textAlignment="center"
                         android:textColor="@color/c3"
-                        android:textSize="16dp"
+                        android:textSize="@dimen/Text16sp"
                          />
 
 
@@ -113,10 +106,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-
-                    android:text="11122"
                     android:textColor="@color/c4"
-                    android:textSize="14dp" />
+                    android:textSize="@dimen/Text14sp" />
 
                 <TextView
                     android:id="@+id/chat_unread"
@@ -128,7 +119,7 @@
                     android:text="0"
                     android:textAlignment="viewEnd"
                     android:textColor="#FFFFFF"
-                    android:textSize="15dp"
+                    android:textSize="@dimen/Text14sp"
                     android:visibility="gone" />
 
             </LinearLayout>
@@ -143,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
                     android:hint="ข้อความล่าสุด"
-                    android:textSize="15dp"
+                    android:textSize="@dimen/Text14sp"
                     android:visibility="gone" />
 
                 <TextView
@@ -153,8 +144,9 @@
                     android:layout_weight="0.1"
                     android:hint="เวลา"
                     android:textAlignment="viewEnd"
-                    android:textSize="15dp"
-                    android:visibility="gone" />
+                    android:textSize="@dimen/Text14sp"
+                    android:visibility="gone"
+                     />
             </LinearLayout>
 
             <TextView
@@ -162,8 +154,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="id"
-                android:textSize="10dp"
+                android:textSize="@dimen/Text10sp"
                 android:visibility="gone" />
 
 
@@ -171,19 +162,17 @@
                 android:id="@+id/myself"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:visibility="visible"
                 android:textColor="@color/text_gray"
-                android:textSize="14dp" />
+                android:textSize="@dimen/Text14sp" />
             <TextView
                 android:id="@+id/status_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:textColor="#B39A9A9A"
-                android:textSize="10dp" />
+                android:textSize="@dimen/Text10sp" />
 
         </LinearLayout>
     </LinearLayout>

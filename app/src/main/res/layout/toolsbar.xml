@@ -8,7 +8,6 @@
     app:titleTextColor="@color/c3"
     app:subtitleTextColor="@color/c1"
     android:elevation="3dp"
-
     android:id="@+id/my_tools"
     android:theme="@style/AppTheme2"
     >

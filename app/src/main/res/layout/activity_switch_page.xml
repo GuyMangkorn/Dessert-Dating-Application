@@ -48,8 +48,8 @@
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading..."
-            android:textSize="18dp"
+            android:text="@string/loading"
+            android:textSize="@dimen/Text16sp"
             android:textColor="@color/text_black_gray"
             />
     </LinearLayout>

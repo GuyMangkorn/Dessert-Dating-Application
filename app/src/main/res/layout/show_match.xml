@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-
     >
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/image_match"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAlignment="center"
-            android:scaleType="centerCrop"
-            android:textColor="@color/text_black_gray"
-            android:textSize="20dp"
             android:layout_gravity="center"
-            >
-        </ImageView>
+            android:scaleType="centerCrop"
+            android:textAlignment="center"
+            android:textColor="@color/text_black_gray"
+            android:textSize="@dimen/Text20sp" />
+
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#80000000" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,52 +32,37 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
-            <ImageView
-                android:id="@+id/star"
-                android:visibility="gone"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_star"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp"
-                />
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
                 android:id="@+id/textBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
 
                 android:includeFontPadding="false"
-                android:text="Match"
-                android:textColor="@color/c3"
                 android:shadowColor="#80FFB700"
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="2"
-                android:textSize="50dp"
-                />
+                android:text="@string/match"
+                android:textColor="@color/c3"
+                android:textSize="@dimen/Text48sp" />
 
         </LinearLayout>
-
 
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="5dp"
             android:gravity="bottom"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/mess"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            >
+            app:layout_constraintStart_toStartOf="parent">
+
             <TextView
-                android:id="@+id/textmatch"
+                android:id="@+id/textMatch"
                 style="@style/changfont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,12 +73,11 @@
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="2"
-                android:text="mai"
                 android:textColor="#FFFFFF"
-                android:textSize="18dp"
-                />
+                android:textSize="@dimen/Text20sp" />
+
             <TextView
-                android:id="@+id/textmatch2"
+                android:id="@+id/textMatch2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="10dp"
@@ -107,11 +88,9 @@
                 android:shadowRadius="2"
                 android:text="@string/Like_you_too"
                 android:textColor="#FFFFFF"
-                android:textSize="18dp"
-                />
+                android:textSize="@dimen/Text20sp" />
 
         </LinearLayout>
-
 
 
         <Button
@@ -119,12 +98,12 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_above="@+id/io"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/roundlike"
             android:text="@string/send_message"
-            android:textSize="16dp"
+            android:textSize="@dimen/Text16sp"
             app:layout_constraintBottom_toTopOf="@+id/io"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -146,16 +125,13 @@
             android:shadowRadius="2"
             android:text="@string/See_other_user"
             android:textColor="#FFFFFF"
-            android:textSize="18dp"
+            android:textSize="@dimen/Text16sp"
             app:layout_constraintBottom_toBottomOf="@+id/image_match"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 
 </androidx.cardview.widget.CardView>

@@ -44,9 +44,8 @@
                             android:id="@+id/time_chat_user"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Time"
                             android:paddingBottom="3dp"
-                            android:textSize="10.5dp" />
+                            android:textSize="@dimen/Text10sp" />
                     </RelativeLayout>
                     <RelativeLayout
                         android:visibility="gone"
@@ -86,7 +85,6 @@
                             android:padding="8dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="00:00"
                             android:id="@+id/begin_audio"/>
 
                         <com.ldoublem.loadingviewlib.LVCircularCD
@@ -102,7 +100,6 @@
                             android:paddingEnd="8dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Text"
                             android:id="@+id/chatmessage"/>
                         </LinearLayout>
 

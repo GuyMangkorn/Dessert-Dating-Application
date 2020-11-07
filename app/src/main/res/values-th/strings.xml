@@ -263,5 +263,13 @@
         <item>ดาวน์โหลดภาพ</item>
     </string-array>
     <string name="QA_improtant">ความสำคัญของคำถามนี้ ?</string>
+    <string name="dessert_vip">Dessert VIP</string>
+    <string name="LoadingAds">กำลังโหลดโฆษณา</string>
+    <string name="match">Match</string>
+    <string name="tryAgian">ลองอีกครั้ง</string>
+    <string name="aleartGPS">คุณต้องอนุญาตให้ระบบเข้าถึงตำแหน่งที่ตั้งเพื่อใช้งานแอปพลิเคชัน กรุณาลองใหม่อีกครั้ง</string>
+    <string name="apologize">ขออภัย</string>
+    <string name="aleartGPSopen">คุณต้องเปิด GPS เพื่อเข้าใช้งานแอปพลิเคชัน กรุณาลองใหม่อีกครั้ง</string>
+    <string name="feedback">Feedback</string>
 
 </resources>

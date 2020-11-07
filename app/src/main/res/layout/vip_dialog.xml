@@ -1,143 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    app:cardCornerRadius="15dp">
+    android:layout_height="match_parent"
+    app:cardCornerRadius="@dimen/cardCorner">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:gravity="center"
-            android:orientation="vertical"
-
-
-            >
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
-            android:paddingTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/cpb_white"
             android:gravity="center"
-            android:textSize="20dp"
-            android:text="Dessert VIP"
+            android:paddingTop="20dp"
+            android:text="@string/dessert_vip"
             android:textColor="@color/c1"
-            />
+            android:textSize="@dimen/Text24sp" />
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <com.github.demono.AutoScrollViewPager
-            android:background="@color/cpb_white"
-            android:id="@+id/viewpage"
-            android:layout_width="match_parent"
-            android:layout_height="230dp"
-            app:stopWhenTouch="true"
-            app:slideInterval="3500"
-            app:slideDirection="right"
-            app:slideDuration="1000"
-            app:cycle="true"
-            />
+
+            <com.github.demono.AutoScrollViewPager
+                android:id="@+id/viewpage"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:background="@color/cpb_white"
+                app:cycle="true"
+                app:slideDirection="right"
+                app:slideDuration="1000"
+                app:slideInterval="3500"
+                app:stopWhenTouch="true" />
 
         </RelativeLayout>
+
         <me.relex.circleindicator.CircleIndicator
             android:id="@+id/indicator"
-            app:ci_drawable="@drawable/circle_pager"
-            app:ci_drawable_unselected="@drawable/circle_pager2"
-            android:background="@color/cpb_white"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_alignBottom="@+id/viewpage"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            android:background="@color/cpb_white"
+            app:ci_drawable="@drawable/circle_pager"
+            app:ci_drawable_unselected="@drawable/circle_pager2" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:paddingBottom="20dp"
+            android:background="@drawable/gradient_list3"
+            >
 
-                >
-                <LinearLayout
+            <LinearLayout
 
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                    android:gravity="center"
-                    >
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="1dp"
-                            android:layout_weight="1"
-                            android:background="@color/c3"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="VIP"
-                            android:textSize="18dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/white" />
 
-
-                            android:textColor="@color/c3"
-
-                            />
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="1dp"
-                            android:layout_weight="1"
-                            android:background="@color/c3"
-                            />
-                </LinearLayout>
                 <TextView
-                    android:id="@+id/test_de"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:text="ดูโฆษณาเพื่อรับ จำนวนกดถูกใจ เพิ่ม \n หรือสมัคร Dessert VIP เพื่อรับสิทธิพิเศษต่างๆ"
-                    android:gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/c3"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:text="VIP"
+                    android:textColor="@color/white"
+
+                    android:textSize="@dimen/Text20sp"
+
                     />
-                <LinearLayout
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/white" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/test_de"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="ดูโฆษณาเพื่อรับ จำนวนกดถูกใจ เพิ่ม \n หรือสมัคร Dessert VIP เพื่อรับสิทธิพิเศษต่างๆ"
+                android:textColor="@color/white"
+                android:textSize="@dimen/Text14sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/admob"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        >
-                        <Button
-                            android:layout_marginBottom="10dp"
-                            android:id="@+id/admob"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="กำลังโหลดโฆษณา"
-                            android:textColor="@color/white"
-                            android:backgroundTint="@color/c3"
-                            />
 
-                        <Button
-                            android:layout_marginBottom="5dp"
-                            android:id="@+id/buy"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="฿100.00 / เดือน"
-                            android:textColor="@color/white"
-                            android:backgroundTint="@color/c3"
-                            />
+                    android:backgroundTint="@color/c3"
+                    android:text="@string/LoadingAds"
+                    android:textSize="@dimen/Text14sp"
+                    android:textColor="@color/white" />
 
-                </LinearLayout>
+                <Button
+                    android:id="@+id/buy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:backgroundTint="@color/c3"
+                    android:text="฿100.00 / เดือน"
+                    android:textSize="@dimen/Text14sp"
+                    android:textColor="@color/white" />
 
+            </LinearLayout>
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 

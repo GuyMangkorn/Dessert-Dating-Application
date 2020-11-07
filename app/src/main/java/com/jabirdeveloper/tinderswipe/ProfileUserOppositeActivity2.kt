@@ -8,12 +8,9 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.location.Address
-import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -34,7 +31,6 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.transition.platform.MaterialSharedAxis
 
 
 import com.google.firebase.auth.FirebaseAuth
@@ -47,7 +43,6 @@ import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
 import kotlinx.coroutines.*
 import me.relex.circleindicator.CircleIndicator
-import java.io.IOException
 import java.text.DecimalFormat
 import java.util.*
 
@@ -408,10 +403,9 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         val inflater = layoutInflater
                         val view = inflater.inflate(R.layout.show_match, null)
                         val imageView = view.findViewById<ImageView>(R.id.image_match)
-                        val star = view.findViewById<ImageView>(R.id.star)
-                        val textView = view.findViewById<TextView>(R.id.textmatch)
+                        val textView = view.findViewById<TextView>(R.id.textMatch)
                         val textView2 = view.findViewById<TextView>(R.id.io)
-                        val textView4 = view.findViewById<TextView>(R.id.textmatch2)
+                        val textView4 = view.findViewById<TextView>(R.id.textMatch2)
                         val button = view.findViewById<Button>(R.id.mess)
                         button.setOnClickListener {
                             dialog.dismiss()

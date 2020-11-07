@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="15dp"
+    app:cardCornerRadius="@dimen/cardCorner"
 
     >
     <ImageView
@@ -23,8 +23,8 @@
     android:gravity="center"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="50dp"
-    android:paddingBottom="50dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
     >
 
     <TextView
@@ -33,35 +33,28 @@
         android:layout_height="wrap_content"
         android:text="@string/text_hi"
         android:textColor="@color/c3"
-        android:textSize="30dp"
+        android:textSize="@dimen/Text24sp"
+        android:layout_gravity="start"
         />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextField"
+
+    <EditText
+        android:id="@+id/text_send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="@string/Send_a_message_to"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_send"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        android:hint="message"
+        />
     <Button
+        android:background="@color/float_transparent"
         android:layout_marginTop="16dp"
         android:id="@+id/buy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/send_message"
-        android:layout_gravity="center"
-        android:textColor="@color/cpb_white"
+        android:layout_gravity="end"
+        android:textColor="@color/c3"
 
+        android:padding="0dp"
         />
 </LinearLayout>
 </androidx.cardview.widget.CardView>

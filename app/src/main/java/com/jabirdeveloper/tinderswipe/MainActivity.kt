@@ -40,7 +40,6 @@ import com.jabirdeveloper.tinderswipe.Cards.ArrayAdapter
 import com.jabirdeveloper.tinderswipe.Cards.Cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.yuyakaido.android.cardstackview.*
-import kotlinx.android.synthetic.main.activity_first_.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -378,10 +377,10 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         val inflater = layoutInflater
                         val view = inflater.inflate(R.layout.show_match, null)
                         val imageView = view.findViewById<ImageView>(R.id.image_match)
-                        val star = view.findViewById<ImageView>(R.id.star)
-                        val textView = view.findViewById<TextView>(R.id.textmatch)
+
+                        val textView = view.findViewById<TextView>(R.id.textMatch)
                         val textView2 = view.findViewById<TextView>(R.id.io)
-                        val textView4 = view.findViewById<TextView>(R.id.textmatch2)
+                        val textView4 = view.findViewById<TextView>(R.id.textMatch2)
                         val button = view.findViewById<Button>(R.id.mess)
                         button.setOnClickListener {
                             dialog.dismiss()

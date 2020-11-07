@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -11,8 +10,8 @@
     <LinearLayout
         android:id="@+id/dd_22"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:padding="3dp">
+        android:layout_height="wrap_content"
+        android:padding="4dp">
 
         <RelativeLayout
             android:layout_width="75dp"
@@ -30,7 +29,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:paddingEnd="8dp"
                 android:paddingBottom="10dp">
@@ -47,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_marginStart="3dp"
+            android:layout_marginStart="4dp"
             android:layout_marginEnd="10dp"
             android:orientation="vertical"
             android:padding="2dp">
@@ -69,27 +68,22 @@
                         android:layout_width="wrap_content"
                         android:maxEms="7"
                         android:layout_height="wrap_content"
-                        android:text="Matches's Name"
                         android:textColor="#EC407A"
-                        android:textSize="16dp"
-
+                        android:textSize="@dimen/Text16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tagkm"
-
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-
                         android:paddingLeft="4dp"
                         android:paddingRight="4dp"
-                        android:text="18"
                         android:textAlignment="center"
                         android:textColor="@color/c3"
-                        android:textSize="16dp"
+                        android:textSize="@dimen/Text16sp"
                         />
 
 
@@ -100,10 +94,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-
-                    android:text="วันนี้ 15.00"
                     android:textColor="@color/c4"
-                    android:textSize="12dp" />
+                    android:textSize="@dimen/Text12sp" />
 
 
             </LinearLayout>
@@ -115,8 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:textColor="@color/text_black_gray"
-
-                android:textSize="14dp" />
+                android:textSize="@dimen/Text14sp" />
 
         </LinearLayout>
     </LinearLayout>
