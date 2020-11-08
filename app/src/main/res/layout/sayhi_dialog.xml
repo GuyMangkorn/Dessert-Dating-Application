@@ -7,24 +7,17 @@
     app:cardCornerRadius="@dimen/cardCorner"
 
     >
-    <ImageView
-        android:id="@+id/close"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:src="@drawable/ic_close2"
-        android:layout_margin="20dp"
-        android:layout_gravity="right"
-        />
+
 
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp"
+    android:paddingLeft="@dimen/View24dp"
+    android:paddingRight="@dimen/View24dp"
+    android:paddingTop="@dimen/View16dp"
+    android:paddingBottom="@dimen/View16dp"
     >
 
     <TextView
@@ -33,7 +26,7 @@
         android:layout_height="wrap_content"
         android:text="@string/text_hi"
         android:textColor="@color/c3"
-        android:textSize="@dimen/Text24sp"
+        android:textSize="@dimen/Text20sp"
         android:layout_gravity="start"
         />
 
@@ -42,18 +35,18 @@
         android:id="@+id/text_send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="message"
+        android:textSize="@dimen/Text16sp"
+        android:hint="@string/Send_a_message_to"
         />
     <Button
         android:background="@color/float_transparent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/View16dp"
         android:id="@+id/buy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/send_message"
         android:layout_gravity="end"
         android:textColor="@color/c3"
-
         android:padding="0dp"
         />
 </LinearLayout>

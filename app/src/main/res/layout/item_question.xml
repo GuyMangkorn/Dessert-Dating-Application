@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:paddingTop="5dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
+    android:paddingTop="@dimen/View4dp"
+    android:paddingLeft="@dimen/View20dp"
+    android:paddingRight="@dimen/View20dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +19,7 @@
             android:textColor="@color/text_black_gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="@dimen/Text16sp"
             android:text="Message"/>
         <RadioGroup
             android:background="@color/background_gray"
@@ -58,7 +58,7 @@
             android:textColor="@color/text_black_gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="@dimen/Text16sp"
             android:text="@string/QA_improtant"/>
         <RadioGroup
             android:background="@color/background_gray"
@@ -103,7 +103,7 @@
         <TextView
             android:layout_gravity="bottom"
             android:id="@+id/countRegisterQA"
-            android:textSize="12sp"
+            android:textSize="@dimen/Text12sp"
             android:gravity="center"
             android:text="0/0"
             android:layout_width="match_parent"
@@ -117,7 +117,7 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/registerQABtnCancel"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="@dimen/View8dp"
             android:text="@string/cancle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

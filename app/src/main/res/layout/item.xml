@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_centerVertical="true"
     android:layout_gravity="center"
-    android:layout_margin="4dp"
+    android:layout_margin="@dimen/View4dp"
     android:elevation="10dp"
     app:cardCornerRadius="10dp">
 
@@ -62,10 +62,10 @@
             app:layout_constraintStart_toStartOf="@+id/guideline2">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="@dimen/View24dp"
+                android:layout_height="@dimen/View24dp"
                 android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="@dimen/View4dp"
                 android:src="@drawable/ic_star" />
 
             <TextView
@@ -104,9 +104,9 @@
 
         <ImageView
             android:id="@+id/on_off"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="@dimen/View8dp"
+            android:layout_height="@dimen/View8dp"
+            android:layout_marginStart="@dimen/View8dp"
             android:background="@drawable/offline_user"
             app:layout_constraintBottom_toBottomOf="@+id/cage"
             app:layout_constraintStart_toEndOf="@+id/cage"
@@ -167,6 +167,7 @@
             android:id="@+id/myselfcard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/View4dp"
             android:elevation="10dp"
             android:ellipsize="end"
             android:maxLines="2"
@@ -184,7 +185,7 @@
         <LinearLayout
             android:id="@+id/bb"
             android:layout_width="match_parent"
-            android:layout_height="16dp"
+            android:layout_height="@dimen/View16dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="@+id/image"
             app:layout_constraintEnd_toEndOf="parent"

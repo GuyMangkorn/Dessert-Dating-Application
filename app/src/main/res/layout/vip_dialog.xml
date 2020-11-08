@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:background="@color/cpb_white"
             android:gravity="center"
-            android:paddingTop="20dp"
+            android:paddingTop="@dimen/View20dp"
             android:text="@string/dessert_vip"
             android:textColor="@color/c1"
             android:textSize="@dimen/Text24sp" />
@@ -28,7 +28,7 @@
             <com.github.demono.AutoScrollViewPager
                 android:id="@+id/viewpage"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="228dp"
                 android:background="@color/cpb_white"
                 app:cycle="true"
                 app:slideDirection="right"
@@ -41,9 +41,8 @@
         <me.relex.circleindicator.CircleIndicator
             android:id="@+id/indicator"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_alignBottom="@+id/viewpage"
-            android:layout_marginBottom="20dp"
+            android:layout_height="@dimen/View20dp"
+            android:layout_marginBottom="@dimen/View20dp"
             android:background="@color/cpb_white"
             app:ci_drawable="@drawable/circle_pager"
             app:ci_drawable_unselected="@drawable/circle_pager2" />
@@ -53,7 +52,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="20dp"
+            android:paddingBottom="@dimen/View20dp"
             android:background="@drawable/gradient_list3"
             >
 
@@ -61,13 +60,13 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/View20dp"
+                android:layout_marginRight="@dimen/View20dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <View
-                    android:layout_width="20dp"
+                    android:layout_width="@dimen/View20dp"
                     android:layout_height="1dp"
                     android:layout_weight="1"
                     android:background="@color/white" />
@@ -75,17 +74,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/View20dp"
+                    android:layout_marginRight="@dimen/View20dp"
                     android:text="VIP"
                     android:textColor="@color/white"
-
                     android:textSize="@dimen/Text20sp"
 
                     />
 
                 <View
-                    android:layout_width="20dp"
+                    android:layout_width="@dimen/View20dp"
                     android:layout_height="1dp"
                     android:layout_weight="1"
                     android:background="@color/white" />
@@ -95,7 +93,7 @@
                 android:id="@+id/test_de"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/View8dp"
                 android:gravity="center"
                 android:text="ดูโฆษณาเพื่อรับ จำนวนกดถูกใจ เพิ่ม \n หรือสมัคร Dessert VIP เพื่อรับสิทธิพิเศษต่างๆ"
                 android:textColor="@color/white"
@@ -104,7 +102,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/View8dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -122,7 +120,7 @@
                     android:id="@+id/buy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="@dimen/View4dp"
                     android:backgroundTint="@color/c3"
                     android:text="฿100.00 / เดือน"
                     android:textSize="@dimen/Text14sp"

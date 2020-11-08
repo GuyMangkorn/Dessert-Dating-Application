@@ -9,9 +9,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginRight="@dimen/View32dp"
+        android:layout_marginLeft="@dimen/View32dp"
+        android:layout_marginBottom="@dimen/View12dp"
         android:gravity="center"
         android:textColor="@color/text_black_gray"
         android:textSize="@dimen/Text24sp"
@@ -21,8 +21,8 @@
         android:id="@+id/text_gps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginRight="@dimen/View32dp"
+        android:layout_marginLeft="@dimen/View32dp"
         android:gravity="center"
         android:textColor="@color/text_black_gray"
         android:textSize="@dimen/Text16sp"
@@ -32,7 +32,7 @@
         android:id="@+id/open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/View20dp"
         android:text="@string/tryAgian"
 
 

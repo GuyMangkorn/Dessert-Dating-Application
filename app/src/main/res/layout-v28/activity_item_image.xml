@@ -24,18 +24,18 @@
             <TextView
                 android:id="@+id/name_sender_image"
                 android:layout_marginBottom="2dp"
-                android:layout_marginStart="9dp"
+                android:layout_marginStart="@dimen/View8dp"
                 android:layout_gravity="bottom"
-                android:textSize="15dp"
+                android:textSize="@dimen/Text14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint=""/>
             <TextView
                 android:layout_marginBottom="2dp"
                 android:id="@+id/image_date_front"
-                android:layout_marginStart="9dp"
+                android:layout_marginStart="@dimen/View8dp"
                 android:gravity=""
-                android:textSize="8dp"
+                android:textSize="@dimen/Text10sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint=""/>
@@ -45,7 +45,7 @@
             android:layout_height="50dp"
             android:gravity="end">
             <Button
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="@dimen/View4dp"
                 android:layout_gravity="center"
                 android:background="@drawable/ic_apps_black_24dp"
                 android:id="@+id/button_all_image"
@@ -99,7 +99,7 @@
         android:background="@drawable/rounded"
         android:orientation="horizontal">
         <LinearLayout
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/View16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">

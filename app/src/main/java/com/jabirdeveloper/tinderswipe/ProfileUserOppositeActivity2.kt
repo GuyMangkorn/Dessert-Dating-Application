@@ -188,7 +188,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     val inflater = layoutInflater
                     val view2 = inflater.inflate(R.layout.sayhi_dialog, null)
                     val b1 = view2.findViewById<Button>(R.id.buy)
-                    val close = view2.findViewById<ImageView>(R.id.close)
                     val textSend = view2.findViewById<EditText>(R.id.text_send)
                     b1.setOnClickListener {
                         text = textSend.text.toString()
@@ -213,7 +212,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                             Toast.makeText(this@ProfileUserOppositeActivity2, "พิมพ์ข้อความสักหน่อยสิ", Toast.LENGTH_SHORT).show()
                         }
                     }
-                    close.setOnClickListener { dialog.dismiss() }
                     dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     dialog.setContentView(view2)
                     val width = (resources.displayMetrics.widthPixels * 0.90).toInt()

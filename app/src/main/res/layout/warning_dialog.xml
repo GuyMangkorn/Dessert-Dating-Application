@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="20dp"
+    android:padding="@dimen/View20dp"
     android:background="@drawable/corner15"
     >
     <ImageView
@@ -15,7 +15,7 @@
         android:src="@drawable/ic_warning2"
         />
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/View8dp"
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/View8dp"
         android:textColor="@color/text_gray"
         android:textSize="@dimen/Text16sp"
         />
