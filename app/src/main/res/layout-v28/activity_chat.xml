@@ -155,7 +155,6 @@
                 android:src="@drawable/ic_mic_black_24dp" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/test56"
             android:layout_marginEnd="@dimen/View4dp"
             android:layout_gravity="center"
             android:background="@drawable/rounded_real"

@@ -41,13 +41,11 @@
                 android:text="label_2"/>
             <RadioButton
                 android:visibility="gone"
-                android:id="@+id/radioButtonRegisterQA3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="label_3"/>
             <RadioButton
                 android:visibility="gone"
-                android:id="@+id/radioButtonRegisterQA4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="label_4"/>

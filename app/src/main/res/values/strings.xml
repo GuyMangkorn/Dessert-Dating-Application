@@ -1,17 +1,13 @@
 <resources>
 
     <string name="app_name" translatable="false">Dessert</string>
-    <string name="title_activity_choose_login_registration" translatable="false">ChooseLoginRegistrationActivity</string>
     <string name="facebook_app_id">262691754922532</string>
-    <string name="fb_login_protocol_scheme">fb262691754922532</string>
 
 
-    <string name="make_an_order">Make an order</string>
     <string name="dialog_title">งานอดิเรก</string>
     <string name="ok">OK</string>
     <string name="dismiss_label">Cancel</string>
     <string name="clear_all_label">เคลียร์</string>
-    <string name="txt_obtener_items">Obtener Items</string>
     <string name="bar_profile">Profile</string>
     <string name="bar_match">Match</string>
     <string name="bar_nearby">Nearby</string>
@@ -21,7 +17,6 @@
     <string name="Female">Female</string>
     <string name="Everyone">Everyone</string>
     <string name="Distance">Distance</string>
-    <string name="km">km</string>
     <string name="age_range">Age</string>
     <string name="language">Language</string>
     <string name="Signout">Signout</string>
@@ -43,7 +38,6 @@
     <string name="language_profile">Language</string>
     <string name="religion">Religion</string>
     <string name="Interests">Interests</string>
-    <string name="see_people">See who viewed your profile</string>
     <string name="see_empty">No one has seen your profile yet</string>
     <string name="see_like">See who likes you</string>
     <string name="like_empty">No one likes you yet</string>
@@ -55,7 +49,6 @@
     <string name="report_reset">Please wait for the reset at midnight</string>
     <string name="report_alert">Warning !!!</string>
     <string name="report_close">Close</string>
-    <string name="report_fail">User report failed !!</string>
     <string name="report_failed">Failed</string>
     <string name="report_suc2">User reporting successful</string>
     <string name="report_suc">Successful</string>
@@ -64,7 +57,6 @@
     <string name="dialog_reportUser">Report user issues</string>
     <string name="report">Report user</string>
     <string name="online">Online</string>
-    <string name="dont_now_online">Unknown online time</string>
     <string name="minutes_ago">minutes ago</string>
     <string name="hours_ago">hours ago</string>
     <string name="days_ago">days ago</string>
@@ -74,8 +66,6 @@
     <string name="receive_picture">sent you a picture</string>
     <string name="let_start_chat">Let! start your chat</string>
     <string name="kilometer">km</string>
-    <string name="male">M</string>
-    <string name="female">F</string>
     <string name="times">times</string>
     <string name="count_report">Count</string>
     <string name="text_hi">Say hi</string>
@@ -87,8 +77,6 @@
     <string name="delete_message_all">Delete chat history</string>
     <string name="delete_message_all_confirm">คDo you want to delete all messages?</string>
     <string name="touch">touch to view profile</string>
-    <string name="singin_google">Sign in with Google</string>
-    <string name="signin_facebook">Sign in with Facebook</string>
     <string name="signin_phone">Sign in with Phone No</string>
     <string name="name_regis">Your name</string>
     <string name="name_regis_recommend">This is your name that will be shown to others</string>
@@ -159,7 +147,6 @@
     <string name="enter_name">Please enter your name</string>
     <string name="choose_gender">Please choose your gender</string>
     <string name="choose_photo">Please choose your profile picture.</string>
-    <string name="off_status">Status not displayed</string>
     <string name="QA_improtant">How Important for you?</string>
     <string name="ok_QA">Confirm</string>
     <string name="next_QA">Next</string>
@@ -175,8 +162,6 @@
     <string name="LoadingAds">Loading ads</string>
     <string name="match">Match</string>
     <string name="tryAgian">ลองอีกครั้ง</string>
-    <string name="aleartGPS">คุณต้องอนุญาตให้ระบบเข้าถึงตำแหน่งที่ตั้งเพื่อใช้งานแอปพลิเคชัน กรุณาลองใหม่อีกครั้ง</string>
-    <string name="apologize">ขออภัย</string>
     <string name="aleartGPSopen">คุณต้องเปิด GPS เพื่อเข้าใช้งานแอปพลิเคชัน กรุณาลองใหม่อีกครั้ง</string>
     <string name="feedback">Feedback</string>
 
@@ -267,10 +252,6 @@
 
     <string-array name="chat_item_image">
         <item>ดาวน์โหลดภาพ</item>
-    </string-array>
-
-    <string-array name="google_glyph_strings">
-        <item>M256 70.7c-102.6 0-185.9 83.2-185.9 185.9 0 82.1 53.3 151.8 127.1 176.4 9.3 1.7 12.3-4 12.3-8.9V389.4c-51.7 11.3-62.5-21.9-62.5-21.9 -8.4-21.5-20.6-27.2-20.6-27.2 -16.9-11.5 1.3-11.3 1.3-11.3 18.7 1.3 28.5 19.2 28.5 19.2 16.6 28.4 43.5 20.2 54.1 15.4 1.7-12 6.5-20.2 11.8-24.9 -41.3-4.7-84.7-20.6-84.7-91.9 0-20.3 7.3-36.9 19.2-49.9 -1.9-4.7-8.3-23.6 1.8-49.2 0 0 15.6-5 51.1 19.1 14.8-4.1 30.7-6.2 46.5-6.3 15.8 0.1 31.7 2.1 46.6 6.3 35.5-24 51.1-19.1 51.1-19.1 10.1 25.6 3.8 44.5 1.8 49.2 11.9 13 19.1 29.6 19.1 49.9 0 71.4-43.5 87.1-84.9 91.7 6.7 5.8 12.8 17.1 12.8 34.4 0 24.9 0 44.9 0 51 0 4.9 3 10.7 12.4 8.9 73.8-24.6 127-94.3 127-176.4C441.9 153.9 358.6 70.7 256 70.7z</item>
     </string-array>
 
     <string-array name="candy">

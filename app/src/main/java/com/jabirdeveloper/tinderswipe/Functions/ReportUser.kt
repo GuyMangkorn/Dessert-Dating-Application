@@ -19,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.jabirdeveloper.tinderswipe.R
 import com.tapadoo.alerter.Alerter
-import kotlinx.android.synthetic.main.alert_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 

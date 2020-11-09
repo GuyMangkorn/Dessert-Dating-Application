@@ -2,16 +2,13 @@
 
 <resources>
 
-    <string name="title_activity_choose_login_registration" translatable="false">ChooseLoginRegistrationActivity</string>
-    <string name="facebook_app_id">262691754922532</string> <string name="fb_login_protocol_scheme">fb262691754922532</string>
+    <string name="facebook_app_id">262691754922532</string>
 
 
-    <string name="make_an_order">Make an order</string>
     <string name="dialog_title">งานอดิเรก</string>
     <string name="ok">ตกลง</string>
     <string name="dismiss_label">ยกเลิก</string>
     <string name="clear_all_label">เคลียร์</string>
-    <string name="txt_obtener_items">Obtener Items</string>
     <string name="bar_profile">โปรไฟล์</string>
     <string name="bar_match">จับคู่</string>
     <string name="bar_nearby">ใกล้เคียง</string>
@@ -21,7 +18,6 @@
     <string name="Female">หญิง</string>
     <string name="Everyone">ทุกคน</string>
     <string name="Distance">ขอบเขต</string>
-    <string name="km">ระยะทาง</string>
     <string name="age_range">อายุ</string>
     <string name="language">ภาษา</string>
     <string name="Signout">ออกจากระบบ</string>
@@ -43,7 +39,6 @@
     <string name="language_profile">ภาษา</string>
     <string name="religion">ศาสนา</string>
     <string name="Interests">สิ่งที่สนใจ</string>
-    <string name="see_people">ดูว่าใครเข้าชมโปรไฟล์คุณ</string>
     <string name="see_empty">ยังไม่มีใครเข้าชมโปรไฟล์คุณ</string>
     <string name="see_like">ดูว่าใครถูกใจคุณ</string>
     <string name="like_empty">ยังไม่มีใครถูกใจคุณ</string>
@@ -55,7 +50,6 @@
     <string name="report_reset">กรุณารอการรีเซ็ตในเวลาเที่ยงคืน</string>
     <string name="report_alert">คำเตือน !!!</string>
     <string name="report_close">ปิด</string>
-    <string name="report_fail">ทำการรายงานผู้ใช้ไม่สำเร็จ !!</string>
     <string name="report_failed">ล้มเหลว</string>
     <string name="report_suc2">ทำการรายงานผู้ใช้สำเร็จ</string>
     <string name="report_suc">สำเร็จ</string>
@@ -64,7 +58,6 @@
     <string name="dialog_reportUser">รายงานปัญหาผู้ใช้งาน</string>
     <string name="report">รายงานผู้ใช้</string>
     <string name="online">กำลังใช้งานอยู่</string>
-    <string name="dont_now_online">ไม่ทราบเวลาออนไลน์ล่าสุด</string>
     <string name="hours_ago">ชั่วโมงที่แล้ว</string>
     <string name="days_ago">วันที่แล้ว</string>
     <string name="minutes_ago">นาทีที่แล้ว</string>
@@ -74,8 +67,6 @@
     <string name="receive_picture">ส่งรูปภาพให้คุณ</string>
     <string name="let_start_chat">เริ่มการแชทของคุณสิ !!</string>
     <string name="kilometer">กม.</string>
-    <string name="male">ช</string>
-    <string name="female">ญ</string>
     <string name="times">ครั้ง</string>
     <string name="count_report">จำนวน</string>
     <string name="text_hi">ทักทาย</string>
@@ -87,8 +78,6 @@
     <string name="delete_message_all">ลบประวัติการแชท</string>
     <string name="delete_message_all_confirm">คุณต้องการลบข้อความทั้งหมดใช่หรือไม่</string>
     <string name="touch">แตะเพื่อดูโปรไฟล์</string>
-    <string name="singin_google">เข้าสู่ระบบด้วย Google</string>
-    <string name="signin_facebook">เข้าสู่ระบบด้วย Facebook</string>
     <string name="signin_phone">เข้าสู่ระบบด้วยหมายเลขโทรศัพท์</string>
     <string name="name_regis">ชื่อของคุณ</string>
     <string name="name_regis_recommend">นี่คือชื่อของคุณที่จะแสดงให้ผู้อื่นเห็น</string>
@@ -159,7 +148,6 @@
     <string name="enter_name">โปรดกรอกชื่อของคุณ</string>
     <string name="choose_gender">โปรดเลือกเพศของคุณ</string>
     <string name="choose_photo">โปรดเลือกรูปโปรไฟล์ของคุณ</string>
-    <string name="off_status">ไม่แสดงสถานะ</string>
     <string name="ok_QA">ยืนยัน</string>
     <string name="next_QA">ถัดไป</string>
     <string name="previous_QA">ย้อนกลับ</string>
@@ -267,8 +255,6 @@
     <string name="LoadingAds">กำลังโหลดโฆษณา</string>
     <string name="match">Match</string>
     <string name="tryAgian">ลองอีกครั้ง</string>
-    <string name="aleartGPS">คุณต้องอนุญาตให้ระบบเข้าถึงตำแหน่งที่ตั้งเพื่อใช้งานแอปพลิเคชัน กรุณาลองใหม่อีกครั้ง</string>
-    <string name="apologize">ขออภัย</string>
     <string name="aleartGPSopen">คุณต้องเปิด GPS เพื่อเข้าใช้งานแอปพลิเคชัน กรุณาลองใหม่อีกครั้ง</string>
     <string name="feedback">Feedback</string>
 

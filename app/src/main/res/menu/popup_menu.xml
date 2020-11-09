@@ -9,7 +9,7 @@
          android:title="@string/cancel_match"
         android:icon="@drawable/ic_do_not_disturb_black_24dp"
         />
-    <item android:id="@+id/menu_warnng2"
+    <item
         android:title="@string/dialog_report"
         android:icon="@drawable/ic_warning_black_24dp"
         />
