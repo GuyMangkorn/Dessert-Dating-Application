@@ -337,6 +337,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
         val params2 = mchk2.layoutParams as RelativeLayout.LayoutParams
         params2.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
+        params2.setMargins(60,0,0,0)
         params3.apply {
             addRule(RelativeLayout.END_OF, 0)
             addRule(RelativeLayout.START_OF, mchk2.id)
@@ -365,6 +366,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
         mchk.visibility = View.VISIBLE
         mchk2.visibility = View.VISIBLE
         val params2 = mchk2.layoutParams as RelativeLayout.LayoutParams
+        params2.setMargins(0,0,60,0)
         params2.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
         params3.apply {

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".ChooseLoginRegistrationActivity">
 
     <LinearLayout
@@ -20,7 +19,7 @@
 
 
         <ImageView
-            android:layout_width="150dp"
+            android:layout_width="124dp"
             android:layout_marginRight="100dp"
             android:layout_marginLeft="100dp"
             android:layout_height="wrap_content"
@@ -28,27 +27,15 @@
             android:clickable="false"
 
             android:src="@drawable/ic_candy" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dessert"
-            android:textSize="40dp"
 
-            android:letterSpacing="0.085"
-            android:textColor="@color/text_black_gray"
-            android:layout_marginTop="@dimen/View8dp"
-
-            />
         <TextView
 
             android:id="@+id/clickToTest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Click to testLogin"
-
             android:textColor="@color/text_black_gray"
             android:textSize="18dp"
-
             android:layout_marginTop="@dimen/View20dp"
             />
         <LinearLayout
@@ -93,7 +80,7 @@
 
 
         <LinearLayout
-
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -129,7 +116,102 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/face"
+            android:layout_marginTop="@dimen/View20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/myrect"
+            android:paddingTop="@dimen/View8dp"
+            android:paddingBottom="@dimen/View8dp"
+            android:paddingEnd="@dimen/View16dp"
+            android:paddingStart="@dimen/View16dp"
+            android:backgroundTint="#3C6CFF"
+            android:elevation="@dimen/View4dp"
+            android:layout_marginEnd="@dimen/View40dp"
+            android:layout_marginStart="@dimen/View40dp"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="@dimen/View36dp"
+                android:layout_height="@dimen/View36dp"
+                android:layout_marginEnd="@dimen/View8dp"
+                android:layout_marginStart="@dimen/View8dp"
+                android:src="@drawable/ic_facebook3"/>
+            <TextView
+                android:layout_marginEnd="@dimen/View8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Signin with Facebook"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/google"
+            android:layout_marginTop="@dimen/View16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/myrect"
+            android:paddingTop="@dimen/View8dp"
+            android:paddingBottom="@dimen/View8dp"
+            android:paddingEnd="@dimen/View16dp"
+            android:paddingStart="@dimen/View16dp"
+            android:backgroundTint="#FFFFFF"
+            android:elevation="@dimen/View4dp"
+            android:layout_marginEnd="@dimen/View40dp"
+            android:layout_marginStart="@dimen/View40dp"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="@dimen/View36dp"
+                android:layout_height="@dimen/View36dp"
+                android:layout_marginStart="@dimen/View8dp"
+                android:layout_marginEnd="@dimen/View8dp"
+                android:src="@drawable/ic_search"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/View8dp"
+                android:gravity="center"
+                android:text="Signin with google   "
+                android:textColor="@color/text_black_gray"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/button7"
+            android:layout_marginTop="@dimen/View16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/myrect"
+            android:paddingTop="@dimen/View8dp"
+            android:paddingBottom="@dimen/View8dp"
+            android:paddingEnd="@dimen/View16dp"
+            android:paddingStart="@dimen/View16dp"
+            android:backgroundTint="@color/text_black_gray"
+            android:elevation="@dimen/View4dp"
+            android:layout_marginEnd="@dimen/View40dp"
+            android:layout_marginStart="@dimen/View40dp"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="@dimen/View36dp"
+                android:layout_height="@dimen/View36dp"
+                android:layout_marginEnd="@dimen/View8dp"
+                android:layout_marginStart="@dimen/View8dp"
+                android:src="@drawable/ic_phone"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/View8dp"
+                android:gravity="center"
+                android:text="@string/signin_phone"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
 
+
+        <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -137,13 +219,13 @@
             android:layout_marginTop="@dimen/View40dp"
             >
             <ImageView
-                android:id="@+id/face"
+
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:clickable="false"
                 android:src="@drawable/ic_facebook" />
             <ImageView
-                android:id="@+id/google"
+
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginRight="@dimen/View32dp"
@@ -151,7 +233,7 @@
                 android:clickable="false"
                 android:src="@drawable/ic_search"/>
             <ImageView
-                android:id="@+id/button7"
+
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:clickable="false"

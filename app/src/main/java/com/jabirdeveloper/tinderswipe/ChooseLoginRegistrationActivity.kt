@@ -54,9 +54,9 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 0
     private lateinit var thai: TextView
     private lateinit var eng: TextView
-    private lateinit var face: ImageView
-    private lateinit var google: ImageView
-    private lateinit var mPhone: ImageView
+    private lateinit var face: LinearLayout
+    private lateinit var google: LinearLayout
+    private lateinit var mPhone: LinearLayout
     private lateinit var dialog: Dialog
     private lateinit var dialog2: Dialog
     override fun onCreate(savedInstanceState: Bundle?) {

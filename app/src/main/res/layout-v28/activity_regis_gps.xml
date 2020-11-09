@@ -16,7 +16,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <include layout="@layout/toolsbar" />
 
         <ProgressBar
@@ -81,7 +80,7 @@
             android:layout_marginTop="@dimen/View4dp"
             android:text="@string/Searching"
             android:textColor="@color/text_gray"
-            android:textSize="12dp"
+            android:textSize="@dimen/Text12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/anime2" />
@@ -90,12 +89,12 @@
             android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="@dimen/View20dp"
             android:layout_marginTop="@dimen/View8dp"
-            android:layout_marginRight="@dimen/View20dp"
+            android:layout_marginEnd="@dimen/View20dp"
             android:gravity="center"
             android:textColor="@color/text_gray"
-            android:textSize="14dp"
+            android:textSize="@dimen/Text14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />

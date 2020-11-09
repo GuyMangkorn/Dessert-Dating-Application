@@ -14,8 +14,8 @@
         android:id="@+id/settingPage"
         android:visibility="gone"
         android:layout_width="match_parent"
-        android:paddingRight="@dimen/View8dp"
-        android:paddingLeft="@dimen/View8dp"
+        android:paddingEnd="@dimen/View8dp"
+        android:paddingStart="@dimen/View8dp"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -45,11 +45,10 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:layout_marginStart="@dimen/View16dp"
 
-                    android:paddingRight="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp"
                     android:text="@string/showme"
                     android:textColor="@color/text_black_gray"
@@ -60,6 +59,8 @@
                     android:id="@+id/radioGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/View16dp"
+                    android:layout_marginEnd="@dimen/View16dp"
                     >
 
                     <RadioButton
@@ -67,12 +68,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:layout_marginRight="@dimen/View8dp"
-
                         android:layoutDirection="rtl"
-                        android:paddingLeft="@dimen/View20dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View8dp"
                         android:paddingBottom="@dimen/View8dp"
                         android:text="@string/Male"
                         android:textAlignment="textStart"
@@ -83,12 +80,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-
-                        android:layout_marginRight="@dimen/View8dp"
                         android:layoutDirection="rtl"
-                        android:paddingLeft="@dimen/View20dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View8dp"
                         android:paddingBottom="@dimen/View8dp"
                         android:text="@string/Female"
                         android:textAlignment="textStart"
@@ -99,12 +92,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:layout_marginRight="@dimen/View8dp"
-
                         android:layoutDirection="rtl"
-                        android:paddingLeft="@dimen/View20dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View8dp"
                         android:paddingBottom="@dimen/View8dp"
                         android:text="@string/Everyone"
                         android:textAlignment="textStart"
@@ -117,8 +106,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginRight="@dimen/View20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginEnd="@dimen/View20dp"
+                    android:layout_marginStart="@dimen/View20dp"
                     android:layout_marginTop="@dimen/View8dp"
                     android:layout_marginBottom="@dimen/View8dp"
                     android:background="@color/background_gray"
@@ -133,9 +122,9 @@
                         android:id="@+id/textView4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View8dp"
                         android:paddingBottom="@dimen/View8dp"
                         android:text="@string/Distance"
                         android:textColor="@color/text_black_gray"
@@ -144,9 +133,9 @@
                         android:id="@+id/text_seek2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/View8dp"
+                        android:paddingStart="@dimen/View8dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View8dp"
                         android:paddingBottom="@dimen/View8dp"
 
                         android:textColor="@color/c1"
@@ -169,9 +158,9 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        android:paddingLeft="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View20dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View8dp"
                         app:ds_count="190"
                         app:ds_inactiveTrackColor="#4D9A9A9A"
@@ -189,8 +178,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginRight="@dimen/View20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginEnd="@dimen/View20dp"
+                    android:layout_marginStart="@dimen/View20dp"
                     android:layout_marginTop="@dimen/View8dp"
                     android:layout_marginBottom="@dimen/View8dp"
                     android:background="@color/background_gray"
@@ -204,9 +193,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/text_black_gray"
-                        android:paddingLeft="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View8dp"
                         android:paddingBottom="@dimen/View8dp"
                         android:text="@string/age_range"
                         android:textSize="@dimen/Text16sp" />
@@ -214,11 +203,10 @@
                         android:id="@+id/seek_age_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_marginStart="0dp"
-                        android:paddingLeft="@dimen/View8dp"
+                        android:paddingStart="@dimen/View8dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View8dp"
                         android:paddingBottom="@dimen/View8dp"
                         android:textColor="@color/c1"
                         android:textSize="@dimen/Text16sp" />
@@ -239,9 +227,10 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        android:paddingLeft="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingRight="@dimen/View20dp"
+                        android:paddingBottom="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         app:ds_count="53"
                         app:ds_inactiveTrackColor="#4D9A9A9A"
                         app:ds_mode="range"
@@ -262,7 +251,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/View8dp"
                 android:layout_marginBottom="@dimen/View8dp"
-                android:paddingStart="@dimen/View4dp"
+                android:paddingStart="@dimen/View8dp"
                 android:paddingTop="@dimen/View8dp"
                 android:paddingEnd="@dimen/View8dp"
                 android:paddingBottom="@dimen/View8dp"
@@ -278,21 +267,21 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View16dp"
                     android:paddingTop="@dimen/View20dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp"
                     android:text="@string/Notifications"
                     android:textColor="@color/text_black_gray"
                     android:includeFontPadding="false"
                     android:textSize="@dimen/Text16sp" />
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View16dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View16dp"
                     android:paddingBottom="@dimen/View20dp"
                     android:text="@string/notify_match"
                     android:textSize="@dimen/Text16sp"
@@ -304,16 +293,16 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/View8dp"
                 android:background="@drawable/corner15"
-                android:paddingLeft="@dimen/View20dp"
+                android:paddingStart="@dimen/View16dp"
                 android:paddingTop="@dimen/View20dp"
-                android:paddingRight="@dimen/View8dp"
+                android:paddingEnd="@dimen/View16dp"
                 android:paddingBottom="@dimen/View20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/language"
-                    android:textSize="18dp"
+                    android:textSize="@dimen/Text16sp"
                     android:textColor="@color/text_black_gray" />
 
                 <TextView
@@ -322,7 +311,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/View8dp"
-
                     android:textSize="@dimen/Text16sp"
                     android:textColor="@color/text_gray" />
             </RelativeLayout>
@@ -332,7 +320,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/View8dp"
                 android:layout_marginBottom="@dimen/View8dp"
-                android:paddingStart="@dimen/View4dp"
+                android:paddingStart="@dimen/View8dp"
                 android:paddingTop="@dimen/View8dp"
                 android:paddingEnd="@dimen/View8dp"
                 android:paddingBottom="@dimen/View8dp"
@@ -349,31 +337,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/View20dp"
-                    android:paddingLeft="@dimen/View20dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingStart="@dimen/View16dp"
+                    android:paddingEnd="@dimen/View16dp"
                     android:paddingBottom="@dimen/View8dp"
                     android:text="@string/Active_status"
                     android:textColor="@color/text_black_gray"
                     android:includeFontPadding="false"
-                    android:textSize="18dp" />
-                <Switch
+                    android:textSize="@dimen/Text16sp" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View16dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View16dp"
                     android:paddingBottom="@dimen/View20dp"
                     android:text="@string/Show_Active_status_recently"
                     android:textSize="@dimen/Text16sp"
                     android:textColor="@color/text_black_gray" />
+
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/View8dp"
                 android:layout_marginBottom="@dimen/View8dp"
-                android:paddingStart="@dimen/View4dp"
+                android:paddingStart="@dimen/View8dp"
                 android:paddingTop="@dimen/View8dp"
                 android:paddingEnd="@dimen/View8dp"
                 android:paddingBottom="@dimen/View8dp"
@@ -389,33 +378,34 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View16dp"
                     android:paddingTop="@dimen/View20dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View16dp"
                     android:paddingBottom="@dimen/View8dp"
                     android:text="@string/Visibility"
                     android:textColor="@color/text_black_gray"
                     android:includeFontPadding="false"
-                    android:textSize="18dp" />
-                <Switch
+                    android:textSize="@dimen/Text16sp" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/on_off_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View16dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View16dp"
                     android:paddingBottom="@dimen/View8dp"
                     android:text="@string/Matching_mode"
                     android:textSize="@dimen/Text16sp"
                     android:switchPadding="20dp"
                     android:textColor="@color/text_black_gray" />
-                <Switch
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/on_off_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View16dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View16dp"
                     android:paddingBottom="@dimen/View20dp"
                     android:text="@string/list_mode"
                     android:textSize="@dimen/Text16sp"
@@ -439,7 +429,7 @@
                     android:gravity="center"
                     android:text="@string/Signout"
                     android:textColor="@color/text_gray"
-                    android:textSize="18dp" />
+                    android:textSize="@dimen/Text16sp" />
 
             </LinearLayout>
 
@@ -460,7 +450,7 @@
                     android:gravity="center"
                     android:text="@string/Close_account"
                     android:textColor="@color/text_gray"
-                    android:textSize="18dp" />
+                    android:textSize="@dimen/Text16sp" />
             </LinearLayout>
 
 

@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:text="@string/your_gender"
             android:textColor="@color/text_black_gray"
-            android:textSize="30dp"
+            android:textSize="@dimen/Text24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +93,7 @@
             android:maxEms="20"
             android:text="@string/note_gender"
             android:textColor="@color/text_gray"
-            android:textSize="14dp" />
+            android:textSize="@dimen/Text14sp" />
 
 
         <Button

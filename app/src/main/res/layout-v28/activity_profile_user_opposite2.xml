@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/background_gray"
     android:orientation="vertical"
-
     tools:context=".ProfileUserOppositeActivity2">
 
     <ProgressBar
@@ -81,19 +80,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp">
 
                     <TextView
                         android:id="@+id/name_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/View8dp"
+                        android:layout_marginEnd="@dimen/View8dp"
 
                         android:textColor="@color/c2"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/Text20sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -102,7 +101,7 @@
                         android:layout_height="wrap_content"
 
                         android:textColor="@color/c2"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/Text20sp" />
 
                 </LinearLayout>
 
@@ -124,14 +123,14 @@
                     android:layout_height="wrap_content"
 
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/View20dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingStart="@dimen/View20dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View4dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginRight="@dimen/View4dp"
+                        android:layout_height="@dimen/View32dp"
+                        android:layout_marginEnd="@dimen/View4dp"
                         android:layout_gravity="top"
                         android:src="@drawable/ic_person_outline_black_24dp" />
 
@@ -163,17 +162,15 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/View20dp"
-
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingStart="@dimen/View20dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View4dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginRight="@dimen/View4dp"
+                        android:layout_height="@dimen/View32dp"
+                        android:layout_marginEnd="@dimen/View4dp"
                         android:layout_gravity="top"
                         android:src="@drawable/ic_work_black_24dp" />
 
@@ -204,15 +201,15 @@
                     android:layout_height="wrap_content"
 
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
 
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View4dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginRight="@dimen/View4dp"
+                        android:layout_height="@dimen/View32dp"
+                        android:layout_marginEnd="@dimen/View4dp"
                         android:layout_gravity="top"
                         android:src="@drawable/ic_school_black_24dp" />
 
@@ -241,16 +238,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/View20dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingStart="@dimen/View20dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="@dimen/View32dp"
                         android:layout_marginRight="@dimen/View4dp"
                         android:layout_gravity="top"
                         android:src="@drawable/ic_location_on_black_24dp" />
@@ -284,9 +279,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:text="@string/about_me"
                     android:textColor="#000000"
                     android:textSize="@dimen/Text16sp" />
@@ -295,9 +290,9 @@
                     android:id="@+id/myself_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View4dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp"
 
                     android:textColor="@color/text_gray"
@@ -322,9 +317,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:text="@string/language"
                     android:textColor="#000000"
                     android:textSize="@dimen/Text16sp" />
@@ -333,13 +328,13 @@
                     android:id="@+id/language_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View4dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp"
 
                     android:textColor="@color/text_gray"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:textSize="@dimen/Text16sp" />
 
 
@@ -360,9 +355,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:text="@string/religion"
                     android:textColor="#000000"
                     android:textSize="@dimen/Text16sp" />
@@ -371,9 +366,9 @@
                     android:id="@+id/religion_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View4dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp"
                     android:textColor="@color/text_gray"
 
@@ -397,22 +392,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View8dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:text="@string/Interests"
                     android:textColor="#000000"
                     android:textSize="@dimen/Text16sp" />
 
-                <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.google.android.flexbox.FlexboxLayout 
                     android:id="@+id/Grid_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:paddingLeft="@dimen/View20dp"
+                    android:paddingStart="@dimen/View20dp"
                     android:paddingTop="@dimen/View4dp"
-                    android:paddingRight="@dimen/View8dp"
+                    android:paddingEnd="@dimen/View8dp"
                     android:paddingBottom="@dimen/View8dp"
                     app:alignContent="flex_start"
                     app:alignItems="flex_start"
@@ -445,9 +438,9 @@
                     android:gravity="center"
                     android:paddingTop="@dimen/View20dp"
                     android:paddingBottom="@dimen/View20dp"
-                    android:text="รายงาน Maisiravit"
+                    
                     android:textColor="@color/text_gray"
-                    android:textSize="18dp" />
+                    android:textSize="@dimen/Text16sp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -508,7 +501,7 @@
             android:id="@+id/star_button"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_marginRight="@dimen/View32dp"
+            android:layout_marginEnd="@dimen/View32dp"
             android:layout_marginBottom="@dimen/View8dp"
             app:iconTint="@null"
             app:icon="@drawable/ic_star"
@@ -527,7 +520,7 @@
             android:id="@+id/like_button"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_marginRight="@dimen/View32dp"
+            android:layout_marginEnd="@dimen/View32dp"
             android:layout_marginBottom="@dimen/View8dp"
             app:iconTint="@null"
             app:icon="@drawable/ic_heart"

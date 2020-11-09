@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
 import com.akexorcist.localizationactivity.core.OnLocaleChangedListener
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -57,10 +58,10 @@ class  Setting2Activity : AppCompatActivity(),View.OnClickListener {
     private lateinit var mSlider: DiscreteSlider
     private var selectedPosition = -1
     private var check_item = -1
-    private lateinit var noti_1: Switch
-    private lateinit var online: Switch
-    private lateinit var on_off_card: Switch
-    private lateinit var on_off_list: Switch
+    private lateinit var noti_1: SwitchMaterial
+    private lateinit var online: SwitchMaterial
+    private lateinit var on_off_card: SwitchMaterial
+    private lateinit var on_off_list: SwitchMaterial
     private var noti_match: String? = null
     private var on_off: String? = null
     private val localizationDelegate = LocalizationActivityDelegate(this)

@@ -3,6 +3,7 @@ package com.jabirdeveloper.tinderswipe.ImageChat
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +30,7 @@ class ItemImageActivity : AppCompatActivity() {
     private lateinit var screenAdapterImage: ScreenAdapterImage
     private lateinit var Nest: NestedScrollView
     private var chk1time = false
-    private lateinit var allImageClick: Button
+    private lateinit var allImageClick: ImageView
     private lateinit var mCountImg: TextView
     private lateinit var setDate: TextView
     private lateinit var nameSender: TextView

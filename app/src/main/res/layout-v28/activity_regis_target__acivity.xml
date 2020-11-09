@@ -18,7 +18,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <include layout="@layout/toolsbar" />
 
 
@@ -49,7 +48,7 @@
             android:gravity="center"
             android:text="@string/profile_image"
             android:textColor="@color/text_black_gray"
-            android:textSize="30dp"
+            android:textSize="@dimen/Text24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,8 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/View8dp"
             android:gravity="center"
-            android:paddingLeft="@dimen/View20dp"
-            android:paddingRight="@dimen/View20dp"
+            android:layout_marginLeft="@dimen/View32dp"
+            android:layout_marginRight="@dimen/View32dp"
             android:text="@string/recommend_profile"
             android:textColor="@color/text_gray"
             android:textSize="@dimen/Text14sp" />
@@ -115,11 +114,11 @@
         android:id="@+id/skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/View8dp"
+        android:layout_marginEnd="@dimen/View16dp"
         android:layout_marginBottom="@dimen/View16dp"
         android:text="ข้าม >"
         android:textColor="#B8B8B8"
-        android:textSize="14dp"
+        android:textSize="@dimen/Text14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,7 +25,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -70,8 +69,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var mRecordReal: ImageView
     private lateinit var mNameChat: TextView
     private lateinit var mRecordStatus: TextView
-    private lateinit var mSendButton: Button
-    private lateinit var openMenu: Button
+    private lateinit var mSendButton: TextView
+    private lateinit var openMenu: ImageView
     private var chk = 0
     private var chk2 = 0
     private var time_count = 0
@@ -292,6 +291,7 @@ class ChatActivity : AppCompatActivity() {
                     mSendButton.rotation = 0f
                 }
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
         mSendEditText!!.setOnEditTextImeBackListener(object : EditTextImeBackListener {
@@ -393,16 +393,17 @@ class ChatActivity : AppCompatActivity() {
                     readAlready(loop.key)
                     val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
                     var dd2 = myUnread.getInt("total", 0)
-                    val count = dd2-1
-                    Log.d("chatNotificationTest","$dd2-1")
+                    val count = dd2 - 1
+                    Log.d("chatNotificationTest", "$dd2-1")
                     plus!!.setCurrentIndex(count)
-                    val myUnread2 =    getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
+                    val myUnread2 = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
                     val editorRead = myUnread2.edit()
                     editorRead.putInt("total", count)
                     editorRead.apply()
                     readAlready(loop.key)
                 }
             }
+
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
@@ -851,34 +852,35 @@ class ChatActivity : AppCompatActivity() {
         val dataDelete = FirebaseDatabase.getInstance().reference.child("Users")
          FirebaseDatabase.getInstance().reference
                  .addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val chatId = dataSnapshot.child("Users")
-                        .child(currentUserId.toString())
-                        .child("connection")
-                        .child("matches")
-                        .child(matchId.toString())
-                        .child("ChatId")
-                        .value.toString()
-                if (dataSnapshot.child("Chat").hasChild(chatId)) {
-                    FirebaseDatabase.getInstance().reference
-                            .child("Chat")
-                            .child(chatId).removeValue() }
-                dataDelete.child(currentUserId.toString()).child("connection")
-                        .child("matches")
-                        .child(matchId.toString()).removeValue()
-                dataDelete.child(currentUserId.toString()).child("connection")
-                        .child("yep")
-                        .child(matchId.toString()).removeValue()
-                dataDelete.child(matchId.toString()).child("connection")
-                        .child("matches")
-                        .child(currentUserId.toString()).removeValue()
-                dataDelete.child(matchId.toString()).child("connection")
-                        .child("yep")
-                        .child(currentUserId.toString()).removeValue()
-            }
+                     override fun onDataChange(dataSnapshot: DataSnapshot) {
+                         val chatId = dataSnapshot.child("Users")
+                                 .child(currentUserId.toString())
+                                 .child("connection")
+                                 .child("matches")
+                                 .child(matchId.toString())
+                                 .child("ChatId")
+                                 .value.toString()
+                         if (dataSnapshot.child("Chat").hasChild(chatId)) {
+                             FirebaseDatabase.getInstance().reference
+                                     .child("Chat")
+                                     .child(chatId).removeValue()
+                         }
+                         dataDelete.child(currentUserId.toString()).child("connection")
+                                 .child("matches")
+                                 .child(matchId.toString()).removeValue()
+                         dataDelete.child(currentUserId.toString()).child("connection")
+                                 .child("yep")
+                                 .child(matchId.toString()).removeValue()
+                         dataDelete.child(matchId.toString()).child("connection")
+                                 .child("matches")
+                                 .child(currentUserId.toString()).removeValue()
+                         dataDelete.child(matchId.toString()).child("connection")
+                                 .child("yep")
+                                 .child(currentUserId.toString()).removeValue()
+                     }
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
+                     override fun onCancelled(databaseError: DatabaseError) {}
+                 })
     }
 
 

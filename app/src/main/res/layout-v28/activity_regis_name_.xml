@@ -57,13 +57,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/View32dp"
+            android:layout_marginRight="@dimen/View32dp"
             android:layout_marginBottom="@dimen/View32dp"
             android:gravity="center"
             android:maxEms="14"
             android:text="@string/name_regis_recommend"
             android:textAlignment="center"
             android:textColor="@color/text_gray"
-            android:textSize="18dp" />
+            android:textSize="@dimen/Text16sp" />
 
         <EditText
             android:id="@+id/editText5"
@@ -80,7 +82,7 @@
             android:paddingTop="@dimen/View8dp"
             android:paddingRight="@dimen/View20dp"
             android:paddingBottom="@dimen/View8dp"
-            android:textSize="18dp" />
+            android:textSize="@dimen/Text16sp" />
 
         <Button
             android:id="@+id/button_name"
