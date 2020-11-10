@@ -3,8 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/View32dp"
-    android:paddingBottom="@dimen/View32dp"
+    android:paddingTop="30dp"
+    android:paddingBottom="30dp"
     android:background="@drawable/corner15"
     android:gravity="center"
     android:orientation="vertical">
