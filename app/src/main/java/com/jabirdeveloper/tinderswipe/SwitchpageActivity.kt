@@ -37,6 +37,7 @@ import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
+import com.jabirdeveloper.tinderswipe.Functions.WarningDialog
 import com.jabirdeveloper.tinderswipe.Listcard.ListCardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
@@ -50,11 +51,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+@Suppress("NAME_SHADOWING")
 class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private lateinit var mLocationManager: LocationManager
     private var id = R.id.item2
     private var first: String = ""
-    private lateinit var dialog: Dialog
+
     private var uid = FirebaseAuth.getInstance().currentUser!!.uid
     private val page1 = SettingMainActivity()
     private val page2 = MainActivity()
@@ -87,16 +89,8 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
             for (i in name!!.indices) {
                 nameAndValue += "${i + 1}.${choice[Integer.valueOf(name[i])]}${getString(R.string.count_report)}	${value!![i]} ${getString(R.string.times)}"
             }
-            val inflater = layoutInflater
-            val view = inflater.inflate(R.layout.warning_dialog, null)
-            dialog = Dialog(this@SwitchpageActivity)
-            val textView = view.findViewById<TextView>(R.id.text_warning)
-            textView.text = nameAndValue
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.setContentView(view)
-            val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-            dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-            dialog.show()
+            WarningDialog(this,nameAndValue).show()
+
         }
         if (intent.hasExtra("first")) {
             first = intent.getStringExtra("first")!!
@@ -121,6 +115,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                 if (isOnline(applicationContext)) {
                     when (i) {
                         R.id.item1 -> {
+
                             supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page1).commit()
                             activeFragment = page1
                             id = R.id.item1
@@ -171,6 +166,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
             }
         })
     }
+
     private fun permissionCheck(){
         mLocationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
