@@ -76,11 +76,13 @@ dependencies {
     implementation files('libs/activation.jar')
     implementation files('libs/additionnal.jar')
     implementation files('libs/mail.jar')
+
     def htextview_version = "0.1.6"
     implementation 'com.ldoublem.loadingview:loadingviewlib:1.0'
     implementation "com.hanks:htextview-line:$htextview_version"
     implementation "com.hanks:htextview-base:$htextview_version"
     implementation "com.hanks:htextview-fade:$htextview_version"
+
     implementation 'com.google.firebase:firebase-messaging:21.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     testImplementation 'junit:junit:4.13.1'
@@ -118,8 +120,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.2.0'
 
     implementation 'com.github.nipunru:nsfw-detector-android:1.0.0'
-    implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
-    api "com.google.firebase:firebase-ml-vision:24.0.3"
-    implementation "com.google.firebase:firebase-ml-vision-automl:18.0.5"
-    implementation "com.google.firebase:firebase-ml-model-interpreter:22.0.3"
+    implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
+    api "com.google.firebase:firebase-ml-vision:24.1.0"
+    implementation "com.google.firebase:firebase-ml-vision-automl:18.0.6"
+    implementation "com.google.firebase:firebase-ml-model-interpreter:22.0.4"
 }
