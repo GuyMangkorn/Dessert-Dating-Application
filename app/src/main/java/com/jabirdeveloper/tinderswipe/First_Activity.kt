@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
@@ -104,6 +105,7 @@ class First_Activity : AppCompatActivity() {
                         return@OnCompleteListener
                     }
                     val token = task.result?.token
+                    Log.d("TAG_TOKEN",token)
                     FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
                     val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
                     startActivity(intent)
@@ -111,21 +113,6 @@ class First_Activity : AppCompatActivity() {
                 })
     }
 
-    /*fun getUnreadFunction(): Task<HttpsCallableResult> {
-        val data = hashMapOf(
-                "uid" to "test"
-        )
-        return functions
-                .getHttpsCallable("getUnreadChat")
-                .call(data)
-                .addOnSuccessListener { task ->
-                    val data = task.data as Map<*, *>
-                    Log.d("testGetUnreadFunction", data.toString())
-                }
-                .addOnFailureListener {
-                    Log.d("testGetUnreadFunction", "error")
-                }
-    }*/
     private fun showGPSDisabledDialog() {
         val builder = AlertDialog.Builder(this@First_Activity)
         builder.setTitle(R.string.GPS_Disabled)
@@ -143,43 +130,7 @@ class First_Activity : AppCompatActivity() {
 
     private var countNumberChat: Int? = 0
 
-    /*var nameCaution: MutableList<String?>? = ArrayList()
-    var valueCaution: MutableList<Int?>? = ArrayList()
-    private var sumReported = 0
-    private fun checkReport() {
-        val reportDb = FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("Report")
-        reportDb.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                    val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                    val editorRead = myUnread.edit()
-                    editorRead.putInt("total", countNumberChat!!.toInt())
-                    editorRead.apply()
-                    val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
-                    var sumReport: Int? = 0
-                    if (dataSnapshot.exists()) {
-                        for (dd in dataSnapshot.children) {
-                            sumReport = Integer.valueOf(dataSnapshot.child(dd.key.toString()).value.toString())
-                            nameCaution?.add(dd.key)
-                            valueCaution?.add(sumReport)
-                        }
-                        if (sumReport != 0) {
-                            intent.putExtra("warning", nameCaution as ArrayList<String?>?)
-                            intent.putExtra("warning_value", valueCaution as ArrayList<Int?>?)
-                        }
-                        intent.putExtra("first", countNumberChat.toString())
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        intent.putExtra("first", countNumberChat.toString())
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }*/
-    fun setAnimation() {
+    private fun setAnimation() {
         aniFade = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
         aniFade2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         aniFade.setAnimationListener(object : Animation.AnimationListener {

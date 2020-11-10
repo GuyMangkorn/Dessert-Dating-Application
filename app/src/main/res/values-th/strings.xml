@@ -158,6 +158,9 @@
     <string name="QA_choice5">เป็นเรื่องคอขาดบาดตาย</string>
     <string name="questionActivityTitle">คำถาม</string>
     <string name="questionActivitySubTitle">ตอบคำถามของเราเพื่อการจับคู่กับคนที่เข้ากันกับคุณ</string>
+    <string name="record">กดเพื่ออีดเสียง</string>
+    <string name="uploading">กำลังอัปโหลด</string>
+
 
 
 
