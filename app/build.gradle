@@ -96,7 +96,6 @@ dependencies {
     implementation 'com.github.demoNo:AutoScrollViewPager:v1.0.2'
     implementation 'com.victor:lib:1.0.4'
 
-    implementation 'com.github.nipunru:nsfw-detector-android:1.0.0'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-beta01'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
@@ -117,6 +116,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-vision:20.1.2'
     implementation 'com.google.firebase:firebase-functions-ktx:19.1.0'
     implementation 'com.google.firebase:firebase-storage:19.2.0'
+
+    implementation 'com.github.nipunru:nsfw-detector-android:1.0.0'
     implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
     api "com.google.firebase:firebase-ml-vision:24.0.3"
     implementation "com.google.firebase:firebase-ml-vision-automl:18.0.5"
