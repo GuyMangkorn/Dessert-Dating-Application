@@ -8,8 +8,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Color
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.media.MediaRecorder
 import android.net.Uri
@@ -58,7 +57,6 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var menu: LinearLayout
     private val plus: SwitchpageActivity? = SwitchpageActivity()
     private lateinit var linearRecord: LinearLayout
-    //private lateinit var toolbar: Toolbar
     private lateinit var imgSend: ImageView
     private lateinit var mSendImage: ImageView
     private lateinit var mCameraOpen: ImageView
@@ -73,29 +71,27 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var openMenu: ImageView
     private var chk = 0
     private var chk2 = 0
-    private var time_count = 0
+    private var timeCount = 0
     private var currentUserId: String? = null
     private var matchId: String? = null
     private var chatId: String? = null
-    private var UrlImage: String? = null
-    private var name_chat: String? = null
+    private var urlImage: String? = null
+    private var nameChat: String? = null
     private var fileName: String? = null
-    private var file_uri: Uri? = null
-    private var uri_camera: Uri? = null
+    private lateinit var uriCamera:Uri
     private var mSendEditText: CustomEdittext? = null
-    private var cHeck_back = 0
+    private var checkBack = 0
     private var pro: ProgressBar? = null
     private var proAudio: ProgressBar? = null
     private var recorder: MediaRecorder? = null
     private var active = true
-    private var T: Timer? = null
-    private var i = 0
+    private var timer: Timer? = null
     private var dialog: Dialog? = null
-    var mDatabaseUser: DatabaseReference? = null
-    var mDatabaseChat: DatabaseReference? = null
-    var mDatabaseImage: DatabaseReference? = null
-    var userDatabase: DatabaseReference? = null
-    var usersDb: DatabaseReference? = null
+    private lateinit var mDatabaseUser: DatabaseReference
+    private lateinit var mDatabaseChat: DatabaseReference
+    private lateinit var mDatabaseImage: DatabaseReference
+    private lateinit var userDatabase: DatabaseReference
+    private lateinit var usersDb: DatabaseReference
     private val myPermissionRequestReadMedia = 0
 
     @SuppressLint("ClickableViewAccessibility")
@@ -129,7 +125,7 @@ class ChatActivity : AppCompatActivity() {
         val editor = mySharedPreferences.edit()
         editor.putInt("Read", Integer.valueOf(unreadCount!!.toInt()))
         editor.apply()
-        name_chat = intent!!.extras!!.getString("nameMatch")
+        nameChat = intent!!.extras!!.getString("nameMatch")
         mRecordReal = findViewById(R.id.record_real)
         openMenu = findViewById(R.id.menu_button)
         mSendEditText = findViewById(R.id.message)
@@ -158,7 +154,7 @@ class ChatActivity : AppCompatActivity() {
                     proAudio!!.visibility = View.GONE
                     linearRecord.visibility = View.VISIBLE
                     mRecordReal.visibility = View.VISIBLE
-                    mRecordStatus.text = "Press to Record"
+                    mRecordStatus.text = resources.getString(R.string.record)
                 } else {
                     linearRecord.visibility = View.GONE
                 }
@@ -168,23 +164,23 @@ class ChatActivity : AppCompatActivity() {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
                 mRecordStatus.text = ("00:00")
-                T = Timer()
-                T!!.scheduleAtFixedRate(object : TimerTask() {
+                timer = Timer()
+                timer!!.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
                         runOnUiThread {
-                            ++time_count
-                            val minute = time_count / 60
-                            val second = time_count % 60
+                            ++timeCount
+                            val minute = timeCount / 60
+                            val second = timeCount % 60
                             mRecordStatus.text = (String.format("%02d", minute) + ":" + String.format("%02d", second))
                         }
                     }
                 }, 1000, 1000)
             } else if (event.action == MotionEvent.ACTION_UP) {
-                T!!.cancel()
+                timer!!.cancel()
                 stopRecording()
                 mRecordReal.visibility = (View.GONE)
                 proAudio!!.visibility = (View.VISIBLE)
-                mRecordStatus.text = ("Uploading.....")
+                mRecordStatus.text = resources.getString(R.string.uploading)
             }
             true
         }
@@ -202,11 +198,11 @@ class ChatActivity : AppCompatActivity() {
                                 .setIconColorFilter(Color.parseColor("#FFFFFF"))
                                 .setBackgroundColorInt(Color.parseColor("#FF5050"))
                                 .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
-                                .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
-                                .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
+                                .addButton(getString(R.string.cancle), R.style.AlertButton) { Alerter.hide() }
+                                .addButton(getString(R.string.ok), R.style.AlertButton) {
                                     Alerter.hide()
                                     deleteChild()
-                                })
+                                }
                                 .show()
                     }
                     R.id.menu_delete -> {
@@ -220,8 +216,8 @@ class ChatActivity : AppCompatActivity() {
                                 .setIconColorFilter(Color.parseColor("#FFFFFF"))
                                 .setBackgroundColorInt(Color.parseColor("#FF5050"))
                                 .setIcon(ContextCompat.getDrawable(this@ChatActivity, R.drawable.ic_warning_black_24dp)!!)
-                                .addButton(getString(R.string.cancle), R.style.AlertButton, View.OnClickListener { Alerter.hide() })
-                                .addButton(getString(R.string.ok), R.style.AlertButton, View.OnClickListener {
+                                .addButton(getString(R.string.cancle), R.style.AlertButton) { Alerter.hide() }
+                                .addButton(getString(R.string.ok), R.style.AlertButton) {
                                     Alerter.hide()
                                     val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
                                     getStart.setValue(fetchId!![fetchId.size - 1])
@@ -242,7 +238,7 @@ class ChatActivity : AppCompatActivity() {
                                     val editorRead = removeNotification.edit()
                                     editorRead.putString("ID", matchId)
                                     editorRead.apply()
-                                })
+                                }
                                 .show()
                     }
                     else -> {
@@ -267,17 +263,15 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         getImageProfile()
-        mNameChat.text = name_chat
+        mNameChat.text = nameChat
         mRecyclerView = findViewById<View?>(R.id.recyclerView_2) as RecyclerView
         val mChatLayoutManager = LinearLayoutManager(this@ChatActivity)
         mRecyclerView.layoutManager = mChatLayoutManager
-        mChatAdapter = ChatAdapter(getDataSetChat()!!, this@ChatActivity)
+        mChatAdapter = ChatAdapter(getDataSetChat(), this@ChatActivity)
         mSendButton = findViewById(R.id.send)
         mSendImage.setOnClickListener{
-            val intent = Intent()
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             intent.type = "image/*"
-            intent.action = Intent.ACTION_PICK
             startActivityForResult(Intent.createChooser(intent, "เลือกรูปภาพ"), 23)
         }
         mSendEditText!!.addTextChangedListener(object : TextWatcher {
@@ -319,21 +313,21 @@ class ChatActivity : AppCompatActivity() {
                         Manifest.permission.CAMERA), 2)
             } else {
                 val values = ContentValues()
-                uri_camera = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                uriCamera = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri_camera)
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uriCamera)
                 startActivityForResult(intent, 33)
             }
         }
     }
 
     private fun getImageProfile() {
-        mDatabaseImage!!.addListenerForSingleValueEvent(object : ValueEventListener {
+        mDatabaseImage.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ChatActivity, R.anim.fade_in2)
                 if (dataSnapshot.exists()) {
-                    UrlImage = dataSnapshot.value.toString()
-                    Glide.with(applicationContext).load(UrlImage).apply(RequestOptions().override(100, 100)).placeholder(R.color.background_gray).listener(object : RequestListener<Drawable?> {
+                    urlImage = dataSnapshot.value.toString()
+                    Glide.with(applicationContext).load(urlImage).apply(RequestOptions().override(100, 100)).placeholder(R.color.background_gray).listener(object : RequestListener<Drawable?> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
                             return false
                         }
@@ -357,7 +351,7 @@ class ChatActivity : AppCompatActivity() {
         val sendMessageText = mSendEditText!!.text.toString()
         if (sendMessageText.isNotEmpty()) {
             val d = DateTime
-            val newMessageDb = mDatabaseChat!!.push()
+            val newMessageDb = mDatabaseChat.push()
             val newMessage = hashMapOf(
                     "createByUser" to currentUserId,
                     "text" to sendMessageText,
@@ -370,11 +364,11 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun getChatId() {
-        mDatabaseUser!!.addListenerForSingleValueEvent(object : ValueEventListener {
+        mDatabaseUser.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     chatId = dataSnapshot.value.toString()
-                    mDatabaseChat = mDatabaseChat!!.child(chatId.toString())
+                    mDatabaseChat = mDatabaseChat.child(chatId.toString())
                     userDatabase = FirebaseDatabase.getInstance().reference.child("Chat").child(chatId.toString())
                     fetchSharedPreference()
                     //getCount()
@@ -386,13 +380,13 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun chatCheckRead() {
-        val dd = mDatabaseChat!!.orderByChild("read").equalTo("Unread")
+        val dd = mDatabaseChat.orderByChild("read").equalTo("Unread")
         dd.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (loop in dataSnapshot.children) {
                     readAlready(loop.key)
                     val myUnread = getSharedPreferences("TotalMessage", Context.MODE_PRIVATE)
-                    var dd2 = myUnread.getInt("total", 0)
+                    val dd2 = myUnread.getInt("total", 0)
                     val count = dd2 - 1
                     Log.d("chatNotificationTest", "$dd2-1")
                     plus!!.setCurrentIndex(count)
@@ -409,10 +403,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun readAlready(key: String?) {
-        mDatabaseChat!!.child(key.toString()).addListenerForSingleValueEvent(object : ValueEventListener {
+        mDatabaseChat.child(key.toString()).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.child("createByUser").value.toString() == matchId) {
-                    mDatabaseChat!!.child(key.toString()).child("read").setValue("Read")
+                    mDatabaseChat.child(key.toString()).child("read").setValue("Read")
                 }
             }
 
@@ -482,11 +476,11 @@ class ChatActivity : AppCompatActivity() {
             var time: String
             var urlSend = "default"
             var audio: String
-            var read: String
+           // var read: String
             var audioLength: String
             val myInNode = getSharedPreferences(fetchId.elementAt(i), Context.MODE_PRIVATE)
             message = myInNode.getString("text", "null")!!
-            read = myInNode.getString("read", "null")!!
+            //read = myInNode.getString("read", "null")!!
             createdByUser = myInNode.getString("createByUser", "null")!!
             time = myInNode.getString("time", "null")!!
             val check = myInNode.getString("image", "null")
@@ -504,8 +498,8 @@ class ChatActivity : AppCompatActivity() {
                 if (createdByUser != currentUserId)
                     chatCheckRead()
             }
-            val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
-            resultChat!!.add(newMessage)
+            val newMessage = ChatObject(message, currentUserBoolean, urlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
+            resultChat.add(newMessage)
             ++chk
                 if (fetchId.size == chk) {
                     mChatAdapter.notifyDataSetChanged()
@@ -523,10 +517,10 @@ class ChatActivity : AppCompatActivity() {
         var chatDatabase: Query? = mDatabaseChat
         if (fetchId!!.size > 0) {
             Toast.makeText(this@ChatActivity, "Size > 1 :" + fetchId.elementAt(fetchId.size - 1), Toast.LENGTH_SHORT).show()
-            chatDatabase = mDatabaseChat!!.orderByKey().startAt(fetchId.elementAt(fetchId.size - 1))
+            chatDatabase = mDatabaseChat.orderByKey().startAt(fetchId.elementAt(fetchId.size - 1))
         } else if (start != "null" && fetchId.size == 0) {
             Toast.makeText(this@ChatActivity, "Size == 0 :$start", Toast.LENGTH_SHORT).show()
-            chatDatabase = mDatabaseChat!!.orderByKey().startAt(start)
+            chatDatabase = mDatabaseChat.orderByKey().startAt(start)
         }
         chatDatabase!!.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -589,8 +583,8 @@ class ChatActivity : AppCompatActivity() {
                                         }
                                     }
                                 }
-                                val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
-                                resultChat!!.add(newMessage)
+                                val newMessage = ChatObject(message, currentUserBoolean, urlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
+                                resultChat.add(newMessage)
                                 mChatAdapter.notifyDataSetChanged()
                                 ++chk
                                 if (fetchId.size == 1) {
@@ -659,8 +653,8 @@ class ChatActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                            val newMessage = ChatObject(message, currentUserBoolean, UrlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
-                            resultChat!!.add(newMessage)
+                            val newMessage = ChatObject(message, currentUserBoolean, urlImage, time, chatId, urlSend, chk2, matchId, audio, audioLength, currentUserId)
+                            resultChat.add(newMessage)
                             mChatAdapter.notifyDataSetChanged()
                             ++chk
                             if (fetchId.size == 1) {
@@ -668,7 +662,7 @@ class ChatActivity : AppCompatActivity() {
                                 mRecyclerView.scrollToPosition(resultChat.size - 1)
                                 pro!!.visibility = View.INVISIBLE
                             } else if (countNodeD < chk) {
-                                mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.getItemCount() - 1)
+                                mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
                             }
                         }
                     }
@@ -689,71 +683,83 @@ class ChatActivity : AppCompatActivity() {
             dialog!!.show()
             val name = System.currentTimeMillis().toString()
             val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
-            var bitmap: Bitmap? = null
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(application.contentResolver, uri_camera)
+                val bitmap = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.contentResolver, uriCamera))
+                } else {
+                    MediaStore.Images.Media.getBitmap(
+                            this.contentResolver,
+                            uriCamera
+                    )
+                }
+                val byteOutput = ByteArrayOutputStream()
+                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 20, byteOutput)
+                val dataUrl = byteOutput.toByteArray()
+                val uploadTask = filepath.putBytes(dataUrl)
+                uploadTask.addOnFailureListener {
+                    Toast.makeText(this@ChatActivity, "Fail Upload", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+                uploadTask.addOnSuccessListener {
+                    val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
+                    filePath.downloadUrl.addOnSuccessListener { uri ->
+                        val newMessageDb = mDatabaseChat.push()
+                        val d = DateTime
+                        val newMessage = hashMapOf(
+                                "createByUser" to currentUserId,
+                                "time" to d.time(),
+                                "date" to d.date(),
+                                "text" to "photo$currentUserId",
+                                "read" to "Unread",
+                                "image" to uri.toString())
+                        newMessageDb.setValue(newMessage)
+                        dialog!!.dismiss()
+                    }.addOnFailureListener { }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
-            }
-            val baos = ByteArrayOutputStream()
-            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 20, baos)
-            val dataurl = baos.toByteArray()
-            val uploadTask = filepath.putBytes(dataurl)
-            uploadTask.addOnFailureListener {
-                Toast.makeText(this@ChatActivity, "Fail Upload", Toast.LENGTH_LONG).show()
-                finish()
-            }
-            uploadTask.addOnSuccessListener {
-                val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
-                filePath.downloadUrl.addOnSuccessListener { uri ->
-                    val newMessageDb = mDatabaseChat!!.push()
-                    val d = DateTime
-                    val newMessage = hashMapOf(
-                            "createByUser" to currentUserId,
-                            "time" to d.time(),
-                            "date" to d.date(),
-                            "text" to "photo$currentUserId",
-                            "read" to "Unread",
-                            "image" to uri.toString())
-                    newMessageDb.setValue(newMessage)
-                    dialog!!.dismiss()
-                }.addOnFailureListener { }
             }
         }
         if (requestCode == 23 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             dialog!!.show()
             val name = System.currentTimeMillis().toString()
-            file_uri = data.data
+            val fileUri = data.data
             val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
-            var bitmap: Bitmap? = null
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(application.contentResolver, file_uri)
+                val bitmap = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.contentResolver, fileUri!!))
+                } else {
+                   MediaStore.Images.Media.getBitmap(
+                            this.contentResolver,
+                           fileUri
+                    )
+                }
+                val byteOutput = ByteArrayOutputStream()
+                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 20, byteOutput)
+                val dataURL = byteOutput.toByteArray()
+                val uploadTask = filepath.putBytes(dataURL)
+                uploadTask.addOnFailureListener {
+                    Toast.makeText(this@ChatActivity, "Fail Upload", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+                uploadTask.addOnSuccessListener {
+                    val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
+                    filePath.downloadUrl.addOnSuccessListener { uri ->
+                        val newMessageDb = mDatabaseChat.push()
+                        val d = DateTime
+                        val newMessage = hashMapOf(
+                                "createByUser" to currentUserId,
+                                "time" to d.time(),
+                                "date" to d.date(),
+                                "text" to "photo$currentUserId",
+                                "read" to "Unread",
+                                "image" to uri.toString())
+                        newMessageDb.setValue(newMessage)
+                        dialog!!.dismiss()
+                    }.addOnFailureListener { }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
-            }
-            val baos = ByteArrayOutputStream()
-            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 20, baos)
-            val dataurl = baos.toByteArray()
-            val uploadTask = filepath.putBytes(dataurl)
-            uploadTask.addOnFailureListener {
-                Toast.makeText(this@ChatActivity, "Fail Upload", Toast.LENGTH_LONG).show()
-                finish()
-            }
-            uploadTask.addOnSuccessListener {
-                val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
-                filePath.downloadUrl.addOnSuccessListener { uri ->
-                    val newMessageDb = mDatabaseChat!!.push()
-                    val d = DateTime
-                    val newMessage = hashMapOf(
-                            "createByUser" to currentUserId,
-                            "time" to d.time(),
-                            "date" to d.date(),
-                            "text" to "photo$currentUserId",
-                            "read" to "Unread",
-                            "image" to uri.toString())
-                    newMessageDb.setValue(newMessage)
-                    dialog!!.dismiss()
-                }.addOnFailureListener { }
             }
         }
     }
@@ -790,7 +796,7 @@ class ChatActivity : AppCompatActivity() {
                 Toast.makeText(this@ChatActivity, "Success", Toast.LENGTH_SHORT).show()
                 linearRecord.visibility = View.GONE
                 val downloadUrl = uri
-                val newMessageDb = mDatabaseChat!!.push()
+                val newMessageDb = mDatabaseChat.push()
                 val calendar = Calendar.getInstance()
                 val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
                 val timeUser = currentTime.format(calendar.time)
@@ -800,12 +806,12 @@ class ChatActivity : AppCompatActivity() {
                         "createByUser" to currentUserId,
                         "time" to timeUser,
                         "date" to dateUser,
-                        "audio_length" to time_count.toString(),
+                        "audio_length" to timeCount.toString(),
                         "audio" to downloadUrl.toString(),
                         "text" to "audio$currentUserId",
                         "read" to "Unread")
                 newMessageDb.setValue(newMessage)
-                time_count = 0
+                timeCount = 0
             }
         }
     }
@@ -819,19 +825,19 @@ class ChatActivity : AppCompatActivity() {
             if (intent.hasExtra("chat_na")) {
                 if (c > 1) {
                     usersDb.apply {
-                        usersDb!!.child(matchId.toString()).child("connection")
+                        usersDb.child(matchId.toString()).child("connection")
                                 .child("yep")
                                 .child(currentUserId.toString()).setValue(true)
-                        usersDb!!.child(currentUserId.toString()).child("connection")
+                        usersDb.child(currentUserId.toString()).child("connection")
                                 .child("yep")
                                 .child(matchId.toString()).setValue(true)
-                        usersDb!!.child(currentUserId.toString()).child("connection")
+                        usersDb.child(currentUserId.toString()).child("connection")
                                 .child("chatna")
                                 .child(matchId.toString()).setValue(null)
                     }
                 }
             }
-            if (cHeck_back == 0) {
+            if (checkBack == 0) {
                 finish()
                 return
             }
@@ -881,17 +887,6 @@ class ChatActivity : AppCompatActivity() {
 
                      override fun onCancelled(databaseError: DatabaseError) {}
                  })
-    }
-
-
-    private fun updateDate() {
-        val dateUser: String
-        val currentDate = SimpleDateFormat("dd/MM/yyyy")
-        val calendar = Calendar.getInstance()
-        dateUser = currentDate.format(calendar.time)
-        val ff = hashMapOf(
-                "date" to dateUser)
-        usersDb!!.child(currentUserId.toString()).child("PutReportId").child(matchId.toString()).updateChildren(ff as Map<String, Any>)
     }
 
     private val resultChat: ArrayList<ChatObject> = ArrayList()
