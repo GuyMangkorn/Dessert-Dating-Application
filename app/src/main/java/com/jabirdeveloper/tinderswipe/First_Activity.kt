@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.hanks.htextview.base.AnimationListener
 import com.hanks.htextview.base.HTextView
 import kotlinx.android.synthetic.main.activity_first_.*
@@ -33,11 +34,7 @@ class First_Activity : AppCompatActivity() {
     private var firebaseAuthStateListener: AuthStateListener? = null
     private var mAuth: FirebaseAuth? = null
     private var usersDb: DatabaseReference? = null
-
-    //private val plus: SwitchpageActivity? = SwitchpageActivity() เอาไว้ทำไมวะ
     private var mContext: Context? = null
-
-    //private var functions = Firebase.functions
     private lateinit var aniFade: Animation
     private lateinit var aniFade2: Animation
     private var mLocationManager: LocationManager? = null
@@ -55,8 +52,6 @@ class First_Activity : AppCompatActivity() {
             firebaseAuthStateListener = AuthStateListener {
                 val user = FirebaseAuth.getInstance().currentUser
                 if (user != null) {
-                    // val svgView: AnimatedSvgView = findViewById(R.id.animated_svg_view)
-                    //  svgView.start()
 
                     logo.startAnimation(aniFade)
                     usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -98,34 +93,18 @@ class First_Activity : AppCompatActivity() {
     }
 
     private fun pushToken() {
-        FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        return@OnCompleteListener
-                    }
-                    val token = task.result?.token
-                    FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
-                    val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                })
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
+            }
+            val token = task.result
+            FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
+            val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
+            startActivity(intent)
+            finish()
+        })
     }
 
-    /*fun getUnreadFunction(): Task<HttpsCallableResult> {
-        val data = hashMapOf(
-                "uid" to "test"
-        )
-        return functions
-                .getHttpsCallable("getUnreadChat")
-                .call(data)
-                .addOnSuccessListener { task ->
-                    val data = task.data as Map<*, *>
-                    Log.d("testGetUnreadFunction", data.toString())
-                }
-                .addOnFailureListener {
-                    Log.d("testGetUnreadFunction", "error")
-                }
-    }*/
     private fun showGPSDisabledDialog() {
         val builder = AlertDialog.Builder(this@First_Activity)
         builder.setTitle(R.string.GPS_Disabled)
