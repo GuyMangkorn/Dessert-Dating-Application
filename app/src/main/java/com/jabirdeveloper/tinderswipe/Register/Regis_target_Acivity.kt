@@ -41,10 +41,10 @@ import java.io.IOException
 class Regis_target_Acivity : AppCompatActivity() {
     private var email: String? = null
     private var pass: String? = null
-    private lateinit var name: String
-    private lateinit var sex: String
+    private var name: String? = null
+    private var sex: String? = null
     private var Age: Int = 18
-    private  var type: String? = null
+    private lateinit var type:String
     private var x: Double = 0.0
     private var y: Double = 0.0
     private var hashMapQA:Map<*,*>? = null
@@ -74,7 +74,7 @@ class Regis_target_Acivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         x = intent.getDoubleExtra("X", x)
         y = intent.getDoubleExtra("Y", y)
-        type = intent.getStringExtra("Type")
+        type = intent.getStringExtra("Type")!!
         Log.d("showItemList", type)
         email = intent.getStringExtra("email")
         pass = intent.getStringExtra("password")

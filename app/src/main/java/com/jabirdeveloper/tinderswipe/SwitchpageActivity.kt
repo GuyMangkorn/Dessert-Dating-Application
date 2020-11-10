@@ -426,9 +426,9 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         locationData.updateChildren(location)
     }
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
-    override fun onProviderEnabled(p0: String?) {permissionCheck()}
-    override fun onProviderDisabled(p0: String?) {
-        if (p0 == LocationManager.GPS_PROVIDER) {
+    override fun onProviderEnabled(provider: String) {permissionCheck()}
+    override fun onProviderDisabled(provider: String) {
+        if (provider == LocationManager.GPS_PROVIDER) {
             showGPSDisabledDialog()
         }
     }

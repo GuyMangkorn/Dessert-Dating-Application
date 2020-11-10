@@ -94,7 +94,7 @@ class Regis_ageActivity : AppCompatActivity() {
         })
     }
 
-    private fun setLocal(lang: String?) {
+    private fun setLocal(lang: String) {
         val locale = Locale(lang)
         Locale.setDefault(locale)
         val configuration = Configuration()
@@ -108,7 +108,7 @@ class Regis_ageActivity : AppCompatActivity() {
 
     private fun loadLocal() {
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val langure = preferences.getString("My_Lang", "")
+        val langure = preferences.getString("My_Lang", "")!!
         Log.d("My2", langure)
         setLocal(langure)
     }

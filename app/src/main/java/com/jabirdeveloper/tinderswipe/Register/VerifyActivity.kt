@@ -84,7 +84,7 @@ class VerifyActivity : AppCompatActivity() {
                 })
             }
         }
-        val phoneNo = intent.getStringExtra("Phone")
+        val phoneNo = intent.getStringExtra("Phone")!!
         Toast.makeText(this@VerifyActivity, phoneNo, Toast.LENGTH_SHORT).show()
         sendVerification(phoneNo)
         commend.text = "${getString(R.string.verification)} $phoneNo ${getString(R.string.please)}"
@@ -131,9 +131,9 @@ class VerifyActivity : AppCompatActivity() {
             Log.w("TAG", "onVerificationFailed", e)
 
             if (e is FirebaseAuthInvalidCredentialsException) {
-                Log.d("error", e.message)
+                Log.d("error", e.message!!)
             } else if (e is FirebaseTooManyRequestsException) {
-                Log.d("error", e.message)
+                Log.d("error", e.message!!)
             }
 
             // Show a message and update the UI
