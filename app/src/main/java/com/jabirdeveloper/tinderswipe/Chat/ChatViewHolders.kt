@@ -16,7 +16,6 @@ import android.os.CountDownTimer
 import android.os.Environment
 import android.util.Log
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,33 +31,33 @@ import java.io.IOException
 
 @Suppress("NAME_SHADOWING")
 class ChatViewHolders(itemView: View, private val context: Context) : RecyclerView.ViewHolder(itemView) {
-    var mMessage: TextView = itemView.chatmessage
-    var timeSend: TextView = itemView.time_chat_user
-    var mMatchId: TextView = itemView.match_id
-    var mMatchIdReal: TextView = itemView.match_id_real_image
-    var audioUrl: TextView = itemView.audio_url
+    private var mMessage: TextView = itemView.chatmessage
+    private var timeSend: TextView = itemView.time_chat_user
+    private var mMatchId: TextView = itemView.match_id
+    private var mMatchIdReal: TextView = itemView.match_id_real_image
+    private var audioUrl: TextView = itemView.audio_url
     var beginAudio: TextView = itemView.begin_audio
-    var mContainer: LinearLayout = itemView.container
+    //var mContainer: LinearLayout = itemView.container
     var buttonAudio: Button = itemView.play_audio
     var mchk: RelativeLayout = itemView.lilili
     var mchk2: RelativeLayout = itemView.lili
     var mchk3: RelativeLayout = itemView.li
-    var imageOpposite: ImageView = itemView.image_holder
-    var mImageSent: ImageView = itemView.img_sent
+    private var imageOpposite: ImageView = itemView.image_holder
+    private var mImageSent: ImageView = itemView.img_sent
     //var stop_Animate: ImageView? = null
     private var progressBarAudio: ProgressBar = itemView.progressBar_playAudio
     private var play:Boolean = false
     //var mRecycler: RecyclerView?
-    var mChk: TextView = itemView.chk_image
-    var mChk_2: TextView = itemView.chk_image_2
+    private var mChk: TextView = itemView.chk_image
+    private var mChk2: TextView = itemView.chk_image_2
     //private val loading: AVLoadingIndicatorView? = null
     private lateinit var myClipboard: ClipboardManager
-    private var myClip: ClipData? = null
-    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var myClip: ClipData
+    private lateinit var mediaPlayer: MediaPlayer
     var cd: LVCircularCD = itemView.findViewById(R.id.play_pause_animate)
     private var length = 0
     private var totalLength = 0
-    private var countDownTimer: CountDownTimer? = null
+    private lateinit var countDownTimer: CountDownTimer
     //private var card: CardView = itemView.findViewById(R.id.card)
     private var check = true
     private lateinit var alertDialog: AlertDialog
@@ -68,7 +67,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
 
         mMatchIdReal.text = chatList.createByUser
         mMatchId.text = chatList.Match_id
-        mChk_2.text = "" + chatList.chk
+        mChk2.text = "" + chatList.chk
         mChk.text = "" + chatList.chk
         timeSend.text = chatList.time
         if (chatList.currentUser!!) {
@@ -86,10 +85,12 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                     if (Integer.valueOf(chatList.audio_length!!) < 60) {
                         audioUrl.text = chatList.audio_Url
                         val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!))
+                        beginAudio.text = "00:00"
                         mMessage.text = "00:$second"
                     } else {
                         val minute = String.format("%02d", Integer.valueOf(chatList.audio_length!!) / 60)
                         val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!) % 60)
+                        beginAudio.text = "00:00"
                         mMessage.text = "$minute:$second"
                     }
                     beginAudio.setTextColor(Color.parseColor("#FFFFFF"))
@@ -123,10 +124,12 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                     if (Integer.valueOf(chatList.audio_length!!) < 60) {
                         audioUrl.text = chatList.audio_Url
                         val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!))
+                        beginAudio.text = "00:00"
                         mMessage.text = "00:$second"
                     } else {
                         val minute = String.format("%02d", Integer.valueOf(chatList.audio_length!!) / 60)
                         val second = String.format("%02d", Integer.valueOf(chatList.audio_length!!) % 60)
+                        beginAudio.text = "00:00"
                         mMessage.text = "$minute:$second"
                     }
                     beginAudio.setTextColor(Color.parseColor("#292929"))
@@ -172,20 +175,20 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                 val counter = second + minute * 60 - counterSub
                 mediaPlayer = MediaPlayer()
                 try {
-                    mediaPlayer!!.setDataSource(audioUrl.text.toString())
+                    mediaPlayer.setDataSource(audioUrl.text.toString())
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 try {
-                    mediaPlayer!!.prepare()
+                    mediaPlayer.prepare()
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 if (length == 0) {
-                    mediaPlayer!!.start()
+                    mediaPlayer.start()
                 } else {
-                    mediaPlayer!!.seekTo(length)
-                    mediaPlayer!!.start()
+                    mediaPlayer.seekTo(length)
+                    mediaPlayer.start()
                 }
                 if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1)!!.constantState) {
                     mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1_selected)
@@ -229,10 +232,10 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                 play =false
                 Log.d("audioBackground","$play")
                 cd.stopAnim()
-                countDownTimer!!.cancel()
+                countDownTimer.cancel()
                 buttonAudio.background = ContextCompat.getDrawable(context, R.drawable.ic_play_circle_outline_black_24dp)
-                mediaPlayer!!.stop()
-                length = mediaPlayer!!.currentPosition
+                mediaPlayer.stop()
+                length = mediaPlayer.currentPosition
                 Log.d("audioBackground","$length")
                 if (mchk2.background.constantState === ContextCompat.getDrawable(context, R.drawable.chat_1_selected)!!.constantState) {
                     mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1)
@@ -249,7 +252,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                     if (item[which] == "คัดลอก") {
                         val text: String = mMessage.text.toString()
                         myClip = ClipData.newPlainText("text", text)
-                        myClipboard.setPrimaryClip(myClip!!)
+                        myClipboard.setPrimaryClip(myClip)
                     }
                 }
                 builder.setOnDismissListener { mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2) }
@@ -263,7 +266,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                     if (item[which] == "คัดลอก") {
                         val text: String = mMessage.text.toString()
                         myClip = ClipData.newPlainText("text", text)
-                        myClipboard.setPrimaryClip(myClip!!)
+                        myClipboard.setPrimaryClip(myClip)
                     }
                 }
                 builder.setOnDismissListener { mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_1) }
@@ -278,7 +281,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
             intent.putExtra("matchIdReal", mMatchIdReal.text.toString())
             intent.putExtra("matchId", mMatchId.text.toString())
             intent.putExtra("ChkImage", mChk.text.toString())
-            intent.putExtra("ChkImage2", mChk_2.text.toString())
+            intent.putExtra("ChkImage2", mChk2.text.toString())
             context.startActivity(intent)
         }
         mImageSent.setOnLongClickListener {
@@ -289,7 +292,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                         ActivityCompat.requestPermissions((context as Activity?)!!, arrayOf<String?>(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
                         mchk3.background = ContextCompat.getDrawable(context, R.drawable.chat_1_photo)
                         val bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.maicar)
-                        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "test.png")
+                        val file = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "test.png")
                         val out: FileOutputStream
                         try {
                             out = FileOutputStream(file)
@@ -337,7 +340,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
         val params2 = mchk2.layoutParams as RelativeLayout.LayoutParams
         params2.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
-        params2.setMargins(120,0,0,0)
+        params2.setMargins(0,0,0,0)
         params3.apply {
             addRule(RelativeLayout.END_OF, 0)
             addRule(RelativeLayout.START_OF, mchk2.id)
@@ -366,7 +369,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
         mchk.visibility = View.VISIBLE
         mchk2.visibility = View.VISIBLE
         val params2 = mchk2.layoutParams as RelativeLayout.LayoutParams
-        params2.setMargins(0,0,120,0)
+        params2.setMargins(0,0,0,0)
         params2.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
         val params3 = mchk.layoutParams as RelativeLayout.LayoutParams
         params3.apply {

@@ -72,21 +72,21 @@ class ChatActivity : AppCompatActivity() {
     private var chk = 0
     private var chk2 = 0
     private var timeCount = 0
-    private var currentUserId: String? = null
-    private var matchId: String? = null
-    private var chatId: String? = null
-    private var urlImage: String? = null
-    private var nameChat: String? = null
-    private var fileName: String? = null
+    private lateinit var currentUserId: String
+    private lateinit var matchId:String
+    private lateinit var chatId: String
+    private lateinit var urlImage: String
+    private lateinit var nameChat: String
+    private lateinit var fileName: String
     private lateinit var uriCamera:Uri
-    private var mSendEditText: CustomEdittext? = null
+    private lateinit var mSendEditText: CustomEdittext
     private var checkBack = 0
-    private var pro: ProgressBar? = null
-    private var proAudio: ProgressBar? = null
-    private var recorder: MediaRecorder? = null
+    private lateinit var pro: ProgressBar
+    private lateinit var proAudio: ProgressBar
+    private lateinit var recorder: MediaRecorder
     private var active = true
-    private var timer: Timer? = null
-    private var dialog: Dialog? = null
+    private lateinit var timer:Timer
+    private lateinit var dialog: Dialog
     private lateinit var mDatabaseUser: DatabaseReference
     private lateinit var mDatabaseChat: DatabaseReference
     private lateinit var mDatabaseImage: DatabaseReference
@@ -109,7 +109,7 @@ class ChatActivity : AppCompatActivity() {
         mCameraOpen = findViewById(R.id.camera_open)
         proAudio = findViewById(R.id.progressBar_audio)
         pro = findViewById(R.id.progressBar_Chat)
-        matchId = intent.extras!!.getString("matchId")
+        matchId = intent.extras!!.getString("matchId")!!
         var unreadCount = intent!!.extras!!.getString("unread")
         if (unreadCount == "-1") {
             val myUnread = getSharedPreferences("NotificationMessage", Context.MODE_PRIVATE)
@@ -125,7 +125,7 @@ class ChatActivity : AppCompatActivity() {
         val editor = mySharedPreferences.edit()
         editor.putInt("Read", Integer.valueOf(unreadCount!!.toInt()))
         editor.apply()
-        nameChat = intent!!.extras!!.getString("nameMatch")
+        nameChat = intent!!.extras!!.getString("nameMatch")!!
         mRecordReal = findViewById(R.id.record_real)
         openMenu = findViewById(R.id.menu_button)
         mSendEditText = findViewById(R.id.message)
@@ -139,11 +139,11 @@ class ChatActivity : AppCompatActivity() {
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         usersDb = FirebaseDatabase.getInstance().reference.child("Users")
         mDatabaseUser = if (intent.hasExtra("Hi")) {
-            FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna").child(matchId.toString())
+            FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("chatna").child(matchId)
         } else {
-            FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("ChatId")
+            FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("matches").child(matchId).child("ChatId")
         }
-        mDatabaseImage = FirebaseDatabase.getInstance().reference.child("Users").child(matchId.toString()).child("ProfileImage").child("profileImageUrl0")
+        mDatabaseImage = FirebaseDatabase.getInstance().reference.child("Users").child(matchId).child("ProfileImage").child("profileImageUrl0")
         mDatabaseChat = FirebaseDatabase.getInstance().reference.child("Chat")
         mRecord.setOnClickListener{
             if (ActivityCompat.checkSelfPermission(this@ChatActivity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -151,7 +151,7 @@ class ChatActivity : AppCompatActivity() {
                         Manifest.permission.RECORD_AUDIO), 72)
             } else {
                 if (linearRecord.visibility == View.GONE) {
-                    proAudio!!.visibility = View.GONE
+                    proAudio.visibility = View.GONE
                     linearRecord.visibility = View.VISIBLE
                     mRecordReal.visibility = View.VISIBLE
                     mRecordStatus.text = resources.getString(R.string.record)
@@ -165,7 +165,7 @@ class ChatActivity : AppCompatActivity() {
                 startRecording()
                 mRecordStatus.text = ("00:00")
                 timer = Timer()
-                timer!!.scheduleAtFixedRate(object : TimerTask() {
+                timer.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
                         runOnUiThread {
                             ++timeCount
@@ -176,10 +176,10 @@ class ChatActivity : AppCompatActivity() {
                     }
                 }, 1000, 1000)
             } else if (event.action == MotionEvent.ACTION_UP) {
-                timer!!.cancel()
+                timer.cancel()
                 stopRecording()
                 mRecordReal.visibility = (View.GONE)
-                proAudio!!.visibility = (View.VISIBLE)
+                proAudio.visibility = (View.VISIBLE)
                 mRecordStatus.text = resources.getString(R.string.uploading)
             }
             true
@@ -206,7 +206,7 @@ class ChatActivity : AppCompatActivity() {
                                 .show()
                     }
                     R.id.menu_delete -> {
-                        val mDialog = ReportUser(this@ChatActivity, matchId!!).reportDialog()
+                        val mDialog = ReportUser(this@ChatActivity, matchId).reportDialog()
                         mDialog.show()
                     }
                     R.id.delete_chat -> {
@@ -219,7 +219,7 @@ class ChatActivity : AppCompatActivity() {
                                 .addButton(getString(R.string.cancle), R.style.AlertButton) { Alerter.hide() }
                                 .addButton(getString(R.string.ok), R.style.AlertButton) {
                                     Alerter.hide()
-                                    val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
+                                    val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("matches").child(matchId).child("Start")
                                     getStart.setValue(fetchId!![fetchId.size - 1])
                                     val prefs1 = getSharedPreferences(chatId, Context.MODE_PRIVATE)
                                     val allPrefs = prefs1.all
@@ -274,7 +274,7 @@ class ChatActivity : AppCompatActivity() {
             intent.type = "image/*"
             startActivityForResult(Intent.createChooser(intent, "เลือกรูปภาพ"), 23)
         }
-        mSendEditText!!.addTextChangedListener(object : TextWatcher {
+        mSendEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.toString().isNotEmpty()) {
@@ -288,14 +288,14 @@ class ChatActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
-        mSendEditText!!.setOnEditTextImeBackListener(object : EditTextImeBackListener {
+        mSendEditText.setOnEditTextImeBackListener(object : EditTextImeBackListener {
             override fun onImeBack(ctrl: CustomEdittext?, text: String?) {
                 menu.visibility = View.VISIBLE
-                mSendEditText!!.clearFocus()
+                mSendEditText.clearFocus()
                 openMenu.visibility = View.GONE
             }
         })
-        mSendEditText!!.setOnFocusChangeListener { _, b ->
+        mSendEditText.setOnFocusChangeListener { _, b ->
             if (b) {
                 linearRecord.visibility = View.GONE
                 menu.visibility = View.GONE
@@ -348,7 +348,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
-        val sendMessageText = mSendEditText!!.text.toString()
+        val sendMessageText = mSendEditText.text.toString()
         if (sendMessageText.isNotEmpty()) {
             val d = DateTime
             val newMessageDb = mDatabaseChat.push()
@@ -360,7 +360,7 @@ class ChatActivity : AppCompatActivity() {
                     "read" to "Unread")
             newMessageDb.setValue(newMessage)
         }
-        mSendEditText!!.text = (null)
+        mSendEditText.text = (null)
     }
 
     private fun getChatId() {
@@ -368,8 +368,8 @@ class ChatActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     chatId = dataSnapshot.value.toString()
-                    mDatabaseChat = mDatabaseChat.child(chatId.toString())
-                    userDatabase = FirebaseDatabase.getInstance().reference.child("Chat").child(chatId.toString())
+                    mDatabaseChat = mDatabaseChat.child(chatId)
+                    userDatabase = FirebaseDatabase.getInstance().reference.child("Chat").child(chatId)
                     fetchSharedPreference()
                     //getCount()
                 }
@@ -433,7 +433,7 @@ class ChatActivity : AppCompatActivity() {
     private var firstConnect = true
     private var start: String? = "null"
     private fun getFirstNode() {
-        val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(matchId.toString()).child("Start")
+        val getStart = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("matches").child(matchId).child("Start")
         getStart.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (firstConnect) {
@@ -505,7 +505,7 @@ class ChatActivity : AppCompatActivity() {
                     mChatAdapter.notifyDataSetChanged()
                     mRecyclerView.adapter = mChatAdapter
                     mRecyclerView.scrollToPosition(resultChat.size - 1)
-                    pro!!.visibility = View.INVISIBLE
+                    pro.visibility = View.INVISIBLE
                     countNodeD = fetchId.size
                 }
 
@@ -591,7 +591,7 @@ class ChatActivity : AppCompatActivity() {
                                     mChatAdapter.notifyDataSetChanged()
                                     mRecyclerView.adapter = mChatAdapter
                                     mRecyclerView.scrollToPosition(resultChat.size - 1)
-                                    pro!!.visibility = View.INVISIBLE
+                                    pro.visibility = View.INVISIBLE
                                 } else if (countNodeD < chk) {
                                     mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
                                 }
@@ -660,7 +660,7 @@ class ChatActivity : AppCompatActivity() {
                             if (fetchId.size == 1) {
                                 mRecyclerView.adapter = mChatAdapter
                                 mRecyclerView.scrollToPosition(resultChat.size - 1)
-                                pro!!.visibility = View.INVISIBLE
+                                pro.visibility = View.INVISIBLE
                             } else if (countNodeD < chk) {
                                 mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
                             }
@@ -680,9 +680,9 @@ class ChatActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 33 && resultCode == Activity.RESULT_OK) {
-            dialog!!.show()
+            dialog.show()
             val name = System.currentTimeMillis().toString()
-            val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
+            val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId).child(matchId).child("image$name")
             try {
                 val bitmap = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
                     ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.contentResolver, uriCamera))
@@ -701,7 +701,7 @@ class ChatActivity : AppCompatActivity() {
                     finish()
                 }
                 uploadTask.addOnSuccessListener {
-                    val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
+                    val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId).child(matchId).child("image$name")
                     filePath.downloadUrl.addOnSuccessListener { uri ->
                         val newMessageDb = mDatabaseChat.push()
                         val d = DateTime
@@ -713,7 +713,7 @@ class ChatActivity : AppCompatActivity() {
                                 "read" to "Unread",
                                 "image" to uri.toString())
                         newMessageDb.setValue(newMessage)
-                        dialog!!.dismiss()
+                        dialog.dismiss()
                     }.addOnFailureListener { }
                 }
             } catch (e: IOException) {
@@ -721,10 +721,10 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         if (requestCode == 23 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            dialog!!.show()
+            dialog.show()
             val name = System.currentTimeMillis().toString()
             val fileUri = data.data
-            val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
+            val filepath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId).child(matchId).child("image$name")
             try {
                 val bitmap = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
                     ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.contentResolver, fileUri!!))
@@ -743,7 +743,7 @@ class ChatActivity : AppCompatActivity() {
                     finish()
                 }
                 uploadTask.addOnSuccessListener {
-                    val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId.toString()).child(matchId.toString()).child("image$name")
+                    val filePath = FirebaseStorage.getInstance().reference.child("SendImage").child(currentUserId).child(matchId).child("image$name")
                     filePath.downloadUrl.addOnSuccessListener { uri ->
                         val newMessageDb = mDatabaseChat.push()
                         val d = DateTime
@@ -755,7 +755,7 @@ class ChatActivity : AppCompatActivity() {
                                 "read" to "Unread",
                                 "image" to uri.toString())
                         newMessageDb.setValue(newMessage)
-                        dialog!!.dismiss()
+                        dialog.dismiss()
                     }.addOnFailureListener { }
                 }
             } catch (e: IOException) {
@@ -768,29 +768,28 @@ class ChatActivity : AppCompatActivity() {
         fileName = externalCacheDir!!.absolutePath
         fileName += "/recorded_audio.3gp"
         recorder = MediaRecorder()
-        recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        recorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-        recorder!!.setOutputFile(fileName)
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+        recorder.setOutputFile(fileName)
         try {
-            recorder!!.prepare()
+            recorder.prepare()
         } catch (e: IOException) {
             Toast.makeText(this@ChatActivity, "Fail to recorded", Toast.LENGTH_SHORT).show()
         }
-        recorder!!.start()
+        recorder.start()
     }
 
     private fun stopRecording() {
-        recorder!!.stop()
-        recorder!!.release()
-        recorder = null
+        recorder.stop()
+        recorder.release()
         upLoadAudio()
     }
 
     private fun upLoadAudio() {
         val name = System.currentTimeMillis().toString()
-        val ss2 = FirebaseStorage.getInstance().reference.child("Audio").child(currentUserId.toString()).child(matchId.toString()).child("audio$name.3gp")
-        val uri = Uri.fromFile(File(fileName!!))
+        val ss2 = FirebaseStorage.getInstance().reference.child("Audio").child(currentUserId).child(matchId).child("audio$name.3gp")
+        val uri = Uri.fromFile(File(fileName))
         ss2.putFile(uri).addOnSuccessListener {
             ss2.downloadUrl.addOnSuccessListener { uri ->
                 Toast.makeText(this@ChatActivity, "Success", Toast.LENGTH_SHORT).show()
@@ -817,7 +816,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        mSendEditText!!.clearFocus()
+        mSendEditText.clearFocus()
         if (linearRecord.visibility == View.VISIBLE) {
             linearRecord.visibility = View.GONE
         } else {
@@ -825,15 +824,15 @@ class ChatActivity : AppCompatActivity() {
             if (intent.hasExtra("chat_na")) {
                 if (c > 1) {
                     usersDb.apply {
-                        usersDb.child(matchId.toString()).child("connection")
+                        usersDb.child(matchId).child("connection")
                                 .child("yep")
-                                .child(currentUserId.toString()).setValue(true)
-                        usersDb.child(currentUserId.toString()).child("connection")
+                                .child(currentUserId).setValue(true)
+                        usersDb.child(currentUserId).child("connection")
                                 .child("yep")
-                                .child(matchId.toString()).setValue(true)
-                        usersDb.child(currentUserId.toString()).child("connection")
+                                .child(matchId).setValue(true)
+                        usersDb.child(currentUserId).child("connection")
                                 .child("chatna")
-                                .child(matchId.toString()).setValue(null)
+                                .child(matchId).setValue(null)
                     }
                 }
             }
@@ -860,10 +859,10 @@ class ChatActivity : AppCompatActivity() {
                  .addListenerForSingleValueEvent(object : ValueEventListener {
                      override fun onDataChange(dataSnapshot: DataSnapshot) {
                          val chatId = dataSnapshot.child("Users")
-                                 .child(currentUserId.toString())
+                                 .child(currentUserId)
                                  .child("connection")
                                  .child("matches")
-                                 .child(matchId.toString())
+                                 .child(matchId)
                                  .child("ChatId")
                                  .value.toString()
                          if (dataSnapshot.child("Chat").hasChild(chatId)) {
@@ -871,18 +870,18 @@ class ChatActivity : AppCompatActivity() {
                                      .child("Chat")
                                      .child(chatId).removeValue()
                          }
-                         dataDelete.child(currentUserId.toString()).child("connection")
+                         dataDelete.child(currentUserId).child("connection")
                                  .child("matches")
-                                 .child(matchId.toString()).removeValue()
-                         dataDelete.child(currentUserId.toString()).child("connection")
+                                 .child(matchId).removeValue()
+                         dataDelete.child(currentUserId).child("connection")
                                  .child("yep")
-                                 .child(matchId.toString()).removeValue()
-                         dataDelete.child(matchId.toString()).child("connection")
+                                 .child(matchId).removeValue()
+                         dataDelete.child(matchId).child("connection")
                                  .child("matches")
-                                 .child(currentUserId.toString()).removeValue()
-                         dataDelete.child(matchId.toString()).child("connection")
+                                 .child(currentUserId).removeValue()
+                         dataDelete.child(matchId).child("connection")
                                  .child("yep")
-                                 .child(currentUserId.toString()).removeValue()
+                                 .child(currentUserId).removeValue()
                      }
 
                      override fun onCancelled(databaseError: DatabaseError) {}
