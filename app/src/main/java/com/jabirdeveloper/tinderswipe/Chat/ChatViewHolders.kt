@@ -41,7 +41,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
     var buttonAudio: Button = itemView.play_audio
     var mchk: RelativeLayout = itemView.lilili
     var mchk2: RelativeLayout = itemView.lili
-    var mchk3: RelativeLayout = itemView.li
+    private var mchk3: RelativeLayout = itemView.li
     private var imageOpposite: ImageView = itemView.image_holder
     private var mImageSent: ImageView = itemView.img_sent
     //var stop_Animate: ImageView? = null
@@ -176,14 +176,8 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                 mediaPlayer = MediaPlayer()
                 try {
                     mediaPlayer.setDataSource(audioUrl.text.toString())
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                try {
                     mediaPlayer.prepare()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+                } catch (e: IOException) { e.printStackTrace() }
                 if (length == 0) {
                     mediaPlayer.start()
                 } else {
@@ -225,6 +219,7 @@ class ChatViewHolders(itemView: View, private val context: Context) : RecyclerVi
                         } else {
                             mchk2.background = ContextCompat.getDrawable(context, R.drawable.chat_2)
                         }
+                        play = false
                     }
                 }.start()
 

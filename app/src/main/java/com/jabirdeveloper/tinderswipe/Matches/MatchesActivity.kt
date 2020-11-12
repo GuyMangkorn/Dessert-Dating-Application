@@ -29,8 +29,8 @@ class MatchesActivity : Fragment() {
     private lateinit var mMatchesLayoutManager: RecyclerView.LayoutManager
     private lateinit var mHiLayout: RecyclerView.LayoutManager
     private lateinit var layoutChatNa: LinearLayout
-    private var currentUserId: String? = null
-    private var dateUser: String? = ""
+    private lateinit var currentUserId: String
+    private lateinit var dateUser: String
     private var count = 0
     private lateinit var textEmpty: TextView
     private lateinit var chatEmpty: TextView
@@ -69,7 +69,7 @@ class MatchesActivity : Fragment() {
     private var userMatchCount = 0
 
     private fun checkFirst(){
-        val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches")
+        val matchDbCheck = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("matches")
         matchDbCheck.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(error: DatabaseError) {}
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -84,7 +84,7 @@ class MatchesActivity : Fragment() {
     }
     private fun getUserMarchId() {
         FirebaseDatabase.getInstance().reference.child("Users")
-                .child(currentUserId.toString())
+                .child(currentUserId)
                 .child("connection")
                 .child("matches")
                 .addChildEventListener(object : ChildEventListener {
@@ -145,7 +145,7 @@ class MatchesActivity : Fragment() {
             override fun onCancelled(error: DatabaseError) {} })
     }
     private fun startNode(key: String?, keyNode: String?, lastChat: String?, time: String?, count: Int) {
-        val startDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("matches").child(key.toString()).child("Start")
+        val startDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("matches").child(key.toString()).child("Start")
         startDb.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
@@ -195,7 +195,7 @@ class MatchesActivity : Fragment() {
     private var userChatNaCount = 0
     private var checkFirstRemoveChatNa: String? = "null"
     private fun chatNaCheck() {
-        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
+        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("chatna")
         dBChatNa.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) { chatNa() }
@@ -208,7 +208,7 @@ class MatchesActivity : Fragment() {
     }
 
     private fun chatNa() {
-        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId.toString()).child("connection").child("chatna")
+        val dBChatNa = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("chatna")
         dBChatNa.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 ++userChatNaCount
@@ -271,12 +271,12 @@ class MatchesActivity : Fragment() {
                             .child(key.toString())
                             .child("connection")
                             .child("matches")
-                            .child(currentUserId.toString())
+                            .child(currentUserId)
                             .child("ChatId")
                             .setValue(ChatId)
                     FirebaseDatabase.getInstance().reference
                             .child("Users")
-                            .child(currentUserId.toString())
+                            .child(currentUserId)
                             .child("connection")
                             .child("matches")
                             .child(key.toString())
@@ -284,7 +284,7 @@ class MatchesActivity : Fragment() {
                             .setValue(ChatId)
                     FirebaseDatabase.getInstance().reference
                             .child("Users")
-                            .child(currentUserId.toString())
+                            .child(currentUserId)
                             .child("connection")
                             .child("chatna")
                             .child(key.toString())
