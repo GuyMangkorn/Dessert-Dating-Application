@@ -2,14 +2,10 @@ package com.jabirdeveloper.tinderswipe
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -20,7 +16,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -40,14 +35,9 @@ import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
 import com.jabirdeveloper.tinderswipe.Functions.WarningDialog
 import com.jabirdeveloper.tinderswipe.Listcard.ListCardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
-import com.jabirdeveloper.tinderswipe.QAStore.ExampleClass
+import com.jabirdeveloper.tinderswipe.QAStore.DialogFragment
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
 import kotlinx.coroutines.*
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -348,9 +338,9 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                 }
     }
     private fun openDialog(ListChoice: ArrayList<QAObject>) {
-        val exampleClass: ExampleClass = ExampleClass()
-        exampleClass.setData(ListChoice)
-        exampleClass.show(supportFragmentManager, "example Dialog")
+        val dialogFragment: DialogFragment = DialogFragment()
+        dialogFragment.setData(ListChoice)
+        dialogFragment.show(supportFragmentManager, "example Dialog")
     }
     fun setCurrentIndex(newValueFormCurrentIndex: Int) {
         if (newValueFormCurrentIndex > 0) {

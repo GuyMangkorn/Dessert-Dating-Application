@@ -160,6 +160,7 @@
     <string name="questionActivitySubTitle">ตอบคำถามของเราเพื่อการจับคู่กับคนที่เข้ากันกับคุณ</string>
     <string name="record">กดเพื่ออีดเสียง</string>
     <string name="uploading">กำลังอัปโหลด</string>
+    <string name="selected_questions">กรุณาเลือกคำตอบและตอบให้ครบถ้วน</string>
 
 
 

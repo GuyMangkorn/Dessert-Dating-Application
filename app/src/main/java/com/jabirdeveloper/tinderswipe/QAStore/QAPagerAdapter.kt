@@ -71,7 +71,7 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
             val chk1 = holder.radioGroupChoice.checkedRadioButtonId
             val chk2 = holder.radioGroupChoiceWeight.checkedRadioButtonId
             if (chk1 == -1 || chk2 == -1) {
-                Toast.makeText(context, "กรุณาเลือกคำตอบและตอบให้ครบถ้วน", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.selected_questions), Toast.LENGTH_SHORT).show()
             } else {
                 when (chk1) {
                     R.id.radioButton_QA1 -> answerQA = 1

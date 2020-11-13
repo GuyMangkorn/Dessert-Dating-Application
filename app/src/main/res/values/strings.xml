@@ -167,6 +167,7 @@
     <string name="blacklist">บีญชีของคุณถูกระงับการใช้งาน</string>
     <string name="record">Press to Record</string>
     <string name="uploading">Uploading....</string>
+    <string name="selected_questions">Please selected the answer</string>
 
 
     <string-array name="shopping_item">

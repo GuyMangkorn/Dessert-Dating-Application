@@ -3,22 +3,21 @@ package com.jabirdeveloper.tinderswipe.QAStore
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.functions.FirebaseFunctions
 import com.jabirdeveloper.tinderswipe.R
 
 
-class ExampleClass : AppCompatDialogFragment() {
+class DialogFragment : AppCompatDialogFragment() {
     var listener: ExampleClassListener? = null
     /*var radio1: RadioButton? = null
     var radio2: RadioButton? = null
@@ -34,14 +33,16 @@ class ExampleClass : AppCompatDialogFragment() {
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = Dialog(activity!!)
-        val lay = activity!!.getLayoutInflater()
+        val lay = activity!!.layoutInflater
         val view: View = lay.inflate(R.layout.viewpager_questions, null)
         val viewpager: ViewPager2 = view.findViewById(R.id.pagerTest)
-        val adapter: QAPagerAdapter = QAPagerAdapter(activity!!, choice, builder, viewpager)
+        val adapter = QAPagerAdapter(activity!!, choice, builder, viewpager)
         viewpager.adapter = adapter
         viewpager.isUserInputEnabled = false
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE)
         builder.setContentView(view)
+        val width = Resources.getSystem().displayMetrics.widthPixels
+        builder.window!!.setLayout(width-60, ViewGroup.LayoutParams.WRAP_CONTENT)
         builder.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         builder.show()
         return builder

@@ -594,40 +594,6 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
 
     private val df2: DecimalFormat = DecimalFormat("#.#")
 
-
-    /*override fun onLocationChanged(location: Location) {
-        val latitude = location.latitude
-        val longitude = location.longitude
-        val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid).child("Location")
-        val location = hashMapOf<String, Any>()
-        location["X"] = latitude
-        location["Y"] = longitude
-        locationData.updateChildren(location)
-    }
-
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-    override fun onProviderEnabled(provider: String?) {}
-    override fun onProviderDisabled(provider: String?) {
-        if (provider == LocationManager.GPS_PROVIDER) {
-            showGPSDisabledDialog()
-        }
-    }
-
-    private fun showGPSDisabledDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(R.string.GPS_Disabled)
-        builder.setMessage(R.string.GPS_open)
-        builder.setPositiveButton(R.string.open_gps) { _, _ -> startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0) }.setNegativeButton(R.string.report_close) { _, _ ->
-            val intent = Intent(context, ShowGpsOpen::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            requireActivity().finish()
-            startActivity(intent)
-        }
-        mGPSDialog = builder.create()
-        mGPSDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.myrect2))
-        mGPSDialog.show()
-    }*/
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1112) {
