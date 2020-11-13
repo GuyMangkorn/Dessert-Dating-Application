@@ -419,15 +419,17 @@ class  Setting2Activity : AppCompatActivity(),View.OnClickListener {
             finish()
         }
         if(v == delete){
-            val mBuilder = AlertDialog.Builder(this@Setting2Activity)
-            mBuilder.setTitle(R.string.Close_account)
-            mBuilder.setMessage(R.string.Close_account_confirm)
-            mBuilder.setCancelable(true)
-            mBuilder.setPositiveButton(R.string.ok) { _, _ -> delete() }
-            mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
-            val mDialog = mBuilder.create()
-            mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
-            mDialog.show()
+//            val mBuilder = AlertDialog.Builder(this@Setting2Activity)
+//            mBuilder.setTitle(R.string.Close_account)
+//            mBuilder.setMessage(R.string.Close_account_confirm)
+//            mBuilder.setCancelable(true)
+//            mBuilder.setPositiveButton(R.string.ok) { _, _ -> delete() }
+//            mBuilder.setNegativeButton(R.string.cancle) { _, _ -> }
+//            val mDialog = mBuilder.create()
+//            mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@Setting2Activity, R.drawable.myrect2))
+//            mDialog.show()
+            val intent = Intent(applicationContext, CloseAccount::class.java)
+            startActivity(intent)
         }
         if(v == on_off_card){
             if (!on_off_card.isChecked) {
