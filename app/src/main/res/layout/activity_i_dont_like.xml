@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ProblemList">
+    tools:context=".IDontLike">
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -137,7 +137,7 @@
                             android:id="@+id/c3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="คู่แมตช์ของฉันหายไป"
+                            android:text="ฉันมีประสบการณ์ที่ไม่ค่อยดีบน Dessert"
                             />
                     </LinearLayout>
 
@@ -164,7 +164,7 @@
                             android:id="@+id/c4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="ฉันเห็นผู้คนซ้ำไปซ้ำมา"
+                            android:text="ฉันชอบแอปอื่นมากกว่า"
                             />
                     </LinearLayout>
 
@@ -191,39 +191,39 @@
                             android:id="@+id/c5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="แชทมีปัญหา"
+                            android:text="ฉันหาคนเพื่อจับคู่ได้ไม่มากพอ"
                             />
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/View32dp"
-                    android:layout_marginEnd="@dimen/View32dp"
-                    android:text="อื่นๆ"
-                    android:textSize="@dimen/Text16sp"
-                    android:textColor="@color/text_black_gray"/>
-
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/View8dp"
-                    android:layout_marginEnd="@dimen/View32dp"
-                    android:layout_marginStart="@dimen/View32dp"
+                    android:layout_height="wrap_content"
+                    android:elevation="@dimen/View8dp"
+                    android:layout_marginBottom="@dimen/View16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F4F4F4"
                     app:cardCornerRadius="10dp"
-                    android:layout_height="wrap_content">
-                    <EditText
-                        android:id="@+id/textSend"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="@dimen/View32dp"
+                    android:layout_marginEnd="@dimen/View32dp">
+                    <LinearLayout
+                        android:clickable="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/View8dp"
-                        android:gravity="top"
-                        android:textSize="@dimen/Text14sp"
-                        android:textColor="@color/text_black_gray"
-                        android:hint="ป้อนที่นี่ (อย่างน้อย 10 ตัวอักษร)"
-                        android:minHeight="120dp"
-                        android:background="@color/background_gray"/>
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/View8dp">
+                        <CheckBox
+                            android:id="@+id/c6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="ฉันไม่ได้นัดพบใครเลย"
+                            />
+                    </LinearLayout>
+
                 </com.google.android.material.card.MaterialCardView>
+
                 <Button
                     android:enabled="false"
                     android:id="@+id/button_send"

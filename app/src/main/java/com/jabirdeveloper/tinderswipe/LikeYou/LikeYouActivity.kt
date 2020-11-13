@@ -25,13 +25,11 @@ import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.Functions.City
-import com.jabirdeveloper.tinderswipe.Functions.TimeStampToDate
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.activity_like_you.*
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class LikeYouActivity : AppCompatActivity() {

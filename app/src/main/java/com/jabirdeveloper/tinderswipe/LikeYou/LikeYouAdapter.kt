@@ -20,8 +20,6 @@ import com.jabirdeveloper.tinderswipe.Functions.TimeStampToDate
 import com.jabirdeveloper.tinderswipe.ProfileUserOppositeActivity2
 import com.jabirdeveloper.tinderswipe.R
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
 class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val context: Context) : RecyclerView.Adapter<LikeYouAdapter.Holder?>() {
 

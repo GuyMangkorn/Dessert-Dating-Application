@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:icon">
-        <activity android:name=".ProblemList"></activity>
+        <activity android:name=".IDontLike"></activity>
+        <activity android:name=".ProblemList" />
         <activity android:name=".SendProblem" />
         <activity android:name=".CloseAccount" />
         <activity android:name=".Register.QuestionActivity" /> <!-- Include the AdActivity configChanges and theme. -->
@@ -34,7 +35,7 @@
         <activity android:name=".BandUser" />
         <activity android:name=".ShowGpsOpen" />
         <activity
-            android:name=".LikeYou.LikeYouActivity"
+            android:name="com.jabirdeveloper.tinderswipe.LikeYou.LikeYouActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Register.RegisGpsActivity"
