@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
-import androidx.core.widget.addTextChangedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -49,11 +48,14 @@ class SendProblem : AppCompatActivity() {
             }
         })
         button.setOnClickListener {
-            if (CloseDialog(this, FirebaseAuth.getInstance().uid!!).show()) {
+            fun send(){
                 val sendMap2 = hashMapOf<String, Any>()
                 sendMap2[editText.text.toString()] = ServerValue.TIMESTAMP
                 dB.updateChildren(sendMap2)
             }
+            CloseDialog(this, FirebaseAuth.getInstance().uid!!){ send() }.show()
+
+
         }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

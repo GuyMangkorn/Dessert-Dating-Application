@@ -3,14 +3,12 @@ package com.jabirdeveloper.tinderswipe
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Functions.CloseDialog
 
 class CloseAccount : AppCompatActivity(), View.OnClickListener {
@@ -48,10 +46,12 @@ class CloseAccount : AppCompatActivity(), View.OnClickListener {
             if (v == cardRe) {
                 dB.child("restart").addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        if (CloseDialog(this@CloseAccount, FirebaseAuth.getInstance().uid!!).show()) {
+                        fun send() {
                             val count = snapshot.value.toString().toInt() + 1
-                            dB.child("restart").setValue(count)
-                        }
+                            dB.child("restart").setValue(count)}
+                        CloseDialog(this@CloseAccount, FirebaseAuth.getInstance().uid!!) { send() }.show()
+
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -62,10 +62,11 @@ class CloseAccount : AppCompatActivity(), View.OnClickListener {
             if (v == cardLove) {
                 dB.child("love").addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        if (CloseDialog(this@CloseAccount, FirebaseAuth.getInstance().uid!!).show()) {
+                        fun send(){
                             val count = snapshot.value.toString().toInt() + 1
                             dB.child("love").setValue(count)
                         }
+                        CloseDialog(this@CloseAccount, FirebaseAuth.getInstance().uid!!) { send() }.show()
                     }
 
                     override fun onCancelled(error: DatabaseError) {

@@ -60,39 +60,42 @@ class IDontLike : AppCompatActivity(),View.OnClickListener {
     }
     override fun onClick(v: View) {
         check()
-        if (CloseDialog(this, FirebaseAuth.getInstance().uid!!).show())
         if(v == button){
-            dB.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val sendMap =  hashMapOf<String, Any>()
-                    val map:Map<*,*> = snapshot.value as Map<*, *>
-                    Log.d("map",map.toString())
-                    if(c1.isChecked){
-                        sendMap["notFound"]  = map["notFound"].toString().toInt() + 1
-                    }
-                    if(c2.isChecked){
-                        sendMap["badApp"]  = map["badApp"].toString().toInt() + 1
-                    }
-                    if(c3.isChecked){
-                        sendMap["badExp"]  = map["badExp"].toString().toInt() + 1
-                    }
-                    if(c4.isChecked){
-                        sendMap["otherApp"]  = map["otherApp"].toString().toInt() + 1
-                    }
-                    if(c5.isChecked){
-                        sendMap["notEnough"]  = map["notEnough"].toString().toInt() + 1
-                    }
-                    if(c6.isChecked){
-                        sendMap["notMeet"]  = map["notMeet"].toString().toInt() + 1
-                    }
-                    dB.updateChildren(sendMap)
+            fun send(){
+                dB.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val sendMap =  hashMapOf<String, Any>()
+                        val map:Map<*,*> = snapshot.value as Map<*, *>
+                        Log.d("map",map.toString())
+                        if(c1.isChecked){
+                            sendMap["notFound"]  = map["notFound"].toString().toInt() + 1
+                        }
+                        if(c2.isChecked){
+                            sendMap["badApp"]  = map["badApp"].toString().toInt() + 1
+                        }
+                        if(c3.isChecked){
+                            sendMap["badExp"]  = map["badExp"].toString().toInt() + 1
+                        }
+                        if(c4.isChecked){
+                            sendMap["otherApp"]  = map["otherApp"].toString().toInt() + 1
+                        }
+                        if(c5.isChecked){
+                            sendMap["notEnough"]  = map["notEnough"].toString().toInt() + 1
+                        }
+                        if(c6.isChecked){
+                            sendMap["notMeet"]  = map["notMeet"].toString().toInt() + 1
+                        }
+                        dB.updateChildren(sendMap)
 
-                }
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
+                    override fun onCancelled(error: DatabaseError) {
 
-                }
-            })
+                    }
+                })
+            }
+            CloseDialog(this, FirebaseAuth.getInstance().uid!!){ send() }.show()
+
         }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

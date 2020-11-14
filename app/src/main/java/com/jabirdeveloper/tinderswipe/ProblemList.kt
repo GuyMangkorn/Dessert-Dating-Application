@@ -8,14 +8,11 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Functions.CloseDialog
-import kotlinx.android.synthetic.main.activity_i_dont_like.*
-import kotlinx.android.synthetic.main.activity_problem_list.*
 import kotlinx.android.synthetic.main.activity_problem_list.c1
 import kotlinx.android.synthetic.main.activity_problem_list.c2
 import kotlinx.android.synthetic.main.activity_problem_list.c3
@@ -85,41 +82,43 @@ class ProblemList : AppCompatActivity(),View.OnClickListener {
 
     override fun onClick(v: View) {
         check()
-        if (CloseDialog(this, FirebaseAuth.getInstance().uid!!).show())
         if(v == button){
-            dB.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val sendMap =  hashMapOf<String, Any>()
-                    val sendMap2 =  hashMapOf<String, Any>()
-                    val map:Map<*,*> = snapshot.value as Map<*, *>
-                    Log.d("map",map.toString())
-                    if(c1.isChecked){
-                        sendMap["notFound"]  = map["notFound"].toString().toInt() + 1
-                    }
-                    if(c2.isChecked){
-                        sendMap["badApp"]  = map["badApp"].toString().toInt() + 1
-                    }
-                    if(c3.isChecked){
-                        sendMap["MatchMiss"]  = map["MatchMiss"].toString().toInt() + 1
-                    }
-                    if(c4.isChecked){
-                        sendMap["overAndOver"]  = map["overAndOver"].toString().toInt() + 1
-                    }
-                    if(c5.isChecked){
-                        sendMap["badChat"]  = map["badChat"].toString().toInt() + 1
-                    }
-                    if(st){
-                        sendMap2[editText.text.toString()]  = ServerValue.TIMESTAMP
-                    }
-                    dB.updateChildren(sendMap)
-                    dB.child("other").updateChildren(sendMap2)
+            fun send(){
+                dB.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val sendMap =  hashMapOf<String, Any>()
+                        val sendMap2 =  hashMapOf<String, Any>()
+                        val map:Map<*,*> = snapshot.value as Map<*, *>
+                        Log.d("map",map.toString())
+                        if(c1.isChecked){
+                            sendMap["notFound"]  = map["notFound"].toString().toInt() + 1
+                        }
+                        if(c2.isChecked){
+                            sendMap["badApp"]  = map["badApp"].toString().toInt() + 1
+                        }
+                        if(c3.isChecked){
+                            sendMap["MatchMiss"]  = map["MatchMiss"].toString().toInt() + 1
+                        }
+                        if(c4.isChecked){
+                            sendMap["overAndOver"]  = map["overAndOver"].toString().toInt() + 1
+                        }
+                        if(c5.isChecked){
+                            sendMap["badChat"]  = map["badChat"].toString().toInt() + 1
+                        }
+                        if(st){
+                            sendMap2[editText.text.toString()]  = ServerValue.TIMESTAMP
+                        }
+                        dB.updateChildren(sendMap)
+                        dB.child("other").updateChildren(sendMap2)
 
-                }
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
+                    override fun onCancelled(error: DatabaseError) {
 
-                }
-            })
+                    }
+                })
+            }
+            CloseDialog(this, FirebaseAuth.getInstance().uid!!){ send() }.show()
         }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
