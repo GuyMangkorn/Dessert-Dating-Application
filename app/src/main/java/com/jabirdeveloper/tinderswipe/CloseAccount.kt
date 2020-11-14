@@ -22,7 +22,7 @@ class CloseAccount : AppCompatActivity(),View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_close_account)
-        dB = FirebaseDatabase.getInstance().reference.child("Close_Account")
+        dB = FirebaseDatabase.getInstance().reference.child("CloseAccount")
         toolbar = findViewById(R.id.my_tools)
         setSupportActionBar(toolbar)
         supportActionBar!!.title = "Close Account"
@@ -42,18 +42,28 @@ class CloseAccount : AppCompatActivity(),View.OnClickListener {
 
     override fun onClick(v: View) {
         if(v == cardRe){
-//            dB.child("restart").addListenerForSingleValueEvent(object :ValueEventListener{
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                    TODO("Not yet implemented")
-//                }
-//            })
+            dB.child("restart").addListenerForSingleValueEvent(object :ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val count = snapshot.value.toString().toInt() + 1
+                    dB.child("restart").setValue(count)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
         }
         if(v == cardLove){
+            dB.child("love").addListenerForSingleValueEvent(object :ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val count = snapshot.value.toString().toInt() + 1
+                    dB.child("love").setValue(count)
+                }
 
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
         }
         if(v == cardBad){
             val intent = Intent(applicationContext, IDontLike::class.java)
