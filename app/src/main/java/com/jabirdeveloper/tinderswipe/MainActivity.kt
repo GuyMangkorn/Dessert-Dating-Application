@@ -23,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.bumptech.glide.Glide
@@ -32,6 +33,7 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
@@ -39,7 +41,9 @@ import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Cards.ArrayAdapter
 import com.jabirdeveloper.tinderswipe.Cards.Cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
+import com.jabirdeveloper.tinderswipe.Functions.DialogQuestion
 import com.yuyakaido.android.cardstackview.*
+import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -98,6 +102,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
     private var checkEmpty = false
     private var empty = 0
     private var countEmpty = 0
+    private lateinit var localizationDelegate:LocalizationActivityDelegate
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("ghj", "สร้างละ")
@@ -112,6 +118,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             startActivity(intent)
         }
         Log.d("date", getDate(1602860907341))
+        localizationDelegate = LocalizationActivityDelegate(requireActivity())
         layoutGps = view.findViewById(R.id.layout_in)
         textgps = view.findViewById(R.id.textView8)
         textGps2 = view.findViewById(R.id.textView9)
@@ -157,7 +164,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         isConnectionMatches(userId)
                     } else {
                         handler.postDelayed(Runnable { cardStackView.rewind() }, 200)
-                        openDialog()
+                        questionAskDialog().show()
+                        //openDialog()
                     }
                 }
                 if (direction == Direction.Left) {
@@ -176,7 +184,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         isConnectionMatches(userId)
                     } else {
                         handler.postDelayed(Runnable { cardStackView.rewind() }, 200)
-                        openDialog()
+                        questionAskDialog().show()
+                        //openDialog()
                     }
                 }
             }
@@ -245,6 +254,27 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
         return rewardedAd
     }
+
+     fun questionAskDialog() : Dialog{
+         val view = layoutInflater.inflate(R.layout.question_ask_dialog,null)
+         val btnConfirm = view.findViewById<Button>(R.id.confirm_button_askDialog)
+         val btnDismiss = view.findViewById<Button>(R.id.dismiss_button_askDialog)
+         val dialog = Dialog(requireContext())
+         dialog.setContentView(view)
+         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+         val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+         dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+         btnDismiss.setOnClickListener {
+             dialog.dismiss()
+         }
+         btnConfirm.setOnClickListener {
+             val question = DialogQuestion(requireActivity().supportFragmentManager)
+             question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
+             dialog.dismiss()
+            Toast.makeText(requireContext(),localizationDelegate.getLanguage(requireContext()).toLanguageTag(),Toast.LENGTH_SHORT).show()
+         }
+         return dialog
+     }
 
     fun openDialog() {
         val inflater = layoutInflater

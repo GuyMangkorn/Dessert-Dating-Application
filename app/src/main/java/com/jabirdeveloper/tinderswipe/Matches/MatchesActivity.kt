@@ -82,6 +82,7 @@ class MatchesActivity : Fragment() {
                     mRecyclerView.visibility = View.GONE } }
         })
     }
+
     private fun getUserMarchId() {
         FirebaseDatabase.getInstance().reference.child("Users")
                 .child(currentUserId)
