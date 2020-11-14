@@ -168,6 +168,8 @@
     <string name="record">Press to Record</string>
     <string name="uploading">Uploading....</string>
     <string name="selected_questions">Please selected the answer</string>
+    <string name="title_askQuestion">Answer questions !!</string>
+    <string name="body_askQuestion">Answer the algorithm matching for increase your quota today</string>
 
 
     <string-array name="shopping_item">

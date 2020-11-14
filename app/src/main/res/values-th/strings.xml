@@ -161,6 +161,9 @@
     <string name="record">กดเพื่ออีดเสียง</string>
     <string name="uploading">กำลังอัปโหลด</string>
     <string name="selected_questions">กรุณาเลือกคำตอบและตอบให้ครบถ้วน</string>
+    <string name="title_askQuestion">ตอบคำถาม</string>
+    <string name="body_askQuestion">เพื่อเพิ่มโอกาสการจับคู่และจำนวนการกดไลค์ของคุณกรุณาตอบคำถามของทางแอปพลิเคชัน</string>
+
 
 
 
