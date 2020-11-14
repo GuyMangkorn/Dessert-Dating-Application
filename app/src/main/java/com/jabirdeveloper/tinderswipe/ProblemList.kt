@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.jabirdeveloper.tinderswipe.Functions.CloseDialog
 import kotlinx.android.synthetic.main.activity_i_dont_like.*
 import kotlinx.android.synthetic.main.activity_problem_list.*
 import kotlinx.android.synthetic.main.activity_problem_list.c1
@@ -21,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_problem_list.c5
 class ProblemList : AppCompatActivity(),View.OnClickListener {
     private lateinit var editText: EditText
     private lateinit var button: Button
+    private lateinit var toolbar: Toolbar
     private var st = false
     private lateinit var dB: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +40,10 @@ class ProblemList : AppCompatActivity(),View.OnClickListener {
         c4.setOnClickListener(this)
         c5.setOnClickListener(this)
         button.setOnClickListener(this)
+        toolbar = findViewById(R.id.my_tools)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = "Close Account"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         editText.addTextChangedListener(object : TextWatcher {
 
@@ -76,6 +85,7 @@ class ProblemList : AppCompatActivity(),View.OnClickListener {
 
     override fun onClick(v: View) {
         check()
+        if (CloseDialog(this, FirebaseAuth.getInstance().uid!!).show())
         if(v == button){
             dB.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -110,6 +120,15 @@ class ProblemList : AppCompatActivity(),View.OnClickListener {
 
                 }
             })
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

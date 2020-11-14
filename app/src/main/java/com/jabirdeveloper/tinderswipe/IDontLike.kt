@@ -3,9 +3,13 @@ package com.jabirdeveloper.tinderswipe
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.jabirdeveloper.tinderswipe.Functions.CloseDialog
 import kotlinx.android.synthetic.main.activity_i_dont_like.*
 import kotlinx.android.synthetic.main.activity_i_dont_like.c1
 import kotlinx.android.synthetic.main.activity_i_dont_like.c2
@@ -17,12 +21,17 @@ import kotlinx.android.synthetic.main.activity_i_dont_like.c5
 
 class IDontLike : AppCompatActivity(),View.OnClickListener {
     private lateinit var button: Button
+    private lateinit var toolbar: Toolbar
     private lateinit var dB: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_i_dont_like)
         button = findViewById(R.id.button_send)
         dB = FirebaseDatabase.getInstance().reference.child("CloseAccount").child("bad")
+        toolbar = findViewById(R.id.my_tools)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = "Close Account"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         c1.setOnClickListener(this)
         c2.setOnClickListener(this)
         c3.setOnClickListener(this)
@@ -51,6 +60,7 @@ class IDontLike : AppCompatActivity(),View.OnClickListener {
     }
     override fun onClick(v: View) {
         check()
+        if (CloseDialog(this, FirebaseAuth.getInstance().uid!!).show())
         if(v == button){
             dB.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -83,6 +93,15 @@ class IDontLike : AppCompatActivity(),View.OnClickListener {
 
                 }
             })
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

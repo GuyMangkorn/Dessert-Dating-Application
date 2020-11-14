@@ -12,7 +12,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.jabirdeveloper.tinderswipe.ChooseLoginRegistrationActivity
 
 class Close(private var currentUid:String,private var context: Context) {
-    private fun delete() {
+    fun delete() {
         val filepath = FirebaseStorage.getInstance().reference.child("profileImages").child(currentUid)
         filepath.delete().addOnSuccessListener {
             val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
@@ -81,5 +81,6 @@ class Close(private var currentUid:String,private var context: Context) {
 
 
     }
+
 
 }

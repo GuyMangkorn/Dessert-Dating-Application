@@ -5,23 +5,33 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.addTextChangedListener
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
+import com.jabirdeveloper.tinderswipe.Functions.CloseDialog
 
 class SendProblem : AppCompatActivity() {
     private lateinit var editText: EditText
     private lateinit var button: Button
     private lateinit var dB: DatabaseReference
+    private lateinit var toolbar: Toolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_problem)
         editText = findViewById(R.id.textSend)
         button = findViewById(R.id.button_send)
         dB = FirebaseDatabase.getInstance().reference.child("CloseAccount").child("other")
+
+        toolbar = findViewById(R.id.my_tools)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = "Close Account"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         editText.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable) {
@@ -39,9 +49,20 @@ class SendProblem : AppCompatActivity() {
             }
         })
         button.setOnClickListener {
-            val sendMap2 =  hashMapOf<String, Any>()
-            sendMap2[editText.text.toString()]  = ServerValue.TIMESTAMP
-            dB.updateChildren(sendMap2)
+            if (CloseDialog(this, FirebaseAuth.getInstance().uid!!).show()) {
+                val sendMap2 = hashMapOf<String, Any>()
+                sendMap2[editText.text.toString()] = ServerValue.TIMESTAMP
+                dB.updateChildren(sendMap2)
+            }
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
