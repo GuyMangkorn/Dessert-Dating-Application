@@ -23,16 +23,23 @@ class DialogQuestion(private val fragment: FragmentManager) {
                 .addOnSuccessListener { task ->
                     val data: Map<*, *> = task.data as Map<*, *>
                     val questions:Map<*,*> = data["questions"] as Map<*, *>
-                    for (entry in questions.keys){
-                        val questionId = entry.toString()
-                        Log.d("testGetQuestionData", questionId)
-                        val questionSet = questions[questionId] as Map<*,*>
-                        val arr:ArrayList<String> = ArrayList()
-                        arr.add(questionSet["0"].toString())
-                        arr.add(questionSet["1"].toString())
-                        Log.d("testGetQuestionData",arr.toString())
-                        val ob = QAObject(questionId,questionSet["question"].toString(),arr)
-                        resultFetchQA.add(ob)
+                    Log.d("TAG_QUESTION",questions.size.toString())
+                    if(questions.size > 3) {
+                        for ((i, entry) in questions.keys.withIndex()) {
+                            if (i + 1 < 4) {
+                                val questionId = entry.toString()
+                                Log.d("testGetQuestionData", questionId)
+                                val questionSet = questions[questionId] as Map<*, *>
+                                val arr: ArrayList<String> = ArrayList()
+                                arr.add(questionSet["0"].toString())
+                                arr.add(questionSet["1"].toString())
+                                Log.d("testGetQuestionData", arr.toString())
+                                val ob = QAObject(questionId, questionSet["question"].toString(), arr)
+                                resultFetchQA.add(ob)
+                            }
+                        }
+                    }else{
+
                     }
                     openDialog(resultFetchQA)
                 }.addOnFailureListener{

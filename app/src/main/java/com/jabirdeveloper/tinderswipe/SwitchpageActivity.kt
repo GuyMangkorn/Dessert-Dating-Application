@@ -38,6 +38,7 @@ import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
 import com.jabirdeveloper.tinderswipe.QAStore.DialogFragment
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -64,11 +65,10 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         permissionCheck()
         setContentView(R.layout.activity_switch_page)
         load = findViewById(R.id.candyCane)
-        j1.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
+        j1.launch(IO) { // launch a new coroutine in background and continue
             getMyUser()
             getUnreadFunction()
         }
-        //getDataOnCall()
         //questionCalculate()
         bar = findViewById(R.id.bar2)
         if (intent.hasExtra("warning")) {
@@ -171,7 +171,9 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         } else {
             val location=  mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             if(location != null) {
-                lastLocation(location)
+                j1.launch(IO) {
+                    lastLocation(location)
+                }
             }else {
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0f, this)
             }
@@ -201,7 +203,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private fun questionCalculate(): Task<HttpsCallableResult> {
         // Create the arguments to the callable function.
         val data = hashMapOf(
-                "uid" to text
+                "uid" to uid
         )
         return functions
                 .getHttpsCallable("getPercentageMatching")
@@ -306,42 +308,6 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
 
         })
     }
-    private var resultFetchQA: ArrayList<QAObject> = ArrayList()
-    private var text: String = ""
-    private fun getDataOnCall(): Task<HttpsCallableResult> {
-        val data = hashMapOf(
-                "type" to "Question",
-                "language" to localizationDelegate.getLanguage(this).toLanguageTag()
-        )
-        return functions
-                .getHttpsCallable("addQuestions")
-                .call(data)
-                .addOnSuccessListener { task ->
-                    val data: Map<*, *> = task.data as Map<*, *>
-                    val questions:Map<*,*> = data["questions"] as Map<*, *>
-                    Log.d("testGetQuestionData", questions.toString())
-                    for (entry in questions.keys){
-                        val questionId = entry.toString()
-                        Log.d("testGetQuestionData", questionId)
-                        val questionSet = questions[questionId] as Map<*,*>
-                        val arr:ArrayList<String> = ArrayList()
-                        arr.add(questionSet["0"].toString())
-                        arr.add(questionSet["1"].toString())
-                        Log.d("testGetQuestionData",arr.toString())
-                        val ob = QAObject(questionId,questionSet["question"].toString(),arr)
-                        resultFetchQA.add(ob)
-                    }
-                    openDialog(resultFetchQA)
-                }
-                .addOnFailureListener {
-                    Log.d("testGetQuestionData", "error")
-                }
-    }
-    private fun openDialog(ListChoice: ArrayList<QAObject>) {
-        val dialogFragment: DialogFragment = DialogFragment()
-        dialogFragment.setData(ListChoice)
-        dialogFragment.show(supportFragmentManager, "example Dialog")
-    }
     fun setCurrentIndex(newValueFormCurrentIndex: Int) {
         if (newValueFormCurrentIndex > 0) {
             bar!!.showBadge(R.id.item4, newValueFormCurrentIndex)
@@ -395,7 +361,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         super.onPause()
         j1.cancel()
     }
-     private fun lastLocation(location: Location){
+     private suspend fun lastLocation(location: Location){
          val lon = location.longitude
          val lat = location.latitude
          val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(uid).child("Location")

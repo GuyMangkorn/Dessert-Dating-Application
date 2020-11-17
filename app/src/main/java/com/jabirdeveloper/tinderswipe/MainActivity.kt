@@ -44,15 +44,16 @@ import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.DialogQuestion
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import me.relex.circleindicator.CircleIndicator
 import java.io.IOException
+import java.lang.Runnable
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlinx.coroutines.coroutineScope as coroutineScope
 
 @Suppress("NAME_SHADOWING")
 class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickListener {
@@ -269,7 +270,9 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
          }
          btnConfirm.setOnClickListener {
              val question = DialogQuestion(requireActivity().supportFragmentManager)
-             question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
+             CoroutineScope(IO).launch {
+                 question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
+             }
              dialog.dismiss()
             Toast.makeText(requireContext(),localizationDelegate.getLanguage(requireContext()).toLanguageTag(),Toast.LENGTH_SHORT).show()
          }
