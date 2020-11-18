@@ -153,7 +153,9 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             override fun onCardSwiped(direction: Direction?) {
                 po = rowItem[manager.topPosition - 1]
                 val userId = po.userId!!
-
+                val preferences = requireContext().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+                val editLike = preferences.edit()
+                maxLike = preferences.getInt("MaxLike", 0)
                 if (direction == Direction.Right) {
                     if (maxLike > 0 || statusVip) {
                         val datetime = hashMapOf<String, Any>()
@@ -161,6 +163,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         //datetime["time"] = timeUser
                         usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                         maxLike--
+                        editLike.putInt("MaxLike",maxLike)
+                        editLike.apply()
                         usersDb.child(currentUid).child("MaxLike").setValue(maxLike)
                         isConnectionMatches(userId)
                     } else {
@@ -185,8 +189,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         isConnectionMatches(userId)
                     } else {
                         handler.postDelayed(Runnable { cardStackView.rewind() }, 200)
-                        questionAskDialog().show()
-                        //openDialog()
+                        //questionAskDialog().show()
+                        openDialog()
                     }
                 }
             }

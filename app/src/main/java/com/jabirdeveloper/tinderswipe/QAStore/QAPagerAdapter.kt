@@ -17,7 +17,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.jabirdeveloper.tinderswipe.R
 
 class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObject>, val dialog: Dialog, val viewpager: ViewPager2) : RecyclerView.Adapter<QAPagerAdapter.Holder?>() {
-    private val hashMapQA: HashMap<String, Map<*, *>> = HashMap()
+    private val hashMapQA: HashMap<String, Any> = HashMap()
+    private val preferences = context.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+    private val editLike = preferences.edit()
+    private val uid = FirebaseAuth.getInstance().currentUser!!.uid
+    private val db = FirebaseDatabase.getInstance().reference.child("Users").child(uid)
+    var maxLike = preferences.getInt("MaxLike",0)
     val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -85,11 +90,14 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
                     R.id.radioButton_QAWeight5 -> answerWeight = 250
                 }
                 val inputMap = mapOf("id" to choice[position].questionId, "question" to answerQA, "weight" to answerWeight)
-                hashMapQA[choice[position].questionId] = inputMap as Map<*, *>
+                hashMapQA[choice[position].questionId] = inputMap
                 Log.d("Check_IsCheck", hashMapQA.toString())
                 viewpager.setCurrentItem(++viewpager.currentItem, false)
                 if (position == itemCount - 1) {
-                    FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").setValue(hashMapQA)
+                    editLike.putInt("MaxLike",++maxLike)
+                    editLike.apply()
+                    db.child("MaxLike").setValue(maxLike)
+                    FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").updateChildren(hashMapQA)
                     dialog.dismiss()
                 }
             }
