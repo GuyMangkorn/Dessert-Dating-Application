@@ -42,6 +42,7 @@ import com.jabirdeveloper.tinderswipe.Cards.ArrayAdapter
 import com.jabirdeveloper.tinderswipe.Cards.Cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.DialogQuestion
+import com.jabirdeveloper.tinderswipe.Functions.LoadingDialog
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.coroutines.*
@@ -273,10 +274,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
              dialog.dismiss()
          }
          btnConfirm.setOnClickListener {
-             val question = DialogQuestion(requireActivity().supportFragmentManager)
-             CoroutineScope(IO).launch {
-                 question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
-             }
+             val question = DialogQuestion(requireActivity().supportFragmentManager,requireContext())
+             question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
              dialog.dismiss()
             Toast.makeText(requireContext(),localizationDelegate.getLanguage(requireContext()).toLanguageTag(),Toast.LENGTH_SHORT).show()
          }

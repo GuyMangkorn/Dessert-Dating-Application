@@ -1,5 +1,7 @@
 package com.jabirdeveloper.tinderswipe.Functions
 
+import android.app.Dialog
+import android.content.Context
 import android.util.Log
 import androidx.fragment.app.FragmentManager
 import com.google.android.gms.tasks.Task
@@ -8,16 +10,20 @@ import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.QAStore.DialogFragment
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext as withContext
 
-class DialogQuestion(private val fragment: FragmentManager) {
+class DialogQuestion(private val fragment: FragmentManager,context: Context) {
+    private val loadingDialog = LoadingDialog(context).dialog()
     private var functions = Firebase.functions
     private var resultFetchQA: ArrayList<QAObject> = ArrayList()
     fun questionDataOnCall(languageTag:String): Task<HttpsCallableResult> {
+        loadingDialog.show()
         val data = hashMapOf(
                 "type" to "Question",
                 "language" to languageTag
         )
-        return functions
+        return  functions
                 .getHttpsCallable("addQuestions")
                 .call(data)
                 .addOnSuccessListener { task ->
@@ -49,6 +55,7 @@ class DialogQuestion(private val fragment: FragmentManager) {
      }
 
     private fun openDialog(ListChoice: ArrayList<QAObject>) {
+        loadingDialog.dismiss()
         val dialogFragment: DialogFragment = DialogFragment()
         dialogFragment.setData(ListChoice)
         dialogFragment.show(fragment, "example Dialog")
