@@ -109,6 +109,8 @@ class ReportUser(private var context: Activity, private var matchId: String) {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val datetime = hashMapOf<String, Any>()
                 datetime["date"] = ServerValue.TIMESTAMP
+                reportDb.child(matchId).updateChildren(datetime)
+                val jj = hashMapOf<String, Any>()
                 Alerter.create(context)
                         .setTitle(context.getString(R.string.report_suc))
                         .setText(context.getString(R.string.report_suc2))
@@ -116,23 +118,21 @@ class ReportUser(private var context: Activity, private var matchId: String) {
                         .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_24)!!)
                         .show()
                 if (!snapshot.hasChild(matchId)) {
-                    val jj = hashMapOf<String, Any>()
+
                     jj[Child] = 1
                     reportDb.child(matchId).child("report").updateChildren(jj)
 
                 } else  {
                     if (snapshot.child(matchId).hasChild(Child)) {
                         val countRep = Integer.valueOf(snapshot.child(matchId).child(Child).value.toString()) + 1
-                        val jj = hashMapOf<String, Any>()
                         jj[Child] = countRep
                         reportDb.child(matchId).child("report").updateChildren(jj)
                     } else {
-                        val jj = hashMapOf<String, Any>()
                         jj[Child] = 1
                         reportDb.child(matchId).child("report").updateChildren(jj)
                     }
                 }
-                reportDb.child(matchId).child("time").updateChildren(datetime)
+
             }
 
             override fun onCancelled(error: DatabaseError) {
