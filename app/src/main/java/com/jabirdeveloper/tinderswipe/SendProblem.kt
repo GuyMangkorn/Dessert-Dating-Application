@@ -1,5 +1,6 @@
 package com.jabirdeveloper.tinderswipe
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -48,12 +49,22 @@ class SendProblem : AppCompatActivity() {
             }
         })
         button.setOnClickListener {
+
             fun send(){
                 val sendMap2 = hashMapOf<String, Any>()
                 sendMap2[editText.text.toString()] = ServerValue.TIMESTAMP
                 dB.updateChildren(sendMap2)
             }
+            if(intent.hasExtra("formFeed"))
             CloseDialog(this, FirebaseAuth.getInstance().uid!!){ send() }.show()
+            else{
+                val sendMap2 = hashMapOf<String, Any>()
+                sendMap2["id"] = FirebaseAuth.getInstance().uid.toString()
+                sendMap2["time"] = ServerValue.TIMESTAMP
+                FirebaseDatabase.getInstance().reference.child("FeedBack").child(editText.text.toString()).updateChildren(sendMap2)
+                setResult(14)
+                finish()
+            }
 
 
         }

@@ -33,6 +33,7 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -41,6 +42,7 @@ import com.jabirdeveloper.tinderswipe.LikeYou.LikeYouActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.time.Duration
 import java.util.*
 
 class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
@@ -163,16 +165,19 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
             startActivity(intent)
         }
         view.findViewById<LinearLayout>(R.id.linearLayout22).setOnClickListener {
-            val intent = Intent(Intent.ACTION_SENDTO)
-            intent.data = Uri.parse("mailto:")
-            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("dessert2500@gmail.com"))
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Dessert 1.0.0 ข้อเสนอแนะ")
-            intent.putExtra(Intent.EXTRA_TEXT, "มีอะไรก็พูดมา")
-            try {
-                startActivity(Intent.createChooser(intent, "Choose email"))
-            } catch (e: Exception) {
+//            val intent = Intent(Intent.ACTION_SENDTO)
+//            intent.data = Uri.parse("mailto:")
+//            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("dessert2500@gmail.com"))
+//            intent.putExtra(Intent.EXTRA_SUBJECT, "Dessert 1.0.0 ข้อเสนอแนะ")
+//            intent.putExtra(Intent.EXTRA_TEXT, "มีอะไรก็พูดมา")
+//            try {
+//                startActivity(Intent.createChooser(intent, "Choose email"))
+//            } catch (e: Exception) {
+//
+//            }
+            val intent = Intent(context, SendProblem::class.java)
+            startActivityForResult(intent,14)
 
-            }
         }
 
         return view
@@ -335,6 +340,11 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                 getData()
                 onAttach(requireContext())
                 Log.d("ghj", "1")
+            }
+        }
+        if(requestCode == 14){
+            if(resultCode == 14){
+                Snackbar.make(likeYou,"Thank You",Snackbar.LENGTH_SHORT).show()
             }
         }
     }
