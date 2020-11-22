@@ -66,7 +66,6 @@ class LikeYouActivity : AppCompatActivity() {
         blurView = findViewById(R.id.blurView)
         s = intent.getIntExtra("See",0)
         c = intent.getIntExtra("Like",0)
-
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         language = preferences.getString("My_Lang", "").toString()
         ff = if (language == "th") {

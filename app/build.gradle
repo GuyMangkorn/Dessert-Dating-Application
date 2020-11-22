@@ -91,7 +91,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.eightbitlab:blurview:1.6.3'
     implementation 'com.github.hearsilent:DiscreteSlider:1.2.1'
-    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation "com.hendraanggrian.appcompat:pinview:0.2"
     implementation 'com.chaos.view:pinview:1.4.3'
     implementation 'me.relex:circleindicator:2.1.4'
@@ -110,7 +110,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0-alpha03'
 
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
-    implementation 'com.google.firebase:firebase-auth-ktx:20.0.0'
+    implementation 'com.google.firebase:firebase-auth-ktx:20.0.1'
     implementation 'com.google.firebase:firebase-database-ktx:19.5.1'
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-messaging-ktx'

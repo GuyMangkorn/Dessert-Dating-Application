@@ -19,6 +19,7 @@ import java.util.*
 class ReportUser(private var context: Activity, private var matchId: String) {
     private var i = 0;
     private var usersDb = FirebaseDatabase.getInstance().reference.child("Users")
+    private var reportDb = FirebaseDatabase.getInstance().reference.child("Report")
     private var currentUserId = FirebaseAuth.getInstance().uid!!
     fun reportDialog(): AlertDialog {
 
@@ -67,30 +68,30 @@ class ReportUser(private var context: Activity, private var matchId: String) {
                 }
                 Log.d("test_boolean", "$dateBefore , $matchId")
                 if (dateBefore) {
-
-                    Alerter.create(context)
-                            .setTitle(context.getString(R.string.report_suc))
-                            .setText(context.getString(R.string.report_suc2))
-                            .setBackgroundColorInt(ContextCompat.getColor(context, R.color.c3))
-                            .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_24)!!)
-                            .show()
-                    if (!dataSnapshot.child(matchId).hasChild("Report")) {
-                        val jj = hashMapOf<String, Any>()
-                        jj[Child] = "1"
-                        usersDb.child(matchId).child("Report").updateChildren(jj)
-                    } else if (dataSnapshot.child(matchId).hasChild("Report")) {
-                        if (dataSnapshot.child(matchId).child("Report").hasChild(Child)) {
-                            val countRep = Integer.valueOf(dataSnapshot.child(matchId).child("Report").child(Child).value.toString()) + 1
-                            val inputCount = countRep.toString()
-                            val jj = hashMapOf<String, Any>()
-                            jj[Child] = inputCount
-                            usersDb.child(matchId).child("Report").updateChildren(jj)
-                        } else {
-                            val jj = hashMapOf<String, Any>()
-                            jj[Child] = "1"
-                            usersDb.child(matchId).child("Report").updateChildren(jj)
-                        }
-                    }
+                        report(Child)
+//                    Alerter.create(context)
+//                            .setTitle(context.getString(R.string.report_suc))
+//                            .setText(context.getString(R.string.report_suc2))
+//                            .setBackgroundColorInt(ContextCompat.getColor(context, R.color.c3))
+//                            .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_24)!!)
+//                            .show()
+//                    if (!dataSnapshot.child(matchId).hasChild("Report")) {
+//                        val jj = hashMapOf<String, Any>()
+//                        jj[Child] = "1"
+//                        usersDb.child(matchId).child("Report").updateChildren(jj)
+//                    } else if (dataSnapshot.child(matchId).hasChild("Report")) {
+//                        if (dataSnapshot.child(matchId).child("Report").hasChild(Child)) {
+//                            val countRep = Integer.valueOf(dataSnapshot.child(matchId).child("Report").child(Child).value.toString()) + 1
+//                            val inputCount = countRep.toString()
+//                            val jj = hashMapOf<String, Any>()
+//                            jj[Child] = inputCount
+//                            usersDb.child(matchId).child("Report").updateChildren(jj)
+//                        } else {
+//                            val jj = hashMapOf<String, Any>()
+//                            jj[Child] = "1"
+//                            usersDb.child(matchId).child("Report").updateChildren(jj)
+//                        }
+//                    }
                 } else {
 
                     Alerter.create(context)
@@ -104,6 +105,38 @@ class ReportUser(private var context: Activity, private var matchId: String) {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+    private fun report(Child: String){
+        reportDb.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Alerter.create(context)
+                        .setTitle(context.getString(R.string.report_suc))
+                        .setText(context.getString(R.string.report_suc2))
+                        .setBackgroundColorInt(ContextCompat.getColor(context, R.color.c3))
+                        .setIcon(ContextCompat.getDrawable(context, R.drawable.ic_baseline_done_24)!!)
+                        .show()
+                if (!snapshot.hasChild(matchId)) {
+                    val jj = hashMapOf<String, Any>()
+                    jj[Child] = 1
+                    reportDb.child(matchId).updateChildren(jj)
+                } else  {
+                    if (snapshot.child(matchId).hasChild(Child)) {
+                        val countRep = Integer.valueOf(snapshot.child(matchId).child(Child).value.toString()) + 1
+                        val jj = hashMapOf<String, Any>()
+                        jj[Child] = countRep
+                        reportDb.child(matchId).updateChildren(jj)
+                    } else {
+                        val jj = hashMapOf<String, Any>()
+                        jj[Child] = 1
+                        reportDb.child(matchId).updateChildren(jj)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
         })
     }
 }

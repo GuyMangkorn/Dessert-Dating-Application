@@ -537,5 +537,17 @@
     </LinearLayout>
 
 
+        <TextView
+            android:id="@+id/userNotFound"
+            android:visibility="gone"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@color/white"
+            android:text="ไม่มีผู้ใช้งานนี้ในระบบ"/>
+
+
+
 
 </RelativeLayout>

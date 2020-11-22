@@ -441,145 +441,150 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         mUserDatabase.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.child("ProfileImage").exists()) {
-                    if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
-                        url0 = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
-                        i++
-                        if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl1")) {
-                            url1 = dataSnapshot.child("ProfileImage").child("profileImageUrl1").value.toString()
+                if (dataSnapshot.child("sex").exists()) {
+                    if (dataSnapshot.child("ProfileImage").exists()) {
+                        if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
+                            url0 = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
                             i++
-                        } else {
-                            url1 = "null"
-                        }
-                        if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl2")) {
-                            url2 = dataSnapshot.child("ProfileImage").child("profileImageUrl2").value.toString()
-                            i++
-                        } else {
-                            url2 = "null"
-                        }
-                        if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl3")) {
-                            url3 = dataSnapshot.child("ProfileImage").child("profileImageUrl3").value.toString()
-                            i++
-                        } else {
-                            url3 = "null"
-                        }
-                        if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl4")) {
-                            url4 = dataSnapshot.child("ProfileImage").child("profileImageUrl4").value.toString()
-                            i++
-                        } else {
-                            url4 = "null"
-                        }
-                        if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl5")) {
-                            url5 = dataSnapshot.child("ProfileImage").child("profileImageUrl5").value.toString()
-                            i++
-                        } else {
-                            url5 = "null"
-                        }
-                        if (i > 1) {
-                            for (j in 0 until i) {
-                                val layoutParams = LinearLayout.LayoutParams(
-                                        50, 12, 0.5f)
-                                layoutParams.setMargins(5, 0, 5, 0)
-                                val layout = LinearLayout(this@ProfileUserOppositeActivity2)
-                                layout.background = ContextCompat.getDrawable(this@ProfileUserOppositeActivity2, R.drawable.image_notselector)
-                                layout.layoutParams = LinearLayout.LayoutParams(50, 12)
-                                layout.id = j
-                                mLinear.addView(layout, layoutParams)
+                            if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl1")) {
+                                url1 = dataSnapshot.child("ProfileImage").child("profileImageUrl1").value.toString()
+                                i++
+                            } else {
+                                url1 = "null"
                             }
+                            if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl2")) {
+                                url2 = dataSnapshot.child("ProfileImage").child("profileImageUrl2").value.toString()
+                                i++
+                            } else {
+                                url2 = "null"
+                            }
+                            if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl3")) {
+                                url3 = dataSnapshot.child("ProfileImage").child("profileImageUrl3").value.toString()
+                                i++
+                            } else {
+                                url3 = "null"
+                            }
+                            if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl4")) {
+                                url4 = dataSnapshot.child("ProfileImage").child("profileImageUrl4").value.toString()
+                                i++
+                            } else {
+                                url4 = "null"
+                            }
+                            if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl5")) {
+                                url5 = dataSnapshot.child("ProfileImage").child("profileImageUrl5").value.toString()
+                                i++
+                            } else {
+                                url5 = "null"
+                            }
+                            if (i > 1) {
+                                for (j in 0 until i) {
+                                    val layoutParams = LinearLayout.LayoutParams(
+                                            50, 12, 0.5f)
+                                    layoutParams.setMargins(5, 0, 5, 0)
+                                    val layout = LinearLayout(this@ProfileUserOppositeActivity2)
+                                    layout.background = ContextCompat.getDrawable(this@ProfileUserOppositeActivity2, R.drawable.image_notselector)
+                                    layout.layoutParams = LinearLayout.LayoutParams(50, 12)
+                                    layout.id = j
+                                    mLinear.addView(layout, layoutParams)
+                                }
+                            }
+                            adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, i, url0, url1, url2, url3, url4, url5, 0)
+                            Log.d("111", "1")
+                        } else {
+                            adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, url0, url1, url2, url3, url4, url5, drawableGender)
                         }
-                        adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, i, url0, url1, url2, url3, url4, url5, 0)
-                        Log.d("111", "1")
                     } else {
                         adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, url0, url1, url2, url3, url4, url5, drawableGender)
                     }
-                } else {
-                    adapter = ScreenAdapter(this@ProfileUserOppositeActivity2, 1, url0, url1, url2, url3, url4, url5, drawableGender)
-                }
-                viewPager.adapter = adapter
-                if (dataSnapshot.exists() && dataSnapshot.childrenCount > 0) {
-                    val map = dataSnapshot.value as MutableMap<*, *>
-                    xOpposite = dataSnapshot.child("Location").child("X").value.toString().toDouble()
-                    yOpposite = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
-                    val distance = CalculateDistance.calculate(xUser, yUser, xOpposite, yOpposite)
-                    val distance1 = df2.format(distance)
-                    val city = City(language2!!,this@ProfileUserOppositeActivity2,xOpposite,yOpposite).invoke()
-                    city1.text = "$city ,  $distance1 ${getString(R.string.kilometer)}"
-                    maxlike = if (dataSnapshot.hasChild("MaxLike")) {
-                        val a = dataSnapshot.child("MaxLike").value.toString()
-                        a.toInt()
-                    } else {
-                        0
-                    }
-                    maxadmob = if (dataSnapshot.hasChild("MaxAdmob")) {
-                        val a = dataSnapshot.child("MaxAdmob").value.toString()
-                        a.toInt()
-                    } else {
-                        0
-                    }
-                    maxstar = if (dataSnapshot.hasChild("MaxStar")) {
-                        val a = dataSnapshot.child("MaxStar").value.toString()
-                        a.toInt()
-                    } else {
-                        0
-                    }
-                    if (map["myself"] != null && map["myself"] != "") {
-                        l3.visibility = View.VISIBLE
-                        myself.text = map["myself"].toString()
-                    }
-                    if (map["sex"] != null) {
-                        drawableGender = if (map["sex"].toString() == "Male") {
-                            gender.setText(R.string.Male_gender)
-                            R.drawable.ic_man
+                    viewPager.adapter = adapter
+                    if (dataSnapshot.exists() && dataSnapshot.childrenCount > 0) {
+                        val map = dataSnapshot.value as MutableMap<*, *>
+                        xOpposite = dataSnapshot.child("Location").child("X").value.toString().toDouble()
+                        yOpposite = dataSnapshot.child("Location").child("Y").value.toString().toDouble()
+                        val distance = CalculateDistance.calculate(xUser, yUser, xOpposite, yOpposite)
+                        val distance1 = df2.format(distance)
+                        val city = City(language2!!, this@ProfileUserOppositeActivity2, xOpposite, yOpposite).invoke()
+                        city1.text = "$city ,  $distance1 ${getString(R.string.kilometer)}"
+                        maxlike = if (dataSnapshot.hasChild("MaxLike")) {
+                            val a = dataSnapshot.child("MaxLike").value.toString()
+                            a.toInt()
                         } else {
-                            gender.setText(R.string.Female_gender)
-                            R.drawable.ic_woman
+                            0
                         }
-                    }
-                    if (map["Age"] != null) {
-                        age.text = map["Age"].toString()
-                    }
-                    if (map["name"] != null) {
-                        name.text = map["name"].toString()
-                        report.text = "${getString(R.string.dialog_report)}  ${map["name"].toString()}"
-                    }
-                    if (map["career"] != null && map["career"] != "") {
-                        l1.visibility = View.VISIBLE
-                        career.text = map["career"].toString()
-                    }
-                    if (map["study"] != null && map["study"] != "") {
-                        l2.visibility = View.VISIBLE
-                        study.text = map["study"].toString()
-                    }
-                    if (map["language"] != null && map["language"] != "") {
-                        l4.visibility = View.VISIBLE
-                        val size = dataSnapshot.child("language").childrenCount.toInt()
-                        var str = ""
-                        for (u in 0 until size) {
-                            val position = dataSnapshot.child("language").child("language$u").value.toString().toInt()
-                            str += listItems2[position]
-                            if (u != size - 1) {
-                                str = "$str, "
+                        maxadmob = if (dataSnapshot.hasChild("MaxAdmob")) {
+                            val a = dataSnapshot.child("MaxAdmob").value.toString()
+                            a.toInt()
+                        } else {
+                            0
+                        }
+                        maxstar = if (dataSnapshot.hasChild("MaxStar")) {
+                            val a = dataSnapshot.child("MaxStar").value.toString()
+                            a.toInt()
+                        } else {
+                            0
+                        }
+                        if (map["myself"] != null && map["myself"] != "") {
+                            l3.visibility = View.VISIBLE
+                            myself.text = map["myself"].toString()
+                        }
+                        if (map["sex"] != null) {
+                            drawableGender = if (map["sex"].toString() == "Male") {
+                                gender.setText(R.string.Male_gender)
+                                R.drawable.ic_man
+                            } else {
+                                gender.setText(R.string.Female_gender)
+                                R.drawable.ic_woman
                             }
                         }
-                        language.text = str
-                    }
-                    if (map["religion"] != null && map["religion"] != "") {
-                        l5.visibility = View.VISIBLE
-                        religion.text = listItems3[map["religion"].toString().toInt()]
-                    }
-                    if (map["hobby"] != null && map["hobby"] != "") {
-                        l6.visibility = View.VISIBLE
-                        val size = dataSnapshot.child("hobby").childrenCount.toInt()
-                        val str = ""
-                        for (u in 0 until size) {
-                            val position = dataSnapshot.child("hobby").child("hobby$u").value.toString().toInt()
-                            addT(listItems[position])
+                        if (map["Age"] != null) {
+                            age.text = map["Age"].toString()
                         }
+                        if (map["name"] != null) {
+                            name.text = map["name"].toString()
+                            report.text = "${getString(R.string.dialog_report)}  ${map["name"].toString()}"
+                        }
+                        if (map["career"] != null && map["career"] != "") {
+                            l1.visibility = View.VISIBLE
+                            career.text = map["career"].toString()
+                        }
+                        if (map["study"] != null && map["study"] != "") {
+                            l2.visibility = View.VISIBLE
+                            study.text = map["study"].toString()
+                        }
+                        if (map["language"] != null && map["language"] != "") {
+                            l4.visibility = View.VISIBLE
+                            val size = dataSnapshot.child("language").childrenCount.toInt()
+                            var str = ""
+                            for (u in 0 until size) {
+                                val position = dataSnapshot.child("language").child("language$u").value.toString().toInt()
+                                str += listItems2[position]
+                                if (u != size - 1) {
+                                    str = "$str, "
+                                }
+                            }
+                            language.text = str
+                        }
+                        if (map["religion"] != null && map["religion"] != "") {
+                            l5.visibility = View.VISIBLE
+                            religion.text = listItems3[map["religion"].toString().toInt()]
+                        }
+                        if (map["hobby"] != null && map["hobby"] != "") {
+                            l6.visibility = View.VISIBLE
+                            val size = dataSnapshot.child("hobby").childrenCount.toInt()
+                            val str = ""
+                            for (u in 0 until size) {
+                                val position = dataSnapshot.child("hobby").child("hobby$u").value.toString().toInt()
+                                addT(listItems[position])
+                            }
+                        }
+                        val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileUserOppositeActivity2, R.anim.fade_in2)
+                        information.visibility = View.VISIBLE
+                        informationIn.visibility = View.VISIBLE
+                        informationIn.animation = logoMoveAnimation
                     }
-                    val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this@ProfileUserOppositeActivity2, R.anim.fade_in2)
-                    information.visibility = View.VISIBLE
-                    informationIn.visibility = View.VISIBLE
-                    informationIn.animation = logoMoveAnimation
+                }
+                else{
+                    userNotFound.visibility = View.VISIBLE
                 }
 
             }
