@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.R
@@ -74,6 +71,7 @@ class ListCardActivity : Fragment() {
         anime2 = view.findViewById(R.id.anime2)
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) { // launch a new coroutine in background and continue
             percentage()
+            detectUserCloseAccount()
             //getStartAt()
         }
 
@@ -138,20 +136,41 @@ class ListCardActivity : Fragment() {
             handler.postDelayed(this, 1500)
         }
     }
-
-    private fun getStartAt() {
-        val userDB = FirebaseDatabase.getInstance().reference.child("Users")
-        userDB.addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun detectUserCloseAccount(){
+        val db = FirebaseDatabase.getInstance().reference
+        db.child("BlackList").addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
-                    getUsergender()
+                var count = 0
+                snapshot.childrenCount.toInt().let {
+                    db.child("BlackList").addChildEventListener(object : ChildEventListener {
+                        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                           if(++count > it){
+                               deleteListDataFromBlackList(snapshot.key!!)
+                           }
+                        }
+                        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+                        override fun onChildRemoved(snapshot: DataSnapshot) {}
+                        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
                 }
-
             }
-
             override fun onCancelled(error: DatabaseError) {
             }
+
         })
+    }
+
+    private fun deleteListDataFromBlackList(key: String) {
+        val index = resultMatches.map { T -> T!!.userId.equals(key) }.indexOf(true)
+        resultMatches.removeAt(index)
+        mMatchesAdapter.notifyItemRemoved(index)
+        mMatchesAdapter.notifyItemRangeChanged(index,resultMatches.size)
+        Log.d("TAG_CHILD",index.toString())
+    }
+
+    private fun getStartAt() {
+        getUsergender()
     }
 
     private fun getUsergender() {
