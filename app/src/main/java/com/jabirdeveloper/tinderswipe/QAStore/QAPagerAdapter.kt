@@ -14,10 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.jabirdeveloper.tinderswipe.Functions.StatusQuestions
 import com.jabirdeveloper.tinderswipe.R
+import org.json.JSONArray
+import org.json.JSONObject
 
 class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObject>, val dialog: Dialog, val viewpager: ViewPager2) : RecyclerView.Adapter<QAPagerAdapter.Holder?>() {
     private val hashMapQA: HashMap<String, Any> = HashMap()
+    private val json:JSONArray = JSONArray()
     private val preferences = context.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
     private val editLike = preferences.edit()
     private val uid = FirebaseAuth.getInstance().currentUser!!.uid
@@ -60,6 +64,8 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
                 holder.dismissButton.text = context.getString(R.string.previous_QA)
                 holder.dismissButton.setOnClickListener {
                     viewpager.setCurrentItem(--viewpager.currentItem, false)
+                    json.remove(json.length()-1)
+                    Log.d("Check_IsCheck", json.toString())
                 }
             }
             else -> {
@@ -67,6 +73,8 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
                 holder.dismissButton.text = context.getString(R.string.previous_QA)
                 holder.dismissButton.setOnClickListener {
                     viewpager.setCurrentItem(--viewpager.currentItem, false)
+                    json.remove(json.length()-1)
+                    Log.d("Check_IsCheck", json.toString())
                 }
             }
         }
@@ -91,12 +99,15 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
                 }
                 val inputMap = mapOf("id" to choice[position].questionId, "question" to answerQA, "weight" to answerWeight)
                 hashMapQA[choice[position].questionId] = inputMap
-                Log.d("Check_IsCheck", hashMapQA.toString())
+                val obj = JSONObject(inputMap)
+                json.put(obj)
+                Log.d("Check_IsCheck", json.toString())
                 viewpager.setCurrentItem(++viewpager.currentItem, false)
                 if (position == itemCount - 1) {
                     editLike.putInt("MaxLike",++maxLike)
                     editLike.apply()
                     db.child("MaxLike").setValue(maxLike)
+                    StatusQuestions().questionStats(json)
                     FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").updateChildren(hashMapQA)
                     dialog.dismiss()
                 }
