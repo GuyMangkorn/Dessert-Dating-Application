@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.util.Log
 
 import android.view.View
@@ -30,6 +31,7 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
         val choiceTwo:RadioButton = itemView.findViewById(R.id.radioButtonRegisterQA2)
         val confirmButton:Button = itemView.findViewById(R.id.registerQABtn)
          val dismissButton:Button = itemView.findViewById(R.id.registerQABtnCancel)
+        val skipButton:Button = itemView.findViewById(R.id.registerQABtnSkip)
         val count:TextView = itemView.findViewById(R.id.countRegisterQA)
         val radioGroupChoice: RadioGroup = itemView.findViewById(R.id.radioGroupRegisterQA)
         val radioGroupChoiceWeight: RadioGroup = itemView.findViewById(R.id.radioGroupRegisterQAAns)
@@ -46,6 +48,16 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
         holder.question.text = "${position+1}. ${result[position].questions}"
         holder.choiceOne.text = result[position].choice[0]
         holder.choiceTwo.text = result[position].choice[1]
+        holder.skipButton.setOnClickListener {
+            viewPager.setCurrentItem(++viewPager.currentItem, false)
+            val inputMap = mapOf("id" to result[position].questionId, "question" to -1, "weight" to -1)
+            hashMapQA[result[position].questionId] = inputMap as Map<*, *>
+            val obj = JSONObject(inputMap)
+            json.put(obj)
+            if(itemCount-1 == position){
+                finish()
+            }
+        }
         holder.confirmButton.setOnClickListener {
             viewPager.setCurrentItem(++viewPager.currentItem, false)
             var answerWeight: Int = 0
@@ -56,8 +68,8 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
                 Toast.makeText(context, context.getString(R.string.selected_questions), Toast.LENGTH_SHORT).show()
             } else {
                 when (chkAns) {
-                    R.id.radioButtonRegisterQA1 -> answerQA = 1
                     R.id.radioButtonRegisterQA1 -> answerQA = 0
+                    R.id.radioButtonRegisterQA2 -> answerQA = 1
                 }
                 when (chkWeight) {
                     R.id.radioButtonRegisterQAAns1 -> answerWeight = 1
@@ -70,14 +82,8 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
                 hashMapQA[result[position].questionId] = inputMap as Map<*, *>
                 val obj = JSONObject(inputMap)
                 json.put(obj)
-                Log.d("Check_IsCheck", hashMapQA.toString())
                 if(itemCount-1 == position){
-                    StatusQuestions().questionStats(json)
-
-                    intent.apply {
-                        putExtra("MapQA",hashMapQA)
-                    }
-                    context.startActivity(intent)
+                    finish()
                 }
             }
 
@@ -115,6 +121,15 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val inflater = (context as Activity).layoutInflater
         return Holder(inflater.inflate(R.layout.item_question, parent, false))
+    }
+
+    private fun finish(){
+        StatusQuestions().questionStats(json)
+
+        intent.apply {
+            putExtra("MapQA",hashMapQA)
+        }
+        context.startActivity(intent)
     }
 
 }

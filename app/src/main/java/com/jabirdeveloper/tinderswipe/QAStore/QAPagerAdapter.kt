@@ -6,10 +6,7 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
@@ -36,9 +33,8 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
         val choice2: RadioButton = itemView.findViewById(R.id.radioButton_QA2)
         val questions: TextView = itemView.findViewById(R.id.message_QA)
         val valPage: TextView = itemView.findViewById(R.id.page_QA)
-        val confirmButton: TextView = itemView.findViewById(R.id.QA_confirm)
-        val dismissButton: TextView = itemView.findViewById(R.id.QA_dismiss)
-
+        val confirmButton: Button = itemView.findViewById(R.id.QA_confirm)
+        val dismissButton: Button = itemView.findViewById(R.id.QA_dismiss)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {

@@ -23,6 +23,10 @@ class StatusQuestions {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.hasChild(id)) {
                             when (question) {
+                                -1 -> {
+                                    var value = snapshot.child(id).child("skip").value.toString().toInt()
+                                    db.child(id).child("skip").setValue(++value)
+                                }
                                 0 -> {
                                     var value = snapshot.child(id).child("question0").value.toString().toInt()
                                     db.child(id).child("question0").setValue(++value)
@@ -64,8 +68,10 @@ class StatusQuestions {
                                     "weight100" to 0,
                                     "weight150" to 0,
                                     "weight250" to 0,
+                                    "skip" to 0,
                             )
                             when (question) {
+                                -1 -> mapNoChild["skip"] = 1
                                 0 -> mapNoChild["question0"] = 1
                                 1 -> mapNoChild["question1"] = 1
                             }

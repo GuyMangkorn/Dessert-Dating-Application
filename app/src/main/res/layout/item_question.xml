@@ -97,31 +97,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         </LinearLayout>
+
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/linear_buttonQA"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/View8dp"
+        android:layout_marginBottom="1dp">
+
         <Button
-            android:theme="@style/Theme.MaterialComponents.buttonLightRed"
+            android:layout_weight="0.1"
             android:id="@+id/registerQABtnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/View8dp"
             android:text="@string/cancle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:theme="@style/Theme.MaterialComponents.buttonLightRed" />
+
         <Button
+            android:layout_weight="0.1"
             android:id="@+id/registerQABtnSkip"
-            android:layout_marginEnd="@dimen/View8dp"
-            android:text="@string/skip_QA"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/View8dp"
+            android:text="@string/skip_QA" />
+
         <Button
-            android:theme="@style/Theme.MaterialComponents.successGreen"
-            android:text="@string/next_QA"
+            android:layout_weight="0.1"
             android:id="@+id/registerQABtn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/next_QA"
+            android:theme="@style/Theme.MaterialComponents.successGreen" />
     </LinearLayout>
 
 </RelativeLayout>
