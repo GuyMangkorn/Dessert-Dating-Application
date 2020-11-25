@@ -39,16 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="label_2"/>
-            <RadioButton
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="label_3"/>
-            <RadioButton
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="label_4"/>
         </RadioGroup>
 
         <TextView
@@ -114,12 +104,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <Button
+            android:theme="@style/Theme.MaterialComponents.buttonLightRed"
             android:id="@+id/registerQABtnCancel"
             android:layout_marginEnd="@dimen/View8dp"
             android:text="@string/cancle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button
+            android:id="@+id/registerQABtnSkip"
+            android:layout_marginEnd="@dimen/View8dp"
+            android:text="@string/skip_QA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:theme="@style/Theme.MaterialComponents.successGreen"
             android:text="@string/next_QA"
             android:id="@+id/registerQABtn"
             android:layout_width="wrap_content"

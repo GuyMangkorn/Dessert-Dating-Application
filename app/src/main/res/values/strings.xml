@@ -150,6 +150,7 @@
     <string name="QA_improtant">How Important for you?</string>
     <string name="ok_QA">Confirm</string>
     <string name="next_QA">Next</string>
+    <string name="skip_QA">Skip</string>
     <string name="previous_QA">Previous</string>
     <string name="QA_choice1">A little important</string>
     <string name="QA_choice2">Absolutely important</string>

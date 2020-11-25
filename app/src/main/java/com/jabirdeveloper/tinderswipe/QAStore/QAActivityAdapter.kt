@@ -14,12 +14,16 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserInfo
 import com.google.firebase.database.FirebaseDatabase
+import com.jabirdeveloper.tinderswipe.Functions.StatusQuestions
 import com.jabirdeveloper.tinderswipe.R
+import org.json.JSONArray
+import org.json.JSONObject
 
 class QAActivityAdapter(private val context:Context, private val result:ArrayList<QAObject>,
                         private val viewPager: ViewPager2,
                         private val intent:Intent) : RecyclerView.Adapter<QAActivityAdapter.Holder>() {
     private val hashMapQA: HashMap<String, Map<*, *>> = HashMap()
+    private val json: JSONArray = JSONArray()
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
          val question:TextView = itemView.findViewById(R.id.questionQARegister)
         val choiceOne:RadioButton = itemView.findViewById(R.id.radioButtonRegisterQA1)
@@ -64,8 +68,12 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
                 }
                 val inputMap = mapOf("id" to result[position].questionId, "question" to answerQA, "weight" to answerWeight)
                 hashMapQA[result[position].questionId] = inputMap as Map<*, *>
+                val obj = JSONObject(inputMap)
+                json.put(obj)
                 Log.d("Check_IsCheck", hashMapQA.toString())
                 if(itemCount-1 == position){
+                    StatusQuestions().questionStats(json)
+
                     intent.apply {
                         putExtra("MapQA",hashMapQA)
                     }
@@ -88,6 +96,7 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
             itemCount - 1 -> {
                 holder.confirmButton.text = context.getString(R.string.ok_QA)
                 holder.dismissButton.text = context.getString(R.string.previous_QA)
+                json.remove(json.length()-1)
                 holder.dismissButton.setOnClickListener {
                     viewPager.setCurrentItem(--viewPager.currentItem, false)
                 }
@@ -95,6 +104,7 @@ class QAActivityAdapter(private val context:Context, private val result:ArrayLis
             else -> {
                 holder.confirmButton.text = context.getString(R.string.next_QA)
                 holder.dismissButton.text = context.getString(R.string.previous_QA)
+                json.remove(json.length()-1)
                 holder.dismissButton.setOnClickListener {
                     viewPager.setCurrentItem(--viewPager.currentItem, false)
                 }

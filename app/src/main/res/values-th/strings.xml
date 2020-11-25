@@ -150,6 +150,7 @@
     <string name="choose_photo">โปรดเลือกรูปโปรไฟล์ของคุณ</string>
     <string name="ok_QA">ยืนยัน</string>
     <string name="next_QA">ถัดไป</string>
+    <string name="skip_QA">ข้าม</string>
     <string name="previous_QA">ย้อนกลับ</string>
     <string name="QA_choice1">สำคัญนิดหน่อย</string>
     <string name="QA_choice2">ค่อนข้างสำคัญ</string>
