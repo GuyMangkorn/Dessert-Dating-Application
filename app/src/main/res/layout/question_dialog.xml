@@ -80,6 +80,7 @@
             android:orientation="horizontal"
             android:layout_height="wrap_content">
             <Button
+                android:layout_weight="0.1"
                 android:layout_marginStart="@dimen/View8dp"
                 android:layout_marginEnd="@dimen/View8dp"
                 android:theme="@style/Theme.MaterialComponents.buttonLightRed"
@@ -91,6 +92,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <Button
+                android:layout_weight="0.1"
+                android:layout_marginStart="@dimen/View8dp"
+                android:layout_marginEnd="@dimen/View8dp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:id="@+id/QA_skip"
+                android:padding="@dimen/View8dp"
+                android:text="@string/skip_QA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:layout_marginStart="@dimen/View8dp"
+                android:layout_marginEnd="@dimen/View8dp"
+                android:layout_weight="0.1"
                 android:theme="@style/Theme.MaterialComponents.successGreen"
                 android:textStyle="bold"
                 android:textColor="@color/white"

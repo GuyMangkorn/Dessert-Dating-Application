@@ -34,6 +34,7 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
         val questions: TextView = itemView.findViewById(R.id.message_QA)
         val valPage: TextView = itemView.findViewById(R.id.page_QA)
         val confirmButton: Button = itemView.findViewById(R.id.QA_confirm)
+        val skipButton: Button = itemView.findViewById(R.id.QA_skip)
         val dismissButton: Button = itemView.findViewById(R.id.QA_dismiss)
     }
 
@@ -74,6 +75,16 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
                 }
             }
         }
+        holder.skipButton.setOnClickListener {
+            viewpager.setCurrentItem(++viewpager.currentItem, false)
+            val inputMap = mapOf("id" to choice[position].questionId, "question" to -1, "weight" to -1)
+            hashMapQA[choice[position].questionId] = inputMap
+            val obj = JSONObject(inputMap)
+            json.put(obj)
+            if(itemCount-1 == position){
+                finish()
+            }
+        }
         holder.confirmButton.setOnClickListener {
             var answerWeight: Int = 0
             var answerQA: Int = 0
@@ -100,17 +111,21 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
                 Log.d("Check_IsCheck", json.toString())
                 viewpager.setCurrentItem(++viewpager.currentItem, false)
                 if (position == itemCount - 1) {
-                    editLike.putInt("MaxLike",++maxLike)
-                    editLike.apply()
-                    db.child("MaxLike").setValue(maxLike)
-                    StatusQuestions().questionStats(json)
-                    FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").updateChildren(hashMapQA)
-                    dialog.dismiss()
+                    finish()
                 }
             }
 
         }
 
+    }
+
+    private fun finish() {
+        editLike.putInt("MaxLike",++maxLike)
+        editLike.apply()
+        db.child("MaxLike").setValue(maxLike)
+        StatusQuestions().questionStats(json)
+        FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").updateChildren(hashMapQA)
+        dialog.dismiss()
     }
 
     override fun getItemCount(): Int {
