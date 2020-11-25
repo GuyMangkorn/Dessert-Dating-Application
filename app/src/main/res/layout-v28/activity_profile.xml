@@ -81,9 +81,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View8dp">
 
                         <TextView
@@ -123,8 +123,8 @@
                         android:layout_height="wrap_content"
 
                         android:orientation="horizontal"
-                        android:paddingStart="@dimen/View20dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingStart="@dimen/View16dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View4dp">
 
                         <ImageView
@@ -164,8 +164,8 @@
                         android:layout_height="wrap_content"
 
                         android:orientation="horizontal"
-                        android:paddingStart="@dimen/View20dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingStart="@dimen/View16dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View4dp">
 
                         <ImageView
@@ -201,9 +201,9 @@
                         android:layout_height="wrap_content"
 
                         android:orientation="horizontal"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
 
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View4dp">
 
                         <ImageView
@@ -241,8 +241,8 @@
 
 
                         android:orientation="horizontal"
-                        android:paddingStart="@dimen/View20dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingStart="@dimen/View16dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View8dp">
 
                         <ImageView
@@ -281,9 +281,9 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:text="@string/about_me"
                         android:textColor="#000000"
                         android:textSize="@dimen/Text16sp" />
@@ -292,9 +292,9 @@
                         android:id="@+id/myself_profile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View4dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View8dp"
 
                         android:textColor="@color/text_gray"
@@ -319,9 +319,9 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:text="@string/language"
                         android:textColor="#000000"
                         android:textSize="@dimen/Text16sp" />
@@ -331,9 +331,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="start"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View4dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
 
                         android:paddingBottom="@dimen/View8dp"
                         android:textColor="@color/text_gray"
@@ -357,9 +357,9 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:text="@string/religion"
                         android:textColor="#000000"
                         android:textSize="@dimen/Text16sp" />
@@ -368,9 +368,9 @@
                         android:id="@+id/religion_profile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View4dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View8dp"
                         android:textColor="@color/text_gray"
 
@@ -394,9 +394,9 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View8dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:text="@string/Interests"
                         android:textColor="#000000"
                         android:textSize="@dimen/Text16sp" />
@@ -406,9 +406,9 @@
                         android:id="@+id/Grid_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/View20dp"
+                        android:paddingStart="@dimen/View16dp"
                         android:paddingTop="@dimen/View4dp"
-                        android:paddingEnd="@dimen/View8dp"
+                        android:paddingEnd="@dimen/View16dp"
                         android:paddingBottom="@dimen/View8dp"
                         app:alignContent="flex_start"
                         app:alignItems="flex_start"

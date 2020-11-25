@@ -50,6 +50,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/View40dp"
+            android:layout_marginStart="@dimen/View40dp"
             android:layout_marginBottom="@dimen/View4dp"
             android:gravity="bottom"
             android:orientation="horizontal"

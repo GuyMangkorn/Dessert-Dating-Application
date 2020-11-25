@@ -8,6 +8,7 @@
     android:background="@color/background_gray">
 
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Linear_top_chat"
         android:layout_width="match_parent"
@@ -42,12 +43,15 @@
 
         <TextView
             android:id="@+id/name_chat"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxEms="8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="@dimen/View16dp"
+            android:layout_marginStart="@dimen/View8dp"
             android:textColor="@color/text_black_gray"
-            android:textSize="@dimen/Text20sp"
+            android:textSize="@dimen/Text16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/pre_Image_porfile"
             app:layout_constraintTop_toTopOf="parent" />
@@ -221,6 +225,18 @@
     </LinearLayout>
 
 
+    <LinearLayout
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp"
+        android:background="@color/white"
+        android:gravity="center">
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white" />
+    </LinearLayout>
 
 </RelativeLayout>

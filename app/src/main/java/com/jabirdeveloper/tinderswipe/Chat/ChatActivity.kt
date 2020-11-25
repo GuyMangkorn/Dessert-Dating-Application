@@ -43,6 +43,7 @@ import com.jabirdeveloper.tinderswipe.Functions.LoadingDialog
 import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import com.jabirdeveloper.tinderswipe.R
 import com.tapadoo.alerter.Alerter
+import kotlinx.android.synthetic.main.activity_chat.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -468,6 +469,24 @@ class ChatActivity : AppCompatActivity() {
         setMessage()
     }
 
+    private fun closeProgress(){
+        val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out2)
+        logoMoveAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                progress.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+
+            }
+        })
+        progress.startAnimation(logoMoveAnimation)
+    }
+
     private fun setMessage() {
         for (i in (fetchId!!.indices)) {
             c++
@@ -518,9 +537,11 @@ class ChatActivity : AppCompatActivity() {
         if (fetchId!!.size > 0) {
             Toast.makeText(this@ChatActivity, "Size > 1 :" + fetchId.elementAt(fetchId.size - 1), Toast.LENGTH_SHORT).show()
             chatDatabase = mDatabaseChat.orderByKey().startAt(fetchId.elementAt(fetchId.size - 1))
+            closeProgress()
         } else if (start != "null" && fetchId.size == 0) {
             Toast.makeText(this@ChatActivity, "Size == 0 :$start", Toast.LENGTH_SHORT).show()
             chatDatabase = mDatabaseChat.orderByKey().startAt(start)
+            closeProgress()
         }
         chatDatabase!!.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -592,8 +613,10 @@ class ChatActivity : AppCompatActivity() {
                                     mRecyclerView.adapter = mChatAdapter
                                     mRecyclerView.scrollToPosition(resultChat.size - 1)
                                     pro.visibility = View.INVISIBLE
+                                    closeProgress()
                                 } else if (countNodeD < chk) {
                                     mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
+                                    closeProgress()
                                 }
                             }
                         }
@@ -661,8 +684,10 @@ class ChatActivity : AppCompatActivity() {
                                 mRecyclerView.adapter = mChatAdapter
                                 mRecyclerView.scrollToPosition(resultChat.size - 1)
                                 pro.visibility = View.INVISIBLE
+                                closeProgress()
                             } else if (countNodeD < chk) {
                                 mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
+                                closeProgress()
                             }
                         }
                     }

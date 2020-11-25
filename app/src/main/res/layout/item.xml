@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/cname"
+            app:layout_constraintBottom_toTopOf="@+id/Linear_cname"
             app:layout_constraintStart_toStartOf="@+id/guideline2">
 
             <ImageView
@@ -82,63 +82,82 @@
 
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/cname"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/Linear_cname"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxEms="8"
-            android:maxLines="1"
-            android:shadowColor="#80292929"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/Text24sp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/View16dp"
             app:layout_constraintBottom_toTopOf="@+id/lay"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            tools:text="ชื่อ" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline2">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
 
-        <ImageView
-            android:id="@+id/on_off"
-            android:layout_width="@dimen/View8dp"
-            android:layout_height="@dimen/View8dp"
-            android:layout_marginStart="@dimen/View8dp"
-            android:background="@drawable/offline_user"
-            app:layout_constraintBottom_toBottomOf="@+id/cage"
-            app:layout_constraintStart_toEndOf="@+id/cage"
-            app:layout_constraintTop_toTopOf="@+id/cage" />
+                >
+                <TextView
+                    android:id="@+id/cname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/View4dp"
+                    android:ellipsize="end"
+                    android:maxEms="7"
+                    android:maxLines="1"
+                    android:shadowColor="#80292929"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/Text24sp"
+                    tools:text="ชื่อ" />
+                <TextView
+                    android:id="@+id/cage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:maxLines="1"
+                    android:shadowColor="#80292929"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/Text24sp"
+                    />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/cage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="10dp"
-            android:shadowColor="#80292929"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/Text24sp"
-            app:layout_constraintBottom_toTopOf="@+id/lay"
-            app:layout_constraintStart_toEndOf="@+id/cname"
-            app:layout_constraintTop_toTopOf="@+id/cname" />
+
+            <ImageView
+
+                android:id="@+id/on_off"
+                android:layout_width="@dimen/View8dp"
+                android:layout_height="@dimen/View8dp"
+                android:layout_marginStart="@dimen/View8dp"
+                android:src="@drawable/offline_user"
+                />
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/lay"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/myselfcard"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-
-            >
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/View16dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline2">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/View4dp"
                 android:shadowColor="#80292929"
                 android:shadowDx="1"
                 android:shadowDy="1"
@@ -162,9 +181,8 @@
 
         <TextView
             android:id="@+id/myselfcard"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/View4dp"
             android:elevation="10dp"
             android:ellipsize="end"
             android:maxLines="2"
@@ -176,7 +194,10 @@
             android:textColor="#FFFFFF"
             android:textSize="@dimen/Text16sp"
             android:visibility="visible"
+            android:layout_marginEnd="@dimen/View16dp"
             app:layout_constraintBottom_toTopOf="@+id/bb"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2" />
 
         <LinearLayout
@@ -194,7 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="18dp" />
+            app:layout_constraintGuide_begin="@dimen/View16dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

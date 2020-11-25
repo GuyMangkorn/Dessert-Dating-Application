@@ -73,9 +73,9 @@
                     <TextView
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:maxEms="8"
                         android:id="@+id/Matches_name"
                         android:layout_width="wrap_content"
-                        android:maxEms="8"
                         android:layout_height="wrap_content"
                         android:textColor="#EC407A"
                         android:textSize="@dimen/Text16sp"

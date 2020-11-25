@@ -28,6 +28,7 @@ import com.jabirdeveloper.tinderswipe.Functions.City
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
+import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.activity_like_you.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -64,6 +65,8 @@ class LikeYouActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         button.setOnClickListener { openDialog() }
         blurView = findViewById(R.id.blurView)
+        currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
+        userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("yep")
         s = intent.getIntExtra("See",0)
         c = intent.getIntExtra("Like",0)
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
@@ -74,17 +77,7 @@ class LikeYouActivity : AppCompatActivity() {
             Geocoder(this@LikeYouActivity, Locale.UK)
         }
 
-        val radius = 10f
-        val decorView = window.decorView
-        val windowBackground = decorView.background
-        blurView.setupWith(findViewById<View?>(R.id.like_you_recycle) as ViewGroup)
-                .setFrameClearDrawable(windowBackground)
-                .setBlurAlgorithm(RenderScriptBlur(this))
-                .setBlurRadius(radius)
-                .setHasFixedTransformationMatrix(true)
 
-        currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
-        userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("yep")
         if (intent.hasExtra("See")) {
             if(s > 0) status = true
             intent.extras!!.remove("See")
@@ -97,6 +90,14 @@ class LikeYouActivity : AppCompatActivity() {
             empty.setText(R.string.like_empty)
             supportActionBar!!.setTitle(R.string.People_like_you)
         }
+        val radius = 10f
+        val decorView = window.decorView
+        val windowBackground = decorView.background
+        blurView.setupWith(findViewById(R.id.like_you_recycle))
+                .setFrameClearDrawable(windowBackground)
+                .setBlurAlgorithm(RenderScriptBlur(this@LikeYouActivity))
+                .setBlurRadius(radius)
+                .setHasFixedTransformationMatrix(true)
         GlobalScope.launch {
             withContext(Dispatchers.Default){
                 val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
@@ -173,20 +174,21 @@ class LikeYouActivity : AppCompatActivity() {
                 dialog.dismiss()
                 buySee()
             }
-        } else {
-            imageView.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_love2))
-            textView.text = "ใครถูกใจคุณ"
-            textView2.text = "ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ"
-            b1.setOnClickListener {
-                val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-                myUser.putBoolean("buy_like", true)
-                myUser.apply()
-                blurView.visibility = View.GONE
-                button.visibility = View.GONE
-                dialog.dismiss()
-                buyLike()
-            }
         }
+//        else {
+//            imageView.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_love2))
+//            textView.text = "ใครถูกใจคุณ"
+//            textView2.text = "ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ"
+//            b1.setOnClickListener {
+//                val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+//                myUser.putBoolean("buy_like", true)
+//                myUser.apply()
+//                blurView.visibility = View.GONE
+//                button.visibility = View.GONE
+//                dialog.dismiss()
+//                buyLike()
+//            }
+//        }
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(view)
         val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
