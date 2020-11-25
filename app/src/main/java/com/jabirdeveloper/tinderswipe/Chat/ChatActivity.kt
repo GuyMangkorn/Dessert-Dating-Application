@@ -613,10 +613,10 @@ class ChatActivity : AppCompatActivity() {
                                     mRecyclerView.adapter = mChatAdapter
                                     mRecyclerView.scrollToPosition(resultChat.size - 1)
                                     pro.visibility = View.INVISIBLE
-                                    closeProgress()
+
                                 } else if (countNodeD < chk) {
                                     mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
-                                    closeProgress()
+
                                 }
                             }
                         }
@@ -684,10 +684,10 @@ class ChatActivity : AppCompatActivity() {
                                 mRecyclerView.adapter = mChatAdapter
                                 mRecyclerView.scrollToPosition(resultChat.size - 1)
                                 pro.visibility = View.INVISIBLE
-                                closeProgress()
+
                             } else if (countNodeD < chk) {
                                 mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
-                                closeProgress()
+
                             }
                         }
                     }

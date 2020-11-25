@@ -52,7 +52,7 @@ class ListCardActivity : Fragment() {
     private lateinit var handler: Handler
     private var functions = Firebase.functions
     private lateinit var resultLimit: ArrayList<*>
-    private var countLimit = 100
+    private var countLimit = 1000
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_listcard, container, false)
         super.onCreate(savedInstanceState)
@@ -192,7 +192,7 @@ class ListCardActivity : Fragment() {
             }
         }
 
-        callFunction(100, true, 0)
+        callFunction(countLimit, true, 0)
 
 
     }

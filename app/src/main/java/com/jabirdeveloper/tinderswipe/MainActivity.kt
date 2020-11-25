@@ -100,7 +100,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
     private var countLimit = 0
     private var countLimit2 = 0
     private var countLimit3 = 1
-    private var countDataSet = 100
+    private var countDataSet = 1000
     private lateinit var resultlimit: ArrayList<*>
     private var checkEmpty = false
     private var empty = 0
