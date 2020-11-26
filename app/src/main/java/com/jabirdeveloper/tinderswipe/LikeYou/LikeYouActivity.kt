@@ -9,11 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -38,6 +34,7 @@ class LikeYouActivity : AppCompatActivity() {
     private lateinit var LikeYouAdapter: RecyclerView.Adapter<*>
     private lateinit var LikeYouLayoutManager: RecyclerView.LayoutManager
     private lateinit var currentUserId: String
+    private lateinit var connectionDb: DatabaseReference
     private lateinit var userDb: DatabaseReference
     private var x_user = 0.0
     private var y_user = 0.0
@@ -53,11 +50,19 @@ class LikeYouActivity : AppCompatActivity() {
     private var countUser = 0
     private var c = 0
     private var s = 0
+    private var limit = 0
     private var status = false
+    private lateinit var co: CoroutineScope
+    private lateinit var resultlimit: ArrayList<data>
+    private var isScroll = false
+    private var currentItem = 0
+    private var totalItem = 0
+    private var scrollOutItem = 0
+    private var startNode = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_like_you)
-
+        resultlimit = ArrayList()
         button = findViewById(R.id.buttonsee)
         empty = findViewById(R.id.empty)
         toolbar = findViewById(R.id.my_tools)
@@ -66,7 +71,9 @@ class LikeYouActivity : AppCompatActivity() {
         button.setOnClickListener { openDialog() }
         blurView = findViewById(R.id.blurView)
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
-        userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("connection").child("yep")
+        userDb = FirebaseDatabase.getInstance().reference.child("Users")
+        connectionDb = userDb .child(currentUserId).child("connection").child("yep")
+
         s = intent.getIntExtra("See", 0)
         c = intent.getIntExtra("Like", 0)
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
@@ -77,14 +84,16 @@ class LikeYouActivity : AppCompatActivity() {
             Geocoder(this@LikeYouActivity, Locale.UK)
         }
 
-
+        co = CoroutineScope(Job())
         if (intent.hasExtra("See")) {
+            limit = s
             if (s > 0) status = true
             intent.extras!!.remove("See")
-            userDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("see_profile")
+            connectionDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUserId).child("see_profile")
             empty.setText(R.string.see_empty)
             supportActionBar!!.setTitle(R.string.People_view)
         } else {
+            limit = c
             if (c > 0) status = true
             button.setText(R.string.see_like)
             empty.setText(R.string.like_empty)
@@ -99,7 +108,7 @@ class LikeYouActivity : AppCompatActivity() {
                 .setBlurRadius(radius)
                 .setHasFixedTransformationMatrix(true)
 
-        CoroutineScope(Job()).launch {
+        co.launch {
             withContext(Dispatchers.Default) {
                 val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
                 if (!myUser.getBoolean("Vip", false))
@@ -114,22 +123,36 @@ class LikeYouActivity : AppCompatActivity() {
                 y_user = myUser.getString("Y", "").toString().toDouble()
             }
             if (status)
-                userDb.orderByChild("date").addChildEventListener(object : ChildEventListener {
+                connectionDb.orderByChild("date").addChildEventListener(object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
                         if (dataSnapshot.exists()) {
-                            countUser++
-                            var time: Long = 0
-                            if (dataSnapshot.hasChild("date")) {
-                                time = dataSnapshot.child("date").value.toString().toLong()
+                                countUser++
+                                var time: Long = 0
+                                if (dataSnapshot.hasChild("date")) {
+                                    time = dataSnapshot.child("date").value.toString().toLong()
+                                }
 
+                            resultlimit.add(data(dataSnapshot.key.toString(), time))
+
+                            Log.d("ttt",""+resultlimit.size)
+                            if(resultlimit.size==limit){
+                                progress_like.visibility = View.GONE
+                                resultlimit.sortWith { t1, t2 ->
+                                    (t2.time - t1.time).toInt()
+                                }
+                                Log.d("ttt","finish")
+                                for(i in startNode until startNode+20){
+                                    Log.d("num",i.toString())
+                                    fecthHi(resultlimit[i].key, resultlimit[i].time,0,0)
+                                }
                             }
-                            fecthHi(dataSnapshot.key.toString(), time)
+
                         } else {
                             empty.visibility = View.VISIBLE
                             button.visibility = View.GONE
                         }
-                        Log.d("onc", dataSnapshot.childrenCount.toString())
+
                     }
 
                     override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
@@ -152,6 +175,43 @@ class LikeYouActivity : AppCompatActivity() {
         LikeYouRecycleview.layoutManager = LikeYouLayoutManager
         LikeYouAdapter = LikeYouAdapter(getDataSetMatches(), this@LikeYouActivity)
         LikeYouRecycleview.adapter = LikeYouAdapter
+        LikeYouRecycleview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScroll = true
+
+                }
+
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentItem = LikeYouLayoutManager.childCount
+                totalItem = LikeYouLayoutManager.itemCount
+                scrollOutItem = (LikeYouLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+
+                if (isScroll && currentItem + scrollOutItem == totalItem && totalItem >= 20) {
+                    isScroll = false
+                    if (startNode < limit) {
+                        startNode += 20
+                        Log.d("ffgh", "$startNode,$limit,$currentItem,$totalItem,$scrollOutItem")
+                        var target = startNode+20
+                        if(startNode+20 > limit)
+                        target = limit
+                        for(i in startNode until target){
+                            if(i == startNode+19)
+                                fecthHi(resultlimit[i].key, resultlimit[i].time,resultLike.size-1,1)
+                            else
+                                fecthHi(resultlimit[i].key, resultlimit[i].time,resultLike.size-1,0)
+
+                        }
+
+                    }
+
+                }
+
+            }
+        })
 
 
     }
@@ -206,11 +266,13 @@ class LikeYouActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun fecthHi(key: String, time: Long) {
-        val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(key)
-        userDb.addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun fecthHi(key: String, time: Long, count:Int,li:Int) {
+
+        userDb.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
+
+                Log.d("count", "" + resultLike.size + "==" + countUser)
                 if (dataSnapshot.exists()) {
                     var profileImageUrl = ""
                     profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
@@ -218,7 +280,7 @@ class LikeYouActivity : AppCompatActivity() {
                     var myself = ""
                     val userId = dataSnapshot.key
                     val name = dataSnapshot.child("name").value.toString()
-                    val status = dataSnapshot.child("Status").child("status").value.toString()
+                    val status = dataSnapshot.child("status").value.toString()
                     val age: String = dataSnapshot.child("Age").value.toString()
                     val gender: String = dataSnapshot.child("sex").value.toString()
                     if (dataSnapshot.hasChild("myself")) {
@@ -230,23 +292,18 @@ class LikeYouActivity : AppCompatActivity() {
                     city = City(language, this@LikeYouActivity, x, y).invoke()
                     resultLike.add(LikeYouObject(
                             userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))
+                    Log.d("add",name)
                 }
-                if (resultLike.size == countUser) {
-                    CoroutineScope(Job()).launch {
-                        withContext(Dispatchers.Default) {
-                            resultLike.sortWith { t1, t2 ->
-                                (t2.time - t1.time).toInt()
-                            }
-                        }
-                        withContext(Dispatchers.Main) {
-                            progress_like.visibility = View.GONE
-                            LikeYouAdapter.notifyDataSetChanged()
-                            LikeYouRecycleview.scheduleLayoutAnimation()
-                        }
-                    }
 
 
-                }
+                Log.d("start",startNode.toString()+resultLike.size)
+                    if(startNode==0)LikeYouAdapter.notifyDataSetChanged()
+                    else if(li==1) LikeYouAdapter.notifyItemRangeChanged(count, resultLike.size)
+
+                    //LikeYouRecycleview.scheduleLayoutAnimation()
+
+
+
 
 
             }

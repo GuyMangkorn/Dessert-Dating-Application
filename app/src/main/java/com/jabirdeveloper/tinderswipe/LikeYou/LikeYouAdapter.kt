@@ -49,7 +49,7 @@ class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val c
             Glide.with(context).load(Like[position].profileImageUrl).apply(RequestOptions().override(100, 100)).into(imageView)
             container.animation = AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down)
             name.text = Like[position].name
-            if (Like[position].status == "offline") {
+            if (Like[position].status == "0") {
                 Glide.with(context).load(R.drawable.offline_user).into(status)
             } else {
                 Glide.with(context).load(R.drawable.online_user).into(status)
