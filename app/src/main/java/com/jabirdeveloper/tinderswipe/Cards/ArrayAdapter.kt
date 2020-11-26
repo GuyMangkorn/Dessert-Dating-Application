@@ -89,9 +89,7 @@ class ArrayAdapter(private var items: ArrayList<Cards>, private val context: Con
                         .child("see_profile").child(currentUid!!)
 
                 val newDate = hashMapOf<String, Any>()
-                val d = DateTime
                 newDate["date"] = ServerValue.TIMESTAMP
-                //newDate["time"] = d.time()
                 currentUserConnectionDb.updateChildren(newDate)
                 val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
                 intent.putExtra("User_opposite", items[position].userId)

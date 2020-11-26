@@ -55,14 +55,20 @@
             android:id="@+id/layout_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/View8dp"
+            android:paddingEnd="@dimen/View8dp"
+            android:paddingTop="@dimen/View4dp"
+            android:paddingBottom="@dimen/View4dp"
             android:orientation="horizontal"
             android:visibility="gone"
+            android:background="@drawable/myrect"
+            android:backgroundTint="#66404040"
             app:layout_constraintBottom_toTopOf="@+id/Linear_cname"
             app:layout_constraintStart_toStartOf="@+id/guideline2">
 
             <ImageView
-                android:layout_width="@dimen/View24dp"
-                android:layout_height="@dimen/View24dp"
+                android:layout_width="@dimen/View20dp"
+                android:layout_height="@dimen/View20dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/View4dp"
                 android:src="@drawable/ic_star" />
@@ -76,9 +82,10 @@
                 android:shadowColor="#80FFB700"
                 android:shadowDx="1"
                 android:shadowDy="1"
+                android:text="ส่งดาวให้คุณ"
                 android:shadowRadius="2"
-                android:textColor="@color/c3"
-                android:textSize="@dimen/Text20sp" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/Text14sp" />
 
         </LinearLayout>
 
