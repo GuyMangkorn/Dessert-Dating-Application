@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -19,8 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
-import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
-import com.jabirdeveloper.tinderswipe.Functions.City
+import com.jabirdeveloper.tinderswipe.Functions.*
 import com.jabirdeveloper.tinderswipe.R
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -73,9 +74,8 @@ class LikeYouActivity : AppCompatActivity() {
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         userDb = FirebaseDatabase.getInstance().reference.child("Users")
         connectionDb = userDb .child(currentUserId).child("connection").child("yep")
-
         s = intent.getIntExtra("See", 0)
-        c = intent.getIntExtra("Like", 0)
+        c = GlobalVariable.c//intent.getIntExtra("Like", 0)
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         language = preferences.getString("My_Lang", "").toString()
         ff = if (language == "th") {
@@ -110,17 +110,18 @@ class LikeYouActivity : AppCompatActivity() {
 
         co.launch {
             withContext(Dispatchers.Default) {
-                val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-                if (!myUser.getBoolean("Vip", false))
-                    if (!intent.hasExtra("See")) {
-                        if (!myUser.getBoolean("buy_like", false)) {
-                            blurView.visibility = View.VISIBLE
-                            button.visibility = View.VISIBLE
-                            progress_like.visibility = View.GONE
+                GlobalVariable.apply {
+                    if (!vip)
+                        if (!intent.hasExtra("See")) {
+                            if (buyLike) {
+                                blurView.visibility = View.VISIBLE
+                                button.visibility = View.VISIBLE
+                                progress_like.visibility = View.GONE
+                            }
                         }
-                    }
-                x_user = myUser.getString("X", "").toString().toDouble()
-                y_user = myUser.getString("Y", "").toString().toDouble()
+                    x_user = x.toDouble()
+                    y_user = y.toDouble()
+                }
             }
             if (status)
                 connectionDb.orderByChild("date").addChildEventListener(object : ChildEventListener {
@@ -137,7 +138,6 @@ class LikeYouActivity : AppCompatActivity() {
 
                             Log.d("ttt",""+resultlimit.size)
                             if(resultlimit.size==limit){
-                                progress_like.visibility = View.GONE
                                 resultlimit.sortWith { t1, t2 ->
                                     (t2.time - t1.time).toInt()
                                 }
@@ -228,9 +228,7 @@ class LikeYouActivity : AppCompatActivity() {
         textView.text = "ใครถูกใจคุณ"
         textView2.text = "ดูว่าใครบ้างที่เข้ามากดถูกใจให้คุณ"
         b1.setOnClickListener {
-            val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-            myUser.putBoolean("buy_like", true)
-            myUser.apply()
+            GlobalVariable.buyLike = true
             blurView.visibility = View.GONE
             button.visibility = View.GONE
             dialog.dismiss()
@@ -292,18 +290,20 @@ class LikeYouActivity : AppCompatActivity() {
                     city = City(language, this@LikeYouActivity, x, y).invoke()
                     resultLike.add(LikeYouObject(
                             userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))
-                    Log.d("add",name)
+                    Log.d("add", name)
                 }
 
 
-                Log.d("start",startNode.toString()+resultLike.size)
-                    if(startNode==0)LikeYouAdapter.notifyDataSetChanged()
-                    else if(li==1) LikeYouAdapter.notifyItemRangeChanged(count, resultLike.size)
-
-                    //LikeYouRecycleview.scheduleLayoutAnimation()
-
+                Log.d("start", startNode.toString() + resultLike.size)
+                if (startNode == 0) {
+                    LikeYouAdapter.notifyDataSetChanged()
+                    CloseLoading(this@LikeYouActivity,progress_like).invoke()
 
 
+
+                } else if (li == 1) LikeYouAdapter.notifyItemRangeChanged(count, resultLike.size)
+
+                //LikeYouRecycleview.scheduleLayoutAnimation()
 
 
             }

@@ -39,6 +39,7 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.jabirdeveloper.tinderswipe.Functions.DRAWABLE_IS_NOT_NULL
 import com.jabirdeveloper.tinderswipe.Functions.DRAWABLE_IS_NULL
+import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 import com.nipunru.nsfwdetector.NSFWDetector
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -281,9 +282,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
             filepath.delete().addOnSuccessListener {
                 mUserDatabase.child("ProfileImage").child(str).removeValue()
                 if (str == "profileImageUrl0") {
-                    val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-                    myUser.putString("image", "")
-                    myUser.apply()
+                    GlobalVariable.image = ""
                 }
                 imageDelete.tag = null
                 imageDelete.setBackgroundResource(R.drawable.border3)
@@ -421,13 +420,13 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun saveUserinFormation() {
         val userInfo = hashMapOf<String, Any?>()
-        val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+
         if (editmy.text.toString().trim { it <= ' ' }.isNotEmpty())
             userInfo["myself"] = editmy.text.toString()
         else userInfo["myself"] = null
 
         if (editname.text.toString().trim { it <= ' ' }.isNotEmpty()) {
-            myUser.putString("name", editname.text.toString())
+            GlobalVariable.name = name
             userInfo["name"] = editname.text.toString()
         } else userInfo["name"] = null
 
@@ -450,7 +449,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         val userInfo2: MutableMap<String, Any> = HashMap()
         for (u in mUserItems.indices) userInfo2["hobby$u"] = mUserItems[u]!!.toInt()
         mUserDatabase.child("hobby").setValue(userInfo2)
-        myUser.apply()
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -527,9 +526,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                                         when (i) {
                                             1 -> {
                                                 glide(image1)
-                                                val MyUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-                                                MyUser.putString("image", resulturi.toString())
-                                                MyUser.apply()
+                                                GlobalVariable.image = resulturi.toString()
                                                 add1.visibility = View.GONE
                                             }
                                             2 -> {

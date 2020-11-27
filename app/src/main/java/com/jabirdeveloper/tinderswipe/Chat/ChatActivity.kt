@@ -161,6 +161,7 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
         }
+
         mRecordReal.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 startRecording()
@@ -534,14 +535,15 @@ class ChatActivity : AppCompatActivity() {
 
     private fun getChatMessages() {
         var chatDatabase: Query? = mDatabaseChat
+        closeProgress()
         if (fetchId!!.size > 0) {
             Toast.makeText(this@ChatActivity, "Size > 1 :" + fetchId.elementAt(fetchId.size - 1), Toast.LENGTH_SHORT).show()
             chatDatabase = mDatabaseChat.orderByKey().startAt(fetchId.elementAt(fetchId.size - 1))
-            closeProgress()
+
         } else if (start != "null" && fetchId.size == 0) {
             Toast.makeText(this@ChatActivity, "Size == 0 :$start", Toast.LENGTH_SHORT).show()
             chatDatabase = mDatabaseChat.orderByKey().startAt(start)
-            closeProgress()
+
         }
         chatDatabase!!.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -614,6 +616,7 @@ class ChatActivity : AppCompatActivity() {
                                     mRecyclerView.scrollToPosition(resultChat.size - 1)
                                     pro.visibility = View.INVISIBLE
 
+
                                 } else if (countNodeD < chk) {
                                     mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)
 
@@ -672,7 +675,7 @@ class ChatActivity : AppCompatActivity() {
                             } else {
                                 if (active) {
                                     if (dataSnapshot.child("read").value.toString() == "Unread") {
-                                        chatCheckRead()
+
                                     }
                                 }
                             }
@@ -684,6 +687,7 @@ class ChatActivity : AppCompatActivity() {
                                 mRecyclerView.adapter = mChatAdapter
                                 mRecyclerView.scrollToPosition(resultChat.size - 1)
                                 pro.visibility = View.INVISIBLE
+
 
                             } else if (countNodeD < chk) {
                                 mRecyclerView.smoothScrollToPosition(mRecyclerView.adapter!!.itemCount - 1)

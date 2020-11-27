@@ -38,6 +38,7 @@ import com.google.firebase.database.*
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.CalculateDistance
 import com.jabirdeveloper.tinderswipe.Functions.City
+import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 
 import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import kotlinx.android.synthetic.main.activity_profile_user_opposite2.*
@@ -311,7 +312,6 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 maxlike--
                 usersDb.child(currentUid).child("MaxLike").setValue(maxlike)
             }
-            onBackPressed()
             isConnectionMatches2()
         })
         dislike.setOnClickListener(View.OnClickListener {
@@ -335,7 +335,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                 maxstar--
                 usersDb.child(currentUid).child("MaxStar").setValue(maxstar)
             }
-            onBackPressed()
+            isConnectionMatches2()
         })
         report.setOnClickListener {
             val mDialog = ReportUser(this@ProfileUserOppositeActivity2, matchId).reportDialog()
@@ -626,9 +626,9 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     }
 
     private fun getDistance() {
-        val preferences = getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        xUser = preferences.getString("X", "").toString().toDouble()
-        yUser = preferences.getString("Y", "").toString().toDouble()
+
+        xUser = GlobalVariable.x.toDouble()
+        yUser = GlobalVariable.y.toDouble()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

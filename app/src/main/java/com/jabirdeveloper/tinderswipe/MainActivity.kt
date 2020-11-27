@@ -41,10 +41,9 @@ import com.google.firebase.ktx.Firebase
 import com.jabirdeveloper.tinderswipe.Cards.ArrayAdapter
 import com.jabirdeveloper.tinderswipe.Cards.Cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
-import com.jabirdeveloper.tinderswipe.Functions.DialogAskQuestion
-import com.jabirdeveloper.tinderswipe.Functions.DialogQuestion
-import com.jabirdeveloper.tinderswipe.Functions.LoadingDialog
+import com.jabirdeveloper.tinderswipe.Functions.*
 import com.yuyakaido.android.cardstackview.*
+import kotlinx.android.synthetic.main.activity_like_you.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -120,7 +119,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-        Log.d("date", getDate(1602860907341))
+
         localizationDelegate = LocalizationActivityDelegate(requireActivity())
         layoutGps = view.findViewById(R.id.layout_in)
         textgps = view.findViewById(R.id.textView8)
@@ -155,17 +154,14 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             override fun onCardSwiped(direction: Direction?) {
                 po = rowItem[manager.topPosition - 1]
                 val userId = po.userId!!
-                val preferences = requireContext().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-                val editLike = preferences.edit()
-                maxLike = preferences.getInt("MaxLike", 0)
+
                 if (direction == Direction.Right) {
                     if (maxLike > 0 || statusVip) {
                         val datetime = hashMapOf<String, Any>()
                         datetime["date"] = ServerValue.TIMESTAMP
                         usersDb.child(userId).child("connection").child("yep").child(currentUid).updateChildren(datetime)
                         maxLike--
-                        editLike.putInt("MaxLike",maxLike)
-                        editLike.apply()
+                        GlobalVariable.maxLike = maxLike
                         usersDb.child(currentUid).child("MaxLike").setValue(maxLike)
                         isConnectionMatches(userId)
                     } else {
@@ -448,18 +444,18 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
     }
 
     private fun getDis() {
-        val preferences = requireContext().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        oppositeUserSex = preferences.getString("OppositeUserSex", "All").toString()
-        oppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
-        oppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
 
-        xUser = preferences.getString("X", "").toString().toDouble()
-        yUser = preferences.getString("Y", "").toString().toDouble()
-        maxLike = preferences.getInt("MaxLike", 0)
-        maxAdmob = preferences.getInt("MaxAdmob", 0)
-        maxStar = preferences.getInt("MaxStar", 0)
-        statusVip = preferences.getBoolean("Vip", false)
-        distance = when (preferences.getString("Distance", "Untitled")) {
+        oppositeUserSex = GlobalVariable.oppositeUserSex
+        oppositeUserAgeMin = GlobalVariable.oppositeUserAgeMin
+        oppositeUserAgeMax = GlobalVariable.oppositeUserAgeMax
+
+        xUser = GlobalVariable.x.toDouble()
+        yUser = GlobalVariable.y.toDouble()
+        maxLike = GlobalVariable.maxLike
+        maxAdmob = GlobalVariable.maxAdmob
+        maxStar = GlobalVariable.maxStar
+        statusVip = GlobalVariable.vip
+        distance = when (GlobalVariable.distance) {
             "true" -> {
                 1000.0
             }
@@ -467,7 +463,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                 1000.0
             }
             else -> {
-                preferences.getString("Distance", "Untitled").toString().toDouble()
+                GlobalVariable.distance.toDouble()
             }
         }
     }
@@ -599,23 +595,8 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             withContext(Dispatchers.Main){
                 if (type) {
                     arrayAdapter.notifyDataSetChanged()
-                    val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.fade_out2)
                     val load = (activity as SwitchpageActivity).load
-                    logoMoveAnimation.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation?) {
-
-                        }
-
-                        override fun onAnimationEnd(animation: Animation?) {
-                            load.visibility = View.GONE
-                        }
-
-                        override fun onAnimationRepeat(animation: Animation?) {
-
-                        }
-                    })
-                    load.startAnimation(logoMoveAnimation)
-
+                    CloseLoading(context,load).invoke()
 
                 }
                 else {
@@ -768,13 +749,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
 
         //}
     }
-    fun getDate(timestamp: Long) :String {
-        val calendar = Calendar.getInstance()
-        val currentTime = SimpleDateFormat("HH:mm", Locale.UK)
-        val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
-        val date = currentDate.format(timestamp)
-        return date
-    }
+
     override fun onClick(v: View?) {
         if(v == touchGps){
             startActivityForResult(Intent(context, Setting2Activity::class.java), 1112)

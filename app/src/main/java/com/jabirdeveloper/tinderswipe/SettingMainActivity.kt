@@ -38,6 +38,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.jabirdeveloper.tinderswipe.Functions.DialogSlide
+import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 import com.jabirdeveloper.tinderswipe.LikeYou.LikeYouActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -195,9 +196,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
             b1.setOnClickListener {
                 bp.subscribe(requireActivity(), "YOUR SUBSCRIPTION ID FROM GOOGLE PLAY CONSOLE HERE")
                 mUserDatabase.child("Vip").setValue(1)
-                val MyUser = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
-                MyUser.putBoolean("Vip", true)
-                MyUser.apply()
+                GlobalVariable.vip = true
                 getData()
                 dialog.dismiss()
             }
@@ -233,12 +232,12 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
 
     @SuppressLint("SetTextI18n")
     private fun getData() {
-        val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        val gender = if (preferences.getString("image", "") == "Male") {
+
+        val gender = if (GlobalVariable.image == "Male") {
             R.drawable.ic_man
         } else R.drawable.ic_woman
-        if (preferences.getString("image", "")!!.isNotEmpty()) {
-            Glide.with(requireContext()).load(preferences.getString("image", ""))
+        if (GlobalVariable.image.isNotEmpty()) {
+            Glide.with(requireContext()).load(GlobalVariable.image)
                     .placeholder(R.color.background_gray).listener(object : RequestListener<Drawable?> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
                             return false
@@ -265,16 +264,16 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
                     })
                     .apply(RequestOptions().override(300, 300)).into(imageView)
         }
-        if (preferences.getBoolean("Vip", false)) {
+        if (GlobalVariable.vip) {
             vip.setText(R.string.You_are_vip)
             statusDialog = true
         }
-        count.text = preferences.getInt("c", 0).toString()
-        see.text = preferences.getInt("s", 0).toString()
-        name.text = preferences.getString("name", "")
-        age.text = ", " + preferences.getInt("Age", 18).toString()
-        val latDouble = preferences.getString("X", "").toString().toDouble()
-        val lonDouble = preferences.getString("Y", "").toString().toDouble()
+        count.text = GlobalVariable.c.toString()
+        see.text = GlobalVariable.s.toString()
+        name.text = GlobalVariable.name
+        age.text = ", " + GlobalVariable.age.toString()
+        val latDouble = GlobalVariable.x.toDouble()
+        val lonDouble = GlobalVariable.y.toDouble()
         val preferences2 = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val langure = preferences2.getString("My_Lang", "")
         val ff: Geocoder

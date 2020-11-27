@@ -24,6 +24,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
+import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 import hearsilent.discreteslider.DiscreteSlider
 import hearsilent.discreteslider.DiscreteSlider.OnValueChangedListener
 import kotlinx.android.synthetic.main.activity_setting2.*
@@ -334,7 +335,7 @@ class  Setting2Activity : AppCompatActivity(),View.OnClickListener {
             "1"
         } else null
         val currentUserDb = FirebaseDatabase.getInstance().reference.child("Users").child(currentUid)
-        val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+
         val userInfo = hashMapOf(
                 "Distance" to value,
                 "off_status" to on_off,
@@ -344,10 +345,12 @@ class  Setting2Activity : AppCompatActivity(),View.OnClickListener {
                 "off_card" to card,
                 "off_list" to list
         )
-        myUser.putInt("OppositeUserAgeMin", minV)
-        myUser.putInt("OppositeUserAgeMax", maxV)
-        myUser.putString("OppositeUserSex", gender)
-        myUser.putString("Distance", value)
+        GlobalVariable.apply {
+            oppositeUserAgeMin = minV
+            oppositeUserAgeMax = maxV
+            oppositeUserSex = gender
+            distance = value
+        }
         currentUserDb.updateChildren(userInfo as Map<String, Any>)
         val editor = getSharedPreferences("notification_match", Context.MODE_PRIVATE).edit()
         editor.putString("noti", noti_match)

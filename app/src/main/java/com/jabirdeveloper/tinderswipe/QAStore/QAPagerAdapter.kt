@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 import com.jabirdeveloper.tinderswipe.Functions.StatusQuestions
 import com.jabirdeveloper.tinderswipe.R
 import org.json.JSONArray
@@ -19,11 +20,11 @@ import org.json.JSONObject
 class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObject>, val dialog: Dialog, val viewpager: ViewPager2) : RecyclerView.Adapter<QAPagerAdapter.Holder?>() {
     private val hashMapQA: HashMap<String, Any> = HashMap()
     private val json:JSONArray = JSONArray()
-    private val preferences = context.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-    private val editLike = preferences.edit()
+
+
     private val uid = FirebaseAuth.getInstance().currentUser!!.uid
     private val db = FirebaseDatabase.getInstance().reference.child("Users").child(uid)
-    var maxLike = preferences.getInt("MaxLike",0)
+    var maxLike = GlobalVariable.maxLike
     val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -120,8 +121,9 @@ class QAPagerAdapter(val context: Context, private val choice: ArrayList<QAObjec
     }
 
     private fun finish() {
-        editLike.putInt("MaxLike",++maxLike)
-        editLike.apply()
+        GlobalVariable.apply {
+            maxLike = ++maxLike
+        }
         db.child("MaxLike").setValue(maxLike)
         StatusQuestions().questionStats(json)
         FirebaseDatabase.getInstance().reference.child("Users").child(userId).child("Questions").updateChildren(hashMapQA)

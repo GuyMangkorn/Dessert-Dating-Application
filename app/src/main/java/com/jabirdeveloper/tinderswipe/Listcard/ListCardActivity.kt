@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
+import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 import com.jabirdeveloper.tinderswipe.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -174,13 +175,14 @@ class ListCardActivity : Fragment() {
     }
 
     private fun getUsergender() {
-        val preferences = requireActivity().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        oppositeUserSex = preferences.getString("OppositeUserSex", "All").toString()
-        oppositeUserAgeMin = preferences.getInt("OppositeUserAgeMin", 0)
-        oppositeUserAgeMax = preferences.getInt("OppositeUserAgeMax", 0)
-        xUser = preferences.getString("X", "").toString().toDouble()
-        yUser = preferences.getString("Y", "").toString().toDouble()
-        distanceUser = when (preferences.getString("Distance", "Untitled")) {
+
+        oppositeUserSex = GlobalVariable.oppositeUserSex
+        oppositeUserAgeMin = GlobalVariable.oppositeUserAgeMin
+        oppositeUserAgeMax = GlobalVariable.oppositeUserAgeMax
+
+        xUser = GlobalVariable.x.toDouble()
+        yUser = GlobalVariable.y.toDouble()
+        distanceUser = when (GlobalVariable.distance) {
             "true" -> {
                 1000.0
             }
@@ -188,7 +190,7 @@ class ListCardActivity : Fragment() {
                 1000.0
             }
             else -> {
-                preferences.getString("Distance", "Untitled").toString().toDouble()
+                GlobalVariable.distance.toDouble()
             }
         }
 

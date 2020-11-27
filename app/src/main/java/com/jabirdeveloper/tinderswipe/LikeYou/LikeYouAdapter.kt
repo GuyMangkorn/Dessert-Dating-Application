@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.jabirdeveloper.tinderswipe.Functions.NetWorkState
 import com.jabirdeveloper.tinderswipe.Functions.TimeStampToDate
 import com.jabirdeveloper.tinderswipe.ProfileUserOppositeActivity2
 import com.jabirdeveloper.tinderswipe.R
@@ -60,14 +61,14 @@ class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val c
                 tag.text = context.getString(R.string.Female_semi) + " " + Like[position].Age
             }
             city.text = Like[position].city + ", " + df2.format(Like[position].distance) + " km"
-            imageView.setOnClickListener(View.OnClickListener {
+            container.setOnClickListener{
                 seeDB = FirebaseDatabase.getInstance().reference.child("Users").child(Like[position].userId!!).child("see_profile").child(userID)
                 seeDB!!.setValue(true)
                 val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
                 intent.putExtra("User_opposite", Like[position].userId)
                 intent.putExtra("form_like", "1")
                 context.startActivity(intent)
-            })
+            }
         }
 
     }
@@ -84,5 +85,6 @@ class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val c
     override fun getItemCount(): Int {
         return Like.size
     }
+
 
 }

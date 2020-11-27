@@ -33,6 +33,7 @@ import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
+import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 import com.jabirdeveloper.tinderswipe.Functions.WarningDialog
 import com.jabirdeveloper.tinderswipe.Listcard.ListCardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
@@ -244,52 +245,60 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
             statusUp2["status"] = 0
             it.updateChildren(statusUp2)
         }
-        val myUser = getSharedPreferences("MyUser", Context.MODE_PRIVATE).edit()
+
         userDb.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.child("Vip").value.toString().toInt() == 1) {
                     Log.d("vvv", "1")
-                    myUser.putBoolean("Vip", true)
-                } else myUser.putBoolean("Vip", false)
-                if (dataSnapshot.child("connection").hasChild("yep")) {
-                    myUser.putInt("c", dataSnapshot.child("connection").child("yep").childrenCount.toInt())
+                    GlobalVariable.vip = true
+
                 } else {
-                    myUser.putInt("c", 0)
+
+                    GlobalVariable.vip = false
+                }
+                if (dataSnapshot.child("connection").hasChild("yep")) {
+
+                    GlobalVariable.c = dataSnapshot.child("connection").child("yep").childrenCount.toInt()
+                } else {
+
+                    GlobalVariable.c = 0
+
                 }
                 if (dataSnapshot.hasChild("see_profile")) {
-                    myUser.putInt("s", dataSnapshot.child("see_profile").childrenCount.toInt())
+
+                    GlobalVariable.s = dataSnapshot.child("see_profile").childrenCount.toInt()
                 } else {
-                    myUser.putInt("s", 0)
+
+                    GlobalVariable.s = 0
                 }
-                if (dataSnapshot.hasChild("buy_like")) {
-                    myUser.putBoolean("buy_like", true)
-                } else {
-                    myUser.putBoolean("buy_like", false)
-                }
-                myUser.putString("name", dataSnapshot.child("name").value.toString())
-                myUser.putInt("Age", dataSnapshot.child("Age").value.toString().toInt())
-                myUser.putInt("MaxLike", dataSnapshot.child("MaxLike").value.toString().toInt())
-                myUser.putInt("MaxChat", dataSnapshot.child("MaxChat").value.toString().toInt())
-                myUser.putInt("MaxAdmob", dataSnapshot.child("MaxAdmob").value.toString().toInt())
-                myUser.putInt("MaxStar", dataSnapshot.child("MaxStar").value.toString().toInt())
-                myUser.putInt("OppositeUserAgeMin", dataSnapshot.child("OppositeUserAgeMin").value.toString().toInt())
-                myUser.putInt("OppositeUserAgeMax", dataSnapshot.child("OppositeUserAgeMax").value.toString().toInt())
-                myUser.putString("OppositeUserSex", dataSnapshot.child("OppositeUserSex").value.toString())
-                myUser.putString("Distance", dataSnapshot.child("Distance").value.toString())
+                GlobalVariable.buyLike = dataSnapshot.hasChild("buy_like")
+                GlobalVariable.name = dataSnapshot.child("name").value.toString()
+                GlobalVariable.age = dataSnapshot.child("Age").value.toString().toInt()
+                GlobalVariable.maxLike = dataSnapshot.child("MaxLike").value.toString().toInt()
+                GlobalVariable.maxChat = dataSnapshot.child("MaxChat").value.toString().toInt()
+                GlobalVariable.maxAdmob = dataSnapshot.child("MaxAdmob").value.toString().toInt()
+                GlobalVariable.maxStar = dataSnapshot.child("MaxStar").value.toString().toInt()
+                GlobalVariable.oppositeUserAgeMin = dataSnapshot.child("OppositeUserAgeMin").value.toString().toInt()
+                GlobalVariable.oppositeUserAgeMax = dataSnapshot.child("OppositeUserAgeMax").value.toString().toInt()
+                GlobalVariable.oppositeUserSex = dataSnapshot.child("OppositeUserSex").value.toString()
+                GlobalVariable.distance = dataSnapshot.child("Distance").value.toString()
 
                 if (dataSnapshot.hasChild("Location")) {
-                    myUser.putString("X", dataSnapshot.child("Location").child("X").value.toString())
-                    myUser.putString("Y", dataSnapshot.child("Location").child("Y").value.toString())
+
+                    GlobalVariable.x = dataSnapshot.child("Location").child("X").value.toString()
+                    GlobalVariable.y = dataSnapshot.child("Location").child("Y").value.toString()
 
                 }
                 if (dataSnapshot.child("ProfileImage").hasChild("profileImageUrl0")) {
-                    myUser.putString("image", dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString())
+                    GlobalVariable.image = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
+
 
                 } else {
-                    myUser.putString("image", "")
+
+                    GlobalVariable.image = ""
                 }
-                myUser.apply()
+
                 j1.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
                     supportFragmentManager.beginTransaction().apply {
                         add(R.id.fragment_container2, page1).hide(page1)
