@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
@@ -19,11 +21,11 @@ import com.jabirdeveloper.tinderswipe.Functions.ChangLanguage
 import com.jabirdeveloper.tinderswipe.QAStore.QAActivityAdapter
 import com.jabirdeveloper.tinderswipe.QAStore.QAObject
 import com.jabirdeveloper.tinderswipe.R
+import com.jabirdeveloper.tinderswipe.ViewModel.QuestionViewModel
 
 class QuestionActivity : AppCompatActivity() {
     private var x: Double = 0.0
     private var y: Double = 0.0
-    private lateinit var type: String
     private lateinit var pager: ViewPager2
     private var email: String? = null
     private var pass: String? = null
@@ -33,19 +35,22 @@ class QuestionActivity : AppCompatActivity() {
     private var age: Int = 18
     private lateinit var toolbar: Toolbar
     private lateinit var intent1: Intent
-    private var functions = Firebase.functions
     private var language:ChangLanguage = ChangLanguage(this)
+    private lateinit var questionViewModel:QuestionViewModel
     private val localizationDelegate = LocalizationActivityDelegate(this)
-    private var arrSetQuestion:ArrayList<QAObject> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
         toolbar = findViewById(R.id.my_tools)
         progressBar = findViewById(R.id.progressQuestion)
         setSupportActionBar(toolbar)
+        questionViewModel = ViewModelProvider(this,object : ViewModelProvider.Factory{
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return QuestionViewModel(this@QuestionActivity) as T
+            }
+        }).get(QuestionViewModel::class.java)
         supportActionBar!!.setTitle(R.string.registered)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        loadQuestion()
         pager = findViewById(R.id.viewPagerQuestion)
         language.setLanguage()
         intent.apply {
@@ -58,45 +63,26 @@ class QuestionActivity : AppCompatActivity() {
             sex = getStringExtra("Sex")
             age = getIntExtra("Age", age)
         }
-    }
-    private fun loadQuestion(): Task<HttpsCallableResult> {
-        val data = hashMapOf(
-                "type" to "RegisterQuestion",
-                "language" to localizationDelegate.getLanguage(this).toLanguageTag()
-        )
-        return functions
-                .getHttpsCallable("addQuestions")
-                .call(data)
-                .addOnSuccessListener {
-                    val data:Map<*,*> = it.data as Map<*, *>
-                    val questions:Map<*,*> = data["questions"] as Map<*, *>
-                    for (entry in questions.keys){
-                        val questionId = entry.toString()
-                        val questionSet = questions[questionId] as Map<*,*>
-                        val arr:ArrayList<String> = ArrayList()
-                        arr.add(questionSet["0"].toString())
-                        arr.add(questionSet["1"].toString())
-                        val ob = QAObject(questionId,questionSet["question"].toString(),arr)
-                        arrSetQuestion.add(ob)
-                        Log.d("tagRegisterQuestion", questionSet["question"].toString())
-                    }
-                    intent1 = Intent(this@QuestionActivity, Regis_target_Acivity::class.java)
-                    intent1.apply {
-                        putExtra("Sex", intent.getStringExtra("Sex"))
-                        putExtra("Type", intent.getStringExtra("Type"))
-                        putExtra("X", intent.getDoubleExtra("X", 0.0))
-                        putExtra("Y", intent.getDoubleExtra("Y", 0.0))
-                        putExtra("Name", intent.getStringExtra("Name"))
-                        putExtra("Age", intent.getStringExtra("Age"))
-                        putExtra("email", intent.getStringExtra("email"))
-                        putExtra("password", intent.getStringExtra("password"))
-                        putExtra("Birth", intent.getLongExtra("Birth", 0))
-                    }
-                    val pagerAdapter = QAActivityAdapter(this,arrSetQuestion,pager,intent1)
-                    pager.offscreenPageLimit = arrSetQuestion.size
-                    pager.isUserInputEnabled = false
-                    pager.adapter = pagerAdapter
-                    progressBar.visibility = View.GONE
-                }
+        questionViewModel.responseRegisterQA.observe(this,{
+            val pagerAdapter = QAActivityAdapter(this,it,pager,intent1)
+            pager.offscreenPageLimit = it.size
+            pager.isUserInputEnabled = false
+            pager.adapter = pagerAdapter
+            progressBar.visibility = View.GONE
+
+        })
+        questionViewModel.fetchQuestionRegister(localizationDelegate.getLanguage(this).toLanguageTag())
+        intent1 = Intent(this@QuestionActivity, Regis_target_Acivity::class.java)
+        intent1.apply {
+            putExtra("Sex", intent.getStringExtra("Sex"))
+            putExtra("Type", intent.getStringExtra("Type"))
+            putExtra("X", intent.getDoubleExtra("X", 0.0))
+            putExtra("Y", intent.getDoubleExtra("Y", 0.0))
+            putExtra("Name", intent.getStringExtra("Name"))
+            putExtra("Age", intent.getStringExtra("Age"))
+            putExtra("email", intent.getStringExtra("email"))
+            putExtra("password", intent.getStringExtra("password"))
+            putExtra("Birth", intent.getLongExtra("Birth", 0))
+        }
     }
 }
