@@ -147,8 +147,8 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
         flexLayout = findViewById(R.id.Grid)
         flexLayout.flexDirection = FlexDirection.ROW
         params = GridLayout.LayoutParams()
-        language.setOnClickListener(View.OnClickListener { dialog(language, getString(R.string.language), listItems2, checkedItems2, mUserItems2) })
-        religion.setOnClickListener(View.OnClickListener { dialog2(religion, getString(R.string.religion), listItems3) })
+        language.setOnClickListener{ dialog(language, getString(R.string.language), listItems2, checkedItems2, mUserItems2) }
+        religion.setOnClickListener{ dialog2(religion, getString(R.string.religion), listItems3) }
         editname.setOnEditTextImeBackListener(object : EditTextImeBackListener {
             override fun onImeBack(ctrl: CustomEdittext?, text: String?) {
                 editname.clearFocus()
@@ -169,7 +169,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
                 editstudy.clearFocus()
             }
         })
-        flexLayout.setOnClickListener(View.OnClickListener {
+        flexLayout.setOnClickListener{
             val mBuilder = AlertDialog.Builder(this@SettingActivity)
             mBuilder.apply {
                 setTitle(R.string.dialog_title)
@@ -201,7 +201,7 @@ open class SettingActivity : AppCompatActivity(), View.OnClickListener {
             val mDialog = mBuilder.create()
             mDialog.window!!.setBackgroundDrawable(ContextCompat.getDrawable(this@SettingActivity, R.drawable.myrect2))
             mDialog.show()
-        })
+        }
     }
 
     private fun dialog(textView: TextView?, TitleName: String?, order: Array<String?>?, checkedItem: BooleanArray?, mUserItem: ArrayList<Int?>?) {

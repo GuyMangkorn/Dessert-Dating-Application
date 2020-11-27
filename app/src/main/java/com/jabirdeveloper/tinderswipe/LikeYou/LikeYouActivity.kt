@@ -74,7 +74,7 @@ class LikeYouActivity : AppCompatActivity() {
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         userDb = FirebaseDatabase.getInstance().reference.child("Users")
         connectionDb = userDb .child(currentUserId).child("connection").child("yep")
-        s = intent.getIntExtra("See", 0)
+        s = GlobalVariable.s//intent.getIntExtra("See", 0)
         c = GlobalVariable.c//intent.getIntExtra("Like", 0)
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         language = preferences.getString("My_Lang", "").toString()
@@ -136,7 +136,7 @@ class LikeYouActivity : AppCompatActivity() {
 
                             resultlimit.add(data(dataSnapshot.key.toString(), time))
 
-                            Log.d("ttt",""+resultlimit.size)
+                            Log.d("ttt",""+resultlimit.size+" :"+limit)
                             if(resultlimit.size==limit){
                                 resultlimit.sortWith { t1, t2 ->
                                     (t2.time - t1.time).toInt()
