@@ -21,6 +21,8 @@ import android.widget.*
 import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
@@ -42,6 +44,8 @@ import com.jabirdeveloper.tinderswipe.Cards.ArrayAdapter
 import com.jabirdeveloper.tinderswipe.Cards.Cards
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.Functions.*
+import com.jabirdeveloper.tinderswipe.QAStore.DialogFragment
+import com.jabirdeveloper.tinderswipe.ViewModel.QuestionViewModel
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.android.synthetic.main.activity_like_you.*
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -105,6 +109,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
     private var empty = 0
     private var countEmpty = 0
     private lateinit var localizationDelegate:LocalizationActivityDelegate
+    private lateinit var questionViewModel:QuestionViewModel
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -147,6 +152,20 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
         star.setOnClickListener(this)
         handler = Handler()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        questionViewModel = ViewModelProvider(requireActivity(),object : ViewModelProvider.Factory{
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return QuestionViewModel(requireContext()) as T
+            }
+        }).get(QuestionViewModel::class.java)
+        questionViewModel.response.observe(requireActivity(),{
+            val dialogFragment: DialogFragment = DialogFragment()
+            dialogFragment.setData(it)
+            dialogFragment.show(requireActivity().supportFragmentManager, "example Dialog")
+        })
     }
     private fun cardStack(){
         manager = CardStackLayoutManager(context, object : CardStackListener {
@@ -270,8 +289,9 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
              dialog.dismiss()
          }
          btnConfirm.setOnClickListener {
-             val question = DialogQuestion(requireActivity().supportFragmentManager,requireContext())
-             question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
+             //val question = DialogQuestion(requireActivity().supportFragmentManager,requireContext())
+             //question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
+             questionViewModel.fetchQuestion(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
              dialog.dismiss()
          }
          return dialog
