@@ -67,7 +67,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
     private lateinit var dialog: Dialog
     private lateinit var dialog2: Dialog
     private lateinit var bp: BillingProcessor
-    private lateinit var vvip: ImageView
+
     private var statusDialog = false
     private lateinit var setimage: ImageView
     private var gotoProfile = true
@@ -101,7 +101,7 @@ class SettingMainActivity : Fragment(), BillingProcessor.IBillingHandler {
         likeYou = view.findViewById(R.id.like_you)
         seeProfileYou = view.findViewById(R.id.see_porfile_you)
         vip = view.findViewById(R.id.vip)
-        vvip = view.findViewById(R.id.vvip)
+
         setimage = view.findViewById(R.id.goto_set_image)
         ad = view.findViewById(R.id.admob_setting)
         vip.setOnClickListener(View.OnClickListener {

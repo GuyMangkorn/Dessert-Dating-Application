@@ -49,6 +49,7 @@ class LikeYouActivity : AppCompatActivity() {
     private var functions = Firebase.functions
     private lateinit var language: String
     private var countUser = 0
+    private var countU = 0
     private var c = 0
     private var s = 0
     private var limit = 0
@@ -60,6 +61,7 @@ class LikeYouActivity : AppCompatActivity() {
     private var totalItem = 0
     private var scrollOutItem = 0
     private var startNode = 0
+    private var starTarget = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_like_you)
@@ -73,7 +75,7 @@ class LikeYouActivity : AppCompatActivity() {
         blurView = findViewById(R.id.blurView)
         currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
         userDb = FirebaseDatabase.getInstance().reference.child("Users")
-        connectionDb = userDb .child(currentUserId).child("connection").child("yep")
+        connectionDb = userDb.child(currentUserId).child("connection").child("yep")
         s = GlobalVariable.s//intent.getIntExtra("See", 0)
         c = GlobalVariable.c//intent.getIntExtra("Like", 0)
         val preferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
@@ -128,23 +130,24 @@ class LikeYouActivity : AppCompatActivity() {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
                         if (dataSnapshot.exists()) {
-                                countUser++
-                                var time: Long = 0
-                                if (dataSnapshot.hasChild("date")) {
-                                    time = dataSnapshot.child("date").value.toString().toLong()
-                                }
+
+                            var time: Long = 0
+                            if (dataSnapshot.hasChild("date")) {
+                                time = dataSnapshot.child("date").value.toString().toLong()
+                            }
 
                             resultlimit.add(data(dataSnapshot.key.toString(), time))
 
-                            Log.d("ttt",""+resultlimit.size+" :"+limit)
-                            if(resultlimit.size==limit){
+                            Log.d("ttt", "" + resultlimit.size + " :" + limit)
+                            if (resultlimit.size == limit) {
                                 resultlimit.sortWith { t1, t2 ->
                                     (t2.time - t1.time).toInt()
                                 }
-                                Log.d("ttt","finish")
-                                for(i in startNode until startNode+20){
-                                    Log.d("num",i.toString())
-                                    fecthHi(resultlimit[i].key, resultlimit[i].time,0,0)
+                                starTarget = startNode + 20
+                                if(limit <= 20) starTarget = limit
+                                for (i in startNode until starTarget) {
+                                    Log.d("num", i.toString())
+                                    fecthHi(resultlimit[i].key, resultlimit[i].time, 0, 0)
                                 }
                             }
 
@@ -190,19 +193,20 @@ class LikeYouActivity : AppCompatActivity() {
                 totalItem = LikeYouLayoutManager.itemCount
                 scrollOutItem = (LikeYouLayoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-                if (isScroll && currentItem + scrollOutItem == totalItem && totalItem >= 20) {
+                if (isScroll && currentItem + scrollOutItem == totalItem && totalItem >= countU) {
+                    countU = 0
                     isScroll = false
                     if (startNode < limit) {
                         startNode += 20
                         Log.d("ffgh", "$startNode,$limit,$currentItem,$totalItem,$scrollOutItem")
-                        var target = startNode+20
-                        if(startNode+20 > limit)
-                        target = limit
-                        for(i in startNode until target){
-                            if(i == startNode+19)
-                                fecthHi(resultlimit[i].key, resultlimit[i].time,resultLike.size-1,1)
+                        var target = startNode + 20
+                        if (startNode + 20 > limit)
+                            target = limit
+                        for (i in startNode until target) {
+                            if (i == target - 1)
+                                fecthHi(resultlimit[i].key, resultlimit[i].time, resultLike.size - 1, 1)
                             else
-                                fecthHi(resultlimit[i].key, resultlimit[i].time,resultLike.size-1,0)
+                                fecthHi(resultlimit[i].key, resultlimit[i].time, resultLike.size - 1, 0)
 
                         }
 
@@ -264,14 +268,16 @@ class LikeYouActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun fecthHi(key: String, time: Long, count:Int,li:Int) {
+    private fun fecthHi(key: String, time: Long, count: Int, li: Int) {
 
         userDb.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
 
                 Log.d("count", "" + resultLike.size + "==" + countUser)
+                countUser++
                 if (dataSnapshot.exists()) {
+                    countU++
                     var profileImageUrl = ""
                     profileImageUrl = dataSnapshot.child("ProfileImage").child("profileImageUrl0").value.toString()
                     var city = ""
@@ -291,17 +297,23 @@ class LikeYouActivity : AppCompatActivity() {
                     resultLike.add(LikeYouObject(
                             userId, profileImageUrl, name, status, age, gender, myself, distance, city, time))
                     Log.d("add", name)
+                } else {
+                    Log.d("delete",dataSnapshot.key.toString())
+                    connectionDb.child(dataSnapshot.key.toString()).removeValue().addOnSuccessListener {
+                        if (intent.hasExtra("See")) GlobalVariable.s-- else GlobalVariable.c--
+                    }
                 }
 
 
                 Log.d("start", startNode.toString() + resultLike.size)
-                if (startNode == 0) {
+                if (countUser == starTarget) {
+                   // startNode = resultLike.size
                     LikeYouAdapter.notifyDataSetChanged()
-                    CloseLoading(this@LikeYouActivity,progress_like).invoke()
+                    CloseLoading(this@LikeYouActivity, progress_like).invoke()
 
 
-
-                } else if (li == 1) LikeYouAdapter.notifyItemRangeChanged(count, resultLike.size)
+                }
+                if (li == 1) LikeYouAdapter.notifyItemRangeChanged(count, resultLike.size)
 
                 //LikeYouRecycleview.scheduleLayoutAnimation()
 
