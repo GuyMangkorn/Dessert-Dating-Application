@@ -45,7 +45,7 @@ class First_Activity : AppCompatActivity() {
         mContext = applicationContext
         mAuth = FirebaseAuth.getInstance()
 
-        CoroutineScope(Job()).launch(Dispatchers.IO) {
+        CoroutineScope(Job()).launch(Dispatchers.Unconfined) {
             firebaseAuthStateListener = AuthStateListener {
                 val user = FirebaseAuth.getInstance().currentUser
                 if (user != null) {
@@ -117,8 +117,6 @@ class First_Activity : AppCompatActivity() {
         mGPSDialog.show()
     }
 
-    private var countNumberChat: Int? = 0
-
     private fun setAnimation() {
         aniFade = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
         aniFade2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
@@ -182,16 +180,3 @@ class First_Activity : AppCompatActivity() {
 
 
 }
-//<com.jaredrummler.android.widget.AnimatedSvgView
-//android:id="@+id/animated_svg_view"
-//android:layout_width="180dp"
-//android:layout_height="190dp"
-//android:layout_gravity="center"
-//app:animatedSvgFillColors="@array/candy_color"
-//app:animatedSvgFillStart="1200"
-//app:animatedSvgFillTime="1000"
-//app:animatedSvgGlyphStrings="@array/candy"
-//app:animatedSvgImageSizeX="512"
-//app:animatedSvgImageSizeY="512"
-//app:animatedSvgTraceTime="2000"
-//app:animatedSvgTraceTimePerGlyph="1000" />

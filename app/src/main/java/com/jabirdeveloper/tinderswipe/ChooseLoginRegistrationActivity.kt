@@ -121,8 +121,8 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
             }
         }
         mCallbackManager = CallbackManager.Factory.create()
-        face.setOnClickListener(View.OnClickListener {
-            LoginManager.getInstance().logInWithReadPermissions(this@ChooseLoginRegistrationActivity, Arrays.asList("email"))
+        face.setOnClickListener{
+            LoginManager.getInstance().logInWithReadPermissions(this@ChooseLoginRegistrationActivity, listOf("email", "public_profile", "user_friends"))
             LoginManager.getInstance().registerCallback(mCallbackManager, object : FacebookCallback<LoginResult?> {
                 override fun onSuccess(loginResult: LoginResult?) {
                     handleFacebookToken(loginResult?.accessToken)
@@ -133,7 +133,7 @@ class ChooseLoginRegistrationActivity : AppCompatActivity() {
                     Snackbar.make(face, exception.toString(), Snackbar.LENGTH_SHORT).show();
                 }
             })
-        })
+        }
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()

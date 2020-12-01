@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -37,11 +36,9 @@ import com.jabirdeveloper.tinderswipe.Functions.GlobalVariable
 import com.jabirdeveloper.tinderswipe.Functions.WarningDialog
 import com.jabirdeveloper.tinderswipe.Listcard.ListCardActivity
 import com.jabirdeveloper.tinderswipe.Matches.MatchesActivity
-import com.jabirdeveloper.tinderswipe.QAStore.DialogFragment
-import com.jabirdeveloper.tinderswipe.QAStore.QAObject
+
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlin.collections.ArrayList
+
 import kotlin.collections.HashMap
 
 @Suppress("NAME_SHADOWING")
@@ -55,7 +52,6 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     private val page2 = MainActivity()
     private val page3 = ListCardActivity()
     private val page4 = MatchesActivity()
-    private val localizationDelegate = LocalizationActivityDelegate(this)
     private var functions = Firebase.functions
     private var activeFragment: Fragment = MainActivity()
     private val language:ChangLanguage = ChangLanguage(this)
@@ -67,9 +63,11 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         permissionCheck()
         setContentView(R.layout.activity_switch_page)
         load = findViewById(R.id.candyCane)
-        j1.launch(IO) { // launch a new coroutine in background and continue
-            getMyUser()
-            getUnreadFunction()
+        j1.launch(Dispatchers.Unconfined) { // launch a new coroutine in background and continue
+
+                getMyUser()
+                getUnreadFunction()
+
         }
         //questionCalculate()
         bar = findViewById(R.id.bar2)
@@ -102,37 +100,37 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         }
 
         bar!!.setOnItemSelectedListener(object : ChipNavigationBar.OnItemSelectedListener {
-            override fun onItemSelected(i: Int) {
-                Log.d("num", i.toString())
+            override fun onItemSelected(id: Int) {
+                Log.d("num", id.toString())
                 if (isOnline(applicationContext)) {
-                    when (i) {
+                    when (id) {
                         R.id.item1 -> {
 
                             supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page1).commit()
                             activeFragment = page1
-                            id = R.id.item1
+                            this@SwitchpageActivity.id = R.id.item1
                         }
                         R.id.item2 -> {
-                            if (R.id.item2 < id)
+                            if (R.id.item2 < this@SwitchpageActivity.id)
                                 supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page2).commit()
                             else
                                 supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page2).commit()
                             activeFragment = page2
-                            id = R.id.item2
+                            this@SwitchpageActivity.id = R.id.item2
 
                         }
                         R.id.item3 -> {
-                            if (R.id.item3 < id)
+                            if (R.id.item3 < this@SwitchpageActivity.id)
                                 supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left).hide(activeFragment).show(page3).commit()
                             else
                                 supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page3).commit()
                             activeFragment = page3
-                            id = R.id.item3
+                            this@SwitchpageActivity.id = R.id.item3
                         }
                         R.id.item4 -> {
                             supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).hide(activeFragment).show(page4).commit()
                             activeFragment = page4
-                            id = R.id.item4
+                            this@SwitchpageActivity.id = R.id.item4
 
                         }
                     }
@@ -173,7 +171,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         } else {
             val location=  mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             if(location != null) {
-                j1.launch(IO) {
+                j1.launch(Dispatchers.Unconfined) {
                     lastLocation(location)
                 }
             }else {
@@ -221,6 +219,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
     }
 
     private fun getMyUser() {
+
         val userDb = Firebase.database.reference.child("Users").child(FirebaseAuth.getInstance().uid.toString())
         val connectedRef: DatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected")
         connectedRef.addValueEventListener(object : ValueEventListener {
@@ -299,15 +298,15 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
                     GlobalVariable.image = ""
                 }
 
-                j1.launch(Dispatchers.Default) { // launch a new coroutine in background and continue
+
                     supportFragmentManager.beginTransaction().apply {
                         add(R.id.fragment_container2, page1).hide(page1)
                         add(R.id.fragment_container2, page2).hide(page2)
                         add(R.id.fragment_container2, page3).hide(page3)
                         add(R.id.fragment_container2, page4).hide(page4)
                     }.commit()
-                }
-                bar!!.setItemSelected(id, true)//.let { load.visibility = View.GONE }
+
+                bar!!.setItemSelected(id, true)
 
 
             }
@@ -371,7 +370,7 @@ class SwitchpageActivity : AppCompatActivity() ,LocationListener {
         super.onPause()
         j1.cancel()
     }
-     private suspend fun lastLocation(location: Location){
+     private fun lastLocation(location: Location){
          val lon = location.longitude
          val lat = location.latitude
          val locationData = FirebaseDatabase.getInstance().reference.child("Users").child(uid).child("Location")

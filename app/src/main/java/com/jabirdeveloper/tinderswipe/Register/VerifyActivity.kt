@@ -14,11 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import com.chaos.view.PinView
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.*
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
 import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
 import com.google.firebase.database.DataSnapshot
@@ -100,12 +97,14 @@ class VerifyActivity : AppCompatActivity() {
     }
 
     private fun sendVerification(phoneNo: String) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNo,  // Phone number to verify
-                60,  // Timeout duration
-                TimeUnit.SECONDS,  // Unit of timeout
-                this,  // Activity (for callback binding)
-                callbacks) // OnVerificationStateChangedCallbacks
+        val options = PhoneAuthOptions.newBuilder(mAuth)
+                .setPhoneNumber(phoneNo)       // Phone number to verify
+                .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                .setActivity(this)                 // Activity (for callback binding)
+                .setCallbacks(callbacks)          // OnVerificationStateChangedCallbacks
+                .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -114,14 +113,16 @@ class VerifyActivity : AppCompatActivity() {
             if (verificationCodeBysystem != "") {
                 val code = credential.smsCode
                 verifyCode(code)
+                Log.d("Vericom","1")
             } else {
+                Log.d("Vericom","2")
                 singInTheUserByCredentials(credential)
                 Alerter.create(this@VerifyActivity)
                         .setTitle(getString(R.string.Sign))
                         .setText(getString(R.string.logging))
                         .setBackgroundColorRes(R.color.c2)
                         .show()
-                dialog.show()
+               // dialog.show()
             }
         }
 
@@ -144,7 +145,8 @@ class VerifyActivity : AppCompatActivity() {
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken
         ) {
-            dialog.show()
+            //dialog.show()
+            Log.d("Verisend","1")
             verificationCodeBysystem = verificationId
 
         }
