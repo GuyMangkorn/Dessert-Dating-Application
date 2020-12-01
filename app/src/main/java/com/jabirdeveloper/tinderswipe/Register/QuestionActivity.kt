@@ -63,15 +63,15 @@ class QuestionActivity : AppCompatActivity() {
             sex = getStringExtra("Sex")
             age = getIntExtra("Age", age)
         }
-        questionViewModel.responseRegisterQA.observe(this,{
+        questionViewModel.fetchRegisterQA.observe(this,{
             val pagerAdapter = QAActivityAdapter(this,it,pager,intent1)
             pager.offscreenPageLimit = it.size
             pager.isUserInputEnabled = false
             pager.adapter = pagerAdapter
             progressBar.visibility = View.GONE
-
         })
-        questionViewModel.fetchQuestionRegister(localizationDelegate.getLanguage(this).toLanguageTag())
+        questionViewModel.responseRegisterQA(localizationDelegate.getLanguage(this).toLanguageTag())
+        questionViewModel.response(localizationDelegate.getLanguage(this).toLanguageTag())
         intent1 = Intent(this@QuestionActivity, Regis_target_Acivity::class.java)
         intent1.apply {
             putExtra("Sex", intent.getStringExtra("Sex"))

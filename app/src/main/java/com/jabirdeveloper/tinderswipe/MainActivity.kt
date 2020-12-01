@@ -161,9 +161,10 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                 return QuestionViewModel(requireContext()) as T
             }
         }).get(QuestionViewModel::class.java)
-        questionViewModel.response.observe(requireActivity(),{
+        questionViewModel.fetchQA.observe(requireActivity(),{
             val dialogFragment: DialogFragment = DialogFragment()
             dialogFragment.setData(it)
+            //localizationDelegate.getLanguage(requireContext()).toLanguageTag()
             dialogFragment.show(requireActivity().supportFragmentManager, "example Dialog")
         })
     }
@@ -289,9 +290,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
              dialog.dismiss()
          }
          btnConfirm.setOnClickListener {
-             //val question = DialogQuestion(requireActivity().supportFragmentManager,requireContext())
-             //question.questionDataOnCall(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
-             questionViewModel.fetchQuestion(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
+             questionViewModel.response(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
              dialog.dismiss()
          }
          return dialog
