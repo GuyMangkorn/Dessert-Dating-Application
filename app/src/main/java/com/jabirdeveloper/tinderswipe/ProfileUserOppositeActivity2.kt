@@ -110,6 +110,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private var drawableGender = 0
     private var maxChat = 0
     private var statusVip = false
+    private var delete = false
     lateinit var rewardedAd: RewardedAd
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
@@ -385,7 +386,8 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
         currentuserConnectionDb.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    GlobalVariable.c = GlobalVariable.c-1
+                    delete=true
+                    GlobalVariable.c = GlobalVariable.c - 1
                     val key = FirebaseDatabase.getInstance().reference.child("Chat").push().key
                     usersDb.child(dataSnapshot.key!!).child("connection").child("matches").child(currentUid).child("ChatId").setValue(key)
                     usersDb.child(currentUid).child("connection").child("matches").child(dataSnapshot.key!!).child("ChatId").setValue(key)
@@ -423,7 +425,7 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                         dialog.show()
                     }
-                } else onBackPressed()
+                } else finish()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -434,7 +436,8 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
     private val df2: DecimalFormat = DecimalFormat("#.#")
     private fun getUserinfo() {
         CoroutineScope(Job() + Dispatchers.Unconfined).launch {
-            val task2 = async{ // background thread
+            if(intent.hasExtra("form_list")){
+                 val task2 = async{ // background thread
                 usersDb.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         maxChat = dataSnapshot.child(currentUid).child("MaxChat").value.toString().toInt();
@@ -456,6 +459,8 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
                     override fun onCancelled(databaseError: DatabaseError) {}
                 })
             }
+            }
+
             val task1 = async{ // background thread
                 mUserDatabase.addListenerForSingleValueEvent(object : ValueEventListener {
                     @SuppressLint("SetTextI18n")
@@ -655,6 +660,15 @@ class ProfileUserOppositeActivity2 : AppCompatActivity(), BillingProcessor.IBill
 
     override fun onBillingError(errorCode: Int, error: Throwable?) {
 
+    }
+
+    override fun onBackPressed() {
+        val returnIntent = Intent()
+        returnIntent.putExtra("result", intent.getIntExtra("position",0))
+        returnIntent.putExtra("status", delete)
+        setResult(11,returnIntent)
+        super.onBackPressed()
+        //finish()
     }
 
 

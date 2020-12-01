@@ -1,6 +1,7 @@
 package com.jabirdeveloper.tinderswipe.LikeYou
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -22,7 +23,7 @@ import com.jabirdeveloper.tinderswipe.ProfileUserOppositeActivity2
 import com.jabirdeveloper.tinderswipe.R
 import java.text.DecimalFormat
 
-class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val context: Context) : RecyclerView.Adapter<LikeYouAdapter.Holder?>() {
+class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val context: Activity) : RecyclerView.Adapter<LikeYouAdapter.Holder?>() {
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.Match_Image)
@@ -67,7 +68,8 @@ class LikeYouAdapter(private val Like: MutableList<LikeYouObject>, private val c
                 val intent = Intent(context, ProfileUserOppositeActivity2::class.java)
                 intent.putExtra("User_opposite", Like[position].userId)
                 intent.putExtra("form_like", "1")
-                context.startActivity(intent)
+                intent.putExtra("position",position)
+                context.startActivityForResult(intent,11)
             }
         }
 

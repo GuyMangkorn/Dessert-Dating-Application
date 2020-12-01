@@ -2,6 +2,7 @@ package com.jabirdeveloper.tinderswipe.LikeYou
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
@@ -30,6 +31,7 @@ import kotlinx.android.synthetic.main.activity_like_you.*
 import kotlinx.coroutines.*
 import java.util.*
 
+@Suppress("TYPE_INFERENCE_ONLY_INPUT_TYPES_WARNING")
 class LikeYouActivity : AppCompatActivity() {
     private lateinit var LikeYouRecycleview: RecyclerView
     private lateinit var LikeYouAdapter: RecyclerView.Adapter<*>
@@ -359,6 +361,25 @@ class LikeYouActivity : AppCompatActivity() {
             activity.overridePendingTransition(0, 0)
             activity.startActivity(activity.intent)
             activity.overridePendingTransition(0, 0)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 11){
+            if(resultCode == 11){
+                Log.d("result","re11")
+                val status = data!!.getBooleanExtra("status",false)
+                if(status){
+                    Log.d("result",LikeYouAdapter.itemCount.toString() + resultLike.size)
+                    val result = data.getIntExtra("result",0)
+                    resultLike.removeAt(result)
+                    LikeYouAdapter.notifyDataSetChanged()
+                    Log.d("result",LikeYouAdapter.itemCount.toString() +resultLike.size)
+
+                }
+            }
+            Log.d("result","11")
         }
     }
 
