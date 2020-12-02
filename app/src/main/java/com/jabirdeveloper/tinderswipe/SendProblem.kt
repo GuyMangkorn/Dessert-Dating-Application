@@ -59,9 +59,10 @@ class SendProblem : AppCompatActivity() {
             CloseDialog(this, FirebaseAuth.getInstance().uid!!){ send() }.show()
             else{
                 val sendMap2 = hashMapOf<String, Any>()
+                sendMap2["fb"] = editText.text.toString()
                 sendMap2["id"] = FirebaseAuth.getInstance().uid.toString()
                 sendMap2["time"] = ServerValue.TIMESTAMP
-                FirebaseDatabase.getInstance().reference.child("FeedBack").child(editText.text.toString()).updateChildren(sendMap2)
+                FirebaseDatabase.getInstance().reference.child("FeedBacks").push().updateChildren(sendMap2)
                 setResult(14)
                 finish()
             }
