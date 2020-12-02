@@ -28,13 +28,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class First_Activity : AppCompatActivity() {
-    private var firebaseAuthStateListener: AuthStateListener? = null
-    private var mAuth: FirebaseAuth? = null
-    private var usersDb: DatabaseReference? = null
-    private var mContext: Context? = null
+    private lateinit var firebaseAuthStateListener: AuthStateListener
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var usersDb: DatabaseReference
+    private lateinit var mContext: Context
     private lateinit var aniFade: Animation
     private lateinit var aniFade2: Animation
-    private var mLocationManager: LocationManager? = null
+    private lateinit var mLocationManager: LocationManager
     override fun onCreate(savedInstanceState: Bundle?) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -51,12 +51,14 @@ class First_Activity : AppCompatActivity() {
                 if (user != null) {
 
                     logo.startAnimation(aniFade)
-                    usersDb!!.addListenerForSingleValueEvent(object : ValueEventListener {
+                    usersDb.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            if (dataSnapshot.hasChild(mAuth!!.currentUser!!.uid)) {
+                            if (dataSnapshot.child(mAuth.currentUser!!.uid).hasChild("sex")) {
+                               
                                 pushToken()
+
                             } else {
-                                mAuth!!.signOut()
+                                mAuth.signOut()
                                 val intent = Intent(this@First_Activity, ChooseLoginRegistrationActivity::class.java)
                                 startActivity(intent)
                             }
@@ -74,7 +76,7 @@ class First_Activity : AppCompatActivity() {
 
             }
             mLocationManager = this@First_Activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            if (!mLocationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 showGPSDisabledDialog()
             } else if (ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(this@First_Activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -83,7 +85,7 @@ class First_Activity : AppCompatActivity() {
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.INTERNET
                 ), 1)
-            } else mAuth!!.addAuthStateListener(firebaseAuthStateListener!!)
+            } else mAuth.addAuthStateListener(firebaseAuthStateListener)
 
         }
 
@@ -95,7 +97,7 @@ class First_Activity : AppCompatActivity() {
                 return@OnCompleteListener
             }
             val token = task.result
-            FirebaseDatabase.getInstance().reference.child("Users").child(mAuth!!.currentUser!!.uid).child("token").setValue(token)
+            FirebaseDatabase.getInstance().reference.child("Users").child(mAuth.currentUser!!.uid).child("token").setValue(token)
             val intent = Intent(this@First_Activity, SwitchpageActivity::class.java)
             startActivity(intent)
             finish()
@@ -150,16 +152,13 @@ class First_Activity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        mAuth!!.removeAuthStateListener(firebaseAuthStateListener!!)
+        mAuth.removeAuthStateListener(firebaseAuthStateListener)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0) {
             recreate()
-            if (mLocationManager == null) {
-                mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            }
         }
     }
 

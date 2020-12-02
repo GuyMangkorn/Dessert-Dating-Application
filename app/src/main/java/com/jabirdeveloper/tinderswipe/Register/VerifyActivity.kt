@@ -3,8 +3,6 @@ package com.jabirdeveloper.tinderswipe.Register
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,12 +10,11 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.chaos.view.PinView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
-import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
-import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -58,8 +55,8 @@ class VerifyActivity : AppCompatActivity() {
         firebaseAuthStateListener = AuthStateListener {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
-                val userdb = FirebaseDatabase.getInstance().reference.child("Users").child(user.uid)
-                userdb.addListenerForSingleValueEvent(object : ValueEventListener {
+                val userDb = FirebaseDatabase.getInstance().reference.child("Users").child(user.uid)
+                userDb.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         dialog.dismiss()
                         if (dataSnapshot.hasChild("sex")) {
@@ -91,7 +88,6 @@ class VerifyActivity : AppCompatActivity() {
                 pinGroup.requestFocus()
                 return@OnClickListener
             }
-            dialog.show()
             verifyCode(code)
         })
     }
@@ -113,16 +109,16 @@ class VerifyActivity : AppCompatActivity() {
             if (verificationCodeBysystem != "") {
                 val code = credential.smsCode
                 verifyCode(code)
-                Log.d("Vericom","1")
+                Log.d("Vericom", "1")
             } else {
-                Log.d("Vericom","2")
+                Log.d("Vericom", "2")
                 singInTheUserByCredentials(credential)
                 Alerter.create(this@VerifyActivity)
                         .setTitle(getString(R.string.Sign))
                         .setText(getString(R.string.logging))
                         .setBackgroundColorRes(R.color.c2)
                         .show()
-               // dialog.show()
+                // dialog.show()
             }
         }
 
@@ -146,18 +142,24 @@ class VerifyActivity : AppCompatActivity() {
                 token: PhoneAuthProvider.ForceResendingToken
         ) {
             //dialog.show()
-            Log.d("Verisend","1")
+            Log.d("Verisend", "1")
             verificationCodeBysystem = verificationId
 
         }
     }
 
 
-
     private fun verifyCode(codeByUser: String?) {
-        val credential = PhoneAuthProvider.getCredential(verificationCodeBysystem!!, codeByUser!!)
-        singInTheUserByCredentials(credential)
-        pinGroup.setText(codeByUser)
+        if (verificationCodeBysystem != "") {
+            val credential = PhoneAuthProvider.getCredential(verificationCodeBysystem!!, codeByUser!!)
+            singInTheUserByCredentials(credential)
+            pinGroup.setText(codeByUser)
+            dialog.show()
+        } else {
+            dialog.dismiss()
+            Snackbar.make(pinGroup, "กำลังส่งรหัส OTP ไป", Snackbar.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun singInTheUserByCredentials(credential: PhoneAuthCredential?) {
@@ -165,7 +167,8 @@ class VerifyActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 dialog.show()
             } else {
-                Toast.makeText(this@VerifyActivity, "Try again later.", Toast.LENGTH_SHORT).show()
+                Snackbar.make(pinGroup, "Try again later.", Snackbar.LENGTH_SHORT).show()
+                dialog.dismiss()
             }
         }
     }
