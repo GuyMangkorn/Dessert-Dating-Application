@@ -19,7 +19,7 @@ import com.jabirdeveloper.tinderswipe.Functions.ReportUser
 import com.jabirdeveloper.tinderswipe.R
 
 @SuppressLint("CutPasteId")
-class MatchesViewHolders(itemView: View, private val context: Context?, private val matchesList: MutableList<MatchesObject?>?) : RecyclerView.ViewHolder(itemView) {
+class MatchesViewHolders(itemView: View, private val context: Context?, private val matchesList: ArrayList<MatchesObject>) : RecyclerView.ViewHolder(itemView) {
     var mMatchId: TextView?
     var mMatchName: TextView?
     var mDistance: TextView?

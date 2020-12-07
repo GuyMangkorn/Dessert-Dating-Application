@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,7 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import com.jabirdeveloper.tinderswipe.Chat.ChatActivity
 import com.jabirdeveloper.tinderswipe.R
 
-class HiAdapter(private val Hilist: MutableList<HiObject?>?, private val context: Context) : RecyclerView.Adapter<HiAdapter.Holder?>() {
+class HiAdapter(private val Hilist: ArrayList<HiObject>, private val context: Context) : RecyclerView.Adapter<HiAdapter.Holder?>() {
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageView: ImageView = itemView.findViewById(R.id.image_Hi)
