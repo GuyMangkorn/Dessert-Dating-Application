@@ -61,7 +61,7 @@ import kotlin.collections.ArrayList
 import kotlinx.coroutines.coroutineScope as coroutineScope
 
 @Suppress("NAME_SHADOWING")
-class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickListener {
+class MainActivity : Fragment(), BillingProcessor.IBillingHandler, View.OnClickListener {
 
     private lateinit var mLocationManager: LocationManager
     private lateinit var mAuth: FirebaseAuth
@@ -103,13 +103,13 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
     private var countLimit = 0
     private var countLimit2 = 0
     private var countLimit3 = 1
-    private var countDataSet = 1000
+    private var countDataSet = 60
     private lateinit var resultlimit: ArrayList<*>
     private var checkEmpty = false
     private var empty = 0
     private var countEmpty = 0
-    private lateinit var localizationDelegate:LocalizationActivityDelegate
-    private lateinit var questionViewModel:QuestionViewModel
+    private lateinit var localizationDelegate: LocalizationActivityDelegate
+    private lateinit var questionViewModel: QuestionViewModel
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -156,19 +156,20 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        questionViewModel = ViewModelProvider(requireActivity(),object : ViewModelProvider.Factory{
+        questionViewModel = ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return QuestionViewModel(requireContext()) as T
             }
         }).get(QuestionViewModel::class.java)
-        questionViewModel.fetchQA.observe(requireActivity(),{
+        questionViewModel.fetchQA.observe(requireActivity(), {
             val dialogFragment: DialogFragment = DialogFragment()
             dialogFragment.setData(it)
             //localizationDelegate.getLanguage(requireContext()).toLanguageTag()
             dialogFragment.show(requireActivity().supportFragmentManager, "example Dialog")
         })
     }
-    private fun cardStack(){
+
+    private fun cardStack() {
         manager = CardStackLayoutManager(context, object : CardStackListener {
             override fun onCardDragging(direction: Direction?, ratio: Float) {}
             override fun onCardSwiped(direction: Direction?) {
@@ -195,7 +196,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                     usersDb.child(userId).child("connection").child("nope").child(currentUid).setValue(true)
                 }
                 if (direction == Direction.Top) {
-                    if (maxStar > 0 || statusVip) {
+                    if (maxStar > 0) {
                         val datetime = hashMapOf<String, Any>()
                         datetime["date"] = ServerValue.TIMESTAMP
                         datetime["super"] = true
@@ -277,24 +278,24 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
         return rewardedAd
     }
 
-     fun questionAskDialog() : Dialog{
-         val view = layoutInflater.inflate(R.layout.question_ask_dialog,null)
-         val btnConfirm = view.findViewById<Button>(R.id.confirm_button_askDialog)
-         val btnDismiss = view.findViewById<Button>(R.id.dismiss_button_askDialog)
-         val dialog = Dialog(requireContext())
-         dialog.setContentView(view)
-         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-         val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-         dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
-         btnDismiss.setOnClickListener {
-             dialog.dismiss()
-         }
-         btnConfirm.setOnClickListener {
-             questionViewModel.response(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
-             dialog.dismiss()
-         }
-         return dialog
-     }
+    fun questionAskDialog(): Dialog {
+        val view = layoutInflater.inflate(R.layout.question_ask_dialog, null)
+        val btnConfirm = view.findViewById<Button>(R.id.confirm_button_askDialog)
+        val btnDismiss = view.findViewById<Button>(R.id.dismiss_button_askDialog)
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(view)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+        dialog.window!!.setLayout(width, LinearLayout.LayoutParams.WRAP_CONTENT)
+        btnDismiss.setOnClickListener {
+            dialog.dismiss()
+        }
+        btnConfirm.setOnClickListener {
+            questionViewModel.response(localizationDelegate.getLanguage(requireContext()).toLanguageTag())
+            dialog.dismiss()
+        }
+        return dialog
+    }
 
     fun openDialog() {
         val inflater = layoutInflater
@@ -515,11 +516,10 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         // propagated down.
                         val result1 = task.data as Map<*, *>
                         resultlimit = result1["o"] as ArrayList<*>
-                        if (resultlimit.isNotEmpty()){
-                                Log.d("iii", resultlimit.size.toString())
-                                getUser(resultlimit, type, count, 10)
-                        }
-                        else{
+                        if (resultlimit.isNotEmpty()) {
+                            Log.d("iii", resultlimit.size.toString())
+                            getUser(resultlimit, type, count, 10)
+                        } else {
                             val logoMoveAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.fade_out2)
                             val load = (activity as SwitchpageActivity).load
                             logoMoveAnimation.setAnimationListener(object : Animation.AnimationListener {
@@ -541,84 +541,81 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
                         }
 
 
-
                     }
         }
 
     }
 
     private fun getUser(result2: ArrayList<*>, type: Boolean, count: Int, limit: Int) {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default){
-            withContext(Dispatchers.Default){
-                    val preferences = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-                    val language = preferences.getString("My_Lang", "")
-                    val ff: Geocoder
-                    var addresses: MutableList<Address>
-                    ff = if (language == "th") {
-                        Geocoder(context)
-                    } else {
-                        Geocoder(context, Locale.UK)
-                    }
-                    Log.d("iop", "")
-                    var a = countLimit + limit
-                    if (result2.size < countLimit + limit)
-                    {
-                        a = result2.size
-                        checkEmpty=true
-                        empty=result2.size
-                    }
-                    for (x in countLimit until a) {
-                        countLimit++
-                        Log.d("iop", "$countLimit ${result2.size}")
-                        val user = result2[x] as Map<*, *>
-                        Log.d("ghj", user["name"].toString() + " , " + user["distance_other"].toString())
-                        var myself = ""
-                        var citysend: String? = ""
-                        var offStatus = false
-                        var vip = false
-                        var starS = false
-                        val location = user["Location"] as Map<*, *>
-                        try {
-                            addresses = ff.getFromLocation(location["X"].toString().toDouble(), location["Y"].toString().toDouble(), 1)
-                            val city = addresses[0].adminArea
-                            citysend = city
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                        if (user["myself"] != null) {
-                            myself = user["myself"].toString()
-                        }
-                        if (user["off_status"] != null) {
-                            offStatus = true
-                        }
-                        (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
-                        val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
-
-                        var status = "offline"
-                        if (user["status"] == 1) {
-                            status = "online"
-                        }
-                        if (user["Vip"] == 1) {
-                            vip = true
-                        }
-
-                        if (user["star_s"] != null) {
-                            if ((user["star_s"] as Map<*, *>)[currentUid] != null)
-                                starS = true
-                        }
-                        dis = df2.format(user["distance_other"])
-                        rowItem.add(Cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
-
-                    }
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+            withContext(Dispatchers.Default) {
+                val preferences = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
+                val language = preferences.getString("My_Lang", "")
+                val ff: Geocoder
+                var addresses: MutableList<Address>
+                ff = if (language == "th") {
+                    Geocoder(context)
+                } else {
+                    Geocoder(context, Locale.UK)
                 }
-            withContext(Dispatchers.Main){
+                Log.d("iop", "")
+                var a = countLimit + limit
+                if (result2.size < countLimit + limit) {
+                    a = result2.size
+                    checkEmpty = true
+                    empty = result2.size
+                }
+                for (x in countLimit until a) {
+                    countLimit++
+                    Log.d("iop", "$countLimit ${result2.size}")
+                    val user = result2[x] as Map<*, *>
+                    Log.d("ghj", user["name"].toString() + " , " + user["distance_other"].toString())
+                    var myself = ""
+                    var citysend: String? = ""
+                    var offStatus = false
+                    var vip = false
+                    var starS = false
+                    val location = user["Location"] as Map<*, *>
+                    try {
+                        addresses = ff.getFromLocation(location["X"].toString().toDouble(), location["Y"].toString().toDouble(), 1)
+                        val city = addresses[0].adminArea
+                        citysend = city
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                    if (user["myself"] != null) {
+                        myself = user["myself"].toString()
+                    }
+                    if (user["off_status"] != null) {
+                        offStatus = true
+                    }
+                    (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"]
+                    val profileImageUrl = (user["ProfileImage"] as Map<*, *>)["profileImageUrl0"].toString()
+
+                    var status = "offline"
+                    if (user["status"] == 1) {
+                        status = "online"
+                    }
+                    if (user["Vip"] == 1) {
+                        vip = true
+                    }
+
+                    if (user["star_s"] != null) {
+                        if ((user["star_s"] as Map<*, *>)[currentUid] != null)
+                            starS = true
+                    }
+                    dis = df2.format(user["distance_other"])
+                    rowItem.add(Cards(user["key"].toString(), user["name"].toString(), profileImageUrl, user["Age"].toString(), dis, citysend, status, myself, offStatus, vip, starS))
+
+                }
+            }
+            withContext(Dispatchers.Main) {
                 if (type) {
                     arrayAdapter.notifyDataSetChanged()
                     val load = (activity as SwitchpageActivity).load
-                    CloseLoading(context,load).invoke()
+                    CloseLoading(context, load).invoke()
 
-                }
-                else {
+                } else {
                     arrayAdapter.notifyItemRangeChanged(count, rowItem.size)
                 }
             }
@@ -666,12 +663,6 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
 
     }
 
-
-    override fun onPause() {
-        super.onPause()
-        //mLocationManager.removeUpdates(this)
-    }
-
     private fun likeDelay() {
         val handler = Handler()
         handler.postDelayed({
@@ -679,6 +670,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
         }, 300)
 
     }
+
     private fun like() {
         val setting = SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Right)
@@ -746,7 +738,7 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
         super.onDestroy()
     }
 
-    private fun checkStart(){
+    private fun checkStart() {
         /*mLocationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -757,29 +749,29 @@ class MainActivity : Fragment(), BillingProcessor.IBillingHandler,View.OnClickLi
             ), 1)
         } else {
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0f, this)*/
-            viewLifecycleOwner.lifecycleScope.launch { // launch a new coroutine in background and continue
-                withContext(Dispatchers.Default) { // background thread
-                    getDis()
-                }
-                withContext(Dispatchers.IO) { // background thread
-                    callFunctions(countDataSet, true, 0)
-                }
+        viewLifecycleOwner.lifecycleScope.launch { // launch a new coroutine in background and continue
+            withContext(Dispatchers.Default) { // background thread
+                getDis()
             }
+            withContext(Dispatchers.IO) { // background thread
+                callFunctions(countDataSet, true, 0)
+            }
+        }
 
         //}
     }
 
     override fun onClick(v: View?) {
-        if(v == touchGps){
+        if (v == touchGps) {
             startActivityForResult(Intent(context, Setting2Activity::class.java), 1112)
         }
-        if(v == like){
+        if (v == like) {
             like()
         }
-        if(v == dislike){
+        if (v == dislike) {
             disLike()
         }
-        if(v == star){
+        if (v == star) {
             star()
         }
     }
